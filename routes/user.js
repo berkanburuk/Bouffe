@@ -1,19 +1,24 @@
-var http = require('http')
-var finalhandler = require('finalhandler')
 var express = require('express');
-// create the router and server
-var router = express.Router();
+var app = express();
 
 class User{
-  constructor(name,surname,type,semester,username,password){
-    this.name = name;
-    this.surname = surname;
-    this.type=type;
-    this.semester = semester;
-    this.username = username;
-    this.password = password;
-  }
+    constructor(name,surname,type,semester,username,password){
+        this.name = name;
+        this.surname = surname;
+        this.type=type;
+        this.semester = semester;
+        this.username = username;
+        this.password = password;
+    }
 }
+
+// mount the router on the app
+//app.use('/', router);
+
+
+
+/*
+
 
 
 // register a route and add all methods
@@ -39,3 +44,5 @@ router.route('/user/:id')
 
 
 module.exports = router;
+
+*/

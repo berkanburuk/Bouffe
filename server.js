@@ -1,57 +1,38 @@
-var http = require('http')
-var finalhandler = require('finalhandler')
 var express = require('express');
-// create the router and server
+var app = express();
 var router = express.Router();
 
-
-var server = http.createServer(function onRequest(req, res) {
-    router(req, res, finalhandler(req, res))
-})
-
-router.get('/', function(req, res, next) {
-    res.render('hey this worked');
+//USER
+app.get('/user/:id', function (req, res, next) {
+    // if the user ID is 0, skip to the next route
+    console.log(req.method);
+    //res.render('login', {title: 'Express Login'});
+    if (req.params.id === 1) next('route')
+    // otherwise pass the control to the next middleware function in this stack
+    else {
+        //var err = new Error('cannot find user ' + req.params.id);
+        var err = ('cannot find user ' + req.params.id);
+        err.status = 404;
+        next(err);
+    }
+}, function (req, res, next) {
+    // send a regular response
+    res.send('regular')
 });
-router.get('/another/route', function(req, res, next) {
-    res.json({ hello: 'world' });
+app.get('/user/:id/:password', function (req, res, next) {
+    console.log("User and Password");
+    res.end('User and Password is wrong');
+    next();
 });
 
-
-/*
-
-// register a route and add all methods
-router.route('/server/:id')
-    .get(function (req, res) {
-        // this is GET /pet/:id
-        res.setHeader('Content-Type', 'application/json')
-        res.end(JSON.stringify({ name: 'hello' }))
-    })
-    .delete(function (req, res) {
-        // this is DELETE /pet/:id
-        res.end()
-    })
-    .all(function (req, res) {
-        // this is called for all other methods not
-        // defined above for /pet/:id
-        res.statusCode = 405
-        res.end()
-    })
-*/
-// make our http server listen to connections
-server.listen(8080);
-
-module.exports = router;
-
-/*
-const url = require('url');
-const http = require('http');
-const app1 = http.createServer(function(request, response) {
-
-var query = url.parse(request.url, true).query;
-console.log(query);
-response.writeHead(200, {"Content-Type": "text/html"});
-response.write('&lt;h1&gt;The city you are in is ${city}.&lt;/h1&gt;');
-response.end();
+// handler for the /user/:id path, which sends a special response
+app.get('/user/:pass', function (req, res, next) {
+    console.log("hee222");
+    res.send('special')
 });
-app1.listen(3000);
-*/
+//USER
+
+
+// mount the router on the app
+app.use('/', router);
+app.listen(3000);
