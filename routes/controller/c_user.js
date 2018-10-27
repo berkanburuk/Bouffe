@@ -1,7 +1,11 @@
-var http = require('http');
-http.createServer(function (req, res) {
-    res.writeHead(200, {'Content-Type': 'text/html'});
-    res.write("The date and time are currently: ");
-    res.end();
+const url = require('url');
+const http = require('http');
+const app1 = http.createServer(function(request, response) {
 
-}).listen(8080);
+    var query = url.parse(request.url, true).query;
+    console.log(query);
+    response.writeHead(200, {"Content-Type": "text/html"});
+    response.write('ola');
+    response.end();
+});
+app1.listen(3000);
