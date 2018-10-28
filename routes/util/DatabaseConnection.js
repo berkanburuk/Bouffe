@@ -30,5 +30,79 @@ sequelize
         console.error('Unable to connect to the database:', err);
     });
 
+const PersonalInfos = sequelize.define("personalInfo", {
+    id:{
+        primaryKey:true,
+        autoIncrement:true,
+        type:Sequelize.INTEGER
+    },
+    firstName: {
+        type: Sequelize.STRING,
+        allowNull:false
+    },
+    lastName: {
+        type: Sequelize.STRING
+    },
+    section :{
+        type: Sequelize.INTEGER
+    },
+    registration_semester:{
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.NOW
+    }
+});
 
-module.exports = {sequelize,Sequelize};
+const Users = sequelize.define("user",{
+    id:{
+
+        primaryKey:true,
+        autoIncrement:true,
+        type:Sequelize.INTEGER
+    },
+/*
+    personalInfoId:{
+        type:Sequelize.INTEGER,
+        references:{
+            model: personalInfo,
+            key:'id',
+            deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
+        }
+    },
+*/
+    username:{
+        type:Sequelize.STRING,
+        allowNull: false
+    },
+    password:{
+        type:Sequelize.STRING,
+        allowNull:false
+    }
+});
+
+Users.belongsTo(PersonalInfos, {foreignKey: 'fk_Personal',targetKey:'id'});
+
+// force: true will drop the table if it already exists
+PersonalInfos.sync({force: true}).then(() => {
+    // Table created
+    return PersonalInfos.create({
+        firstName: 'Berkan',
+        lastName: 'Buruk',
+        section: 1
+    });
+});
+
+Users.sync({
+    force:true
+}).then(()=>{
+   return Users.create({
+      username:'berkan',
+      password:'1'
+   });
+});
+
+Users.findAll().then(user => {
+    console.log(user)
+})
+
+
+//module.exports = {sequelize,Sequelize};
