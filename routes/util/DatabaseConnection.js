@@ -30,12 +30,13 @@ sequelize
         console.error('Unable to connect to the database:', err);
     });
 
-const PersonalInfos = sequelize.define("personalInfo", {
+const PersonalInfos = sequelize.define("personalInfos", {
     id:{
         primaryKey:true,
         autoIncrement:true,
         type:Sequelize.INTEGER
     },
+
     firstName: {
         type: Sequelize.STRING,
         allowNull:false
@@ -52,23 +53,41 @@ const PersonalInfos = sequelize.define("personalInfo", {
     }
 });
 
-const Users = sequelize.define("user",{
-    id:{
 
+
+const roles = sequelize.define("roles",{
+    id: {
+        primaryKey: true,
+        autoIncrement: true,
+        type: Sequelize.INTEGER
+    },
+    roleName:{
+        type:Sequelize.STRING,
+        allowNull:false
+    }
+});
+
+roles.sync({force:true}).then(()=>{
+   return roles.create({
+       roleName:'admin'
+   });
+});
+
+const Users = sequelize.define("users",{
+    id:{
         primaryKey:true,
         autoIncrement:true,
         type:Sequelize.INTEGER
     },
-/*
     personalInfoId:{
-        type:Sequelize.INTEGER,
-        references:{
-            model: personalInfo,
-            key:'id',
-            deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
-        }
+        unique:true,
+        type:Sequelize.INTEGER
     },
-*/
+    roleId:{
+        unique:true,
+        type:Sequelize.INTEGER
+    },
+
     username:{
         type:Sequelize.STRING,
         allowNull: false
@@ -80,6 +99,8 @@ const Users = sequelize.define("user",{
 });
 
 Users.belongsTo(PersonalInfos, {foreignKey: 'fk_Personal',targetKey:'id'});
+Users.belongsTo(roles,{foreignKey: 'fk_Role',targetKey: 'id'});
+
 
 // force: true will drop the table if it already exists
 PersonalInfos.sync({force: true}).then(() => {
