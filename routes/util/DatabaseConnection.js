@@ -30,7 +30,7 @@ sequelize
         console.error('Unable to connect to the database:', err);
     });
 
-const PersonalInfos = sequelize.define("personalInfos", {
+const PersonalInfos = sequelize.define("personalInfo", {
     id:{
         primaryKey:true,
         autoIncrement:true,
@@ -55,7 +55,7 @@ const PersonalInfos = sequelize.define("personalInfos", {
 
 
 
-const roles = sequelize.define("roles",{
+const Roles = sequelize.define("role",{
     id: {
         primaryKey: true,
         autoIncrement: true,
@@ -67,13 +67,8 @@ const roles = sequelize.define("roles",{
     }
 });
 
-roles.sync({force:true}).then(()=>{
-   return roles.create({
-       roleName:'admin'
-   });
-});
 
-const Users = sequelize.define("users",{
+const Users = sequelize.define("user",{
     id:{
         primaryKey:true,
         autoIncrement:true,
@@ -98,10 +93,15 @@ const Users = sequelize.define("users",{
     }
 });
 
-Users.belongsTo(PersonalInfos, {foreignKey: 'fk_Personal',targetKey:'id'});
-Users.belongsTo(roles,{foreignKey: 'fk_Role',targetKey: 'id'});
+PersonalInfos.belongsTo(Users, {foreignKey: 'fk_Personal',targetKey:'personalInfoId'});
+Roles.belongsTo(Users,{foreignKey: 'fk_Role',targetKey: 'roleId'});
 
 
+Roles.sync({force:true}).then(()=>{
+    return roles.create({
+        roleName:'admin'
+    });
+});
 // force: true will drop the table if it already exists
 PersonalInfos.sync({force: true}).then(() => {
     // Table created
@@ -116,14 +116,18 @@ Users.sync({
     force:true
 }).then(()=>{
    return Users.create({
+       personalInfoId:1,
+       roleId:1,
       username:'berkan',
       password:'1'
    });
 });
 
+
+/*
 Users.findAll().then(user => {
     console.log(user)
 })
-
+*/
 
 //module.exports = {sequelize,Sequelize};

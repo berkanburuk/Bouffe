@@ -1,10 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
 </head>
 <body>
-<p>Hello</p>
+
+
+    First name: <input type="text" name="username" id="username"><br>
+    Password: &nbsp;<input type="password" name="password" id="password"><br>
+    <input type="button" name="buton" onclick="sendUserInfo()" value="Submit">
+    <input type="button" name="addUser" onclick="addUser()" value="addUser">
+
+    "<a href='http://localhost:3000/menu/'>Add Menu</a>";
+
+
+
 </body>
 </html>
+
+<script>
+
+    function sendUserInfo() {
+        var data = {
+            'username':$('#username').val(),
+            'password':$('#password').val()
+        };
+        $.ajax({
+            type: 'POST',
+            dataType: 'application/json',
+            url:  'http://localhost:3000/api/user',
+            data: data,
+            //dataType: "json",
+            timeout: 5000,
+            success: function(data, textStatus ){
+                alert('request successful');
+                console.log(data);
+            },
+            fail: function(xhr, textStatus, errorThrown){
+                alert('request failed');
+            }
+        });
+    }
+    function addUser() {
+        var data = {
+            'username':$('#username').val(),
+            'password':$('#password').val()
+        };
+        $.ajax({
+            type: 'POST',
+            dataType: 'application/json',
+            url:  'http://localhost:3000/addUser',
+            data: data,
+            //dataType: "json",
+            timeout: 5000,
+            success: function(data, textStatus ){
+                alert('request successful');
+                console.log(data);
+            },
+            fail: function(xhr, textStatus, errorThrown){
+                alert('request failed');
+            }
+        });
+    }
+
+   /*
+    function myf() {
+       $.ajax({
+           type: 'GET',
+           dataType: 'text',
+           url:  'http://localhost:3000/api/user/'+'username='+ $('#username').val()+ '/password=' + $('#password').val(),
+           timeout: 5000,
+           success: function(data, textStatus ){
+               alert('request successful');
+               console.log(data);
+           },
+           fail: function(xhr, textStatus, errorThrown){
+               alert('request failed');
+           }
+       });
+   }
+   */
+   /*
+   function myf() {
+       $.get("localhost.com:3000/user/",
+           {
+               username: $('#username').val(),
+               password: $('#password').val()
+           })
+           .done(function (data) {
+               alert("Data Loaded: " + data);
+           })
+           .fail(function (err) {
+               alert(err);
+           });
+   }
+*/
+
+</script>

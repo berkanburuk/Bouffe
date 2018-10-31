@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Menu</title>
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+</head>
+<body>
+        Culture Name:<input type="text" name="cultureName" id="cultureName">
+        Food Name: <input type="text" name="foodName" id="foodName">
+        Beverage Name: <input type="text" name="beverageName" id="beverageName">
+        Ingredient:  <input type="text" name="ingredient" id="ingredient">
+        <input type="button" name="buton" onclick="sendFood()" value="Submit">
+</body>
+</html>
+
+<script>
+    function sendFood() {
+        var data = {
+            'cultureName':$('#cultureName').val(),
+            'FoodName':$('#foodName').val(),
+            'beverageName': $('#beverageName').val(),
+            'ingredient':$('#ingredient').val()
+        };
+        $.ajax({
+            type: 'POST',
+            dataType: 'application/json',
+            url:  'http://localhost:3000/api/menu',
+            data: data,
+            //dataType: "json",
+            timeout: 5000,
+            success: function(data, textStatus ){
+                alert('request successful');
+                console.log(data);
+            },
+            fail: function(xhr, textStatus, errorThrown){
+                alert('request failed');
+            }
+        });
+    }
+</script>
