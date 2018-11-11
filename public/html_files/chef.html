@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chef</title>
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+</head>
+<body>
+Get Notifications : <input type="button" name="buton" onclick="getFood()" value="Submit">
+</body>
+</html>
+
+<script>
+
+
+    function getFood(){
+        function myf() {
+            $.ajax({
+                type: 'GET',
+                dataType: 'application/json',
+                url:  'http://localhost:3000/api/getNotification',
+                timeout: 5000,
+                success: function(data, textStatus ){
+                    alert('request successful');
+                    console.log(data);
+                },
+                fail: function(xhr, textStatus, errorThrown){
+                    alert('request failed');
+                }
+            });
+        }
+    }
+
+</script>
