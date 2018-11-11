@@ -14,6 +14,7 @@ app.use(express.static('public'));
 //Starting Page of The Web Application
 app.get('/', function (req, res) {
     console.log('localhost:'+portNumber);
+
     res.sendFile(__dirname + '/public/html_files/index.html');
     //res.end();
 

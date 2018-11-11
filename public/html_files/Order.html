@@ -7,7 +7,33 @@
 </head>
 <body>
 
+<input type="button" value="Order" onclick="order()">
 
 
 </body>
 </html>
+
+<script>
+    function order() {
+        var data = {
+           'key':'value'
+        };
+        data = JSON.stringify(data);
+        $.ajax({
+            type: 'POST',
+            dataType: 'application/json',
+            url:  'http://localhost:3000/api/order',
+            data: data,
+            dataType: 'application/json',
+            timeout: 5000,
+            success: function(data, textStatus ){
+                alert('request successful');
+                console.log(data);
+            },
+            fail: function(xhr, textStatus, errorThrown){
+                alert('request failed');
+            }
+        });
+    }
+
+</script>
