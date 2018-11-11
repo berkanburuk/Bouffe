@@ -11,11 +11,10 @@
 
     First name: <input type="text" name="username" id="username"><br>
     Password: &nbsp;<input type="password" name="password" id="password"><br>
-    <input type="button" name="buton" onclick="sendUserInfo()" value="Submit">
     <input type="button" name="addUser" onclick="addUser()" value="addUser">
 
     "<a href='http://localhost:3000/menu/'>Add Menu</a>";
-
+    "<a href='http://localhost:3000/order/'>Order Page</a>";
 
 
 </body>
@@ -23,27 +22,6 @@
 
 <script>
 
-    function sendUserInfo() {
-        var data = {
-            'username':$('#username').val(),
-            'password':$('#password').val()
-        };
-        $.ajax({
-            type: 'POST',
-            dataType: 'application/json',
-            url:  'http://localhost:3000/api/user',
-            data: data,
-            //dataType: "json",
-            timeout: 5000,
-            success: function(data, textStatus ){
-                alert('request successful');
-                console.log(data);
-            },
-            fail: function(xhr, textStatus, errorThrown){
-                alert('request failed');
-            }
-        });
-    }
     function addUser() {
         var data = {
             'username':$('#username').val(),
@@ -52,9 +30,9 @@
         $.ajax({
             type: 'POST',
             dataType: 'application/json',
-            url:  'http://localhost:3000/addUser',
+            url:  'http://localhost:3000/api/addUser',
             data: data,
-            //dataType: "json",
+            dataType: "json",
             timeout: 5000,
             success: function(data, textStatus ){
                 alert('request successful');

@@ -1,6 +1,9 @@
 var express = require('express');
 var app = express();
 var router = express.Router();
+var user = require('./routes/Controller/User')(app);
+var createMenu = require('./routes/Controller/Menu')(app);
+var order = require('./routes/Controller/Order')(app);
 
 const portNumber=3000;
 var bodyParser = require('body-parser');
@@ -15,12 +18,16 @@ app.get('/', function (req, res) {
     //res.end();
 
 });
+
+
+/*
 //User Request
 app.post('/api/user/', function (request, response,next) {
     var data = request.body;
     for (var key in data){
         console.log(data[key]);
     }
+    response.end('Successfully Login');
     next();
 })
 
@@ -50,6 +57,7 @@ app.get('/user/:username/:password', function (req, res, next) {
     res.end('Hello' + '\n');
     next();
 });
+*/
 /*
 app.route('/api/user/')
     .get(function(req, res) {
@@ -67,35 +75,12 @@ app.route('/api/user/')
     });
 */
 //Get Menu Page
-app.get('/menu', function (req, res) {
-    console.log('Menu');
-    res.sendFile(__dirname + '/public/html_files/menu.html');
-    //res.end();
-
-});
-
-//Post - Menu
-app.post('/api/menu',function (request,response,next) {
-    //console.log(request.body.cultureName);
-    var data = request.body;
-    for (var key in data){
-        console.log(data[key]);
-    }
-    next();
-});
 
 
 
-
-app.post('/addUser', function (req, res) {
-    // First read existing users.
-})
-
-/*app.get('*', function(req, res) {
-    res.render('error');
-});
-*/
 //  Connect all our routes to our application
+
+
 app.use('/', router);
 
 // Turn on that server!
