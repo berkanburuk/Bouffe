@@ -1,10 +1,16 @@
 const Sequelize = require('sequelize');
 
+//var menu = require('../Model/Menu');
+var order = require('../Model/Order');
+var food = require('../Model/Food');
+
+
 const database = "bouffe";
 const username = "postgres";
 const password = "1q2w3e4r5t";
 const hostName ="cemreberkdemirci.com";
 const portNumber = "5432";
+
 
 const sequelize = new Sequelize(database, username, password, {
     host: hostName,
@@ -29,6 +35,9 @@ sequelize
     .catch(err => {
         console.error('Unable to connect to the database:', err);
     });
+
+
+/*
 
 const PersonalInfos = sequelize.define("personalInfo", {
     id:{
@@ -93,6 +102,7 @@ const Users = sequelize.define("user",{
     }
 });
 
+
 PersonalInfos.belongsTo(Users, {foreignKey: 'fk_Personal',targetKey:'personalInfoId'});
 Roles.belongsTo(Users,{foreignKey: 'fk_Role',targetKey: 'roleId'});
 
@@ -122,6 +132,26 @@ Users.sync({
       password:'1'
    });
 });
+*/
+
+food.formFood(Sequelize,sequelize);
+food.createFood();
+
+order.formTable(Sequelize,sequelize);
+order.createTable();
+
+console.log(order.getOrder());
+
+food.relationWithOrder(order.getOrder());
+
+module.exports = {
+    Sequelize,sequelize
+}
+
+
+
+
+
 
 
 /*
