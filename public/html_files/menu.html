@@ -6,10 +6,9 @@
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
 </head>
 <body>
-        Culture Name:<input type="text" name="cultureName" id="cultureName">
-        Food Name: <input type="text" name="foodName" id="foodName">
-        Beverage Name: <input type="text" name="beverageName" id="beverageName">
-        Ingredient:  <input type="text" name="ingredient" id="ingredient">
+        Culture Name:<input type="text" name="name" id="name">
+        cousinRegion: <input type="text" name="cousinRegion" id="cousinRegion">
+        foodId: <input type="text" name="foodId" id="foodId">
         <input type="button" name="buton" onclick="sendFood()" value="Submit">
 </body>
 </html>
@@ -17,17 +16,19 @@
 <script>
     function sendFood() {
         var data = {
-            'cultureName':$('#cultureName').val(),
-            'FoodName':$('#foodName').val(),
-            'beverageName': $('#beverageName').val(),
-            'ingredient':$('#ingredient').val()
+            'name':$('#name').val(),
+            'cousinRegion':$('#cousinRegion').val(),
+            'foodId': $('#foodId').val(),
         };
+        data.foodId = parseInt(data.foodId);
+        console.log(data);
+        data = JSON.stringify(data);
+        console.log(data);
         $.ajax({
             type: 'POST',
             dataType: 'application/json',
             url:  'http://localhost:3000/api/menu',
             data: data,
-            //dataType: "json",
             timeout: 5000,
             success: function(data, textStatus ){
                 alert('request successful');
