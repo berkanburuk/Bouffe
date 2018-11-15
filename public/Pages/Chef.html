@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Chef</title>
-    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <link src="../JsFiles/jQuery.js">
 </head>
 <body>
 Get Notifications : <input type="button" name="buton" onclick="getFood()" value="Submit">
@@ -18,7 +18,7 @@ Get Notifications : <input type="button" name="buton" onclick="getFood()" value=
             $.ajax({
                 type: 'GET',
                 dataType: 'application/json',
-                url:  'http://localhost:3000/api/getNotification',
+                url: 'http://localhost:3000/api/getNotification/' + $('#username').val(),
                 timeout: 5000,
                 success: function(data, textStatus ){
                     alert('request successful');

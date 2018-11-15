@@ -1,7 +1,5 @@
 var Chair;
 
-
-
 function createChair(Sequelize,sequelize,chair) {
     Chair = sequelize.define(chair,{
         id: {

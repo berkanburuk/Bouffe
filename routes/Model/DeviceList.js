@@ -1,7 +1,5 @@
 var DeviceList;
 
-
-
 function createDeviceList(Sequelize,sequelize,deviceList) {
     DeviceList = sequelize.define(deviceList,{
         id: {
