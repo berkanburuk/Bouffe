@@ -1,36 +1,35 @@
 var Student;
-
+var Role = require('./Role');
+var User = require('./User');
 function createStudent(Sequelize, sequelize, student) {
 
     Student = sequelize.define(student, {
-        id: {
-            primaryKey: true,
-            autoIncrement: true,
+        bilkentId: {
             type: Sequelize.INTEGER
         },
-        bilkentId: {
-            type: Sequelize.INTEGER,
-            allowNull: false
+        instructorId:{
+            type: Sequelize.INTEGER
         },
-        name: {
-            type: Sequelize.STRING,
-            allowNull: false
-        },
-        role: {
-            type: Sequelize.INTEGER,
-            allowNull: false
+        instructorId2:{
+            type: Sequelize.INTEGER
         },
         section: {
             type: Sequelize.STRING,
             allowNull: false
         },
-        starsFileId: {
-            type: Sequelize.INTEGER,
+        starsFilePath: {
+            type: Sequelize.STRING,
             allowNull: false
         }
 
     });
-
+    Student.belongsTo(Role.getRole());
+    Student.belongsTo(User.getUser(),{
+        onUpdate: 'cascade',
+        keyType: Sequelize.STRING,
+        foreignKey: 'username',
+        targetKey: 'username'
+    });
     Student.sync({
         //force: true
     })

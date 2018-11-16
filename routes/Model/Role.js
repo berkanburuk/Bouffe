@@ -1,22 +1,17 @@
 var Role;
 
 function createRole(Sequelize,sequelize,role) {
-    const Role = sequelize.define(role,{
+    Role = sequelize.define(role, {
         id: {
             primaryKey: true,
             autoIncrement: true,
             type: Sequelize.INTEGER
-        },
-        roleName:{
+        },/*
+        userName:{
             type:Sequelize.STRING,
             allowNull:false
-        }
-
+        }*/
     });
-
-    //Role.belongsTo(Users,{foreignKey: 'fk_Role',targetKey: 'roleId'});
-
-
     Role.sync({
         //force:true
     })
@@ -25,9 +20,6 @@ function createRole(Sequelize,sequelize,role) {
         });
 
 }
-
-
-
 
 function getRole(){
     return Role;
