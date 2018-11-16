@@ -26,7 +26,7 @@ function createTable(Sequelize, sequelize, table) {
         }
     });
     //PersonalInfo.belongsTo(Users, {foreignKey: 'fk_Personal',targetKey:'personalInfoId'});
-    PersonalInfo.sync({
+    Table.sync({
         //force: true
     }).then(() => {
         console.log("Table table has created!");

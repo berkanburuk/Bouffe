@@ -2,27 +2,27 @@ var User;
 
 function createUser(Sequelize,sequelize,user){
 User = sequelize.define(user,{
-    id:{
+    username: {
         primaryKey:true,
-        autoIncrement:true,
-        type:Sequelize.INTEGER
-    },
-    personalInfoId:{
-        unique:true,
-        type:Sequelize.INTEGER
-    },
-    roleId:{
-        unique:true,
-        type:Sequelize.INTEGER
-    },
-
-    username:{
-        type:Sequelize.STRING,
-        allowNull: false
+        type:Sequelize.STRING
     },
     password:{
+        type:Sequelize.STRING
+    },
+    firstName:{
         type:Sequelize.STRING,
         allowNull:false
+    },
+    lastName:{
+        type:Sequelize.STRING,
+        allowNull:false
+    },
+    section:{
+        type:Sequelize.INTEGER
+    },
+    registrationSemester:{
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.NOW
     }
 });
     User.sync({

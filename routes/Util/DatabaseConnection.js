@@ -7,12 +7,13 @@ let food = require('../Model/Food');
 let instructor = require('../Model/Instructor');
 let menu = require('../Model/Menu');
 let order = require('../Model/Order');
-let personalInfo = require('../Model/PersonalInfo');
 let role = require('../Model/Role');
 let user = require('../Model/User');
 let student = require('../Model/Student');
 let waiter = require('../Model/Waiter');
 let table = require('../Model/Table');
+let beverage = require('../Model/Beverage');
+let menuFood = require('../Model/MenuFood');
 
 const tableNames = {
     user:"user",
@@ -27,7 +28,9 @@ const tableNames = {
     instructor: "instructor",
     student: "student",
     waiter:"waiter",
-    table:"table"
+    table:"table",
+    beverage:"beverage",
+    menuFood:"menuFood"
 }
 
 
@@ -70,18 +73,24 @@ module.exports = {
 */
 
 
-chair.createChair(Sequelize,sequelize,tableNames.chair);
-deviceList.createDeviceList(Sequelize,sequelize,tableNames.deviceList);
-food.createFood(Sequelize,sequelize,tableNames.food);
-instructor.createInstructor(Sequelize,sequelize,tableNames.instructor);
-menu.createMenu(Sequelize,sequelize,tableNames.menu);
-order.createOrder(Sequelize,sequelize,tableNames.order);
-personalInfo.createPersonalInfo(Sequelize,sequelize,tableNames.personalInfo);
-role.createRole(Sequelize,sequelize,tableNames.role);
-user.createUser(Sequelize,sequelize,tableNames.user);
-student.createStudent(Sequelize, sequelize, tableNames.student);
-waiter.createWaiter(Sequelize,sequelize,tableNames.waiter);
-table.createTable(Sequelize,sequelize,tableNames.table);
+var Chair = chair.createChair(Sequelize,sequelize,tableNames.chair);
+var DeviceList = deviceList.createDeviceList(Sequelize,sequelize,tableNames.deviceList);
+var Food = food.createFood(Sequelize,sequelize,tableNames.food);
+var Menu = menu.createMenu(Sequelize,sequelize,tableNames.menu);
+var Role = role.createRole(Sequelize,sequelize,tableNames.role);
+
+
+var User = user.createUser(Sequelize,sequelize,tableNames.user);
+var Table = table.createTable(Sequelize,sequelize,tableNames.table);
+var Beverage = beverage.createBeverage(Sequelize,sequelize,tableNames.beverage);
+
+
+var Waiter = waiter.createWaiter(Sequelize,sequelize,tableNames.waiter);
+var Student = student.createStudent(Sequelize, sequelize, tableNames.student);
+var Instructor = instructor.createInstructor(Sequelize,sequelize,tableNames.instructor);
+var Order = order.createOrder(Sequelize,sequelize,tableNames.order);
+var MenuFood = menuFood.createMenuFood(Sequelize,sequelize,tableNames.menuFood);
+
 
 console.log( "order = " + order.getOrder());
 
@@ -91,6 +100,7 @@ var m = {
     foodId:1
 };
 menu.save(m);
+
 
 module.exports = {
     tbNames: tableNames

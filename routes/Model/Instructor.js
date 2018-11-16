@@ -1,26 +1,28 @@
 var Instructor;
-
-
+var Role = require('./Role');
+var User = require('./User');
 
 function createInstructor(Sequelize,sequelize,instructor) {
     Instructor = sequelize.define(instructor,{
-        id: {
-            primaryKey: true,
-            autoIncrement: true,
-            type: Sequelize.INTEGER
-        },
-        name: {
+        userName: {
             type: Sequelize.STRING
-        },
-        roleId: {
-            type: Sequelize.INTEGER
         }
     })
+    Instructor.belongsTo(Role.getRole());
+    Instructor.belongsTo(User.getUser(),{
+        onUpdate: 'cascade',
+        keyType: Sequelize.STRING,
+        foreignKey: 'username',
+        targetKey: 'username'
+    });
+
     Instructor.sync({
         //force:true
     }).then(()=>{
         console.log("Instructor Table is created!")
     });
+
+
 }
 
 function save(instructor){
