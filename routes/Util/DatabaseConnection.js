@@ -55,6 +55,7 @@ const sequelize = new Sequelize(dbConnection.database, dbConnection.username, db
     pool: dbConnection.pool
 });
 
+
 sequelize
     .authenticate()
     .then(() => {
