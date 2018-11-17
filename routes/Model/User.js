@@ -32,6 +32,11 @@ User = sequelize.define(user,{
     });
 }
 
+function getAllUsers() {
+    Role.findAll().then(function (users) {
+        console.log(users[0].get('name'));
+    });
+}
 function save(user) {
     User.create(user);
 }

@@ -2,30 +2,34 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Menu</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
+    <title>Add Beverage</title>
 </head>
 <body>
-name: <input type="text" name="name" id="name">
-cousinRegion: <input type="text" name="cousinRegion" id="cousinRegion">
-        <input type="button" name="buton" onclick="sendFood()" value="Submit">
+
+
+Beverage name: <input type="text" name="name" id="beverageName"><br>
+
+<input type="button" name="addBeveragess" onclick="addBeverage()" value="addBeverage">
+
+
 </body>
 </html>
 
 <script>
-    function sendFood() {
-        var data = {
-            name:$('#name').val(),
-            cousinRegion:$('#cousinRegion').val(),
-        };
 
-        console.log(data);
+    function addBeverage() {
+        var data = {
+            'name':$('#beverageName').val(),
+            'available': true,
+            'price':10.0
+        };
         $.ajax({
             type: 'POST',
             dataType: 'application/json',
-            url:  'http://localhost:3000/api/addMenu',
+            url:  'http://localhost:3000/api/addBeverage/',
             data: data,
+            dataType: "json",
             timeout: 5000,
             success: function(data, textStatus ){
                 alert('request successful');
@@ -36,4 +40,6 @@ cousinRegion: <input type="text" name="cousinRegion" id="cousinRegion">
             }
         });
     }
+
+
 </script>

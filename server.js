@@ -5,15 +5,9 @@ const portNumber = 3000;
 var bodyParser = require('body-parser');
 app.use(express.static('public'));
 
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({extended: true}));
 
-
-
-var user = require('./routes/Controller/User')(app);
-var createMenu = require('./routes/Controller/Menu')(app);
-var order = require('./routes/Controller/Order')(app);
-var instructor = require('./routes/Controller/Instructor')(app);
-var chef = require('./routes/Controller/Chef')(app);
+app.use(router);
 
 
 //Starting Page of The Web Application
@@ -21,6 +15,15 @@ app.get('/', function (request, response) {
     console.log('localhost:' + portNumber);
     response.sendFile(__dirname + '/public/Pages/Index.html');
 });
+
+var user = require('./routes/Controller/User')(app);
+var menu = require('./routes/Controller/Menu')(app);
+var order = require('./routes/Controller/Order')(app);
+var instructor = require('./routes/Controller/Instructor')(app);
+var chef = require('./routes/Controller/Chef')(app);
+var beverage = require('./routes/Controller/Beverage')(app);
+var student = require('./routes/Controller/Student')(app);
+
 
 app.use('/', router);
 
