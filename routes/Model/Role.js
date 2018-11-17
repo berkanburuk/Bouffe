@@ -20,7 +20,34 @@ function createRole(Sequelize,sequelize,role) {
         });
 
 }
+function m (){
+Role.findAll({
+    attributes: ['image', 'desc', 'price', 'stock'],
+    include: [{
+        model: models.Type,
+        attributes: [['name', 'Type']]
+    }, {
+        model: models.Specs,
+        attributes: [['name', 'Specs']]
+    }, {
+        model: models.JctProductColors,
+        include: [{
+            model: models.Color,
+            attributes: [['name', 'Color']]
+        }]
+    }
+    ],
+    where: {
+        id: id
+    }
+});
+}
 
+function getAllRoles() {
+    Role.findAll().then(function (roles) {
+        console.log(roles[0].get('id'));
+    });
+}
 function getRole(){
     return Role;
 }

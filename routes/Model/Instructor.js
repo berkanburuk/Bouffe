@@ -24,7 +24,11 @@ function createInstructor(Sequelize,sequelize,instructor) {
 
 
 }
-
+function getAllInstructors() {
+    Instructor.findAll().then(function (instructor) {
+        console.log(instructor[0].get('userName'));
+    });
+}
 function save(instructor){
     //Instructor.create(instructor);
     Instructor.create({

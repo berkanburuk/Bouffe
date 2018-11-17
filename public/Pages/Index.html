@@ -4,34 +4,45 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link src="../JsFiles/jQuery.js">
+    <!--<script type='text/javascript' src='../JsFiles/jQuery.js'></script>-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
 <body>
 
 
     First name: <input type="text" name="username" id="username"><br>
     Password: &nbsp;<input type="password" name="password" id="password"><br>
+    First name: <input type="text" name="firstName" id="firstName"><br>
+    Last name: <input type="text" name="lastName" id="lastName"><br>
+    Section: <input type="text" name="section" id="section"><br>
+    registrationSemester: <input type="text" name="registrationSemester" id="registrationSemester"><br>
+
     <input type="button" name="addUser" onclick="addUser()" value="addUser">
 
     "<a href='http://localhost:3000/menu/'>Add Menu</a>";
     "<a href='http://localhost:3000/order/'>Order Page</a>";
 
     "<a href='http://localhost:3000/chef/'>Get Notification Page</a>";
+    "<a href='http://localhost:3000/beverage/'>Add Beverage</a>";
+    "<a href='http://localhost:3000/student/'>Add Beverage</a>";
 
 </body>
 </html>
 
 <script>
-
     function addUser() {
         var data = {
             'username':$('#username').val(),
-            'password':$('#password').val()
+            'password':$('#password').val(),
+            'firstName' : $('#firstName').val(),
+            'lastName':$('#lastName').val(),
+            'section':$('#section').val(),
+            'registrationSemester':$('#registrationSemester').val()
         };
         $.ajax({
             type: 'POST',
             dataType: 'application/json',
-            url:  'http://localhost:3000/api/addUser',
+            url:  'http://localhost:3000/api/addUser/',
             data: data,
             dataType: "json",
             timeout: 5000,
