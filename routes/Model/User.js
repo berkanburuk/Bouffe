@@ -38,11 +38,13 @@ function getAllUsers() {
     });
 }
 function save(user) {
+    console.log('User create');
     User.create(user);
 }
 
-function getUser(){
-    return User;
+function getUser(user){
+    return this.User = user;
+    //return User;
 }
 
 module.exports = {
