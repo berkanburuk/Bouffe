@@ -1,5 +1,5 @@
 var User = require('../Model/User');
-var seq = require('../Util/DatabaseConnection').getSeq;
+var sequelize = require('../Util/DatabaseConnection').getSeq;
 
 
 
@@ -18,12 +18,9 @@ module.exports = function(app) {
             console.log(data[key]);
         }*/
         console.log(data);
-        //User.run();
-        var s = seq();
-        var user1 = s.model("user");
-        //user1.create(data);
-
-    User.save(user1,data);
+        var s = sequelize();
+        var user = s.model("user");
+        User.save(user,data);
 
         response.end('Successfully Added');
         next();
