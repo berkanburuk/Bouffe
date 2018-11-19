@@ -26,7 +26,7 @@ function createMenuFood(Sequelize,sequelize,menuFood){
         }
         */
     })
-    MenuFood.belongsTo(Menu.getMenu()); // Will add companyId to user
+    //MenuFood.belongsTo(Menu.getMenu()); // Will add companyId to user
     MenuFood.belongsTo(Food.getFood());
     MenuFood.sync({
         //force: true

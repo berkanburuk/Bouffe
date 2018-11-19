@@ -2,7 +2,7 @@ let path = require('path');
 let Beverage = require('../Model/Beverage');
 
 module.exports = function(app) {
-
+/*
     app.get('/beverage', function (request, response) {
         console.log('Beverage');
         response.sendFile(path.resolve('../../public/Pages/Beverage.html'));
@@ -29,5 +29,5 @@ module.exports = function(app) {
             response.end('Beverage Successfully Added!');
             next();
         })
-
+*/
 }

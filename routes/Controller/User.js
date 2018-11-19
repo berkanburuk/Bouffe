@@ -1,4 +1,7 @@
 var User = require('../Model/User');
+var seq = require('../Util/DatabaseConnection').getSeq;
+
+
 
 module.exports = function(app) {
 
@@ -10,11 +13,18 @@ module.exports = function(app) {
 
     app.post('/api/:addUser/', function (request, response, next) {
         var data = request.body;
+        /*
         for (var key in data) {
             console.log(data[key]);
-        }
-        console.log(User);
-        User.save(data);
+        }*/
+        console.log(data);
+        //User.run();
+        var s = seq();
+        var user1 = s.model("user");
+        //user1.create(data);
+
+    User.save(user1,data);
+
         response.end('Successfully Added');
         next();
     })

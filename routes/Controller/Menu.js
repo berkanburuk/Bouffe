@@ -11,7 +11,7 @@ module.exports = function (app) {
         app.post('/api/:addMenu/', function (request, response, next) {
             var data = request.body;
             console.log('asdas');
-            Menu.save(data);
+            console.log
             response.end('Successfully Added');
             next();
         })

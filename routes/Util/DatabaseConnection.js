@@ -14,6 +14,7 @@ let waiter = require('../Model/Waiter');
 let table = require('../Model/Table');
 let beverage = require('../Model/Beverage');
 let menuFood = require('../Model/MenuFood');
+let appointment= require('../Model/Appointment');
 
 const tableNames = {
     user:"user",
@@ -56,6 +57,7 @@ const sequelize = new Sequelize(dbConnection.database, dbConnection.username, db
 });
 
 
+
 sequelize
     .authenticate()
     .then(() => {
@@ -75,19 +77,28 @@ module.exports = {
 
 
 chair.createChair(Sequelize,sequelize,tableNames.chair);
-deviceList.createDeviceList(Sequelize,sequelize,tableNames.deviceList);
-food.createFood(Sequelize,sequelize,tableNames.food);
-menu.createMenu(Sequelize,sequelize,tableNames.menu);
-role.createRole(Sequelize,sequelize,tableNames.role);
 
+deviceList.createDeviceList(Sequelize,sequelize,tableNames.deviceList);
+console.log(deviceList.getDeviceList());
+role.createRole(Sequelize,sequelize,tableNames.role);
+console.log('Role = ' + role.getRole());
+
+
+/*
+//food.createFood(Sequelize,sequelize,tableNames.food);
+//f = new food(Sequelize,sequelize);
+//console.log(f.getFood());
+
+menu.createMenu(Sequelize,sequelize,tableNames.menu);
 
 user.createUser(Sequelize,sequelize,tableNames.user);
+
+
 table.createTable(Sequelize,sequelize,tableNames.table);
 beverage.createBeverage(Sequelize,sequelize,tableNames.beverage);
-
-
-waiter.createWaiter(Sequelize,sequelize,tableNames.waiter);
 student.createStudent(Sequelize, sequelize, tableNames.student);
+waiter.createWaiter(Sequelize,sequelize,tableNames.waiter);
+
 instructor.createInstructor(Sequelize,sequelize,tableNames.instructor);
 order.createOrder(Sequelize,sequelize,tableNames.order);
 menuFood.createMenuFood(Sequelize,sequelize,tableNames.menuFood);
@@ -97,15 +108,23 @@ menuFood.createMenuFood(Sequelize,sequelize,tableNames.menuFood);
 console.log( "order = " + order.getOrder());
 
 
+console.log("MENUUU->" + sequelize.model("menu"));
 
-module.exports = {
-    tbNames: tableNames
-};
+*/
 
+food.run(Sequelize,sequelize,tableNames.food);
+user.run(Sequelize,sequelize,tableNames.user);
 /*
 Users.findAll().then(user => {
     console.log(user)
 })
 */
+
+function getSeq(){
+    return sequelize;
+}
+module.exports = {
+    getSeq
+}
 
 
