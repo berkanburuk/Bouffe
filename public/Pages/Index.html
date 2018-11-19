@@ -18,14 +18,14 @@
     registrationSemester: <input type="text" name="registrationSemester" id="registrationSemester"><br>
 
     <input type="button" name="addUser" onclick="addUser()" value="addUser">
-
+<!--
     "<a href='http://localhost:3000/menu/'>Add Menu</a>";
     "<a href='http://localhost:3000/order/'>Order Page</a>";
 
     "<a href='http://localhost:3000/chef/'>Get Notification Page</a>";
     "<a href='http://localhost:3000/beverage/'>Add Beverage</a>";
     "<a href='http://localhost:3000/student/'>Add Beverage</a>";
-
+-->
 </body>
 </html>
 
@@ -37,8 +37,10 @@
             'firstName' : $('#firstName').val(),
             'lastName':$('#lastName').val(),
             'section':$('#section').val(),
-            'registrationSemester':$('#registrationSemester').val()
         };
+
+        data.section = parseInt($('#section').val());
+
         $.ajax({
             type: 'POST',
             dataType: 'application/json',

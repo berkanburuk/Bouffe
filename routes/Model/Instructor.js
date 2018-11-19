@@ -9,12 +9,14 @@ function createInstructor(Sequelize,sequelize,instructor) {
         }
     })
     Instructor.belongsTo(Role.getRole());
+    /*
     Instructor.belongsTo(User.getUser(),{
         onUpdate: 'cascade',
         keyType: Sequelize.STRING,
         foreignKey: 'username',
         targetKey: 'username'
     });
+    */
 
     Instructor.sync({
         //force:true

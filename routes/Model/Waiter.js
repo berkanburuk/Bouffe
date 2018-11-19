@@ -1,6 +1,6 @@
 var Waiter;
 var Role = require('./Role');
-var User = require('./User');
+var Student = require('./Student');
 function createWaiter(Sequelize, sequelize, waiter) {
     Waiter = sequelize.define(waiter, {
         id: {
@@ -14,15 +14,15 @@ function createWaiter(Sequelize, sequelize, waiter) {
     });
     //Waiter.belongsTo(Role.getRole(),{foreignKey: 'fk_WaiterRoleName', targetKey: 'id'});
     Waiter.belongsTo(Role.getRole());
-
-        Waiter.belongsTo(User.getUser(),{
-            onUpdate: 'cascade',
+/*
+        Waiter.belongsTo(Student.getStudent(),{
+            //onUpdate: 'cascade',
             keyType: Sequelize.STRING,
             foreignKey: 'username',
             targetKey: 'username'
         });
 
-
+*/
     Waiter.sync({
         //force:true
     }).then(() => {

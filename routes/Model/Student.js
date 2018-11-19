@@ -25,12 +25,14 @@ function createStudent(Sequelize, sequelize, student) {
 
     });
     Student.belongsTo(Role.getRole());
+    /*
     Student.belongsTo(User.getUser(),{
-        onUpdate: 'cascade',
+        //onUpdate: 'cascade',
         keyType: Sequelize.STRING,
         foreignKey: 'username',
         targetKey: 'username'
     });
+    */
     Student.sync({
         //force: true
     })
@@ -53,10 +55,12 @@ function getAllStudents() {
 }
 
 function getAllStudents2() {
+    /*
     console.log("Student -> " +Student);
         Student.findAll().then(function (username) {
             console.log(username[0].get('username'));
         });
+        */
 }
 
 function getStudentwww() {
