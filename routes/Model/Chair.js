@@ -1,30 +1,46 @@
-var Chair;
+var ChairT;
 
-function createChair(Sequelize,sequelize,chair) {
-    Chair = sequelize.define(chair,{
-        id: {
-            primaryKey: true,
-            autoIncrement: true,
-            type: Sequelize.INTEGER
-        },
-        tableId:{
-            type:Sequelize.INTEGER
-        },
-        name: {
-            type: Sequelize.STRING
-        },
-        status: {
-            type: Sequelize.INTEGER
-        },
-        position: {
-            type: Sequelize.INTEGER
+class Chair{
+    createChair(Sequelize,sequelize,chair) {
+        ChairT = sequelize.define(chair,{
+            id: {
+                primaryKey: true,
+                autoIncrement: true,
+                type: Sequelize.INTEGER
+            },
+            tableId:{
+                type:Sequelize.INTEGER
+            },
+            name: {
+                type: Sequelize.STRING
+            },
+            status: {
+                type: Sequelize.INTEGER
+            },
+            position: {
+                type: Sequelize.INTEGER
+            }
+        })
+        ChairT.sync({
+            //force:true
+        }).then(()=>{
+            console.log("Chair Table is created!")
+        });
+    }
+
+    constructor(Sequelize, sequelize, user) {
+        // Check if the instance exists or is null
+        if (!this.singletonInstance) {
+            ChairT = this.createUser(Sequelize, sequelize, user);
+            this.singletonInstance = UserTable;
+            console.log("Singleton Class Created!");
+        } else {
+            ChairT = sequelize.model("user");
+            console.log("Only one Food Class can be created!");
         }
-    })
-    Chair.sync({
-        //force:true
-    }).then(()=>{
-        console.log("Chair Table is created!")
-    });
+
+    }
+
 }
 
 function save(chair){
@@ -46,5 +62,5 @@ function getChair(){
 
 
 module.exports = {
-    createChair,getChair,save
+    Chair,getChair,save
 }

@@ -109,11 +109,11 @@ console.log( "order = " + order.getOrder());
 
 
 console.log("MENUUU->" + sequelize.model("menu"));
-
 */
 
 food.run(Sequelize,sequelize,tableNames.food);
 user.run(Sequelize,sequelize,tableNames.user);
+
 /*
 Users.findAll().then(user => {
     console.log(user)

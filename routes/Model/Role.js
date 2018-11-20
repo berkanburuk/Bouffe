@@ -1,25 +1,27 @@
 var Role;
 
-function createRole(Sequelize,sequelize,role) {
-    Role = sequelize.define(role, {
-        id: {
-            primaryKey: true,
-            autoIncrement: true,
-            type: Sequelize.INTEGER
-        },/*
+class Role{
+    createRole(Sequelize,sequelize,role) {
+        Role = sequelize.define(role, {
+            id: {
+                primaryKey: true,
+                autoIncrement: true,
+                type: Sequelize.INTEGER
+            }, /*
         userName:{
             type:Sequelize.STRING,
             allowNull:false
         }*/
-    });
-    Role.sync({
-        //force:true
-    })
-        .then(()=>{
-            console.log("Role Table is created!");
         });
-
+        Role.sync({
+            //force:true
+        })
+            .then(() => {
+                console.log("Role Table is created!");
+            });
+    }
 }
+
 function m (){
 Role.findAll({
     attributes: ['image', 'desc', 'price', 'stock'],
@@ -53,5 +55,5 @@ function getRole(){
 }
 
 module.exports = {
-    createRole,getRole
+    getRole,Role
 }
