@@ -1,7 +1,8 @@
 var FoodTable;
+
 class Food {
 
-    createFood(Sequelize,sequelize,food){
+    createFood(Sequelize, sequelize, food) {
         //Creates the Content of Form
         let FoodTable = sequelize.define(food, {
             id: {
@@ -33,16 +34,16 @@ class Food {
         FoodTable.sync({
             //force: true
         })
-            .then(()=>{
+            .then(() => {
                 console.log("Food Table is created!");
             });
         return FoodTable;
     }
 
-    constructor(Sequelize,sequelize,food) {
+    constructor(Sequelize, sequelize, food) {
         // Check if the instance exists or is null
         if (!this.singletonInstance) {
-            FoodTable = this.createFood(Sequelize,sequelize,food);
+            FoodTable = this.createFood(Sequelize, sequelize, food);
             this.singletonInstance = FoodTable;
             console.log("Singleton Class Created!");
         } else {
@@ -52,9 +53,6 @@ class Food {
 
     }
 
-
-
-
     findByName() {
         FoodTable.findOne({
             name: 'deneme'
@@ -63,36 +61,39 @@ class Food {
                 console.log('Found user: ${user}');
             })
     }
-        getAllFood() {
-            FoodTable.findAll().then(function (food) {
+
+    getAllFood() {
+        FoodTable.findAll().then(function (food) {
             console.log(food[0].get('name'));
         });
     }
-    save(food){
-        //FoodTable.create(food);
-        FoodTable.create({
-            type:'asd',
-            name:'asd',
-            description: 'asd',
-            available: true,
-            price:10
-        }).then(() => {
-            console.log("Food is Added!");
-        })
-    }
-    getFoodTable(){
-        return FoodTable;
-    }
+
 }
 
-function run(Sequelize,sequelize,food){
-    var f = new Food(Sequelize,sequelize,food);
+function run(Sequelize, sequelize, food) {
+    var f = new Food(Sequelize, sequelize, food);
     console.log("Food->" + f);
     console.log("Food " + f.getFoodTable());
     let saveTable = f.save('');
+}
 
+function save(food) {
+    //FoodTable.create(food);
+    FoodTable.create({
+        type: 'asd',
+        name: 'asd',
+        description: 'asd',
+        available: true,
+        price: 10
+    }).then(() => {
+        console.log("Food is Added!");
+    })
+}
+
+function getFoodTable() {
+    return FoodTable;
 }
 
 module.exports = {
-    run
+    run,Food,save
 }

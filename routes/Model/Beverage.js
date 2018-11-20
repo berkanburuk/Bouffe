@@ -1,31 +1,46 @@
-var Beverage;
+var BeverageT;
 
-function createBeverage(Sequelize,sequelize,beverage) {
-    Beverage = sequelize.define(beverage,{
-        id: {
-            primaryKey: true,
-            autoIncrement: true,
-            type: Sequelize.INTEGER
-        },
-        name: {
-            type: Sequelize.STRING
-        },
-        available: {
-            type: Sequelize.BOOLEAN
-        },
-        price: {
-            type: Sequelize.DOUBLE
+class Beverage {
+    createBeverage(Sequelize, sequelize, beverage) {
+        BeverageT = sequelize.define(beverage, {
+            id: {
+                primaryKey: true,
+                autoIncrement: true,
+                type: Sequelize.INTEGER
+            },
+            name: {
+                type: Sequelize.STRING
+            },
+            available: {
+                type: Sequelize.BOOLEAN
+            },
+            price: {
+                type: Sequelize.DOUBLE
+            }
+        })
+
+        BeverageT.sync({
+            //force:true
+        }).then(() => {
+            console.log("Beverage Table is created!")
+        });
+    }
+
+    constructor(Sequelize, sequelize, user) {
+        // Check if the instance exists or is null
+        if (!this.singletonInstance) {
+            BeverageT = this.createUser(Sequelize, sequelize, user);
+            this.singletonInstance = UserTable;
+            console.log("Singleton Class Created!");
+        } else {
+            BeverageT = sequelize.model("user");
+            console.log("Only one Food Class can be created!");
         }
-    })
 
-    Beverage.sync({
-        //force:true
-    }).then(()=>{
-        console.log("Beverage Table is created!")
-    });
+    }
 }
 
-function save(beverage){
+function save(beverage) {
     console.log("Function Of Beverage - Save");
     Beverage.create(beverage)
         .then(newUser => {
@@ -39,11 +54,11 @@ function getAllBeverages() {
     });
 }
 
-function getBeverage(){
+function getBeverage() {
     return Beverage;
 }
 
 
 module.exports = {
-    createBeverage,save,getBeverage,getAllBeverages
+    Beverage, save, getBeverage, getAllBeverages
 }
