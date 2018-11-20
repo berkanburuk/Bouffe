@@ -2,46 +2,65 @@ var Student;
 var Role = require('./Role');
 var User = require('./User');
 
-function createStudent(Sequelize, sequelize, student) {
+class StudentModel{
+    createStudent(Sequelize, sequelize, student) {
 
-    Student = sequelize.define(student, {
-        bilkentId: {
-            type: Sequelize.INTEGER
-        },
-        instructorId:{
-            type: Sequelize.INTEGER
-        },
-        instructorId2:{
-            type: Sequelize.INTEGER
-        },
-        section: {
-            type: Sequelize.STRING,
-            allowNull: false
-        },
-        starsFilePath: {
-            type: Sequelize.STRING,
-            allowNull: false
-        }
+        Student = sequelize.define(student, {
+            bilkentId: {
+                type: Sequelize.INTEGER
+            },
+            instructorId:{
+                type: Sequelize.INTEGER
+            },
+            instructorId2:{
+                type: Sequelize.INTEGER
+            },
+            section: {
+                type: Sequelize.STRING,
+                allowNull: false
+            },
+            starsFilePath: {
+                type: Sequelize.STRING,
+                allowNull: false
+            }
 
-    });
-    Student.belongsTo(Role.getRole());
-    Student.belongsTo(User.getUser(),{
-        onUpdate: 'cascade',
-        keyType: Sequelize.STRING,
-        foreignKey: 'username',
-        targetKey: 'username'
-    });
-    Student.sync({
-        //force: true
-    })
-        .then(() => {
-            console.log("Student Table is created!");
-            getAllStudents2();
         });
+        Student.belongsTo(Role.getRole());
+        /*
+        Student.belongsTo(User.getUser(),{
+            //onUpdate: 'cascade',
+            keyType: Sequelize.STRING,
+            foreignKey: 'username',
+            targetKey: 'username'
+        });
+        */
+        Student.sync({
+            //force: true
+        })
+            .then(() => {
+                console.log("Student Table is created!");
+                getAllStudents2();
+            });
+    }
 
+    constructor(Sequelize, sequelize, user) {
+        // Check if the instance exists or is null
+        if (!this.singletonInstance) {
+            Student = this.createStudent(Sequelize, sequelize, user);
+            this.singletonInstance = Student;
+            console.log("Singleton Class_Stu Created!");
+        } else {
+            Student = sequelize.model("student");
+            console.log("Only one Student Class can be created!");
+        }
+    }
 }
 
-
+function run(Sequelize, sequelize, user) {
+    var f = new StudentModel(Sequelize, sequelize, user);
+    console.log("Student : " + f);
+    // console.log(f.getUserTable())
+}
 function getStudent() {
     return Student;
 }
@@ -53,10 +72,12 @@ function getAllStudents() {
 }
 
 function getAllStudents2() {
+    /*
     console.log("Student -> " +Student);
         Student.findAll().then(function (username) {
             console.log(username[0].get('username'));
         });
+        */
 }
 
 function getStudentwww() {
@@ -106,5 +127,5 @@ function join(){
 }
 
 module.exports = {
-    createStudent, getStudent, findByName, save, getAllStudents,getAllStudents2,Student
+    run, StudentModel, getStudent, findByName, save, getAllStudents,getAllStudents2,Student
 }
