@@ -11,6 +11,7 @@ module.exports = function (app) {
 
 //Post - Menu
         app.post('/api/addInstructor', function (request, response, next) {
+            /*
             //console.log(request.body.cultureName);
             console.log('Instructor -> ');
             var data = request.body;
@@ -27,6 +28,7 @@ module.exports = function (app) {
 
             response.end(JSON.stringify(data));
             next();
+            */
         });
 
 
