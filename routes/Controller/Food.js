@@ -1,4 +1,5 @@
     var Food = require('../Model/Food');
+    var sequelize = require('../Util/DatabaseConnection').getSeq;
 
     module.exports = function(app){
         app.get('/food', function (request, response) {

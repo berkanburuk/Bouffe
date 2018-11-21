@@ -1,8 +1,9 @@
-var BeverageT;
+var Beverage;
+var sequ = require('../Util/DatabaseConnection').getSeq;
 
-class Beverage {
+class BeverageModel {
     createBeverage(Sequelize, sequelize, beverage) {
-        BeverageT = sequelize.define(beverage, {
+        Beverage = sequelize.define(beverage, {
             id: {
                 primaryKey: true,
                 autoIncrement: true,
@@ -19,46 +20,54 @@ class Beverage {
             }
         })
 
-        BeverageT.sync({
+        Beverage.sync({
             //force:true
         }).then(() => {
             console.log("Beverage Table is created!")
         });
+        return Beverage;
     }
 
     constructor(Sequelize, sequelize, user) {
         // Check if the instance exists or is null
         if (!this.singletonInstance) {
-            BeverageT = this.createUser(Sequelize, sequelize, user);
-            this.singletonInstance = UserTable;
-            console.log("Singleton Class Created!");
+            Beverage = this.createBeverage(Sequelize, sequelize, user);
+            this.singletonInstance = Beverage;
+            console.log("Singleton Beverage Created!" + Beverage);
         } else {
-            BeverageT = sequelize.model("user");
-            console.log("Only one Food Class can be created!");
+            Beverage = sequelize.model("beverage");
+            console.log("Only one Beverage Class can be created!");
         }
 
     }
 }
 
-function save(beverage) {
-    console.log("Function Of Beverage - Save");
-    Beverage.create(beverage)
+function getBeverageModel(){
+    let s = sequelize();
+    let sequ = s.model("beverage");
+    return mBeverage;
+}
+
+function save(data) {
+    let mBeverage = getInstructorModel();
+    mBeverage.create(data)
         .then(newUser => {
-            console.log(newUser.name);
+            console.log(newUser.id);
         });
 }
 
-function getAllBeverages() {
+function getBeverages() {
     Beverage.findAll().then(function (beverage) {
         console.log(beverage[0].get('name'));
     });
 }
 
-function getBeverage() {
-    return Beverage;
+function run(Sequelize, sequelize, beverage) {
+    var f = new BeverageModel(Sequelize, sequelize, beverage);
+    console.log("Beverage : " + f);
+  //  console.log(f.getUserTable())
 }
 
-
 module.exports = {
-    Beverage, save, getBeverage, getAllBeverages
+   run, BeverageModel, save, getBeverages
 }

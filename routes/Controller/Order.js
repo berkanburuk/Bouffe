@@ -4,7 +4,6 @@ var notifications = "";
 
 
 module.exports = function (app) {
-
     app.get('/order', function (request, response) {
         console.log('Order');
         response.sendFile(path.resolve('../../public/Pages/Order.html'));

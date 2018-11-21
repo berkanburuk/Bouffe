@@ -2,7 +2,7 @@ let path = require('path');
 let Beverage = require('../Model/Beverage');
 
 module.exports = function(app) {
-/*
+
     app.get('/beverage', function (request, response) {
         console.log('Beverage');
         response.sendFile(path.resolve('../../public/Pages/Beverage.html'));
@@ -10,7 +10,7 @@ module.exports = function(app) {
     }),
         app.post('/api/:addBeverage/', function (request, response, next) {
             var data = request.body;
-    console.log("BURADAAA");
+    console.log("Beverage Controller");
 
             var dateObj = new Date();
             var month = dateObj.getUTCMonth() + 1; //months from 1-12
@@ -29,5 +29,5 @@ module.exports = function(app) {
             response.end('Beverage Successfully Added!');
             next();
         })
-*/
+
 }

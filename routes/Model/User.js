@@ -1,9 +1,10 @@
-var UserTable;
+var User;
+var sequ = require('../Util/DatabaseConnection').getSeq;
 
 class UserModel {
     createUser(Sequelize, sequelize, user) {
         //Creates the Content of Form
-        UserTable = sequelize.define(user, {
+        User = sequelize.define(user, {
             username: {
                 primaryKey: true,
                 type: Sequelize.STRING
@@ -19,30 +20,27 @@ class UserModel {
                 type: Sequelize.STRING,
                 //allowNull:false
             },
-            section: {
-                type: Sequelize.INTEGER
-            },
             registrationSemester: {
                 type: Sequelize.DATE,
                 defaultValue: Sequelize.NOW
             }
         });
-        UserTable.sync({
+        User.sync({
             //force:true
         }).then(() => {
             console.log("User table is created!");
         });
-        return UserTable;
+        return User;
     }
 
     constructor(Sequelize, sequelize, user) {
         // Check if the instance exists or is null
         if (!this.singletonInstance) {
-            UserTable = this.createUser(Sequelize, sequelize, user);
-            this.singletonInstance = UserTable;
+            User = this.createUser(Sequelize, sequelize, user);
+            this.singletonInstance = User;
             console.log("Singleton Class Created!");
         } else {
-            UserTable = sequelize.model("user");
+            User = sequelize.model("user");
             console.log("Only one Food Class can be created!");
         }
     }
@@ -50,14 +48,13 @@ class UserModel {
 }
 
 function run(Sequelize, sequelize, user) {
-    var f = new User(Sequelize, sequelize, user);
+    var f = new UserModel(Sequelize, sequelize, user);
     console.log("User : " + f);
-    console.log(f.getUserTable())
-
+   // console.log(f.getUserTable())
 }
 
 function getByName(_name) {
-    UserTable.findOne({
+    User.findOne({
         name: _name
     })
         .then(user => {
@@ -66,16 +63,26 @@ function getByName(_name) {
 }
 
 function getUsers() {
-    UserTable.findAll().then(function (food) {
-        console.log(food[0].get('name'));
+    User.findAll().then(function (users) {
+        console.log(users[0].get('name'));
     });
 }
 
-function save(user, data) {
+
+function save(data) {
+    //let user = getUserModel();
     user.create(data);
 }
 
+function getUserModel(){
+    let s = sequ();
+    let mUser = s.model("user");
+    return mUser;
+}
+function getUser(){
+    return User;
+}
 
 module.exports = {
-    run, UserModel, save, getUsers, getByName
+    run, UserModel, save, getUsers, getByName,getUserModel,getUser
 }

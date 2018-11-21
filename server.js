@@ -16,13 +16,13 @@ app.get('/', function (request, response) {
     response.sendFile(__dirname + '/public/Pages/Index.html');
 });
 
-var user = require('./routes/Controller/User')(app);
-var menu = require('./routes/Controller/Menu')(app);
-var order = require('./routes/Controller/Order')(app);
-var instructor = require('./routes/Controller/Instructor')(app);
-var chef = require('./routes/Controller/Chef')(app);
-var beverage = require('./routes/Controller/Beverage')(app);
-var student = require('./routes/Controller/Student')(app);
+var userServer = require('./routes/Controller/User')(app);
+var menuServer = require('./routes/Controller/Menu')(app);
+var orderServer = require('./routes/Controller/Order')(app);
+var instructorServer = require('./routes/Controller/Instructor')(app);
+var chefServer = require('./routes/Controller/Chef')(app);
+var beverageServer = require('./routes/Controller/Beverage')(app);
+var studentServer = require('./routes/Controller/Student')(app);
 
 
 app.use('/', router);

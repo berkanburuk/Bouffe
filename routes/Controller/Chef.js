@@ -1,5 +1,5 @@
 let path = require('path');
-var notifications = "Deneme Order";
+var notifications = "";
 
 module.exports = function (app) {
 
