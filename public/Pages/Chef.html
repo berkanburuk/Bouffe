@@ -18,7 +18,7 @@ Get Notifications : <input type="button" name="buton" onclick="getFood()" value=
             $.ajax({
                 type: 'GET',
                 dataType: 'application/json',
-                url: 'http://localhost:3000/api/getNotification/' + $('#username').val(),
+                url: 'http://cemreberkdemirci.com:3000/api/getNotification/' + $('#username').val(),
                 timeout: 5000,
                 success: function(data, textStatus ){
                     alert('request successful');
