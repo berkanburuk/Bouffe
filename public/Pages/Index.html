@@ -18,12 +18,10 @@
     Last name: <input type="text" name="lastName" id="lastName"><br><br>
 </div>
 <div><select name="roles" id="roles">
-    <option value="admin"> Admin
-    <option value="student" selected> Student
-    <option value="chef"> Chef
-    <option value="matreTable"> Matre de Table
-
-    <option value="instructor"> Instructor
+    <option value="1"> Admin
+    <option value="2" selected> Student
+    <option value="3"> Chef
+    <option value="4"> Matre de Table
     <option value="dean"> Dean of Students
 </select>
 
@@ -40,6 +38,8 @@
     <table id='my_file_output'></table>
 </div>
 <input type="button" name="addUser" onclick="addUser()" value="addUser">
+
+<input type="button" name="addUser2" onclick="addUser2()" value="addUserNonStudent">
 <!--
     "<a href='http://localhost:3000/menu/'>Add Menu</a>";
     "<a href='http://localhost:3000/order/'>Order Page</a>";
@@ -73,7 +73,7 @@
         for (var i = 1; i < 5; i++) {
             console.log(stuInfoArr[i]);
             stuInfoArr[i].currentRole = document.getElementById("stuRole"+i).value;
-            var data = JSON.stringify(stuInfoArr[i]);
+            var data = "{ users: [ "+JSON.stringify(stuInfoArr[i])+"]}";
             /* var data = {
          'username': $('#username').val(),
          'password': $('#password').val(),
@@ -140,7 +140,7 @@
                         'lastName': data[indexR][1],
                         'roleId': 1,
                         'bilkentId': data[indexR][3],
-                        'currentRole': undefined
+                        'currentRole': 5
                     }
 
                     stuInfoArr.push(myData);
@@ -156,7 +156,31 @@
         console.log(stuInfoArr.length);
     }
 
+    function addUser2() {
+        var data = {
+            'username':$('#username').val(),
+            'password':$('#password').val(),
+            'firstName' : $('#firstName').val(),
+            'lastName':$('#lastName').val(),
+            'roleId': document.getElementById("roles").value,
 
+        };
+        data.section = parseInt($('#section').val());
+        $.ajax({
+            type: 'POST',
+            dataType: 'application/json',
+            url:  'http://localhost:3000/api/addUser2/',
+            data: data,
+            timeout: 5000,
+            success: function(data, textStatus ){
+                alert('request successful');
+                console.log(data);
+            },
+            fail: function(xhr, textStatus, errorThrown){
+                alert('request failed');
+            }
+        });
+    }
     /*
      function myf() {
         $.ajax({

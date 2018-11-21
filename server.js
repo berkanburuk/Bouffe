@@ -16,16 +16,18 @@ app.get('/', function (request, response) {
     response.sendFile(__dirname + '/public/Pages/Index.html');
 });
 
-var userServer = require('./routes/Controller/User')(app);
-/*
-var menuServer = require('./routes/Controller/Menu')(app);
-var orderServer = require('./routes/Controller/Order')(app);
-var instructorServer = require('./routes/Controller/Instructor')(app);
-var chefServer = require('./routes/Controller/Chef')(app);
+//var appointmentServer = require('./routes/Controller/Appointment')(app);
 var beverageServer = require('./routes/Controller/Beverage')(app);
+var chefController = require('./routes/Controller/Chef')(app);
+var foodController = require('./routes/Controller/Food')(app);
+var instructorServer = require('./routes/Controller/Instructor')(app);
+var menuController =  require('./routes/Controller/Menu')(app);
+var orderController = require('./routes/Controller/Order')(app);
 var studentServer = require('./routes/Controller/Student')(app);
+var userServer = require('./routes/Controller/User')(app);
+var waiterServer =require('./routes/Controller/Waiter')(app);
 
-*/
+
 app.use('/', router);
 
 // Turn on that server!

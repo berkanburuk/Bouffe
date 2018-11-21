@@ -23,6 +23,12 @@ class UserModel {
             registrationSemester: {
                 type: Sequelize.DATE,
                 defaultValue: Sequelize.NOW
+            }, roleId: {
+                type: Sequelize.INTEGER,
+                references: {
+                    model: 'roles', // name of Target model
+                    key: 'id' // key in Target model that we're referencing
+                }
             }
         });
         User.sync({
