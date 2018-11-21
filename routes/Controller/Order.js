@@ -1,9 +1,21 @@
 let path = require('path');
-var Order = require('../Model/Order');
+var sequelize = require('../Util/DatabaseConnection').getSeq;
 var notifications = "";
 
+function getUsers(ordersController) {
+    var d;
+    var s = sequelize();
+    var ordersController = s.model("order");
+    usersController.findAll({ raw: true }).then(result =>{
+        d=result;
+    })
+    return d;
+}
 
 module.exports = function (app) {
+    var s = sequelize();
+    var ordersController = s.model("order");
+
     app.get('/order', function (request, response) {
         console.log('Order');
         response.sendFile(path.resolve('../../public/Pages/Order.html'));
@@ -27,7 +39,15 @@ module.exports = function (app) {
         app.get('/api/getNotification', function (request, response,next) {
                 response.end(notifications + '\n');
                 next();
-            })
+            }),
+
+    app.get('/api/:getAllOrders', function (req, res, next) {
+        console.log("Method Type = "+req.method);
+        var d = getUsers(ordersController);
+        res.end(d);
+        next();
+    })
+
 
 }
 

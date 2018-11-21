@@ -1,5 +1,5 @@
 let path = require('path');
-let Beverage = require('../Model/Beverage');
+var sequelize = require('../Util/DatabaseConnection').getSeq;
 
 module.exports = function(app) {
 
@@ -25,7 +25,7 @@ module.exports = function(app) {
             data.createdAt =newdate;
             data.updatedAt =newdate;
 
-            Beverage.save(data);
+            //Beverage.save(data);
             response.end('Beverage Successfully Added!');
             next();
         })

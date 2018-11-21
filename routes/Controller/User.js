@@ -1,19 +1,24 @@
 let path = require('path');
 var sequelize = require('../Util/DatabaseConnection').getSeq;
 
-function getUsers(User) {
 
-    User.findAndCountAll().then(result =>{
-       console.log(result.count);
-       console.log("User " + result.rows);
 
-    });
 
+function getUsers(usersController) {
+    var d;
+    usersController.findAll({ raw: true }).then(result =>{
+        d=result;
+    })
+    console.log(d);
+    return d;
 }
 
 module.exports = function(app) {
     var s = sequelize();
     var usersController = s.model("user");
+    var studentsController = s.model("student");
+    var instructorController = s.model("instructor");
+    var chefController = s.model("chef");
 
     app.get('/user', function (request, response) {
         console.log('Menu');
@@ -27,8 +32,57 @@ module.exports = function(app) {
         for (var key in data) {
             console.log(data[key]);
         }*/
-        console.log(data);
+console.log("DATAAAA " + data['users']);
+        console.log("DATAAAA" + data);
+
+        var st = {};
+        st.bilkentId = data.bilkentId;
+        st.username = data.username;
+        data.courseId= 1;
+        st.courseId = data.courseId;
+        st.roleId = data.roleId;
+        st.currentRoleId = data.currentRoleId;
+        console.log("St" + st);
+
+        var us = {};
+        us.username = data.username;
+        us.password = data.password;
+        us.firstName = data.firstName;
+        us.lastName = data.lastName;
+        us.roleId = parseInt(data.roleId);
+    console.log("Us" + us);
+        usersController.create(us);
+        studentsController.create(st);
+
+
+        //let user = User.getUserModel();
+
+        response.end('Successfully Added');
+        next();
+    })
+
+
+    app.post('/api/:addUser2/', function (request, response, next) {
+        var data = request.body;
+
         usersController.create(data);
+
+        if(data.roleId == 1){
+            var newData= {};
+            newData.username = data.username;
+            newData.roleId=data.roleId;
+            console.log(newData);
+            instructorController.create(newData);
+        }
+        else if(data.roleId == 3){
+            var newData= {};
+            newData.username = data.username;
+            newData.roleId=data.roleId;
+            newData.approve = true;
+            console.log(newData);
+            chefController.create(newData);
+        }
+
         //let user = User.getUserModel();
 
         response.end('Successfully Added');
@@ -37,10 +91,9 @@ module.exports = function(app) {
 
     //checkUser
     app.get('/api/:getAllUsers', function (req, res, next) {
-        console.log(req.method);
-        var u = getUsers(usersController);
-        console.log(u);
-        res.end(u);
+        //console.log("Method Type = "+req.method);
+            var d = getUsers(usersController);
+            res.end(d);
         next();
     })
 
@@ -53,8 +106,6 @@ module.exports = function(app) {
         res.end('Hello' + '\n');
         next();
     })
-
-
 
 }
 

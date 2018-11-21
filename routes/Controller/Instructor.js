@@ -1,5 +1,5 @@
 let path = require('path');
-const Instructor = require('../Model/Instructor');
+var sequelize = require('../Util/DatabaseConnection').getSeq;
 
 module.exports = function (app) {
 

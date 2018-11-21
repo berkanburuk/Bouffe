@@ -1,4 +1,5 @@
-var Chair = require('../Model/Chair');
+let path = require('path');
+var sequelize = require('../Util/DatabaseConnection').getSeq;
 
 module.exports = function(app){
     app.get('/chair', function (request, response) {

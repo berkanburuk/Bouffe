@@ -1,4 +1,5 @@
 let path = require('path');
+var sequelize = require('../Util/DatabaseConnection').getSeq;
 var notifications = "";
 
 module.exports = function (app) {
