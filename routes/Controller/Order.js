@@ -1,5 +1,5 @@
 let path = require('path');
-var Order = require('../Model/Order');
+var sequelize = require('../Util/DatabaseConnection').getSeq;
 var notifications = "";
 
 

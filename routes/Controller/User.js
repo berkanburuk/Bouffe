@@ -1,26 +1,26 @@
 let path = require('path');
 var sequelize = require('../Util/DatabaseConnection').getSeq;
 
+
+
+
 function getUsers(User) {
-
-    User.findAndCountAll().then(result =>{
+    User.findAndCountAll().then(function (result) {
+        //console.log(result.count);
         var u = {};
-       console.log(result.count);
-       console.log("User " + result.rows);
-       for(var i=0; i<result.count;i++){
-           u.username = result[i].get('username');
-           u.firstName = result[i].get('firstName');
-           u.lastName = result[i].get('lastName');
-       }
-       return u;
 
+        for (var i=0;i<result.count;i++){
+
+        }
+        console.log(result[0].get('username'));
     });
-
 }
+
 
 module.exports = function(app) {
     var s = sequelize();
     var usersController = s.model("user");
+    var studentsController = s.model("student");
 
     app.get('/user', function (request, response) {
         console.log('Menu');
@@ -30,12 +30,23 @@ module.exports = function(app) {
 
     app.post('/api/:addUser/', function (request, response, next) {
         var data = request.body;
+        console.log("XML File"+data);
         /*
         for (var key in data) {
             console.log(data[key]);
         }*/
-        console.log(data);
+
+        var st = {};
+        st.bilkentId = data.bilkentId;
+        st.username = data.username;
+        data.courseId= 1;
+        st.courseId = data.courseId;
+        st.roleId = data.roleId;
+        st.currentRoleId = data.currentRoleId;
+
+
         usersController.create(data);
+        studentsController.create(data);
         //let user = User.getUserModel();
 
         response.end('Successfully Added');
@@ -44,7 +55,7 @@ module.exports = function(app) {
 
     //checkUser
     app.get('/api/:getAllUsers', function (req, res, next) {
-        console.log(req.method);
+        console.log("Method TYPEE = "+req.method);
         var u = getUsers(usersController);
         console.log(u);
         res.end(u);
@@ -60,8 +71,6 @@ module.exports = function(app) {
         res.end('Hello' + '\n');
         next();
     })
-
-
 
 }
 

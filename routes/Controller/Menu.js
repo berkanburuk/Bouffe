@@ -1,5 +1,5 @@
 let path = require('path');
-var Menu = require('../Model/Menu');
+var sequelize = require('../Util/DatabaseConnection').getSeq;
 
 module.exports = function (app) {
 

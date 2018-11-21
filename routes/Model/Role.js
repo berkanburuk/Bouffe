@@ -36,37 +36,38 @@ class RoleModel {
 }
 
 function createSimpleRoleData(){
-    /*
+
     Role.create({
-            id:0,
+            id:1,
             roleName:'admin'
         });
-    Role.create({
-        id:1,
-        roleName:'student'
-    });
-    Role.create({
+        Role.create({
         id:2,
-        roleName:'chef'
-    });Role.create({
+        roleName:'student'
+        });
+        Role.create({
         id:3,
-        roleName:'matre'
-    });
-    Role.create({
+        roleName:'chef'
+        });
+        Role.create({
         id:4,
+        roleName:'matre'
+        });
+    Role.create({
+        id:5,
         roleName:'waiter'
     });
     Role.create({
-        id:5,
+        id:6,
         roleName:'bartender'
     });
-    */
+
 }
 
 function run(Sequelize, sequelize, role) {
     var f = new RoleModel(Sequelize, sequelize, role);
     console.log("Role Cons: " + f);
-    //createSimpleRoleData();
+    createSimpleRoleData();
     // console.log(f.getUserTable())
 }
 

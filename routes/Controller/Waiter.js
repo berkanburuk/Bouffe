@@ -1,4 +1,5 @@
-var Waiter = require('../Model/Waiter');
+let path = require('path');
+var sequelize = require('../Util/DatabaseConnection').getSeq;
 
 module.exports = function(app){
     app.get('/waiter', function (request, response) {

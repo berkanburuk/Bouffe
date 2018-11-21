@@ -17,6 +17,7 @@ app.get('/', function (request, response) {
 });
 
 var userServer = require('./routes/Controller/User')(app);
+/*
 var menuServer = require('./routes/Controller/Menu')(app);
 var orderServer = require('./routes/Controller/Order')(app);
 var instructorServer = require('./routes/Controller/Instructor')(app);
@@ -24,7 +25,7 @@ var chefServer = require('./routes/Controller/Chef')(app);
 var beverageServer = require('./routes/Controller/Beverage')(app);
 var studentServer = require('./routes/Controller/Student')(app);
 
-
+*/
 app.use('/', router);
 
 // Turn on that server!
