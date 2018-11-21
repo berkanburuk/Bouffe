@@ -92,8 +92,14 @@ console.log("DATAAAA " + data['users']);
     //checkUser
     app.get('/api/:getAllUsers', function (req, res, next) {
         //console.log("Method Type = "+req.method);
-            var d = getUsers(usersController);
-            res.end(d);
+            //var d = getUsers(usersController);
+        usersController.findAll({ raw: true }).then(result =>{
+            console.log(result);
+            res.end(result);
+        }).catch(err=>{
+            res.end(err);
+        })
+
         next();
     })
 

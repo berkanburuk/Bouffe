@@ -4,10 +4,7 @@
 
 
     function getFoods(foodsController) {
-        var d;
-        foodsController.findAll({ raw: true }).then(result =>{
-                d = result;
-        })
+
         /*
         foodsController.findAndCountAll()
             .then((data) => {
@@ -46,9 +43,12 @@
 
         }
 
-        app.get('/api/:getAllFoods', function (req, res, next) {
-            var d = getFoods(foodsController);
-            res.end(d);
+        app.get('/api/getAllFoods', function (req, res, next) {
+            foodsController.findAll({ raw: true }).then(result =>{
+                console.log(result);
+                //res.status(200).send({ data: result });
+                res.end(result)
+            });
             next();
         })
 
