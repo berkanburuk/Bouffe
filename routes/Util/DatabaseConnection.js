@@ -74,27 +74,27 @@ module.exports = {
 */
 
 
-chair.createChair(Sequelize,sequelize,tableNames.chair);
-deviceList.createDeviceList(Sequelize,sequelize,tableNames.deviceList);
-food.createFood(Sequelize,sequelize,tableNames.food);
-menu.createMenu(Sequelize,sequelize,tableNames.menu);
-role.createRole(Sequelize,sequelize,tableNames.role);
+chair.run(Sequelize,sequelize,tableNames.chair);
+//deviceList.run(Sequelize,sequelize,tableNames.deviceList);
+food.run(Sequelize,sequelize,tableNames.food);
+menu.run(Sequelize,sequelize,tableNames.menu);
+role.run(Sequelize,sequelize,tableNames.role);
 
 
-user.createUser(Sequelize,sequelize,tableNames.user);
-table.createTable(Sequelize,sequelize,tableNames.table);
-beverage.createBeverage(Sequelize,sequelize,tableNames.beverage);
+user.run(Sequelize,sequelize,tableNames.user);
+//table.run(Sequelize,sequelize,tableNames.table);
+beverage.run(Sequelize,sequelize,tableNames.beverage);
 
 
-waiter.createWaiter(Sequelize,sequelize,tableNames.waiter);
-student.createStudent(Sequelize, sequelize, tableNames.student);
-instructor.createInstructor(Sequelize,sequelize,tableNames.instructor);
-order.createOrder(Sequelize,sequelize,tableNames.order);
-menuFood.createMenuFood(Sequelize,sequelize,tableNames.menuFood);
+//waiter.run(Sequelize,sequelize,tableNames.waiter);
+//student.run(Sequelize, sequelize, tableNames.student);
+//instructor.run(Sequelize,sequelize,tableNames.instructor);
+//order.run(Sequelize,sequelize,tableNames.order);
+//menuFood.run(Sequelize,sequelize,tableNames.menuFood);
 
 
 
-console.log( "order = " + order.getOrder());
+//console.log( "order = " + order.getOrder());
 
 
 

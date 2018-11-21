@@ -32,7 +32,7 @@ class ChairModal {
         // Check if the instance exists or is null
         if (!this.singletonInstance) {
             Chair = this.createChair(Sequelize, sequelize, user);
-            this.singletonInstance = UserTable;
+            this.singletonInstance = Chair;
             console.log("Singleton Class_Cha Created!");
         } else {
             Chair = sequelize.model("chair");

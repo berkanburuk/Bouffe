@@ -48,7 +48,7 @@ class MenuModel {
 function run(Sequelize, sequelize, user) {
     var f = new MenuModel(Sequelize, sequelize, user);
     console.log("Menu : " + f);
-    console.log(f.getUserTable())
+ //  console.log(f.getUserTable())
 
 }
 
