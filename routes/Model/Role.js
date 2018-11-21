@@ -40,26 +40,38 @@ function createSimpleRoleData(){
     Role.create({
             id:1,
             roleName:'admin'
-        });
+        }).catch(err=>{
+
+    });
         Role.create({
         id:2,
         roleName:'student'
+        }).catch(err=>{
+
         });
         Role.create({
         id:3,
         roleName:'chef'
+        }).catch(err=>{
+
         });
         Role.create({
         id:4,
         roleName:'matre'
+        }).catch(err=>{
+
         });
     Role.create({
         id:5,
         roleName:'waiter'
+    }).catch(err=>{
+
     });
     Role.create({
         id:6,
         roleName:'bartender'
+    }).catch(err=>{
+
     });
 
 }

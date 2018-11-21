@@ -4,9 +4,7 @@ var notifications = "";
 
 function getUsers(ordersController) {
     var d;
-    var s = sequelize();
-    var ordersController = s.model("order");
-    usersController.findAll({ raw: true }).then(result =>{
+    ordersController.findAll({ raw: true }).then(result =>{
         d=result;
     })
     return d;
@@ -42,9 +40,11 @@ module.exports = function (app) {
             }),
 
     app.get('/api/:getAllOrders', function (req, res, next) {
-        console.log("Method Type = "+req.method);
-        var d = getUsers(ordersController);
-        res.end(d);
+        ordersController.findAll({ raw: true }).then(result =>{
+            console.log(result);
+            res.end(result);
+        })
+
         next();
     })
 
