@@ -1,3 +1,4 @@
+var sequelize = require('../Util/DatabaseConnection').getSeq;
 
 class Appointment{
     constructor() {

@@ -1,27 +1,39 @@
-var DeviceList;
 
-function createDeviceList(Sequelize,sequelize,deviceList) {
-    DeviceList = sequelize.define(deviceList,{
-        id: {
-            primaryKey: true,
-            autoIncrement: true,
-            type: Sequelize.INTEGER
-        },
-        name: {
-            type: Sequelize.STRING
-        },
-        macAddress: {
-            type: Sequelize.STRING
-        },
-        deviceStatus: {
-            type: Sequelize.BOOLEAN
-        }
-    })
-    DeviceList.sync({
-        //force:true
-    }).then(()=>{
-        console.log("DeviceList Table is created!")
-    });
+var DeviceList;
+var sequ = require('../Util/DatabaseConnection').getSeq;
+
+class DeviceListModal{
+    createDeviceList(Sequelize,sequelize,deviceList) {
+        DeviceList = sequelize.define(deviceList,{
+            id: {
+                primaryKey: true,
+                autoIncrement: true,
+                type: Sequelize.INTEGER
+            },
+            name: {
+                type: Sequelize.STRING
+            },
+            macAddress: {
+                type: Sequelize.STRING
+            },
+            deviceStatus: {
+                type: Sequelize.BOOLEAN
+            }
+        })
+        DeviceList.sync({
+            //force:true
+        }).then(()=>{
+            console.log("DeviceList Table is created!")
+        });
+        return DeviceList;
+    }
+
+}
+
+function run(Sequelize, sequelize, user) {
+    var f = new DeviceListModal(Sequelize, sequelize, user);
+    console.log("User : " + f);
+    // console.log(f.getUserTable())
 }
 
 function save(deviceList){
@@ -36,10 +48,8 @@ function save(deviceList){
         });
 }
 
-function getDeviceList(){
-    return DeviceList;
-}
 
 module.exports = {
-    createDeviceList,getDeviceList
+    DeviceListModal, save
 }
+

@@ -1,6 +1,7 @@
 var Table;
+var sequ = require('../Util/DatabaseConnection').getSeq;
 
-class User {
+class TableModel {
     createTable(Sequelize, sequelize, table) {
         Table = sequelize.define(table, {
             id: {
@@ -38,27 +39,45 @@ class User {
     constructor(Sequelize, sequelize, user) {
         // Check if the instance exists or is null
         if (!this.singletonInstance) {
-            Table = this.createUser(Sequelize, sequelize, user);
-            this.singletonInstance = UserTable;
-            console.log("Singleton Class Created!");
+            Table = this. createTable(Sequelize, sequelize, user);
+            this.singletonInstance = Table;
+            console.log("Singleton Class_Tab Created!");
         } else {
-            Table = sequelize.model("user");
+            Table = sequelize.model("table");
             console.log("Only one Table Class can be created!");
         }
     }
 }
 
+function run(Sequelize, sequelize, user) {
+    var f = new TableModel(Sequelize, sequelize, user);
+    console.log("Table : " + f);
+    // console.log(f.getUserTable())
+}
 function save(table) {
-    PersonalInfo.create(table)
+    Table.create(table)
         .then(newUser => {
             console.log(newUser.name);
         });
 }
 
-function getTable() {
-    return Table;
+
+function getUsers() {
+    User.findAll().then(function (tables) {
+        console.log(tables[0].get('name'));
+    });
+}
+
+function getTableModel(){
+    let s = sequ();
+    let mTable = s.model("table");
+    return mTable;
+}
+function save(data) {
+    let mTable = getTableModel();
+    mTable.create(data);
 }
 
 module.exports = {
-    Table, getTable, save
+    TableModel, save, getUsers,getTableModel
 }
