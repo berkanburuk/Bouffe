@@ -4,20 +4,42 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <!--<script type='text/javascript' src='../JsFiles/jQuery.js'></script>-->
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.debug.js"></script>
+    <script src=" https://cdnjs.cloudflare.com/ajax/libs/xls/0.7.4-a/xls.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
 <body>
-
-
+<div>
     First name: <input type="text" name="username" id="username"><br>
     Password: &nbsp;<input type="password" name="password" id="password"><br>
     First name: <input type="text" name="firstName" id="firstName"><br>
-    Last name: <input type="text" name="lastName" id="lastName"><br>
-    Section: <input type="text" name="section" id="section"><br>
-    registrationSemester: <input type="text" name="registrationSemester" id="registrationSemester"><br>
+    Last name: <input type="text" name="lastName" id="lastName"><br><br>
+</div>
+<div><select name="roles" id="roles">
+    <option value="admin"> Admin
+    <option value="student" selected> Student
+    <option value="chef"> Chef
+    <option value="matreTable"> Matre de Table
 
-    <input type="button" name="addUser" onclick="addUser()" value="addUser">
+    <option value="instructor"> Instructor
+    <option value="dean"> Dean of Students
+</select>
+
+    <select name="stuRole" id="stuRole">
+        <option value="waiter"> Waiter
+        <option value="cashier"> Cashier
+        <option value="bartender"> Bartender
+        <option value="waiter"> Chef
+    </select>
+    <br><br>
+</div>
+<div>
+    <input type="file" id="my_file_input"/>
+    <table id='my_file_output'></table>
+</div>
+<input type="button" name="addUser" onclick="addUser()" value="addUser">
 <!--
     "<a href='http://localhost:3000/menu/'>Add Menu</a>";
     "<a href='http://localhost:3000/order/'>Order Page</a>";
@@ -30,23 +52,97 @@
 </html>
 
 <script>
-    function addUser() {
-        var data = {
-            'username':$('#username').val(),
-            'password':$('#password').val(),
-            'firstName' : $('#firstName').val(),
-            'lastName':$('#lastName').val(),
-            'section':$('#section').val(),
-        };
 
-        data.section = parseInt($('#section').val());
+    $('#roles').on('change', function (e) {
+        var optionSelected = $("option:selected", this);
+        var valueSelected = this.value;
+        if (valueSelected === "student") {
+            $('#stuRole').show();
+        } else {
+            $('#stuRole').hide();
+        }
+    });
 
+
+    function addUser(data) {
+        $table = $('#my_file_output');
+        console.log($table);
+        /* var data = {
+         'username': $('#username').val(),
+         'password': $('#password').val(),
+         'firstName': $('#firstName').val(),
+         'lastName': $('#lastName').val()
+     };*/
         $.ajax({
             type: 'POST',
             dataType: 'application/json',
-            url:  'http://localhost:3000/api/addUser/',
+            url: 'http://localhost:3000/api/addUser/',
             data: data,
             dataType: "json",
+            timeout: 5000,
+            success: function (data, textStatus) {
+                alert('request successful');
+                console.log(data);
+            },
+            fail: function (xhr, textStatus, errorThrown) {
+                alert('request failed');
+            }
+        });
+    }
+
+
+    var oFileIn;
+    var stuInfoArr = [];
+    $(function () {
+        oFileIn = document.getElementById('my_file_input');
+        if (oFileIn.addEventListener) {
+            oFileIn.addEventListener('change', filePicked, false);
+        }
+    });
+
+    function filePicked(oEvent) {
+        // Get The File From The Input
+        var oFile = oEvent.target.files[0];
+        var sFilename = oFile.name;
+        // Create A File Reader HTML5
+        var reader = new FileReader();
+
+
+        // Ready The Event For When A File Gets Selected
+        reader.onload = function (e) {
+            var data = e.target.result;
+            var cfb = XLS.CFB.read(data, {type: 'binary'});
+            var wb = XLS.parse_xlscfb(cfb);
+            // Loop Over Each Sheet
+            wb.SheetNames.forEach(function (sheetName) {
+                // Obtain The Current Row As CSV
+                var sCSV = XLS.utils.make_csv(wb.Sheets[sheetName]);
+                var data = XLS.utils.sheet_to_json(wb.Sheets[sheetName], {header: 1});
+                console.log(data);
+                $.each(data, function (indexR, valueR) {
+                    var sRow = "<tr>";
+                    $.each(data[indexR], function (indexC, valueC) {
+                        sRow = sRow + "<td>" + valueC + "</td>";
+                        if (indexC == 6 && indexR != 0)
+                            sRow = sRow + "<td><select name='stuRole' id='stuRole" + indexR + "'><option value='waiter' selected> Waiter <option value='cashier'> Cashier <option value='bartender'> Bartender <option value='waiter'> Chef </select></td>";
+                    });
+                    sRow = sRow + "</tr>";
+                    $("#my_file_output").append(sRow);
+                });
+            });
+        };
+
+        // Tell JS To Start Reading The File.. You could delay this if desired
+        reader.readAsBinaryString(oFile);
+    }
+
+
+    /*
+     function myf() {
+        $.ajax({
+            type: 'GET',
+            dataType: 'text',
+            url:  'http://localhost:3000/api/user/'+'username='+ $('#username').val()+ '/password=' + $('#password').val(),
             timeout: 5000,
             success: function(data, textStatus ){
                 alert('request successful');
@@ -57,38 +153,21 @@
             }
         });
     }
-
-   /*
+    */
+    /*
     function myf() {
-       $.ajax({
-           type: 'GET',
-           dataType: 'text',
-           url:  'http://localhost:3000/api/user/'+'username='+ $('#username').val()+ '/password=' + $('#password').val(),
-           timeout: 5000,
-           success: function(data, textStatus ){
-               alert('request successful');
-               console.log(data);
-           },
-           fail: function(xhr, textStatus, errorThrown){
-               alert('request failed');
-           }
-       });
-   }
-   */
-   /*
-   function myf() {
-       $.get("localhost.com:3000/user/",
-           {
-               username: $('#username').val(),
-               password: $('#password').val()
-           })
-           .done(function (data) {
-               alert("Data Loaded: " + data);
-           })
-           .fail(function (err) {
-               alert(err);
-           });
-   }
-*/
+        $.get("localhost.com:3000/user/",
+            {
+                username: $('#username').val(),
+                password: $('#password').val()
+            })
+            .done(function (data) {
+                alert("Data Loaded: " + data);
+            })
+            .fail(function (err) {
+                alert(err);
+            });
+    }
+ */
 
 </script>

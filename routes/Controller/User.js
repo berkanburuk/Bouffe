@@ -4,8 +4,15 @@ var sequelize = require('../Util/DatabaseConnection').getSeq;
 function getUsers(User) {
 
     User.findAndCountAll().then(result =>{
+        var u = {};
        console.log(result.count);
        console.log("User " + result.rows);
+       for(var i=0; i<result.count;i++){
+           u.username = result[i].get('username');
+           u.firstName = result[i].get('firstName');
+           u.lastName = result[i].get('lastName');
+       }
+       return u;
 
     });
 

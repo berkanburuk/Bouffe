@@ -29,30 +29,61 @@
     <br>
     <table>
         <tr>
-
-            <th>Main Food Name</th>
-            <th>Beverage Name</th>
-            <th>Desert Name</th>
-            <th>Total Price</th>
+            <th>Food Name</th>
+            <th>Food Type</th>
+            <th>Food Desc</th>
+            <th>Food Price</th>
         </tr>
 
         <tr>
-            <th><br>Enter Main Food Name<br><br><input type="text"></th>
-            <th><br>Enter Beverage Name<br><br><input type="text"></th>
-            <th><br>Enter Desert Name<br><br><input type="text"></th>
-            <th><br>Enter Menu Price<br><br><input type="text"></th>
+            <th><br><input id="foodName" type="text"></th>
+            <th><br>
+                <select id="foodType">
+                    <option value="ppetizer">Appetizer
+                    <option value="mainCourse">Main Course
+                    <option value="dessert">Dessert
+                </select>
+            <th><br><input id="foodDesc" type="text"></th>
+            <th><br><input id="foodPrice" type="text"></th>
         </tr>
 
         <tr>
             <th colspan="5">
-                <button type="button"> Save the Menu</button>
+                <button type="button" onclick="addFood()">Add Food</button>
             </th>
         </tr>
 
 
     </table>
 </form>
-
-
 </body>
 </html>
+
+<script type="text/javascript">
+    function addFood() {
+        var data = {
+            'foodName': document.getElementById("foodName").value,
+            'foodType': document.getElementById("foodType").value,
+            'foodDesc': document.getElementById("foodDesc").value,
+            'foodPrice': document.getElementById("foodPrice").value
+        };
+
+        console.log(data);
+        $.ajax({
+            type: 'POST',
+            dataType: 'application/json',
+            url: 'http://localhost:3000/api/addFood/',
+            data: data,
+            timeout: 5000,
+            success: function (data, textStatus) {
+                alert('request successful');
+                console.log(data);
+            },
+            fail: function (xhr, textStatus, errorThrown) {
+                alert('request failed');
+            }
+        });
+    }
+
+
+</script>
