@@ -64,35 +64,40 @@
     });
 
 
-    function addUser(data) {
-        $table = $('#my_file_output');
-        console.log($table);
-        /* var data = {
+    var oFileIn;
+    var stuInfoArr = [];
+    var totalCol = 0;
+
+    function addUser() {
+
+        for (var i = 1; i < 5; i++) {
+            console.log(stuInfoArr[i]);
+            stuInfoArr[i].currentRole = document.getElementById("stuRole"+i).value;
+            var data = JSON.stringify(stuInfoArr[i]);
+            /* var data = {
          'username': $('#username').val(),
          'password': $('#password').val(),
          'firstName': $('#firstName').val(),
          'lastName': $('#lastName').val()
      };*/
-        $.ajax({
-            type: 'POST',
-            dataType: 'application/json',
-            url: 'http://localhost:3000/api/addUser/',
-            data: data,
-            dataType: "json",
-            timeout: 5000,
-            success: function (data, textStatus) {
-                alert('request successful');
-                console.log(data);
-            },
-            fail: function (xhr, textStatus, errorThrown) {
-                alert('request failed');
-            }
-        });
+            $.ajax({
+                type: 'POST',
+                dataType: 'application/json',
+                url: 'http://localhost:3000/api/addUser/',
+                data: data,
+                timeout: 5000,
+                success: function (data, textStatus) {
+                    alert('request successful');
+                    console.log(data);
+                },
+                fail: function (xhr, textStatus, errorThrown) {
+                    alert('request failed');
+                }
+            });
+        }
     }
 
 
-    var oFileIn;
-    var stuInfoArr = [];
     $(function () {
         oFileIn = document.getElementById('my_file_input');
         if (oFileIn.addEventListener) {
@@ -124,8 +129,21 @@
                     $.each(data[indexR], function (indexC, valueC) {
                         sRow = sRow + "<td>" + valueC + "</td>";
                         if (indexC == 6 && indexR != 0)
-                            sRow = sRow + "<td><select name='stuRole' id='stuRole" + indexR + "'><option value='waiter' selected> Waiter <option value='cashier'> Cashier <option value='bartender'> Bartender <option value='waiter'> Chef </select></td>";
+                            sRow = sRow + "<td><select name='stuRole' id='stuRole" + indexR + "'><option value=5 selected> Waiter <option value='cashier'> Cashier <option value=6> Bartender <option value='waiter'> Chef </select></td>";
+                        totalCol++;
                     });
+
+                    var myData = {
+                        'username': data[indexR][6],
+                        'password': 555,
+                        'firstName': data[indexR][2],
+                        'lastName': data[indexR][1],
+                        'roleId': 1,
+                        'bilkentId': data[indexR][3],
+                        'currentRole': undefined
+                    }
+
+                    stuInfoArr.push(myData);
                     sRow = sRow + "</tr>";
                     $("#my_file_output").append(sRow);
                 });
@@ -134,6 +152,8 @@
 
         // Tell JS To Start Reading The File.. You could delay this if desired
         reader.readAsBinaryString(oFile);
+        console.log(stuInfoArr);
+        console.log(stuInfoArr.length);
     }
 
 

@@ -252,12 +252,11 @@
     $.ajax({
         type: 'GET',
         dataType: 'application/json',
-        url: 'http://localhost:3000/api/getFood',
+        url: 'http://cemreberkdemirci.com:3000/api/getAllFood',
         data: {get_param: 'value'},
         success: function (data) {
             $.each(data, function (index, element) {
                 console.log(element.name);
-
             });
         }
     });
@@ -273,7 +272,7 @@
         $.ajax({
             type: 'POST',
             dataType: 'application/json',
-            url: 'http://localhost:3000/api/addMenu',
+            url: 'http://cemreberkdemirci.com:3000/api/addMenu',
             data: data,
             timeout: 5000,
             success: function (data, textStatus) {
