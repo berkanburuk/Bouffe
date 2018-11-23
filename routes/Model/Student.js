@@ -1,7 +1,4 @@
 var Student;
-var Role = require('./Role');
-var User = require('./User');
-var sequ = require('../Util/DatabaseConnection').getSeq;
 
 class StudentModel{
     createStudent(Sequelize, sequelize, student) {
@@ -133,11 +130,6 @@ function join(){
     });
 }
 
-function getStudentModel(){
-    let s = sequ();
-    let mStudent = s.model("student");
-    return mStudent;
-}
 
 function save(data) {
     let mStudent = getStudentModel();
@@ -146,10 +138,7 @@ function save(data) {
             console.log(newUser.username);
         });
 }
-function getStudent(){
-    return Student;
-}
 
 module.exports = {
-    run, StudentModel, findByName, save,getAllStudents,Student,getStudentModel,getStudent
+    run
 }

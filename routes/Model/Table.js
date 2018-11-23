@@ -1,5 +1,4 @@
 var Table;
-var sequ = require('../Util/DatabaseConnection').getSeq;
 
 class TableModel {
     createTable(Sequelize, sequelize, table) {
@@ -9,9 +8,12 @@ class TableModel {
                 autoIncrement: true,
                 type: Sequelize.INTEGER
             },
-            name: {
-                type: Sequelize.STRING,
-                allowNull: false
+            username:{
+                type:Sequelize.STRING,
+                references: {
+                    model: 'users',
+                    key: 'username'
+                }
             },
             structure: {
                 type: Sequelize.STRING,
@@ -23,6 +25,7 @@ class TableModel {
             status: {
                 type: Sequelize.INTEGER
             },
+            //Table Merge Daha Bitmedi
             mergedWith: {
                 type: Sequelize.INTEGER
             }
@@ -33,13 +36,13 @@ class TableModel {
         }).then(() => {
             console.log("Table table has created!");
         })
-
+        return Table;
     }
 
-    constructor(Sequelize, sequelize, user) {
+    constructor(Sequelize, sequelize, table) {
         // Check if the instance exists or is null
         if (!this.singletonInstance) {
-            Table = this. createTable(Sequelize, sequelize, user);
+            Table = this. createTable(Sequelize, sequelize, table);
             this.singletonInstance = Table;
             console.log("Singleton Class_Tab Created!");
         } else {
@@ -79,5 +82,5 @@ function save(data) {
 }
 
 module.exports = {
-    TableModel, save, getUsers,getTableModel
+   run
 }

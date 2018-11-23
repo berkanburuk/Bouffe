@@ -1,5 +1,4 @@
 var Course;
-var sequ = require('../Util/DatabaseConnection').getSeq;
 
 
 class CourseModel{
@@ -12,9 +11,6 @@ class CourseModel{
             },
             courseName:{
                 type:Sequelize.STRING
-            },
-            username: {
-                type: Sequelize.STRING
             }
         });
         Course.sync({

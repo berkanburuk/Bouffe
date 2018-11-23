@@ -1,5 +1,4 @@
 let Role;
-var sequ = require('../Util/DatabaseConnection').getSeq;
 
 class RoleModel {
     createRole(Sequelize, sequelize, role) {

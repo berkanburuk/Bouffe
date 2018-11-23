@@ -1,5 +1,6 @@
     var Food = require('../Model/Food');
-    var sequelize = require('../Util/DatabaseConnection').getSeq;
+    var sequelize = require('../Util/DatabaseConnection').getSequelize;
+
 
 
 

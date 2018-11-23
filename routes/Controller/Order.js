@@ -1,5 +1,5 @@
 let path = require('path');
-var sequelize = require('../Util/DatabaseConnection').getSeq;
+var sequelize = require('../Util/DatabaseConnection').getSequelize;
 var notifications = "";
 
 function getUsers(ordersController) {

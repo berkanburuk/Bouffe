@@ -1,5 +1,4 @@
 var User;
-var sequ = require('../Util/DatabaseConnection').getSeq;
 
 class UserModel {
     createUser(Sequelize, sequelize, user) {
@@ -12,6 +11,7 @@ class UserModel {
             password: {
                 type: Sequelize.STRING
             },
+
             firstName: {
                 type: Sequelize.STRING,
                 //allowNull:false
@@ -23,7 +23,11 @@ class UserModel {
             registrationSemester: {
                 type: Sequelize.DATE,
                 defaultValue: Sequelize.NOW
-            }, roleId: {
+            },
+            bilkentId: {
+                type:Sequelize.INTEGER
+            },
+            roleId: {
                 type: Sequelize.INTEGER,
                 references: {
                     model: 'roles', // name of Target model
