@@ -1,5 +1,4 @@
 var Food;
-var sequ = require('../Util/DatabaseConnection').getSeq;
 
 class FoodModel {
     createFood(Sequelize, sequelize, food) {
@@ -10,11 +9,11 @@ class FoodModel {
                 autoIncrement: true,
                 type: Sequelize.INTEGER
             },
+             name: {
+                 type: Sequelize.STRING,
+                 allowNull: false
+             },
             type: {
-                type: Sequelize.STRING,
-                allowNull: false
-            },
-            name: {
                 type: Sequelize.STRING,
                 allowNull: false
             },
@@ -28,7 +27,6 @@ class FoodModel {
             price: {
                 type: Sequelize.DOUBLE
             }
-
         });
         //FoodTable.belongsTo(Order, {foreignKey: 'fk_Order',targetKey:'foodId'});
         Food.sync({

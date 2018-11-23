@@ -1,7 +1,6 @@
 var Chair;
-var sequ = require('../Util/DatabaseConnection').getSeq;
 
-class ChairModal {
+class ChairModel {
     createChair(Sequelize, sequelize, chair) {
         Chair = sequelize.define(chair, {
             id: {
@@ -11,9 +10,6 @@ class ChairModal {
             },
             tableId: {
                 type: Sequelize.INTEGER
-            },
-            name: {
-                type: Sequelize.STRING
             },
             status: {
                 type: Sequelize.INTEGER
@@ -34,7 +30,7 @@ class ChairModal {
         // Check if the instance exists or is null
         if (!this.singletonInstance) {
             Chair = this.createChair(Sequelize, sequelize, chair);
-            this.singletonInstance = UserTable;
+            this.singletonInstance = Chair;
             console.log("Singleton Class_Cha Created!");
         } else {
             Chair = sequelize.model("chair");
@@ -46,7 +42,7 @@ class ChairModal {
 }
 
 function run(Sequelize, sequelize, user) {
-    var f = new ChairModal(Sequelize, sequelize, user);
+    var f = new ChairModel(Sequelize, sequelize, user);
     console.log("Chair : " + f);
     // console.log(f.getUserTable())
 }
@@ -63,5 +59,5 @@ function save(chair) {
 }
 
 module.exports = {
-    run, ChairModal, save
+    run
 }

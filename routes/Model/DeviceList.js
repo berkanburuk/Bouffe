@@ -1,6 +1,5 @@
 
 var DeviceList;
-var sequ = require('../Util/DatabaseConnection').getSeq;
 
 class DeviceListModal{
     createDeviceList(Sequelize,sequelize,deviceList) {

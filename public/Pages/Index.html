@@ -40,14 +40,14 @@
 <input type="button" name="addUser" onclick="addUser()" value="addUser">
 
 <input type="button" name="addUser2" onclick="addUser2()" value="addUserNonStudent">
-<!--
+
     "<a href='http://localhost:3000/menu/'>Add Menu</a>";
     "<a href='http://localhost:3000/order/'>Order Page</a>";
 
     "<a href='http://localhost:3000/chef/'>Get Notification Page</a>";
     "<a href='http://localhost:3000/beverage/'>Add Beverage</a>";
     "<a href='http://localhost:3000/student/'>Add Beverage</a>";
--->
+
 </body>
 </html>
 
@@ -169,7 +169,7 @@
         $.ajax({
             type: 'POST',
             dataType: 'application/json',
-            url:  'http://cemreberkdemirci.com:3000/api/addUser2/',
+            url:  'http://localhost:3000/api/addUser2/',
             data: data,
             timeout: 5000,
             success: function(data, textStatus ){

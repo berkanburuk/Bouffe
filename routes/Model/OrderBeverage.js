@@ -1,7 +1,4 @@
 var OrderBeverage;
-var sequ = require('../Util/DatabaseConnection').getSeq;
-var Menu = require('./Menu');
-var Food = require('./Food');
 
 class OrderBeverageModel{
     createOrderBeverage(Sequelize,sequelize,orderBeverage){
@@ -29,10 +26,7 @@ class OrderBeverageModel{
             quantity:{
                 type: Sequelize.INTEGER
             }
-
         })
-        //OrderBeverage.belongsTo(Menu.getMenu()); // Will add companyId to user
-        //OrderBeverage.belongsTo(Food.getFood());
         OrderBeverage.sync({
             //force: true
         }).then(()=>{
@@ -81,5 +75,5 @@ function save(data) {
 }
 
 module.exports = {
-    run, OrderBeverageModel,save,getOrderBeverageModel,getOrderBeverages
+    run
 }

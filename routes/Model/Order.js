@@ -1,10 +1,7 @@
 var Order;
-var sequ = require('../Util/DatabaseConnection').getSeq;
-var Beverage = require('./Beverage');
-var Food = require('./Food');
-var Waiter = require('./Waiter');
 
 class OrderModel {
+
     createOrder(Sequelize, sequelize, order) {
         Order = sequelize.define(order, {
             //constructor(id, name, type, desc, available, price) {
@@ -14,19 +11,11 @@ class OrderModel {
                 type: Sequelize.INTEGER
             },
             chairId: {
-                type:Sequelize.INTEGER
-            },
-            orderBeverageId:{
-                type: Sequelize.INTEGER
-            },
-            orderFoodId :{
-                type: Sequelize.INTEGER
-            },
-            price: {
-                type: Sequelize.DOUBLE
-            },
-            paymentType: {
-                type: Sequelize.INTEGER
+                type:Sequelize.INTEGER,
+                references: {
+                    model: 'chairs', // name of Target model
+                    key: 'id' // key in Target model that we're referencing
+                }
             },
             date: {
                 type: Sequelize.DATE,
@@ -35,16 +24,32 @@ class OrderModel {
             note: {
                 type: Sequelize.STRING
             },
-
+            isPaid:{
+                type:Sequelize.BOOLEAN
+            },
+            isFoodReady:{
+              type:Sequelize.INTEGER
+                //0 -> chef notification
+                //1 -> waiter notification
+                //2 -> done
+                //3 -> reject
+            },
             username:{
-                type: Sequelize.STRING
+                type:Sequelize.STRING,
+                references: {
+                    model: 'users',
+                    key: 'username'
+                }
+            },
+            paymentId:{
+              type:Sequelize.INTEGER,
+              references:{
+                  model:'payments',
+                  key:'id'
+              }
             }
+
         });
-        /*
-        Order.belongsTo(Beverage.getBeverage());
-        Order.belongsTo(Food.getFood());
-        Order.belongsTo(Waiter.getWaiter());
-*/
         Order.sync({
             //force: true
         }).then(() => {
@@ -69,7 +74,6 @@ class OrderModel {
 function run(Sequelize, sequelize, order) {
     var f = new OrderModel(Sequelize, sequelize, order);
     console.log("Order : " + f);
-    // console.log(f.getUserTable())
 }
 
 function getAllOrders() {
@@ -94,5 +98,5 @@ function save(data) {
 
 
 module.exports = {
-    run, OrderModel, save, getAllOrders,getOrderModel
+    run
 }

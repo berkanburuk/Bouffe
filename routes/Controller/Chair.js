@@ -1,5 +1,6 @@
 let path = require('path');
-var sequelize = require('../Util/DatabaseConnection').getSeq;
+var sequelize = require('../Util/DatabaseConnection').getSequelize;
+
 
 module.exports = function(app){
     app.get('/chair', function (request, response) {
@@ -7,7 +8,7 @@ module.exports = function(app){
         response.sendFile(path.resolve('../../public/Pages/Chair.html'));
         //res.end();
     }),
-    app.post('/api/addChair'), function(request,response,next){
+    app.post('/api/:chair/:addChair'), function(request,response,next){
         var data = request.body;
         for (var key in data) {
             console.log(data[key]);

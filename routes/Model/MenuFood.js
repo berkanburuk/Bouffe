@@ -1,7 +1,4 @@
 var MenuFood;
-var sequ = require('../Util/DatabaseConnection').getSeq;
-var Menu = require('./Menu');
-var Food = require('./Food');
 
 class MenuFoodModel{
     createMenuFood(Sequelize,sequelize,menuFood){
@@ -78,5 +75,5 @@ function save(data) {
 }
 
 module.exports = {
-   run, MenuFoodModel,save,getAllMenuFood,getMenuFoodModel
+   run
 }

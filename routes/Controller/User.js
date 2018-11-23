@@ -1,24 +1,105 @@
 let path = require('path');
-var sequelize = require('../Util/DatabaseConnection').getSeq;
+
+let sequelize = require('../Util/DatabaseConnection').getSequelize;
+let tableNames = require('../Util/DatabaseConnection').getTableNames;
+
+let db = sequelize();
+let dbNames = tableNames();
+let mUser = db.model(dbNames.user);
 
 
-
-
-function getUsers(usersController) {
-    var d;
-    usersController.findAll({ raw: true }).then(result =>{
-        d=result;
+const save = (data)=>{
+    return new Promise((resolve,reject)=>{
+        mUser.create(data).then(user=> {
+            console.log(user.get())
+            resolve(user);
+        }).catch(error => {
+            reject('Cannot create the user!');
+        });
     })
-    console.log(d);
-    return d;
 }
 
+const checkValidationOfUser = (username, password) => {
+    return new Promise((resolve, reject) => {
+        mUser.findOne({
+            where:{'username': username,
+                'password' : password
+            }
+        }).then(user=>{
+            resolve(user.get());
+        }).catch(error => {
+            reject("Username or Password is wrong!");
+        })
+    });
+}
+
+
+const getAllUsers = () => {
+    return new Promise((resolve, reject) => {
+        mUser.findAll({
+             //   attributes: ['foo', 'bar']
+            }
+        ).then(user=>{
+            resolve(user.get());
+        }).catch(error => {
+            reject("Cannot get all Users");
+        })
+    });
+}
+
+const deleteUser = (username) =>{
+    return new Promise((resolve,reject)=>{
+        mUser.destroy({
+            where: {
+                username: username
+            }
+        }).then(user=>{
+            resolve('User is deleted');
+        }).catch(error =>{
+            reject(error + ' User cannot be deleted!');
+        })
+    })
+}
+/*
+Model.findAll({
+    attributes: [[sequelize.fn('COUNT', sequelize.col('hats')), 'no_hats']]
+});
+SELECT COUNT(hats) AS no_hats ...
+*/
+/*
+function manyToMany() {
+    Child.find({where: {Name: "Joe"}})
+        .then(childInst => {
+            return childInst.get();
+        })
+        .then(childData => {
+            return Parent_Child.find({where: {Child_id: childData.id}})
+        })
+        .then(parentChildInst => {
+            return parentChildInst.get();
+        })
+        .then(parentChildData => {
+            return Parent.find({where: {id: parentChildData.Parent_id}})
+        })
+        .then(parentInst => {
+            return parentInst.get();
+        })
+        .then(parentData => {
+            return parentData;
+            /*
+              {
+                {
+                  id: 1,
+                  name: "John",
+                  type: "Father"
+                }
+              }
+
+        })
+}
+
+*/
 module.exports = function(app) {
-    var s = sequelize();
-    var usersController = s.model("user");
-    var studentsController = s.model("student");
-    var instructorController = s.model("instructor");
-    var chefController = s.model("chef");
 
     app.get('/user', function (request, response) {
         console.log('Menu');
@@ -26,94 +107,66 @@ module.exports = function(app) {
         //res.end();
     }),
 
-    app.post('/api/:addUser/', function (request, response, next) {
-        var data = request.body;
-        /*
-        for (var key in data) {
-            console.log(data[key]);
-        }*/
-console.log("DATAAAA " + data['users']);
-        console.log("DATAAAA" + data);
-
-        var st = {};
-        st.bilkentId = data.bilkentId;
-        st.username = data.username;
-        data.courseId= 1;
-        st.courseId = data.courseId;
-        st.roleId = data.roleId;
-        st.currentRoleId = data.currentRoleId;
-        console.log("St" + st);
-
-        var us = {};
-        us.username = data.username;
-        us.password = data.password;
-        us.firstName = data.firstName;
-        us.lastName = data.lastName;
-        us.roleId = parseInt(data.roleId);
-    console.log("Us" + us);
-        usersController.create(us);
-        studentsController.create(st);
-
-
-        //let user = User.getUserModel();
-
-        response.end('Successfully Added');
-        next();
-    })
+        app.post('/api/:addUser/', function (request, response, next) {
+            var data = request.body;
+            /*
+            for (var key in data) {
+                console.log(data[key]);
+            }*/
+            response.end('Successfully Added');
+            next();
+        })
 
 
     app.post('/api/:addUser2/', function (request, response, next) {
         var data = request.body;
-
-        usersController.create(data);
-
-        if(data.roleId == 1){
-            var newData= {};
-            newData.username = data.username;
-            newData.roleId=data.roleId;
-            console.log(newData);
-            instructorController.create(newData);
-        }
-        else if(data.roleId == 3){
-            var newData= {};
-            newData.username = data.username;
-            newData.roleId=data.roleId;
-            newData.approve = true;
-            console.log(newData);
-            chefController.create(newData);
-        }
-
-        //let user = User.getUserModel();
-
+        save(data).then()
         response.end('Successfully Added');
         next();
     })
 
     //checkUser
-    app.get('/api/:getAllUsers', function (req, res, next) {
-        //console.log("Method Type = "+req.method);
-            //var d = getUsers(usersController);
-        usersController.findAll({ raw: true }).then(result =>{
-            console.log(result);
-            res.end(result);
-        }).catch(err=>{
-            res.end(err);
+    app.get('/api/:getAllUsers', function (request, response, next) {
+
+        getAllUsers().then(user => {
+            console.log(user);
+        }).catch(error => {
+            console.log(error);
         })
 
         next();
     })
 
     //checkUser
-    app.get('/api/:username/:password', function (req, res, next) {
-        console.log(req.method);
-        res.statusCode = 200
-        //res.setHeader('Content-Type', 'text/plain; charset=utf-8')
+    app.get('/api/:username/:password', function (request, response, next) {
 
-        res.end('Hello' + '\n');
+        checkValidationOfUser('berkan', '1234').then(user => {
+            response.statusCode = 200;
+            console.log(user);
+            response.end(user);
+        }).catch(error => {
+            response.statusCode = 404;
+            console.log(error);
+            response.end(error);
+        })
         next();
-    })
+    });
+
+    app.get('/user/api/delete/:username', function (request, response, next) {
+        console.log(request);
+        console.log(request.username);
+        deleteUser(null).then(user => {
+            console.log(user);
+        }).catch(error => {
+            console.log(error);
+        })
+        next();
+
+    });
 
 }
+
+
 
 /*
 // register a route and add all methods

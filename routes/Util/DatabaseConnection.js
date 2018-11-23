@@ -1,45 +1,39 @@
 const Sequelize = require('sequelize');
 
 let chair = require('../Model/Chair');
-let chef = require('../Model/Chef');
 let deviceList = require('../Model/DeviceList');
 let food = require('../Model/Food');
-let instructor = require('../Model/Instructor');
 let menu = require('../Model/Menu');
 let order = require('../Model/Order');
 let role = require('../Model/Role');
 let user = require('../Model/User');
-let student = require('../Model/Student');
-let waiter = require('../Model/Waiter');
 let table = require('../Model/Table');
 let beverage = require('../Model/Beverage');
 let menuFood = require('../Model/MenuFood');
 let appointment= require('../Model/Appointment');
-let bartender = require('../Model/Bartender');
 let course = require('../Model/Course');
 let orderBeverage = require('../Model/OrderBeverage');
-let orderFood = require('../Model/OrderFood');
+let userCourse = require('../Model/UserCourse');
+let payment = require('../Model/Payment');
+let OrderMenu = require('../Model/OrderMenu');
 
 const tableNames = {
     user:"user",
     role:"role",
-    personalInfo:"personalInfo",
     order:"order",
     menu:"menu",
     food:"food",
-    chef:"chef",
     chair:"chair",
     deviceList:"deviceList",
-    instructor: "instructor",
-    student: "student",
-    waiter:"waiter",
     table:"table",
     beverage:"beverage",
+    payment:'payment',
     menuFood:"menuFood",
-    bartender:"bartender",
     course:'course',
     orderBeverage:'orderBeverage',
-    orderFood:'orderFood'
+    orderFood:'orderFood',
+    userCourse:'userCourse',
+    orderMenu:'orderMenu'
 }
 
 
@@ -88,60 +82,52 @@ module.exports = {
 
 
 //1.
-
 role.run(Sequelize,sequelize,tableNames.role);
 
 //2.
 user.run(Sequelize,sequelize,tableNames.user);
+
 //3.
 course.run(Sequelize,sequelize,tableNames.course);
+
 //4.
+userCourse.run(Sequelize,sequelize,tableNames.userCourse);
 
-student.run(Sequelize,sequelize,tableNames.student);
 //5.
-
-instructor.run(Sequelize,sequelize,tableNames.instructor,role);
-
+table.run(Sequelize,sequelize,tableNames.table);
 //6.
-chef.run(Sequelize,sequelize,tableNames.chef);
+chair.run(Sequelize,sequelize,tableNames.chair);
 
-//7.malte de table -> not required now
-
+//7.
+menu.run(Sequelize,sequelize,tableNames.menu);
 //8.
 
-//bartender.run(Sequelize,sequelize,tableNames.bartender);
-//9.
-//waiter.run(Sequelize,sequelize,tableNames.waiter);
-
-//10.
-menu.run(Sequelize,sequelize,tableNames.menu);
-//11.
-
 food.run(Sequelize,sequelize,tableNames.food);
-//12.
 
+//9.
 menuFood.run(Sequelize,sequelize,tableNames.menuFood);
+//10.
+payment.run(Sequelize,sequelize,tableNames.payment);
+//11.
+beverage.run(Sequelize,sequelize,tableNames.beverage);
 
-//13.
+//12
 order.run(Sequelize,sequelize,tableNames.order);
 
-//14.
-beverage.run(Sequelize,sequelize,tableNames.beverage);
-//15.
-
+//13
 orderBeverage.run(Sequelize,sequelize,tableNames.orderBeverage);
 
-//16.
-orderFood.run(Sequelize,sequelize,tableNames.orderFood);
+//14
+OrderMenu.run(Sequelize,sequelize,tableNames.orderMenu);
 
-
-
-function getSeq(){
+function getSequelize(){
     return sequelize;
 }
-
+function getTableNames(){
+    return tableNames
+}
 module.exports = {
-    getSeq
+    getSequelize,getTableNames
 }
 
 /*

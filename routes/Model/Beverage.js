@@ -1,5 +1,4 @@
 var Beverage;
-var sequ = require('../Util/DatabaseConnection').getSeq;
 
 class BeverageModel {
     createBeverage(Sequelize, sequelize, beverage) {
@@ -13,7 +12,8 @@ class BeverageModel {
                 type: Sequelize.STRING
             },
             available: {
-                type: Sequelize.BOOLEAN
+                type: Sequelize.BOOLEAN,
+                default:true
             },
             price: {
                 type: Sequelize.DOUBLE

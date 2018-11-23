@@ -1,5 +1,6 @@
 let path = require('path');
-var sequelize = require('../Util/DatabaseConnection').getSeq;
+var sequelize = require('../Util/DatabaseConnection').getSequelize;
+
 var notifications = "";
 
 module.exports = function (app) {
@@ -12,7 +13,7 @@ module.exports = function (app) {
     }),
 
 //Post - Order
-        app.get('/api/getNotification/', function (request, response, next) {
+        app.get('/api/:chair/:getNotification', function (request, response, next) {
             console.log(request.method);
             console.log(request.head);
             response.statusCode = 200;

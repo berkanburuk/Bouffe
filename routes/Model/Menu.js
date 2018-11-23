@@ -1,65 +1,73 @@
 var Menu;
-var sequ = require('../Util/DatabaseConnection').getSeq;
 
 class MenuModel {
-    /*
-    createMenu23(Sequelize, sequelize, menu) {
-        // noinspection JSAnnotator
+/*
+    formMenu(Sequelize, sequelize, menu) {
         return new Promise(function (resolve, reject) {
-            Menu = sequelize.define(menu, {
-                //constructor(id, name, type, desc, available, price) {
-                id: {
-                    primaryKey: true,
-                    autoIncrement: true,
-                    type: Sequelize.INTEGER
-                },
-                name: {
-                    type: Sequelize.STRING,
-                    allowNull: false
-                },
-                cousinRegion: {
-                    type: Sequelize.STRING,
-                    allowNull: false
-                }
-
+            Menu = function(){
+                sequelize.define(menu, {
+                    //constructor(id, name, type, desc, available, price) {
+                    id: {
+                        primaryKey: true,
+                        autoIncrement: true,
+                        type: Sequelize.INTEGER
+                    },
+                    name: {
+                        type: Sequelize.STRING,
+                        allowNull: false
+                    },
+                    cousinRegion: {
+                        type: Sequelize.STRING,
+                        allowNull: false
+                    }
+                })
+            }.then(()=>{
+                resolve('Menu is formed');
             }).catch(error => {
-                reject("burası reject");
+                reject(error);
             })
-            Menu.sync({
-                //force: true
-            }).then(() => {
-                resolve(Menu)
-            });
-
         });
     }
-    */
-    createMenu(Sequelize, sequelize, menu) {
-        // noinspection JSAnnotator
+        createMenu(){
+            return new Promise(function (resolve,reject) {
+                Menu.sync({
+                    //force: true
+                }).then(() => {
+                    resolve("Menu is created!")
+                }).catch(error=>{
+                    reject("Menu could NOT created!");
+                })
+            })
+        }/*
+        */
+        createMenu(Sequelize, sequelize, menu) {
             Menu = sequelize.define(menu, {
-                //constructor(id, name, type, desc, available, price) {
                 id: {
                     primaryKey: true,
                     autoIncrement: true,
                     type: Sequelize.INTEGER
                 },
-                name: {
-                    type: Sequelize.STRING,
-                    allowNull: false
+                name:{
+                    type:Sequelize.STRING
                 },
-                cousinRegion: {
-                    type: Sequelize.STRING,
-                    allowNull: false
+                cousinRegion:{
+                    type:Sequelize.STRING
+                },
+                date:{
+                    type:Sequelize.DATE
+                },
+                isApprovedByDecan:{
+                    type:Sequelize.BOOLEAN,
+                    default:false
                 }
             })
             Menu.sync({
-                //force: true
-            })
-        return Menu;
-    }
-
-
-
+                //force:true
+            }).then(() => {
+                console.log("Chair Table is created!")
+            });
+            return Menu;
+        }
 
     constructor(Sequelize, sequelize, menu) {
         // Check if the instance exists or is null
@@ -72,12 +80,13 @@ class MenuModel {
             console.log("Only one Menu Class can be created!");
         }
     }
+
+
 }
 
 function run(Sequelize, sequelize, menu) {
     var f = new MenuModel(Sequelize, sequelize, menu);
     console.log("Menu : " + f);
-
 
 }
 
@@ -104,5 +113,5 @@ function save(data) {
 
 
 module.exports = {
-    run,  save, getMenus,getMenuModel
+    run
 }

@@ -1,4 +1,3 @@
-var sequelize = require('../Util/DatabaseConnection').getSeq;
 
 class Appointment{
     constructor() {
@@ -8,7 +7,3 @@ class Appointment{
         console.log("sayname");
     }
 }
-
-let p = new Appointment();
-p.sayname();
-
