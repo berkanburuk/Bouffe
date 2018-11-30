@@ -1,45 +1,7 @@
 var Menu;
 
 class MenuModel {
-/*
-    formMenu(Sequelize, sequelize, menu) {
-        return new Promise(function (resolve, reject) {
-            Menu = function(){
-                sequelize.define(menu, {
-                    //constructor(id, name, type, desc, available, price) {
-                    id: {
-                        primaryKey: true,
-                        autoIncrement: true,
-                        type: Sequelize.INTEGER
-                    },
-                    name: {
-                        type: Sequelize.STRING,
-                        allowNull: false
-                    },
-                    cousinRegion: {
-                        type: Sequelize.STRING,
-                        allowNull: false
-                    }
-                })
-            }.then(()=>{
-                resolve('Menu is formed');
-            }).catch(error => {
-                reject(error);
-            })
-        });
-    }
-        createMenu(){
-            return new Promise(function (resolve,reject) {
-                Menu.sync({
-                    //force: true
-                }).then(() => {
-                    resolve("Menu is created!")
-                }).catch(error=>{
-                    reject("Menu could NOT created!");
-                })
-            })
-        }/*
-        */
+
         createMenu(Sequelize, sequelize, menu) {
             Menu = sequelize.define(menu, {
                 id: {
@@ -53,19 +15,35 @@ class MenuModel {
                 cousinRegion:{
                     type:Sequelize.STRING
                 },
-                date:{
-                    type:Sequelize.DATE
-                },
                 isApprovedByDecan:{
                     type:Sequelize.BOOLEAN,
                     default:false
                 }
             })
+            //Order FK
+            let mOrder = sequelize.model('order');
+            Menu.belongsTo(mOrder);
+
+            //Food FK
+            let mFood = sequelize.model('food');
+            let mMenuFood = sequelize.model('menuFood');
+
+            Menu.belongsToMany(mFood,
+                {
+                    through: mMenuFood
+                });
+            /*
             Menu.sync({
                 //force:true
             }).then(() => {
                 console.log("Menu Table is created!")
             });
+            mMenuFood.sync({
+                //force:true
+            }).then(() => {
+                console.log("MenuFood Table is created!")
+            });
+            */
             return Menu;
         }
 
@@ -97,19 +75,6 @@ function getMenus() {
     });
 }
 
-function getMenuModel(){
-    let s = sequ();
-    let mMenu = s.model("menu");
-    return mMenu;
-}
-
-function save(data) {
-    let mMenu = getMenuModel();
-    mMenu.create(data)
-        .then(newUser => {
-            console.log(newUser.id);
-        });
-}
 
 
 module.exports = {

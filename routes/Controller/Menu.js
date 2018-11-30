@@ -79,7 +79,7 @@ module.exports = function (app) {
             console.log('going to delete', request.body);
 
             response.end();
-        });
+        })
 
 }
 

@@ -8,9 +8,6 @@ class ChairModel {
                 autoIncrement: true,
                 type: Sequelize.INTEGER
             },
-            tableId: {
-                type: Sequelize.INTEGER
-            },
             status: {
                 type: Sequelize.INTEGER
             },
@@ -18,11 +15,15 @@ class ChairModel {
                 type: Sequelize.INTEGER
             }
         })
+        let mTable = sequelize.model('table');
+        Chair.belongsTo(mTable);
+/*
         Chair.sync({
             //force:true
         }).then(() => {
             console.log("Chair Table is created!")
         });
+  */
         return Chair;
     }
 
@@ -44,6 +45,7 @@ class ChairModel {
 function run(Sequelize, sequelize, user) {
     var f = new ChairModel(Sequelize, sequelize, user);
     console.log("Chair : " + f);
+    return Chair;
     // console.log(f.getUserTable())
 }
 

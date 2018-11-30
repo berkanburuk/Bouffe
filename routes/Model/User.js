@@ -1,4 +1,5 @@
 var User;
+let tableNames = require('../Util/DatabaseConnection').getTableNames;
 
 class UserModel {
     createUser(Sequelize, sequelize, user) {
@@ -26,20 +27,30 @@ class UserModel {
             },
             bilkentId: {
                 type:Sequelize.INTEGER
-            },
-            roleId: {
-                type: Sequelize.INTEGER,
-                references: {
-                    model: 'roles', // name of Target model
-                    key: 'id' // key in Target model that we're referencing
-                }
             }
         });
+        //let dbNames = tableNames();
+        //UserRole
+        let mRole= sequelize.model('role');
+        let mUserRole= sequelize.model('userRole');
+        User.belongsToMany(mRole,{through: mUserRole,targetKey:'username'});
+
+        //UserCourse
+        const mCourse = sequelize.define('course', {})
+        const mUserCourse = sequelize.define('userCourse', {})
+        User.belongsToMany(mCourse,{through: mUserCourse,targetKey:'username'});
+
+/*
         User.sync({
             //force:true
         }).then(() => {
             console.log("User table is created!");
         });
+        mUserRole.sync({
+            //force:true
+        }).then(() => {
+            console.log("UserRole table is created!");
+        });*/
         return User;
     }
 
@@ -60,39 +71,41 @@ class UserModel {
 function run(Sequelize, sequelize, user) {
     var f = new UserModel(Sequelize, sequelize, user);
     console.log("User : " + f);
+    return User;
    // console.log(f.getUserTable())
 }
 
-function getByName(_name) {
-    User.findOne({
-        name: _name
+function findByName() {
+    Student.findOne({
+        instructorId: 0
     })
         .then(user => {
             console.log('Found user: ${user}');
         })
 }
 
-function getUsers() {
-    User.findAll().then(function (users) {
-        console.log(users[0].get('name'));
+
+function join(){
+    Student.findAll({
+        where:{
+            id: 1
+        },
+        include: [{
+            model: models.User,
+            as: 'userFriend',
+            through: {
+                attributes: ['id', 'invitStatus'],
+            },
+            include: [{
+                model: models.Message
+            }],
+        }]
     });
-}
-
-
-function save(data) {
-    //let user = getUserModel();
-    user.create(data);
-}
-
-function getUserModel(){
-    let s = sequ();
-    let mUser = s.model("user");
-    return mUser;
 }
 function getUser(){
     return User;
 }
 
 module.exports = {
-    run, UserModel, save, getUsers, getByName,getUserModel,getUser
+    run,getUser
 }

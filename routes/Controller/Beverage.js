@@ -12,7 +12,7 @@ module.exports = function(app) {
         app.post('/api/:beverage/:addBeverage/', function (request, response, next) {
             var data = request.body;
     console.log("Beverage Controller");
-
+/*
             var dateObj = new Date();
             var month = dateObj.getUTCMonth() + 1; //months from 1-12
             var day = dateObj.getUTCDate();
@@ -28,6 +28,7 @@ module.exports = function(app) {
 
             //Beverage.save(data);
             response.end('Beverage Successfully Added!');
+            */
             next();
         })
 

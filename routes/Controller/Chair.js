@@ -67,7 +67,7 @@ module.exports = function(app){
         response.sendFile(path.resolve('../../public/Pages/Chair.html'));
         //res.end();
     }),
-    app.post('/api/:chair/:addChair'), function(request,response,next){
+    app.post('/api/:chair/:addChair', function(request,response,next){
         save(request.body);
         /*
         for (var key in data) {
@@ -75,7 +75,7 @@ module.exports = function(app){
         }
         */
         next();
-    }
+    })
 }
 
 

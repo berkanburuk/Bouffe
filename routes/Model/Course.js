@@ -12,11 +12,21 @@ class CourseModel{
                 type:Sequelize.STRING
             }
         });
+        let mUser= sequelize.model('user');
+        let mUserCourse= sequelize.model('userCourse');
+        Course.belongsToMany(mUser,{through: mUserCourse});
+/*
         Course.sync({
             //force:true
         }).then(() => {
             console.log("Course Table is created!")
         });
+        mUserCourse.sync({
+            //force:true
+        }).then(() => {
+            console.log("UserCourse Table is created!")
+        });
+        */
         return Course;
     }
     constructor(Sequelize, sequelize, course) {
