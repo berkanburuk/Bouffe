@@ -1,6 +1,5 @@
 var Course;
 
-
 class CourseModel{
     createCourse(Sequelize, sequelize, course) {
         Course = sequelize.define(course, {
@@ -45,26 +44,6 @@ function getCourses() {
     });
 }
 
-function getCourseModel(){
-    let s = sequ();
-    let mCourse = s.model("course");
-    return mCourse;
-}
-
-function save(data) {
-    let mCourse = getCourseModel();
-    mCourse.create(data)
-        .then(newUser => {
-            console.log(newUser.id);
-        });
-}
-
-function getCourse(){
-    return Course;
-}
-
-
-
 module.exports = {
-    run, save,getCourses,getCourseModel,getCourse
+    run
 }

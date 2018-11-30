@@ -64,7 +64,7 @@ class MenuModel {
             Menu.sync({
                 //force:true
             }).then(() => {
-                console.log("Chair Table is created!")
+                console.log("Menu Table is created!")
             });
             return Menu;
         }

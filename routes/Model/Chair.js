@@ -47,16 +47,6 @@ function run(Sequelize, sequelize, user) {
     // console.log(f.getUserTable())
 }
 
-function save(chair) {
-    Chair.create({
-        name: chair.name,
-        status: chair.status,
-        position: chair.position
-    })
-        .then(newUser => {
-            console.log(newUser.name);
-        });
-}
 
 module.exports = {
     run

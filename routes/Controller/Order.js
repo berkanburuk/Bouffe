@@ -34,12 +34,12 @@ module.exports = function (app) {
             next();
         }),
 
-        app.get('/api/getNotification', function (request, response,next) {
+        app.get('/api/:order/:getNotification', function (request, response,next) {
                 response.end(notifications + '\n');
                 next();
             }),
 
-    app.get('/api/:getAllOrders', function (req, res, next) {
+    app.get('/api/:order/:getAllOrders', function (req, res, next) {
         ordersController.findAll({ raw: true }).then(result =>{
             console.log(result);
             res.end(result);

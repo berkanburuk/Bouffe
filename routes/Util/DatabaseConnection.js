@@ -33,7 +33,8 @@ const tableNames = {
     orderBeverage:'orderBeverage',
     orderFood:'orderFood',
     userCourse:'userCourse',
-    orderMenu:'orderMenu'
+    orderMenu:'orderMenu',
+    waiter : 'waiter'
 }
 
 

@@ -51,7 +51,7 @@ const deleteUser = (username) =>{
     return new Promise((resolve,reject)=>{
         mUser.destroy({
             where: {
-                username: username
+                'username': username
             }
         }).then(user=>{
             resolve('User is deleted');
@@ -107,7 +107,7 @@ module.exports = function(app) {
         //res.end();
     }),
 
-        app.post('/api/:addUser/', function (request, response, next) {
+        app.post('/api/:user/:addUser/', function (request, response, next) {
             var data = request.body;
             /*
             for (var key in data) {
@@ -118,7 +118,7 @@ module.exports = function(app) {
         })
 
 
-    app.post('/api/:addUser2/', function (request, response, next) {
+    app.post('/api/:user/:addUser2/', function (request, response, next) {
         var data = request.body;
         save(data).then()
         response.end('Successfully Added');
@@ -126,7 +126,7 @@ module.exports = function(app) {
     })
 
     //checkUser
-    app.get('/api/:getAllUsers', function (request, response, next) {
+    app.get('/api/:user/:getAllUsers', function (request, response, next) {
 
         getAllUsers().then(user => {
             console.log(user);
@@ -138,7 +138,7 @@ module.exports = function(app) {
     })
 
     //checkUser
-    app.get('/api/:username/:password', function (request, response, next) {
+    app.get('/api/:user/:username/:password', function (request, response, next) {
 
         checkValidationOfUser('berkan', '1234').then(user => {
             response.statusCode = 200;
@@ -152,7 +152,7 @@ module.exports = function(app) {
         next();
     });
 
-    app.get('/user/api/delete/:username', function (request, response, next) {
+    app.get('/api/:user/:deleteUser', function (request, response, next) {
         console.log(request);
         console.log(request.username);
         deleteUser(null).then(user => {
