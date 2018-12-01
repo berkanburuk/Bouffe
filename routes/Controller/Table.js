@@ -82,21 +82,21 @@ const deleteTable = (username) =>{
 
 
 module.exports = function(app){
-    app.get('/table', function (request, response) {
+    app.get('/table'), function (request, response) {
         console.log('Instructor');
         //response.sendFile(path.resolve('../../public/Pages/Waiter.html'));
         //res.end();
-    }),
+    },
 
-        app.post('/api/:table/:addTable', function(request,response,next){
+        app.post('/api/:table/:addTable'), function(request,response,next){
         save(request.body);
         response.end('Table Successfully Added!');
         next();
-    }),
-    app.get('/api/:table/:getTables', function (request, response) {
+    },
+    app.get('/api/:table/:getTables'), function (request, response) {
         getAllTables('ad');
         //res.end();
-    })
+    }
 }
 
 

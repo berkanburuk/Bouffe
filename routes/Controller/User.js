@@ -7,17 +7,60 @@ let mUserFunc = require('../Util/DatabaseConnection').getUserModel;
 let db = sequelize();
 let dbNames = tableNames();
 let mUser = db.model(dbNames.user);
+let mRole = db.model(dbNames.role);
 
 const save = (data)=>{
     return new Promise((resolve,reject)=>{
         mUser.create(data).then(user=> {
-            console.log(user.get())
-            resolve(user);
+            console.log(user.get(0))
+            resolve(user.get(0));
         }).catch(error => {
             reject('Cannot create the user!');
         });
     })
 }
+
+
+
+const createDefaultUser = (data,roleId)=> {
+    return new Promise((resolve, reject) => {
+        mUser.findOrCreate({
+            where:{
+                username:data.username
+            }
+        })
+            .then((user) => {
+                console.log(user[0].get(0));
+                user[0].setRoles(roleId);
+            })
+            .catch(error=>{
+                reject(error);
+            })
+    })
+}
+const setARole = (data,roleId) =>{
+    return new Promise((resolve,reject)=>{
+        mUser.findByPk(data.username)
+            .then((user)=>{
+                user.setRoles(roleId);
+                resolve(user);
+            }).catch(error=>{
+            reject(error);
+        })
+    })
+}
+
+const getAUserRole = (username)=>{
+    return new Promise((resolve,reject)=>{
+    mUser.findByPk('username')
+        .then((user)=>{
+        resolve(user.getRoles())
+        }).catch(error=>{
+            reject(error);
+        })
+    })
+}
+
 
 const checkValidationOfUser = (username, password) => {
     return new Promise((resolve, reject) => {
@@ -35,11 +78,7 @@ const checkValidationOfUser = (username, password) => {
 
 const getAllUsersDeneme = () => {
     return new Promise((resolve, reject) => {
-        mUser.findOne({
-        where:{
-            username:'berkan'
-        }
-        })
+        mUser.findAll({})
             .then(user=>{
                 console.log(user);
             resolve(user);
@@ -145,15 +184,38 @@ module.exports = function(app) {
         //res.end();
     }),
 
+        app.get('/api/:user/:addRoleToUser'), function (request, response) {
 
-    app.post('/api/:user/:addUser2', function (request, response) {
+            console.log('addRoleToUser');
+            addRoleToUser(data).then(user => {
+                console.log(user);
+                response.write('2');
+            }).catch(error => {
+                console.log(error);
+                response.write('2');
+            })
+
+        },
+        app.get('/api/:user/:getAUserRole'), function (request, response) {
+            console.log('getAUserRole');
+            getAUserRole('berkan').then(data => {
+                console.log(data);
+                response.write('2');
+            }).catch(error => {
+                console.log(error);
+                response.write('2');
+            })
+
+        },
+
+    app.post('/api/:user/:addUser2'), function (request, response) {
         var data = request.body;
         save(data).then(user => {
             console.log(user);
         }).catch(error => {
             console.log(error);
         })
-    }),
+    },
 
     //checkUser
     app.get('/api/:user/:getAllUsers', function (request, response) {
@@ -175,7 +237,7 @@ module.exports = function(app) {
     }),
 
     //checkUser
-    app.get('/api/:user/:username/:password', function (request, response) {
+    app.get('/api/:user/:username/:password'), function (request, response) {
 
         checkValidationOfUser('berkan', '1234').then(user => {
             response.statusCode = 200;
@@ -187,10 +249,10 @@ module.exports = function(app) {
             response.end(error);
         })
 
-    }),
+    },
 
 
-    app.get('/api/:user/:deleteUser', function (request, response) {
+    app.get('/api/:user/:deleteUser'), function (request, response) {
         console.log(request);
         console.log(request.username);
         deleteUser(null).then(user => {
@@ -200,8 +262,8 @@ module.exports = function(app) {
         })
 
 
-    }),
-        app.get('/api/:user/:getTables', function (request, response) {
+    },
+        app.get('/api/:user/:getTables'), function (request, response) {
             getAllTables('a').then(data => {
                 console.log(data);
             }).catch(error=>{
@@ -210,7 +272,10 @@ module.exports = function(app) {
 
 
 
-        })
+        }
+
+
+
 
 }
 

@@ -8,11 +8,9 @@ class ChairModel {
                 autoIncrement: true,
                 type: Sequelize.INTEGER
             },
-            status: {
-                type: Sequelize.INTEGER
-            },
-            position: {
-                type: Sequelize.INTEGER
+            chairType: {
+                type: Sequelize.STRING,
+                isNull:false
             }
         })
         let mTable = sequelize.model('table');
@@ -41,6 +39,16 @@ class ChairModel {
     }
 
 }
+const createDefaultSquareChairs = (data)=>{
+    return new Promise((resolve,reject)=>{
+        Chair.create(data).then(data=> {
+            console.log(data.get(0))
+            resolve(data);
+        }).catch(error => {
+            reject(error + 'Cannot create the Chair!');
+        });
+    })
+}
 
 function run(Sequelize, sequelize, user) {
     var f = new ChairModel(Sequelize, sequelize, user);
@@ -49,7 +57,22 @@ function run(Sequelize, sequelize, user) {
     // console.log(f.getUserTable())
 }
 
+function defaultValuesForChair(){
+    let square = {
+        chairType:'square'
+    };
+    let circular = {
+        chairType:'circular'
+    };
+    for(var i=0;i<2;i++){
+        createDefaultSquareChairs(square);
+    }
+    for(var i=0;i<1;i++){
+        createDefaultSquareChairs(circular);
+    }
+}
+
 
 module.exports = {
-    run
+    run,defaultValuesForChair
 }

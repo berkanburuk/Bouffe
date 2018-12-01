@@ -33,6 +33,19 @@ const GetAChair = (name) => {
 }
 
 
+const addChairs = (tableId) =>{
+    return new Promise((resolve,reject)=>{
+        mTable.findByPk(tableId)
+            .then((table)=>{
+                table.add(chair);
+                resolve(user);
+            }).catch(error=>{
+            reject(error);
+        })
+
+    })
+}
+
 const getAllChairs = () => {
     return new Promise((resolve, reject) => {
         mChair.findAll({
@@ -62,12 +75,12 @@ const deleteChair = (id) =>{
 
 
 module.exports = function(app){
-    app.get('/chair', function (request, response) {
+    app.get('/chair'), function (request, response) {
         console.log('Chair');
         response.sendFile(path.resolve('../../public/Pages/Chair.html'));
         //res.end();
-    }),
-    app.post('/api/:chair/:addChair', function(request,response,next){
+    },
+    app.post('/api/:chair/:addChair'), function(request,response,next){
         save(request.body);
         /*
         for (var key in data) {
@@ -75,7 +88,7 @@ module.exports = function(app){
         }
         */
         next();
-    })
+    }
 }
 
 

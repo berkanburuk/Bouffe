@@ -88,7 +88,12 @@ menu.run(Sequelize,sequelize,tableNames.menu);
 
 beverage.run(Sequelize,sequelize,tableNames.beverage);
 
-sequelize.sync();
+sequelize.sync().then(()=>{
+    chair.defaultValuesForChair();
+    user.createDefaultUser();
+})
+
+//chair.defaultValuesForChair();
 
 /*
 module.exports = {

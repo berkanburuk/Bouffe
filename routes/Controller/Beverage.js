@@ -4,12 +4,12 @@ var sequelize = require('../Util/DatabaseConnection').getSequelize;
 
 module.exports = function(app) {
 
-    app.get('/beverage', function (request, response) {
+    app.get('/beverage'), function (request, response) {
         console.log('Beverage');
         response.sendFile(path.resolve('../../public/Pages/Beverage.html'));
         //res.end();
-    }),
-        app.post('/api/:beverage/:addBeverage/', function (request, response, next) {
+    },
+        app.post('/api/:beverage/:addBeverage/'), function (request, response, next) {
             var data = request.body;
     console.log("Beverage Controller");
 /*
@@ -30,6 +30,6 @@ module.exports = function(app) {
             response.end('Beverage Successfully Added!');
             */
             next();
-        })
+        }
 
 }

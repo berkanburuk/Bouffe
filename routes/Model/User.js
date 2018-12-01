@@ -102,10 +102,44 @@ function join(){
         }]
     });
 }
-function getUser(){
-    return User;
+const createDefaultUser = (data)=> {
+    var data = {
+        username: 'berkan',
+        password: '1234',
+        firstName: 'berkan',
+        lastName: 'buruk',
+        registrationSemester: '01.01.1994',
+        bilkentId: '1234'
+    };
+    return new Promise((resolve, reject) => {
+        User.findOrCreate({
+            where:{
+                username:data.username
+            }
+        })
+            .then((user) => {
+                console.log(user[0].get(0));
+                user[0].setRoles(1);
+            })
+            .catch(error=>{
+                reject(error);
+        })
+    })
+
 }
 
+
+const addRoleToUser = (data) =>{
+    return new Promise((resolve,reject)=>{
+        User.findByPk(data)
+            .then((user)=>{
+                user.setRoles('1');
+                resolve(user);
+            }).catch(error=>{
+            reject(error);
+        })
+    })
+}
 module.exports = {
-    run,getUser
+    run,createDefaultUser
 }
