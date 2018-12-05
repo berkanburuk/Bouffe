@@ -29,12 +29,19 @@ class FoodModel {
             }
         });
         //FoodTable.belongsTo(Order, {foreignKey: 'fk_Order',targetKey:'foodId'});
+        const mMenu = sequelize.define('menu', {})
+        const mMenuFood = sequelize.define('menuFood', {})
+        Food.belongsToMany(mMenu,{
+            through:mMenuFood
+        });
+        /*
         Food.sync({
             //force: true
         })
             .then(() => {
                 console.log("Food Table is created!");
             });
+            */
         return Food;
     }
 
@@ -59,35 +66,12 @@ function run(Sequelize, sequelize, food) {
 //    let saveTable = f.save('');
 }
 
-function findByName(_name) {
-    Food.findOne({
-        name: _name
-    })
-        .then(user => {
-            console.log('Found user: ${user}');
-        })
-}
-
 function getAllFood() {
     Food.findAll().then(function (food) {
         console.log(food[0].get('name'));
     });
 }
 
-function save(data) {
-    let mFood = getFoodModel();
-    mFood.create(data)
-        .then(newUser => {
-            console.log(newUser.id);
-        });
-}
-
-function getFoodModel(){
-    let s = sequ();
-    let mFood = s.model("food");
-    return mFood;
-}
-
 module.exports = {
-    run, FoodModel, save, getAllFood, getFoodModel, findByName
+    run
 }

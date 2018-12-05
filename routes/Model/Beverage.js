@@ -20,11 +20,21 @@ class BeverageModel {
             }
         })
 
+        let mOrder = sequelize.model('order');
+        let mOrderBeverage= sequelize.model('orderBeverage');
+        Beverage.belongsToMany(mOrder,{through: mOrderBeverage});
+/*
         Beverage.sync({
             //force:true
         }).then(() => {
             console.log("Beverage Table is created!")
         });
+        mOrderBeverage.sync({
+            //force: true
+        }).then(() => {
+            console.log("Order Beverage Table is created!");
+        });
+*/
         return Beverage;
     }
 
@@ -42,32 +52,16 @@ class BeverageModel {
     }
 }
 
-function getBeverageModel(){
-    let s = sequelize();
-    let sequ = s.model("beverage");
-    return mBeverage;
-}
-
-function save(data) {
-    let mBeverage = getInstructorModel();
-    mBeverage.create(data)
-        .then(newUser => {
-            console.log(newUser.id);
-        });
-}
-
-function getBeverages() {
-    Beverage.findAll().then(function (beverage) {
-        console.log(beverage[0].get('name'));
-    });
-}
-
 function run(Sequelize, sequelize, beverage) {
     var f = new BeverageModel(Sequelize, sequelize, beverage);
     console.log("Beverage : " + f);
   //  console.log(f.getUserTable())
 }
-
+function getBeverages() {
+    Beverage.findAll().then(function (beverage) {
+        console.log(beverage[0].get('name'));
+    });
+}
 module.exports = {
-   run, BeverageModel, save, getBeverages
+   run
 }
