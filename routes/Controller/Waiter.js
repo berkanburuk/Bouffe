@@ -68,11 +68,11 @@ module.exports = function(app){
         //res.end();
     }),
 
-        app.post('/api/:waiter/:addWaiter'), function(request,response,next){
+        app.post('/api/:waiter/:addWaiter', function(request,response,next){
         save(request.body);
         response.end('Waiter Successfully Added!');
         next();
-    }
+    })
 
 }
 

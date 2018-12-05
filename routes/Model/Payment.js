@@ -32,7 +32,7 @@ class PaymentModel {
             this.singletonInstance = Payment;
             console.log("Singleton Class_Rol Created!");
         } else {
-            Payment = sequelize.model("role");
+            Payment = sequelize.model("payment");
             console.log("Only one Role Class can be created!");
         }
     }

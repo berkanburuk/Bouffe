@@ -4,20 +4,15 @@ class MenuModel {
 
         createMenu(Sequelize, sequelize, menu) {
             Menu = sequelize.define(menu, {
-                id: {
-                    primaryKey: true,
-                    autoIncrement: true,
-                    type: Sequelize.INTEGER
-                },
                 name:{
+                    primaryKey: true,
                     type:Sequelize.STRING
                 },
                 cousinRegion:{
                     type:Sequelize.STRING
                 },
-                isApprovedByDecan:{
-                    type:Sequelize.BOOLEAN,
-                    default:false
+                date: {
+                    type: Sequelize.DATE
                 }
             })
             //Order FK
@@ -30,20 +25,10 @@ class MenuModel {
 
             Menu.belongsToMany(mFood,
                 {
-                    through: mMenuFood
+                    through: mMenuFood,
+                    targetKey:'name',
+                    onDelete: 'CASCADE'
                 });
-            /*
-            Menu.sync({
-                //force:true
-            }).then(() => {
-                console.log("Menu Table is created!")
-            });
-            mMenuFood.sync({
-                //force:true
-            }).then(() => {
-                console.log("MenuFood Table is created!")
-            });
-            */
             return Menu;
         }
 
