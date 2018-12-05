@@ -62,24 +62,24 @@ const deleteMenu = (name) =>{
 
 module.exports = function (app) {
 
-    app.get('/menu', function (request, response) {
+    app.get('/menu'), function (request, response) {
         console.log('Menu');
         response.sendFile(path.resolve('../../public/Pages/Menu.html'));
 
-    }),
+    },
 
-        app.post('/api/:menu/:addMenu/', function (request, response, next) {
+        app.post('/api/:menu/:addMenu/'), function (request, response, next) {
             var data = request.body;
             //menusController.create(data);
             response.status= 200;
             response.end();
             next();
-        }),
-        app.delete('/api/:menu/:deleteMenu', function(request, response){
+        },
+        app.delete('/api/:menu/:deleteMenu'), function(request, response){
             console.log('going to delete', request.body);
 
             response.end();
-        });
+        }
 
 }
 

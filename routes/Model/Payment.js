@@ -15,12 +15,14 @@ class PaymentModel {
                 type:Sequelize.INTEGER
             }
         });
+        /*
         Payment.sync({
             //force:true
         })
             .then(() => {
                 console.log("Role Table is created!");
             });
+            */
         return Payment;
     }
     constructor(Sequelize, sequelize, payment) {

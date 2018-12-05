@@ -6,7 +6,6 @@ let db = sequelize();
 let dbNames = tableNames();
 let mFood = db.model(dbNames.food);
 
-
 const save = (data)=>{
     return new Promise((resolve,reject)=>{
         mFood.create(data).then(food=> {
@@ -66,14 +65,13 @@ const deleteFood = (name) =>{
 
 
 module.exports = function(app){
-        var s = sequelize();
-        var foodsController = s.model("food");
 
-        app.get('/food', function (request, response) {
+
+        app.get('/food'), function (request, response) {
             console.log('Instructor');
             response.sendFile(path.resolve('../../public/Pages/Food.html'));
             //res.end();
-        }),
+        },
 
 
             app.post('/api/:food/:addFood'), function(request,response,next){
@@ -82,16 +80,16 @@ module.exports = function(app){
             response.end('Food Successfully Added!');
             next();
 
-        }
+        },
 
-        app.get('/api/:food/:getAllFoods', function (req, res, next) {
+        app.get('/api/:food/:getAllFoods'), function (req, res, next) {
             foodsController.findAll({ raw: true }).then(result =>{
                 console.log(result);
                 //res.status(200).send({ data: result });
                 res.end(result)
             });
             next();
-        })
+        }
 
 
     }

@@ -9,13 +9,10 @@ let role = require('../Model/Role');
 let user = require('../Model/User');
 let table = require('../Model/Table');
 let beverage = require('../Model/Beverage');
-let menuFood = require('../Model/MenuFood');
 let appointment= require('../Model/Appointment');
 let course = require('../Model/Course');
-let orderBeverage = require('../Model/OrderBeverage');
-let userCourse = require('../Model/UserCourse');
+
 let payment = require('../Model/Payment');
-let OrderMenu = require('../Model/OrderMenu');
 
 const tableNames = {
     user:"user",
@@ -59,17 +56,51 @@ const sequelize = new Sequelize(dbConnection.database, dbConnection.username, db
     pool: dbConnection.pool
 });
 
-
-
-sequelize
-    .authenticate()
+sequelize.authenticate()
     .then(() => {
         console.log('Connection has been established successfully.');
-    })
+
+
+        })
     .catch(err => {
         console.error('Unable to connect to the database:', err);
     });
 
+
+//1.
+let roleModel = role.run(Sequelize,sequelize,tableNames.role);
+//2.
+let userModel =  user.run(Sequelize,sequelize,tableNames.user);
+//3.
+course.run(Sequelize,sequelize,tableNames.course);
+//5.
+table.run(Sequelize,sequelize,tableNames.table);
+//6.
+chair.run(Sequelize,sequelize,tableNames.chair);
+//7.
+payment.run(Sequelize,sequelize,tableNames.payment);
+//11.
+order.run(Sequelize,sequelize,tableNames.order);
+
+food.run(Sequelize,sequelize,tableNames.food);
+
+menu.run(Sequelize,sequelize,tableNames.menu);
+
+beverage.run(Sequelize,sequelize,tableNames.beverage);
+
+sequelize.sync().then(()=>{
+    role.createSimpleRoleData();
+        course.createCourseData();
+        user.createDefaultUser();
+        chair.defaultValuesForChair();
+
+
+
+
+
+})
+
+//chair.defaultValuesForChair();
 
 /*
 module.exports = {
@@ -82,53 +113,28 @@ module.exports = {
 //console.log("MENUUU->" + sequelize.model("menu"));
 
 
-//1.
-role.run(Sequelize,sequelize,tableNames.role);
-
-//2.
-user.run(Sequelize,sequelize,tableNames.user);
-
-//3.
-course.run(Sequelize,sequelize,tableNames.course);
-
-//4.
-userCourse.run(Sequelize,sequelize,tableNames.userCourse);
-
-//5.
-table.run(Sequelize,sequelize,tableNames.table);
-//6.
-chair.run(Sequelize,sequelize,tableNames.chair);
-
-//7.
-menu.run(Sequelize,sequelize,tableNames.menu);
-//8.
-
-food.run(Sequelize,sequelize,tableNames.food);
-
-//9.
-menuFood.run(Sequelize,sequelize,tableNames.menuFood);
-//10.
-payment.run(Sequelize,sequelize,tableNames.payment);
-//11.
-beverage.run(Sequelize,sequelize,tableNames.beverage);
-
-//12
-order.run(Sequelize,sequelize,tableNames.order);
-
-//13
-orderBeverage.run(Sequelize,sequelize,tableNames.orderBeverage);
 
 //14
-OrderMenu.run(Sequelize,sequelize,tableNames.orderMenu);
-
+/*
+*
+    HasOne inserts the association key in target model
+    whereas BelongsTo inserts the association key in the source model.
+ *
+ * Project.hasMany(User, {as: 'Workers'})
+ * This will add the attribute projectId or project_id to User.
+ * Instances of Project will get the accessors getWorkers and setWorkers.
+* */
 function getSequelize(){
     return sequelize;
 }
 function getTableNames(){
     return tableNames
 }
+function getUserModel(){
+    return userModel;
+}
 module.exports = {
-    getSequelize,getTableNames
+    getSequelize,getTableNames,getUserModel
 }
 
 /*

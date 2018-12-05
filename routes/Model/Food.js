@@ -29,12 +29,19 @@ class FoodModel {
             }
         });
         //FoodTable.belongsTo(Order, {foreignKey: 'fk_Order',targetKey:'foodId'});
+        const mMenu = sequelize.define('menu', {})
+        const mMenuFood = sequelize.define('menuFood', {})
+        Food.belongsToMany(mMenu,{
+            through:mMenuFood
+        });
+        /*
         Food.sync({
             //force: true
         })
             .then(() => {
                 console.log("Food Table is created!");
             });
+            */
         return Food;
     }
 

@@ -4,15 +4,15 @@ var sequelize = require('../Util/DatabaseConnection').getSequelize;
 
 module.exports = function(app) {
 
-    app.get('/beverage', function (request, response) {
+    app.get('/beverage'), function (request, response) {
         console.log('Beverage');
         response.sendFile(path.resolve('../../public/Pages/Beverage.html'));
         //res.end();
-    }),
-        app.post('/api/:beverage/:addBeverage/', function (request, response, next) {
+    },
+        app.post('/api/:beverage/:addBeverage/'), function (request, response, next) {
             var data = request.body;
     console.log("Beverage Controller");
-
+/*
             var dateObj = new Date();
             var month = dateObj.getUTCMonth() + 1; //months from 1-12
             var day = dateObj.getUTCDate();
@@ -28,7 +28,8 @@ module.exports = function(app) {
 
             //Beverage.save(data);
             response.end('Beverage Successfully Added!');
+            */
             next();
-        })
+        }
 
 }
