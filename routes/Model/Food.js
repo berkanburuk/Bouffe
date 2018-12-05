@@ -4,14 +4,9 @@ class FoodModel {
     createFood(Sequelize, sequelize, food) {
         //Creates the Content of Form
          Food = sequelize.define(food, {
-            id: {
-                primaryKey: true,
-                autoIncrement: true,
-                type: Sequelize.INTEGER
-            },
              name: {
-                 type: Sequelize.STRING,
-                 allowNull: false
+                 primaryKey: true,
+                 type: Sequelize.STRING
              },
             type: {
                 type: Sequelize.STRING,
@@ -31,17 +26,8 @@ class FoodModel {
         //FoodTable.belongsTo(Order, {foreignKey: 'fk_Order',targetKey:'foodId'});
         const mMenu = sequelize.define('menu', {})
         const mMenuFood = sequelize.define('menuFood', {})
-        Food.belongsToMany(mMenu,{
-            through:mMenuFood
-        });
-        /*
-        Food.sync({
-            //force: true
-        })
-            .then(() => {
-                console.log("Food Table is created!");
-            });
-            */
+        Food.belongsToMany(mMenu,{through:mMenuFood, targetKey:'name',onDelete: 'CASCADE'});
+
         return Food;
     }
 

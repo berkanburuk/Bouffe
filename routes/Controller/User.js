@@ -9,7 +9,126 @@ let dbNames = tableNames();
 let mUser = db.model(dbNames.user);
 let mRole = db.model(dbNames.role);
 
-const save = (data)=>{
+
+module.exports = function(app) {
+
+    app.get('/user', function (request, response,next) {
+        console.log('User Controller');
+        response.sendFile(path.resolve('../../public/Pages/index.html'));
+        //response.render(path.resolve('../../public/Pages/index.html'));
+        next();
+    }),
+        app.get('/api/:deleteuser', function (request, response,next ) {
+            console.log("Delete USER");
+            deleteUser('berkan').then(user => {
+                console.log("Delete User: " + user);
+                response.end('Deleted');
+            }).catch(error => {
+                console.log("Delete User: " + error);
+                response.end(error);
+            })
+            next();
+        }),
+
+        //checkUser
+            app.get('/api/:user/:username/:password', function (request, response,next) {
+                    var username = request.params.username;
+                    var password = request.params.password;
+                    console.log(username,password);
+        checkValidationOfUser(username,password).then(user => {
+            response.statusCode = 200;
+            console.log("user "+user);
+            response.end(user);
+        }).catch(error => {
+            response.statusCode = 404;
+            console.log(error);
+            response.end(error);
+        })
+                next();
+    })
+
+        app.post('/api/:user/:createAUser', function (request, response,next) {
+        console.log("Create A User");
+        var data = request.body;
+        createAUser(data).then(user => {
+            console.log(user);
+            response.end(user);
+        }).catch(error => {
+            console.log(error);
+            response.end(error);
+        })
+            next();
+    }),
+        app.post('/api/:user/:updateAUser', function (request, response,next) {
+            console.log("Update A User");
+            var data = request.body;
+            updateAUser(data).then(user => {
+                console.log(user);
+                response.end(user);
+            }).catch(error => {
+                console.log(error);
+                response.end(error);
+            })
+            next();
+
+        }),
+
+        app.get('/api/:user/:getAllUsers', function (request, response,next) {
+            console.log("Get all Users");
+
+            getAllUsers().then(user => {
+                console.log(user[0].get(0));
+                response.end(user[0].get(0));
+            }).catch(error => {
+                console.log(error);
+                response.end(error);
+            });
+            next();
+
+        }),
+
+        app.get('/api/:user/:getTables', function (request, response,next) {
+        getAllTables('a').then(data => {
+            console.log(data);
+        }).catch(error=>{
+            console.log(error);
+        })
+            next();
+    })
+      /*
+        app.get('/api/:user/:addARole', function (request, response,next) {
+        addARole('a').then(data => {
+            console.log(data);
+        }).catch(error=>{
+            console.log(error);
+        })
+            next();
+    })
+
+
+        app.get('/api/:user/:getAUserRole', function (request, response) {
+            console.log('getAUserRole');
+            getAUserRole('berkan').then(data => {
+                console.log(data);
+                response.write('2');
+            }).catch(error => {
+                console.log(error);
+                response.write('2');
+            })
+
+        })
+
+
+*/
+
+
+}
+
+
+
+
+
+function save(data){
     return new Promise((resolve,reject)=>{
         mUser.create(data).then(user=> {
             console.log(user.get(0))
@@ -20,68 +139,119 @@ const save = (data)=>{
     })
 }
 
-
-
-const createDefaultUser = (data,roleId)=> {
+function createAUser(data){
+    //var data = sampleUserData();
     return new Promise((resolve, reject) => {
         mUser.findOrCreate({
-            where:{
-                username:data.username
-            }
+            where:
+                {
+                    username: data.username
+                },
+            defaults:
+                {
+                    password: data.password,
+                    firstName: data.firstName,
+                    lastName: data.lastName,
+                    bilkentId: data.bilkentId
+                }
+        }).then((user)=>{
+            console.log(user[0].get(0));
+            user[0].addRoles(data.roleId);
+            user[0].addCourses(data.courseId);
+
+            resolve("User is created successfully.");
         })
-            .then((user) => {
-                console.log(user[0].get(0));
-                user[0].setRoles(roleId);
+        /*.spread((user, created)=> {
+            console.log("CRRRR : " + created);
+            console.log(user.get({plain: true}));
+
+        })*/
+            .catch(error =>{
+                reject("User cannot be created!" + error);
             })
-            .catch(error=>{
-                reject(error);
-            })
+
     })
+
 }
-const setARole = (data,roleId) =>{
+
+
+
+function updateAUser(data){
+    var data = sampleUserData();
+    return new Promise((resolve, reject) => {
+        mUser.findOne({
+            where:
+                {
+                    username: data.username
+                }
+        }).then((user)=>{
+            console.log(user[0].get(0));
+            user[0].setRoles(data.roleId);
+            user[0].setCourses(data.courseId);
+            resolve("User is updated successfully.");
+        })
+        /*.spread((user, created)=> {
+            console.log("CRRRR : " + created);
+            console.log(user.get({plain: true}));
+
+        })*/
+            .catch(error =>{
+                reject("User Cannot Be Updated!" + error);
+            })
+
+    })
+
+}
+
+
+function setARole(data){
     return new Promise((resolve,reject)=>{
         mUser.findByPk(data.username)
             .then((user)=>{
-                user.setRoles(roleId);
+                user.setRoles(data.roleId);
                 resolve(user);
             }).catch(error=>{
             reject(error);
         })
     })
 }
-
-const getAUserRole = (username)=>{
+function addARole(data){
     return new Promise((resolve,reject)=>{
-    mUser.findByPk('username')
-        .then((user)=>{
-        resolve(user.getRoles())
-        }).catch(error=>{
+        mUser.findByPk(data.username)
+            .then((user)=>{
+                user.addRoles(data.roleId);
+                resolve(user);
+            }).catch(error=>{
             reject(error);
         })
     })
 }
+/*
+const getAUserRole = (username)=>{
+    return new Promise((resolve,reject)=>{
+        mUser.findByPk('username')
+            .then((user)=>{
+                resolve(user.getRoles())
+            }).catch(error=>{
+            reject(error);
+        })
+    })
+}
+*/
 
-
-const checkValidationOfUser = (username, password) => {
+function checkValidationOfUser(username, password){
     return new Promise((resolve, reject) => {
         mUser.findOne({
-            where:{'username': username,
-                'password' : password
+            where:{
+                username: username,
+                password : password
             }
         }).then(user=>{
-            resolve(user.get());
-        }).catch(error => {
-            reject("Username or Password is wrong!");
-        })
-    });
-}
-
-const getAllUsersDeneme = () => {
-    return new Promise((resolve, reject) => {
-        mUser.findAll({})
-            .then(user=>{
-                console.log(user);
-            resolve(user);
+            if (user != null && user != undefined ){
+                resolve(user);
+            }else{
+                reject("Username or Password is wrong!");
+            }
         }).catch(error => {
             reject(error);
         })
@@ -89,20 +259,22 @@ const getAllUsersDeneme = () => {
 }
 
 
-const getAllUsers = () => {
+
+function getAllUsers(){
     return new Promise((resolve, reject) => {
+
         mUser.findAll({
-             //   attributes: ['foo', 'bar']
+                //   attributes: ['foo', 'bar']
             }
         ).then(user=>{
-            resolve(user.get());
+            resolve(user);
         }).catch(error => {
             reject("Cannot get all Users");
         })
     });
 }
 
-const deleteUser = (username) =>{
+function deleteUser(username){
     return new Promise((resolve,reject)=>{
         mUser.destroy({
             where: {
@@ -116,11 +288,9 @@ const deleteUser = (username) =>{
     })
 }
 
-
-const getAllTables = (data) => {
+function getAllTables(data){
     return new Promise((resolve, reject) => {
         mUser.findAll({
-
             include: [{
                 model: 'table',
                 /*
@@ -176,134 +346,16 @@ function manyToMany() {
 }
 
 */
-module.exports = function(app) {
-
-    app.get('/user', function (request, response) {
-        console.log('Menu');
-        response.sendFile(path.resolve('../../public/Pages/index.html'));
-        //res.end();
-    }),
-
-        app.get('/api/:user/:addRoleToUser'), function (request, response) {
-
-            console.log('addRoleToUser');
-            addRoleToUser(data).then(user => {
-                console.log(user);
-                response.write('2');
-            }).catch(error => {
-                console.log(error);
-                response.write('2');
-            })
-
-        },
-        app.get('/api/:user/:getAUserRole'), function (request, response) {
-            console.log('getAUserRole');
-            getAUserRole('berkan').then(data => {
-                console.log(data);
-                response.write('2');
-            }).catch(error => {
-                console.log(error);
-                response.write('2');
-            })
-
-        },
-
-    app.post('/api/:user/:addUser2'), function (request, response) {
-        var data = request.body;
-        save(data).then(user => {
-            console.log(user);
-        }).catch(error => {
-            console.log(error);
-        })
-    },
-
-    //checkUser
-    app.get('/api/:user/:getAllUsers', function (request, response) {
-    /*
-        getAllUsers().then(user => {
-            console.log(user);
-        }).catch(error => {
-            console.log(error);
-        });
-*/
-        getAllUsersDeneme().then(user => {
-            console.log(user);
-            response.send(user);
-            //response.end();
-        }).catch(error => {
-            console.log(error);
-        });
-
-    }),
-
-    //checkUser
-    app.get('/api/:user/:username/:password'), function (request, response) {
-
-        checkValidationOfUser('berkan', '1234').then(user => {
-            response.statusCode = 200;
-            console.log(user);
-            response.send(user);
-        }).catch(error => {
-            response.statusCode = 404;
-            console.log(error);
-            response.end(error);
-        })
-
-    },
-
-
-    app.get('/api/:user/:deleteUser'), function (request, response) {
-        console.log(request);
-        console.log(request.username);
-        deleteUser(null).then(user => {
-            console.log(user);
-        }).catch(error => {
-            console.log(error);
-        })
-
-
-    },
-        app.get('/api/:user/:getTables'), function (request, response) {
-            getAllTables('a').then(data => {
-                console.log(data);
-            }).catch(error=>{
-                console.log(error);
-            })
-
-
-
-        }
-
-
-
+function sampleUserData(){
+    var data = {
+        username:'happy',
+        password: '4123',
+        firstName: 'ali',
+        lastName: 'veli',
+        bilkentId: 1234,
+        roleId:1,
+        courseId:246
+    }
+    return data;
 
 }
-
-
-
-/*
-// register a route and add all methods
-router.route('/user/:id')
-    .get(function (req, res) {
-        // this is GET /pet/:id
-        res.setHeader('Content-Type', 'application/json')
-        //res._write('hel');
-        res.end(JSON.stringify({ name: 'hello' }))
-
-    })
-    .delete(function (req, res) {
-        // this is DELETE /pet/:id
-        res.end()
-    })
-    .all(function (req, res) {
-        // this is called for all other methods not
-        // defined above for /pet/:id
-        res.statusCode = 405
-        res.end()
-    })
-
-
-
-module.exports = router;
-
-*/

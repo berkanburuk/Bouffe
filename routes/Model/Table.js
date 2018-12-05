@@ -24,14 +24,8 @@ class TableModel {
             }
         });
         let mUser = sequelize.model('user');
-        Table.belongsTo(mUser,{targetKey:'username'});
-/*
-        Table.sync({
-            //force: true
-        }).then(() => {
-            console.log("Table table has created!");
-        })
-        */
+        Table.belongsTo(mUser,{targetKey:'username',onDelete:'CASCADE'});
+
         return Table;
     }
 

@@ -33,24 +33,13 @@ class UserModel {
         //UserRole
         let mRole= sequelize.model('role');
         let mUserRole= sequelize.model('userRole');
-        User.belongsToMany(mRole,{through: mUserRole,targetKey:'username'});
+        User.belongsToMany(mRole,{through: mUserRole,targetKey:'username', onDelete: 'CASCADE'});
 
         //UserCourse
         const mCourse = sequelize.define('course', {})
         const mUserCourse = sequelize.define('userCourse', {})
-        User.belongsToMany(mCourse,{through: mUserCourse,targetKey:'username'});
+        User.belongsToMany(mCourse,{through: mUserCourse,targetKey:'username', onDelete: 'CASCADE'});
 
-/*
-        User.sync({
-            //force:true
-        }).then(() => {
-            console.log("User table is created!");
-        });
-        mUserRole.sync({
-            //force:true
-        }).then(() => {
-            console.log("UserRole table is created!");
-        });*/
         return User;
     }
 
@@ -71,6 +60,7 @@ class UserModel {
 function run(Sequelize, sequelize, user) {
     var f = new UserModel(Sequelize, sequelize, user);
     console.log("User : " + f);
+
     return User;
    // console.log(f.getUserTable())
 }
@@ -102,6 +92,7 @@ function join(){
         }]
     });
 }
+/*
 const createDefaultUser = (data)=> {
     var data = {
         username: 'berkan',
@@ -124,6 +115,56 @@ const createDefaultUser = (data)=> {
             .catch(error=>{
                 reject(error);
         })
+    })
+
+}
+*/
+function sampleUserData(){
+    var data = {
+        username: 'berkan',
+        password: '1234',
+        firstName: 'berkan',
+        lastName: 'buruk',
+        registrationSemester: '01.01.1994',
+        bilkentId: 1234
+    }
+    return data;
+
+}
+
+const createDefaultUser = (data,roleId,courseId)=> {
+      data = sampleUserData();
+        roleId = 1;
+        courseId = 246;
+
+    return new Promise((resolve, reject) => {
+            User.findOrCreate({
+            where:
+                {
+                    username: data.username
+                },
+            defaults:
+                {
+                    password: '1234',
+                    firstName: 'berkan',
+                    lastName: 'buruk',
+                    bilkentId: 1
+                }
+        }).then((user)=>{
+            console.log(user[0].get(0));
+            user[0].setRoles(roleId);
+                user[0].setCourses(courseId);
+                resolve("User is created successfully.");
+        })
+                /*.spread((user, created)=> {
+                    console.log("CRRRR : " + created);
+                    console.log(user.get({plain: true}));
+
+                })*/
+        .catch(error =>{
+            reject("User Createtion" + error);
+        })
+
     })
 
 }

@@ -42,11 +42,28 @@ class CourseModel{
     }
 }
 
+function createCourseData(){
+
+    Course.create({
+        id:246,
+        courseName:'Restaurant Service'
+    }).catch(err=>{
+
+    });
+    Course.create({
+        id:323,
+        courseName:'International Cuisines'
+    }).catch(err=>{
+
+    });
+
+}
 function run(Sequelize, sequelize, course) {
     var f = new CourseModel(Sequelize, sequelize, course);
     console.log("Course : " + f);
     // console.log(f.getUserTable())
 }
+
 
 function getCourses() {
     Course.findAll().then(function (courses) {
@@ -55,5 +72,5 @@ function getCourses() {
 }
 
 module.exports = {
-    run
+    run,createCourseData
 }

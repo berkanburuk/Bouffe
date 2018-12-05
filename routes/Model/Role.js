@@ -88,7 +88,6 @@ function createSimpleRoleData(){
 function run(Sequelize, sequelize, role) {
     var f = new RoleModel(Sequelize, sequelize, role);
     console.log("Role Cons: " + f);
-    createSimpleRoleData();
     return Role;
     // console.log(f.getUserTable())
 }
@@ -144,5 +143,5 @@ function save(data) {
 
 
 module.exports = {
-    run, RoleModel,getRoleModel,getRole
+    run, createSimpleRoleData
 }
