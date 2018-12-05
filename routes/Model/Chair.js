@@ -8,7 +8,11 @@ class ChairModel {
                 autoIncrement: true,
                 type: Sequelize.INTEGER
             },
-            chairType: {
+            status: {
+                type: Sequelize.INTEGER,
+                isNull:false
+            },
+            position: {
                 type: Sequelize.STRING,
                 isNull:false
             }

@@ -32,6 +32,7 @@ const GetAFood = (name) => {
 }
 
 
+
 const getAllFood = () => {
     return new Promise((resolve, reject) => {
         mFood.findAll({
@@ -43,6 +44,13 @@ const getAllFood = () => {
             reject(error + "\nCannot get all Food");
         })
     });
+    /*
+    foodsController.findAll({ raw: true }).then(result =>{
+        console.log(result);
+        //res.status(200).send({ data: result });
+        res.end(result)
+    });
+    */
 }
 //primaryKey  = name olmalı
 const deleteFood = (name) =>{
@@ -67,29 +75,26 @@ const deleteFood = (name) =>{
 module.exports = function(app){
 
 
-        app.get('/food'), function (request, response) {
+        app.get('/food', function (request, response) {
             console.log('Instructor');
             response.sendFile(path.resolve('../../public/Pages/Food.html'));
             //res.end();
-        },
+        }),
 
 
-            app.post('/api/:food/:addFood'), function(request,response,next){
+            app.post('/api/:food/:addFood', function(request,response,next){
             var data = request.body;
             Food.save(data);
             response.end('Food Successfully Added!');
             next();
 
-        },
+        }),
 
-        app.get('/api/:food/:getAllFoods'), function (req, res, next) {
-            foodsController.findAll({ raw: true }).then(result =>{
-                console.log(result);
-                //res.status(200).send({ data: result });
-                res.end(result)
-            });
+        app.get('/api/:food/:getAllFoods', function (req, res, next) {
+
+
             next();
-        }
+        })
 
 
     }

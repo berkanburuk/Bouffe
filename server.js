@@ -9,18 +9,19 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 
 //var appointmentServer = require('./routes/Controller/Appointment')(app);
+var reservationServer = require('./routes/Controller/Reservation')(app);
 var userServer = require('./routes/Controller/User')(app);
-var beverageServer = require('./routes/Controller/Beverage')(app);
-var foodController = require('./routes/Controller/Food')(app);
-var menuController =  require('./routes/Controller/Menu')(app);
-var orderController = require('./routes/Controller/Order')(app);
-var userServer = require('./routes/Controller/User')(app);
-var tableServer = require('./routes/Controller/Table')(app);
+//var beverageServer = require('./routes/Controller/Beverage')(app);
+//var foodController = require('./routes/Controller/Food')(app);
+//var menuController =  require('./routes/Controller/Menu')(app);
+//var orderController = require('./routes/Controller/Order')(app);
+//var tableServer = require('./routes/Controller/Table')(app);
 
 
 
-//app.use('/', router);
 app.use('/', router);
+
+
 
 
 

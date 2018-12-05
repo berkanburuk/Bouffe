@@ -40,17 +40,6 @@ class UserModel {
         const mUserCourse = sequelize.define('userCourse', {})
         User.belongsToMany(mCourse,{through: mUserCourse,targetKey:'username', onDelete: 'CASCADE'});
 
-/*
-        User.sync({
-            //force:true
-        }).then(() => {
-            console.log("User table is created!");
-        });
-        mUserRole.sync({
-            //force:true
-        }).then(() => {
-            console.log("UserRole table is created!");
-        });*/
         return User;
     }
 

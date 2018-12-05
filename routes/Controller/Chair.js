@@ -18,11 +18,11 @@ const save = (data)=>{
     })
 }
 
-const GetAChair = (name) => {
+const getChairsBasedOnType = (data) => {
     return new Promise((resolve, reject) => {
-        mChair.findOne({
+        mChair.findAll({
             where: {
-                'name': name
+                chairType: data.chairType
                 }
             }).then(data=>{
             resolve(data.get());
@@ -75,12 +75,12 @@ const deleteChair = (id) =>{
 
 
 module.exports = function(app){
-    app.get('/chair'), function (request, response) {
+    app.get('/chair', function (request, response) {
         console.log('Chair');
         response.sendFile(path.resolve('../../public/Pages/Chair.html'));
         //res.end();
-    },
-    app.post('/api/:chair/:addChair'), function(request,response,next){
+    }),
+    app.post('/api/:chair/:addChair', function(request,response,next){
         save(request.body);
         /*
         for (var key in data) {
@@ -88,7 +88,20 @@ module.exports = function(app){
         }
         */
         next();
-    }
+    }),
+        app.get('/api/:user/:getAllChairs', function (request, response,next) {
+            console.log('Get allChair');
+            getAllChairs().then(chairs=>{
+                console.log(chairs);
+                response.end(chairs);
+            }).catch(error=>{
+                console.log(error);
+                response.end(error);
+            })
+            next();
+
+        })
+
 }
 
 

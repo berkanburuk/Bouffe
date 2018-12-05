@@ -12,13 +12,13 @@ let mRole = db.model(dbNames.role);
 
 module.exports = function(app) {
 
-    app.get('/user', function (request, response) {
+    app.get('/user', function (request, response,next) {
         console.log('User Controller');
         response.sendFile(path.resolve('../../public/Pages/index.html'));
         //response.render(path.resolve('../../public/Pages/index.html'));
-
+        next();
     }),
-        app.get('/api/:deleteuser', function (request, response, next) {
+        app.get('/api/:deleteuser', function (request, response,next ) {
             console.log("Delete USER");
             deleteUser('berkan').then(user => {
                 console.log("Delete User: " + user);
@@ -31,7 +31,7 @@ module.exports = function(app) {
         }),
 
         //checkUser
-            app.get('/api/:user/:username/:password', function (request, response, next) {
+            app.get('/api/:user/:username/:password', function (request, response,next) {
                     var username = request.params.username;
                     var password = request.params.password;
                     console.log(username,password);
@@ -44,9 +44,10 @@ module.exports = function(app) {
             console.log(error);
             response.end(error);
         })
-                    next();
-    }),
-        app.get('/api/:user/:createAUser', function (request, response,next) {
+                next();
+    })
+
+        app.post('/api/:user/:createAUser', function (request, response,next) {
         console.log("Create A User");
         var data = request.body;
         createAUser(data).then(user => {
@@ -56,10 +57,9 @@ module.exports = function(app) {
             console.log(error);
             response.end(error);
         })
-
-        next();
+            next();
     }),
-        app.get('/api/:user/:updateAUser', function (request, response,next) {
+        app.post('/api/:user/:updateAUser', function (request, response,next) {
             console.log("Update A User");
             var data = request.body;
             updateAUser(data).then(user => {
@@ -69,11 +69,11 @@ module.exports = function(app) {
                 console.log(error);
                 response.end(error);
             })
-
             next();
+
         }),
 
-        app.get('/api/:user/:getAllUsers', function (request, response, next) {
+        app.get('/api/:user/:getAllUsers', function (request, response,next) {
             console.log("Get all Users");
 
             getAllUsers().then(user => {
@@ -83,10 +83,27 @@ module.exports = function(app) {
                 console.log(error);
                 response.end(error);
             });
+            next();
 
-
-        next();
         }),
+
+        app.get('/api/:user/:getTables', function (request, response,next) {
+        getAllTables('a').then(data => {
+            console.log(data);
+        }).catch(error=>{
+            console.log(error);
+        })
+            next();
+    })
+      /*
+        app.get('/api/:user/:addARole', function (request, response,next) {
+        addARole('a').then(data => {
+            console.log(data);
+        }).catch(error=>{
+            console.log(error);
+        })
+            next();
+    })
 
 
         app.get('/api/:user/:getAUserRole', function (request, response) {
@@ -99,30 +116,19 @@ module.exports = function(app) {
                 response.write('2');
             })
 
-        }),
-
-
-        app.get('/api/:user/:getTables', function (request, response) {
-        getAllTables('a').then(data => {
-            console.log(data);
-        }).catch(error=>{
-            console.log(error);
         })
-    }),
-        app.get('/api/:user/:addARole', function (request, response) {
-        getAllTables('a').then(data => {
-            console.log(data);
-        }).catch(error=>{
-            console.log(error);
-        })
-    })
 
+
+*/
 
 
 }
 
 
-const save = (data)=>{
+
+
+
+function save(data){
     return new Promise((resolve,reject)=>{
         mUser.create(data).then(user=> {
             console.log(user.get(0))
@@ -133,7 +139,7 @@ const save = (data)=>{
     })
 }
 
-const createAUser = (data)=> {
+function createAUser(data){
     //var data = sampleUserData();
     return new Promise((resolve, reject) => {
         mUser.findOrCreate({
@@ -169,7 +175,8 @@ const createAUser = (data)=> {
 }
 
 
-const updateAUser = (data)=> {
+
+function updateAUser(data){
     var data = sampleUserData();
     return new Promise((resolve, reject) => {
         mUser.findOne({
@@ -197,7 +204,7 @@ const updateAUser = (data)=> {
 }
 
 
-const setARole = (data) =>{
+function setARole(data){
     return new Promise((resolve,reject)=>{
         mUser.findByPk(data.username)
             .then((user)=>{
@@ -208,7 +215,7 @@ const setARole = (data) =>{
         })
     })
 }
-const addARole = (data) =>{
+function addARole(data){
     return new Promise((resolve,reject)=>{
         mUser.findByPk(data.username)
             .then((user)=>{
@@ -219,7 +226,7 @@ const addARole = (data) =>{
         })
     })
 }
-
+/*
 const getAUserRole = (username)=>{
     return new Promise((resolve,reject)=>{
         mUser.findByPk('username')
@@ -230,9 +237,9 @@ const getAUserRole = (username)=>{
         })
     })
 }
+*/
 
-
-const checkValidationOfUser = (username, password) => {
+function checkValidationOfUser(username, password){
     return new Promise((resolve, reject) => {
         mUser.findOne({
             where:{
@@ -253,7 +260,7 @@ const checkValidationOfUser = (username, password) => {
 
 
 
-const getAllUsers = () => {
+function getAllUsers(){
     return new Promise((resolve, reject) => {
 
         mUser.findAll({
@@ -267,7 +274,7 @@ const getAllUsers = () => {
     });
 }
 
-const deleteUser = (username) =>{
+function deleteUser(username){
     return new Promise((resolve,reject)=>{
         mUser.destroy({
             where: {
@@ -281,7 +288,7 @@ const deleteUser = (username) =>{
     })
 }
 
-const getAllTables = (data) => {
+function getAllTables(data){
     return new Promise((resolve, reject) => {
         mUser.findAll({
             include: [{

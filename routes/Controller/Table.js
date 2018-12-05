@@ -8,7 +8,7 @@ let mTable = db.model(dbNames.table);
 let mUser = db.model(dbNames.user);
 
 
-const save = (data)=>{
+function save(data){
     return new Promise((resolve,reject)=>{
         mTable.create(data).then(data=> {
             console.log(data.get())
@@ -19,6 +19,30 @@ const save = (data)=>{
     })
 }
 
+function createAndAssignTableToUser(data){
+    return new Promise((resolve, reject) => {
+        mTable.findOrCreate({
+            where:
+                {
+                    username: data.username
+                }
+        }).then((table)=>{
+            console.log(table[0]);
+            table.
+            resolve("Table is created successfully.");
+        })
+        /*.spread((user, created)=> {
+            console.log("CRRRR : " + created);
+            console.log(user.get({plain: true}));
+
+        })*/
+            .catch(error =>{
+                reject("User cannot be created!" + error);
+            })
+
+    })
+
+}
 const GetATableWithChairs = (username) => {
     return new Promise((resolve, reject) => {
         mTable.findOne({
@@ -43,7 +67,7 @@ User.findAll({
     }]
 });
 */
-const getAllTables = (data) => {
+const getAUserTables = (username) => {
     return new Promise((resolve, reject) => {
         mTable.findAll({
             where:{
@@ -58,8 +82,8 @@ const getAllTables = (data) => {
                 */
             }]
         }).then(data=>{
-            console.log(data.get());
-            resolve(data.get());
+            console.log(data[0].get(0));
+            resolve(data[0].get(0));
         }).catch(error => {
             reject(error + "\nCannot get all Tables Related to this ");
         })
@@ -82,21 +106,33 @@ const deleteTable = (username) =>{
 
 
 module.exports = function(app){
-    app.get('/table'), function (request, response) {
+    app.get('/table', function (request, response) {
         console.log('Instructor');
         //response.sendFile(path.resolve('../../public/Pages/Waiter.html'));
         //res.end();
-    },
+    }),
 
-        app.post('/api/:table/:addTable'), function(request,response,next){
+        app.post('/api/:table/:addTable', function(request,response,next){
         save(request.body);
         response.end('Table Successfully Added!');
         next();
-    },
-    app.get('/api/:table/:getTables'), function (request, response) {
-        getAllTables('ad');
+    }),
+        app.get('/api/:table/:getTables', function(request,response,next){
+            var username = request.params.username;
+            /*
+            getAUserTables(username).then(table=>{
+                response.end(table);
+            }).catch(error=>{
+                response.end(error)
+            })
+*/
+            next();
+        }),
+    app.get('/api/:table/:getTables', function (request, response) {
+
         //res.end();
-    }
+
+    })
 }
 
 

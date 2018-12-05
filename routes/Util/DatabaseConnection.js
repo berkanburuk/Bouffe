@@ -13,6 +13,7 @@ let appointment= require('../Model/Appointment');
 let course = require('../Model/Course');
 
 let payment = require('../Model/Payment');
+let reservation = require('../Model/Reservation');
 
 const tableNames = {
     user:"user",
@@ -31,7 +32,8 @@ const tableNames = {
     orderFood:'orderFood',
     userCourse:'userCourse',
     orderMenu:'orderMenu',
-    waiter : 'waiter'
+    waiter : 'waiter',
+    reservation:'reservation'
 }
 
 
@@ -88,15 +90,13 @@ menu.run(Sequelize,sequelize,tableNames.menu);
 
 beverage.run(Sequelize,sequelize,tableNames.beverage);
 
+reservation.run(Sequelize,sequelize,tableNames.reservation);
+
 sequelize.sync().then(()=>{
     role.createSimpleRoleData();
         course.createCourseData();
         user.createDefaultUser();
         chair.defaultValuesForChair();
-
-
-
-
 
 })
 
@@ -133,8 +133,11 @@ function getTableNames(){
 function getUserModel(){
     return userModel;
 }
+function getSequelizeClass(){
+    return Sequelize;
+}
 module.exports = {
-    getSequelize,getTableNames,getUserModel
+    getSequelize,getTableNames,getUserModel,getSequelizeClass
 }
 
 /*
