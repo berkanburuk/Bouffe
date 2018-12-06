@@ -1,6 +1,23 @@
 let path = require('path');
-var sequelize = require('../Util/DatabaseConnection').getSequelize;
+let sequelize = require('../Util/DatabaseConnection').getSequelize;
+let tableNames = require('../Util/DatabaseConnection').getTableNames;
 
+let db = sequelize();
+let dbNames = tableNames();
+let mBeverage = db.model(dbNames.beverage);
+
+
+
+const save = (data)=>{
+    return new Promise((resolve,reject)=>{
+        mBeverage.create(data).then(beverage=> {
+            console.log(beverage[0].get(0))
+            resolve("Beverage is created.");
+        }).catch(error => {
+            reject(error + 'Cannot create the Beverage!');
+        });
+    })
+}
 
 module.exports = function(app) {
 
@@ -11,24 +28,12 @@ module.exports = function(app) {
     }),
         app.post('/api/:beverage/:addBeverage/', function (request, response, next) {
             var data = request.body;
-    console.log("Beverage Controller");
-/*
-            var dateObj = new Date();
-            var month = dateObj.getUTCMonth() + 1; //months from 1-12
-            var day = dateObj.getUTCDate();
-            var year = dateObj.getUTCFullYear();
-
-            var newdate = year + "." + month + "." + day;
-            console.log(newdate);
-            data.available = true;
-            data.price = parseFloat(data.price);
-
-            data.createdAt =newdate;
-            data.updatedAt =newdate;
-
-            //Beverage.save(data);
-            response.end('Beverage Successfully Added!');
-            */
+            console.log("Beverage Controller");
+            save(data).then(beverage=>{
+                response.end(beverage);
+            }).catch(error=>{
+                response.end(error);
+            })
             next();
         })
 

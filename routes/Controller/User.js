@@ -50,6 +50,9 @@ module.exports = function(app) {
         app.post('/api/:user/:createAUser', function (request, response,next) {
         console.log("Create A User");
         var data = request.body;
+        data.roleId = parseInt(data.roleId);
+        data.courseId = parseInt(data.courseId);
+
         createAUser(data).then(user => {
             console.log(user);
             response.end(user);
