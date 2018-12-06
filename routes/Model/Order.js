@@ -10,13 +10,6 @@ class OrderModel {
                 autoIncrement: true,
                 type: Sequelize.INTEGER
             },
-            chairId: {
-                type:Sequelize.INTEGER,
-                references: {
-                    model: 'chairs', // name of Target model
-                    key: 'id' // key in Target model that we're referencing
-                }
-            },
             date: {
                 type: Sequelize.DATE,
                 defaultValue: Sequelize.NOW
@@ -29,32 +22,29 @@ class OrderModel {
             },
             isFoodReady:{
               type:Sequelize.INTEGER
-                //0 -> chef notification
-                //1 -> waiter notification
-                //2 -> done
-                //3 -> reject
-            },
-            username:{
-                type:Sequelize.STRING,
-                references: {
-                    model: 'users',
-                    key: 'username'
-                }
-            },
-            paymentId:{
-              type:Sequelize.INTEGER,
-              references:{
-                  model:'payments',
-                  key:'id'
-              }
-            }
 
+            },isBeverageReady:{
+                type:Sequelize.INTEGER
+//0 -> default Value(Just Ordered)
+//1 -> if chef notification, if waiter notification
+//3 -> done
+//4 -> reject
+            }
         });
-        Order.sync({
-            //force: true
-        }).then(() => {
-            console.log("Order Table is created!");
-        });
+        //Foreign Keys
+        let mChair = sequelize.model('chair');
+        let mPayment = sequelize.model('payment');
+        //let mUser = sequelize.model('user');
+        //Order.belongsTo
+        Order.belongsTo(mChair);
+        Order.belongsTo(mPayment);
+
+        //OrderBeverage
+        const mBeverage = sequelize.define('beverage', {})
+        const mOrderBeverage = sequelize.define('orderBeverage', {})
+
+        Order.belongsToMany(mBeverage,{through: mOrderBeverage});
+
         return Order;
     }
 

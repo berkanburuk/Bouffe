@@ -1,4 +1,5 @@
 let Role;
+let tableNames = require('../Util/DatabaseConnection').getTableNames;
 
 class RoleModel {
     createRole(Sequelize, sequelize, role) {
@@ -13,12 +14,21 @@ class RoleModel {
                 allowNull:false
             }
         });
+        const User = sequelize.define('user', {})
+        const UserRole = sequelize.define('userRole', {})
+
+        Role.belongsToMany(User,{
+            through:UserRole,
+            //otherKey: 'username'
+            });
+        /*
         Role.sync({
             //force:true
         })
             .then(() => {
                 console.log("Role Table is created!");
             });
+            */
         return Role;
     }
     constructor(Sequelize, sequelize, role) {
@@ -78,7 +88,7 @@ function createSimpleRoleData(){
 function run(Sequelize, sequelize, role) {
     var f = new RoleModel(Sequelize, sequelize, role);
     console.log("Role Cons: " + f);
-    createSimpleRoleData();
+    return Role;
     // console.log(f.getUserTable())
 }
 
@@ -133,5 +143,5 @@ function save(data) {
 
 
 module.exports = {
-    run, RoleModel,getRoleModel,getRole
+    run, createSimpleRoleData
 }

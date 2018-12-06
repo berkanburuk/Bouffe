@@ -15,12 +15,14 @@ class PaymentModel {
                 type:Sequelize.INTEGER
             }
         });
+        /*
         Payment.sync({
             //force:true
         })
             .then(() => {
                 console.log("Role Table is created!");
             });
+            */
         return Payment;
     }
     constructor(Sequelize, sequelize, payment) {
@@ -30,7 +32,7 @@ class PaymentModel {
             this.singletonInstance = Payment;
             console.log("Singleton Class_Rol Created!");
         } else {
-            Payment = sequelize.model("role");
+            Payment = sequelize.model("payment");
             console.log("Only one Role Class can be created!");
         }
     }

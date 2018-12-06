@@ -18,11 +18,11 @@ const save = (data)=>{
     })
 }
 
-const GetAChair = (name) => {
+const getChairsBasedOnType = (data) => {
     return new Promise((resolve, reject) => {
-        mChair.findOne({
+        mChair.findAll({
             where: {
-                'name': name
+                chairType: data.chairType
                 }
             }).then(data=>{
             resolve(data.get());
@@ -32,6 +32,19 @@ const GetAChair = (name) => {
     });
 }
 
+
+const addChairs = (tableId) =>{
+    return new Promise((resolve,reject)=>{
+        mTable.findByPk(tableId)
+            .then((table)=>{
+                table.add(chair);
+                resolve(user);
+            }).catch(error=>{
+            reject(error);
+        })
+
+    })
+}
 
 const getAllChairs = () => {
     return new Promise((resolve, reject) => {
@@ -67,7 +80,7 @@ module.exports = function(app){
         response.sendFile(path.resolve('../../public/Pages/Chair.html'));
         //res.end();
     }),
-    app.post('/api/:chair/:addChair'), function(request,response,next){
+    app.post('/api/:chair/:addChair', function(request,response,next){
         save(request.body);
         /*
         for (var key in data) {
@@ -75,7 +88,20 @@ module.exports = function(app){
         }
         */
         next();
-    }
+    }),
+        app.get('/api/:user/:getAllChairs', function (request, response,next) {
+            console.log('Get allChair');
+            getAllChairs().then(chairs=>{
+                console.log(chairs);
+                response.end(chairs);
+            }).catch(error=>{
+                console.log(error);
+                response.end(error);
+            })
+            next();
+
+        })
+
 }
 
 

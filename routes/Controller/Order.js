@@ -1,18 +1,49 @@
 let path = require('path');
-var sequelize = require('../Util/DatabaseConnection').getSequelize;
-var notifications = "";
+let sequelize = require('../Util/DatabaseConnection').getSequelize;
+let tableNames = require('../Util/DatabaseConnection').getTableNames;
 
-function getUsers(ordersController) {
-    var d;
-    ordersController.findAll({ raw: true }).then(result =>{
-        d=result;
+let db = sequelize();
+let dbNames = tableNames();
+let mOrder = db.model(dbNames.order);
+
+//0 -> default Value(Just Ordered)
+//1 -> if chef notification, if waiter notification
+//3 -> done
+//4 -> reject
+
+function createAnBeverageOrder(data){
+
+    return new Promise((resolve, reject) => {
+        mOrder.findOrCreate({
+            where:
+                {
+                    id: data.id
+                },
+            defaults:
+                {
+                    date: data.date,
+                    note: data.note,
+                    isPaid: data.isPaid,
+                    isFoodReady: 0,
+                    isBeverageReady: 0
+                }
+        }).then((order)=>{
+            console.log(order[0].get(0));
+            order[0].addBeverages(data.roleId);
+
+            resolve("Beverage ordered successfully.");
+        })
+            .catch(error =>{
+                reject("Beverage could not be ordered!" + error);
+            })
+
     })
-    return d;
+
 }
 
+
+
 module.exports = function (app) {
-    var s = sequelize();
-    var ordersController = s.model("order");
 
     app.get('/order', function (request, response) {
         console.log('Order');
@@ -33,6 +64,17 @@ module.exports = function (app) {
             response.end("Order is successfully Added!");
             next();
         }),
+
+        app.post('/api/:order/:orderBeverage', function (request, response,next) {
+            var data = request.body;
+            createAnBeverageOrder(data).then(beverage=>{
+                response.end(beverage);
+            }).catch(error=>{
+                response.end(error);
+            })
+            next();
+        }),
+
 
         app.get('/api/:order/:getNotification', function (request, response,next) {
                 response.end(notifications + '\n');

@@ -60,6 +60,38 @@ const deleteMenu = (name) =>{
     })
 }
 
+
+function createAMenu(data){
+    //var data = sampleUserData();
+    return new Promise((resolve, reject) => {
+        mMenu.findOrCreate({
+            where:
+                {
+                    name: data.name
+                },
+            defaults:
+                {
+                    name: data.name,
+                    cousinRegion: data.cousinRegion,
+                    date: data.date,
+                }
+        }).then((menu)=>{
+            console.log(menu[0].get(0));
+            menu[0].addFoods(data.foodName);
+            resolve("Menu is created successfully.");
+        })
+        /*.spread((user, created)=> {
+            console.log("CRRRR : " + created);
+            console.log(user.get({plain: true}));
+
+        })*/
+            .catch(error =>{
+                reject("Menu could not be created!" + error);
+            })
+
+    })
+
+}
 module.exports = function (app) {
 
     app.get('/menu', function (request, response) {
@@ -68,18 +100,22 @@ module.exports = function (app) {
 
     }),
 
-        app.post('/api/:menu/:addMenu/', function (request, response, next) {
+        app.post('/api/:menu/:addMenu', function (request, response, next) {
             var data = request.body;
-            //menusController.create(data);
-            response.status= 200;
-            response.end();
+            createAMenu(data).then(menu=>{
+                console.log(menu);
+            }).catch(error=>{
+                console.log(error);
+            })
+
+            response.end("");
             next();
         }),
         app.delete('/api/:menu/:deleteMenu', function(request, response){
             console.log('going to delete', request.body);
 
             response.end();
-        });
+        })
 
 }
 

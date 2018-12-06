@@ -8,13 +8,6 @@ class TableModel {
                 autoIncrement: true,
                 type: Sequelize.INTEGER
             },
-            username:{
-                type:Sequelize.STRING,
-                references: {
-                    model: 'users',
-                    key: 'username'
-                }
-            },
             structure: {
                 type: Sequelize.STRING,
                 allowNull: false
@@ -30,12 +23,9 @@ class TableModel {
                 type: Sequelize.INTEGER
             }
         });
-        //PersonalInfo.belongsTo(Users, {foreignKey: 'fk_Personal',targetKey:'personalInfoId'});
-        Table.sync({
-            //force: true
-        }).then(() => {
-            console.log("Table table has created!");
-        })
+        let mUser = sequelize.model('user');
+        Table.belongsTo(mUser,{targetKey:'username',onDelete:'CASCADE'});
+
         return Table;
     }
 
@@ -55,6 +45,7 @@ class TableModel {
 function run(Sequelize, sequelize, user) {
     var f = new TableModel(Sequelize, sequelize, user);
     console.log("Table : " + f);
+    return Table;
     // console.log(f.getUserTable())
 }
 function save(table) {
