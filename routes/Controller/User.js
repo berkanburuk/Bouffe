@@ -77,9 +77,13 @@ module.exports = function(app) {
         app.post('/api/user/addUser', function (request, response,next) {
         console.log("Create A User");
         var data = request.body;
-        data.roleId = parseInt(data.roleId);
-        data.courseId = parseInt(data.courseId);
+        console.log(data);
 
+            data.roleId = parseInt(data.roleId,10);
+            data.courseId= parseInt(data.courseId,10);
+
+
+            console.log(data);
         createAUser(data).then(user => {
             response.statusCode = 200;
             console.log(user);
@@ -97,7 +101,7 @@ module.exports = function(app) {
         })
 
     }),
-        app.post('/api/user/:updateAUser', function (request, response) {
+        app.post('/api/user/updateAUser', function (request, response) {
             console.log("Update A User");
             response.setHeader('Content-Type', 'application/json' );
             var data = request.body;
