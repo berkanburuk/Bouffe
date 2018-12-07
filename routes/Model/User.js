@@ -125,7 +125,7 @@ function sampleUserData(){
         password: '1234',
         firstName: 'berkan',
         lastName: 'buruk',
-        registrationSemester: '01.01.1994',
+        //registrationSemester: '01.01.1994',
         bilkentId: 1234
     }
     return data;
