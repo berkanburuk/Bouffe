@@ -25,7 +25,7 @@ var tableServer = require('./routes/Controller/Table')(app);
 var userServer = require('./routes/Controller/User')(app);
 var tableServer = require('./routes/Controller/Table')(app);
 //var beverageServer = require('./routes/Controller/Beverage')(app);
-//var foodController = require('./routes/Controller/Food')(app);
+var foodController = require('./routes/Controller/Food')(app);
 //var menuController =  require('./routes/Controller/Menu')(app);
 //var orderController = require('./routes/Controller/Order')(app);
 

@@ -32,6 +32,45 @@ function createAReservation(data){
     })
 }
 
+
+function deleteReservation(phoneNumber){
+    return new Promise((resolve,reject)=>{
+        mReservation.destroy({
+            where: {
+                phoneNumber: phoneNumber
+            }
+        }).then(reservation=>{
+            resolve('Reservation is deleted');
+        }).catch(error =>{
+            reject("Reservation could not be deleted!");
+        })
+    })
+}
+
+
+function updateReservation(data){
+    return new Promise((resolve, reject) => {
+        mReservation.update(data, {
+            where:
+                {
+                    id: data.id
+                },
+        }).then((reservation)=>{
+            console.log(reservation[0]);
+            if(reservation[0]>0){
+                resolve("Reservation is updated successfully.");
+            }else {
+                reject("Reservation could not updated!");
+            }
+
+        }).catch(error =>{
+            reject(error);
+        })
+
+    })
+
+}
+
 function simpleData(){
     var d = new Date();
     d = d.getFullYear();
@@ -53,20 +92,65 @@ module.exports = function(app) {
         //response.render(path.resolve('../../public/Pages/index.html'));
 
     }),
-        app.get('/api/:reservation/:createAReservation', function (request, response,next) {
-            console.log("Create a reservation");
+
+        app.post('/api/reservation/addReservation', function (request, response ) {
+            console.log("Add Reservation");
+
             var data = request.body;
-
-            var data = simpleData();
-
             createAReservation(data).then(reservation => {
                 console.log(reservation);
-                response.end(reservation);
+                response.write(reservation,()=>{
+                    response.end();
+                })
+
             }).catch(error => {
                 console.log(error);
-                response.end(error);
+                response.write(error,()=>{
+                    response.end();
+                })
             })
 
-            next();
+
+        }),
+
+        app.post('/api/reservation/deleteReservation', function (request, response ) {
+            console.log("Delete Reservation");
+            var phoneNumber = request.body;
+            deleteReservation(phoneNumber).then(reservation => {
+                console.log(reservation);
+                response.write(reservation,()=>{
+                    response.end();
+                })
+
+            }).catch(error => {
+                console.log(error);
+                response.write(error,()=>{
+                    response.end();
+                })
+            })
+
+
         })
+
+    app.post('/api/reservation/updateReservation', function (request, response ) {
+        console.log("Delete Reservation");
+
+        var data = request.body;
+        updateReservation(data).then(reservation => {
+            console.log(reservation);
+            response.write(reservation,()=>{
+                response.end();
+            })
+
+        }).catch(error => {
+            console.log(error);
+            response.write(error,()=>{
+                response.end();
+            })
+        })
+
+
+    })
+
+
 }
