@@ -9,7 +9,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 
 //var appointmentServer = require('./routes/Controller/Appointment')(app);
-var reservationServer = require('./routes/Controller/Reservation')(app);
+//var reservationServer = require('./routes/Controller/Reservation')(app);
 var userServer = require('./routes/Controller/User')(app);
 //var beverageServer = require('./routes/Controller/Beverage')(app);
 //var foodController = require('./routes/Controller/Food')(app);
@@ -20,10 +20,6 @@ var userServer = require('./routes/Controller/User')(app);
 
 
 app.use('/', router);
-
-
-
-
 
 //Starting Page of The Web Application
 app.get('/', function (request, response) {

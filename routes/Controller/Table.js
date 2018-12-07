@@ -19,6 +19,23 @@ function save(data){
     })
 }
 
+function assignTableToUser(data){
+    return new Promise((resolve, reject) => {
+        mTable.update(data, {where:
+                {
+                    username: data.username
+                },
+        }).then((table)=>{
+            console.log(table[0]);
+            resolve("Table is updated successfully.");
+        }).catch(error =>{
+            reject(error);
+        })
+
+    })
+
+}
+
 function createAndAssignTableToUser(data){
     return new Promise((resolve, reject) => {
         mTable.findOrCreate({
@@ -28,7 +45,7 @@ function createAndAssignTableToUser(data){
                 }
         }).then((table)=>{
             console.log(table[0]);
-            table.
+
             resolve("Table is created successfully.");
         })
         /*.spread((user, created)=> {
@@ -37,7 +54,7 @@ function createAndAssignTableToUser(data){
 
         })*/
             .catch(error =>{
-                reject("User cannot be created!" + error);
+                reject("Table could not be created!" + error);
             })
 
     })
@@ -112,12 +129,35 @@ module.exports = function(app){
         //res.end();
     }),
 
-        app.post('/api/:table/:addTable', function(request,response,next){
-        save(request.body);
+        app.post('/api/table/:addTable', function(request,response){
+        save(request.body).then((data)=>{
+            response.write('Table is created!',()=>{
+                response.end();
+            })
+        }).catch(error=>{
+            response.write(error,()=>{
+                response.end();
+            })
+        })
         response.end('Table Successfully Added!');
-        next();
+
     }),
-        app.get('/api/:table/:getTables', function(request,response,next){
+        app.post('/api/table/:assignTableToUser', function(request,response){
+            var data = request.body;
+            assignTableToUser(data).then(data=>{
+                response.write('Table Successfully Updated!',()=>{
+                    response.end();
+                })
+            }).catch(error=>{
+                response.write(error,()=>{
+                    response.end();
+                })
+            })
+
+
+        }),
+
+        app.get('/api/table/:getTables', function(request,response){
             var username = request.params.username;
             /*
             getAUserTables(username).then(table=>{
@@ -126,13 +166,15 @@ module.exports = function(app){
                 response.end(error)
             })
 */
-            next();
+
         }),
-    app.get('/api/:table/:getTables', function (request, response) {
+    app.get('/api/table/:getTables', function (request, response) {
 
         //res.end();
 
     })
+
+
 }
 
 
