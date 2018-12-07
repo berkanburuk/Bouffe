@@ -19,6 +19,24 @@ function save(data){
     })
 }
 
+function assignTableToUser(data){
+    return new Promise((resolve, reject) => {
+        mTable.update(data, {
+            where:
+                {
+                    'id': data.id
+                },
+        }).then((table)=>{
+            console.log(table[0]);
+            resolve("Table is updated successfully.");
+        }).catch(error =>{
+            reject(error);
+        })
+
+    })
+
+}
+
 function createAndAssignTableToUser(data){
     return new Promise((resolve, reject) => {
         mTable.findOrCreate({
@@ -28,7 +46,7 @@ function createAndAssignTableToUser(data){
                 }
         }).then((table)=>{
             console.log(table[0]);
-            table.
+
             resolve("Table is created successfully.");
         })
         /*.spread((user, created)=> {
@@ -37,7 +55,7 @@ function createAndAssignTableToUser(data){
 
         })*/
             .catch(error =>{
-                reject("User cannot be created!" + error);
+                reject("Table could not be created!" + error);
             })
 
     })
@@ -53,6 +71,20 @@ const GetATableWithChairs = (username) => {
             resolve(data.get());
         }).catch(error => {
             reject(error + "\nCannot get the Table!");
+        })
+    });
+}
+
+function getAllTables(){
+    return new Promise((resolve, reject) => {
+
+        mTable.findAll({
+                //   attributes: ['foo', 'bar']
+            }
+        ).then(table=>{
+            resolve(table[0].get(0));
+        }).catch(error => {
+            reject("Cannot get all Tables");
         })
     });
 }
@@ -106,18 +138,52 @@ const deleteTable = (username) =>{
 
 
 module.exports = function(app){
+
     app.get('/table', function (request, response) {
-        console.log('Instructor');
+        console.log('Table');
         //response.sendFile(path.resolve('../../public/Pages/Waiter.html'));
         //res.end();
     }),
 
-        app.post('/api/:table/:addTable', function(request,response,next){
-        save(request.body);
-        response.end('Table Successfully Added!');
-        next();
-    }),
-        app.get('/api/:table/:getTables', function(request,response,next){
+        app.post('/api/table/addTable', function(request,response){
+            console.log('Add Table');
+            var data = request.body;
+            console.log(data);
+
+            save(data).then((data)=>{
+                response.write('Table is created!',()=>{
+                    response.statusCode = 200;
+                    response.end();
+                })
+            }).catch(error=>{
+                response.write(error.toString(),()=>{
+                    response.statusCode = 404;
+                    response.end();
+                })
+            })
+
+        }),
+        app.post('/api/table/assignTableToUser', function(request,response){
+            console.log('assignTableToUser');
+            var data = request.body;
+            console.log(data);
+
+            assignTableToUser(data).then(data=>{
+                response.write('Table Successfully Updated!',()=>{
+                    response.statusCode = 200;
+                    response.end();
+                })
+            }).catch(error=>{
+                response.write(error.toString(),()=>{
+                    response.statusCode = 404;
+                    response.end();
+                })
+            })
+
+
+        }),
+
+        app.get('/api/table/:getTables', function(request,response){
             var username = request.params.username;
             /*
             getAUserTables(username).then(table=>{
@@ -126,13 +192,26 @@ module.exports = function(app){
                 response.end(error)
             })
 */
-            next();
+
         }),
-    app.get('/api/:table/:getTables', function (request, response) {
+        app.get('/api/table/getAllTables/:value', function (request, response) {
+            console.log("Get Tables");
+            getAllTables().then(tables=>{
+                response.write(tables.toString(),()=>{
+                    console.log(tables);
+                    response.end();
+                })
+            }).catch(error=>{
+                response.write(error,()=>{
+                    response.end();
+                })
+            })
 
-        //res.end();
+            //res.end();
 
-    })
+        })
+
+
 }
 
 

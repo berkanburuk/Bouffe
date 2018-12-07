@@ -8,96 +8,168 @@ let db = sequelize();
 let dbNames = tableNames();
 let mUser = db.model(dbNames.user);
 let mRole = db.model(dbNames.role);
-
+let mTable = db.model(dbNames.table);
 
 module.exports = function(app) {
 
-    app.get('/user', function (request, response,next) {
+/*
+    app.use('/user', function (req, res, next) {
+        if (req.method !== 'GET' || req.url !== '/')
+            return next();
+      //  app.use( "/book" , middleware);
+        // will match /book
+        // will match /book/author
+        // will match /book/subject
+        // ...
+    });
+*/
+    app.get('/user', function (request, response) {
         console.log('User Controller');
         response.sendFile(path.resolve('../../public/Pages/index.html'));
         //response.render(path.resolve('../../public/Pages/index.html'));
-        next();
     }),
-        app.get('/api/:deleteuser', function (request, response,next ) {
+        app.get('/api/user/deleteUser/:username', function (request, response ) {
+            //localhost:3000/api/getATableBelongToAUser/berkan
+
+            //response.writeHead(200, { 'Content-Type': 'application/json' });
             console.log("Delete USER");
-            deleteUser('berkan').then(user => {
-                console.log("Delete User: " + user);
-                response.end('Deleted');
+            var username = request.params.deleteUser;
+
+            deleteUser(username).then(user => {
+                response.statusCode = 200;
+                console.log(user);
+                response.write("Successful",()=>{
+                    response.end();
+                });
             }).catch(error => {
-                console.log("Delete User: " + error);
-                response.end(error);
+                response.statusCode(404);
+                console.log(error);
+                response.write(error,()=>{
+                    response.end();
+                });
             })
-            next();
+
         }),
 
         //checkUser
-            app.get('/api/:user/:username/:password', function (request, response,next) {
+            app.get('/api/user/:username/:password', function (request, response) {
                     var username = request.params.username;
                     var password = request.params.password;
                     console.log(username,password);
         checkValidationOfUser(username,password).then(user => {
             response.statusCode = 200;
-            console.log("user "+user);
-            response.end(user);
+            console.log(user);
+
+            response.write("Successful",()=>{
+                response.end();
+            });
         }).catch(error => {
             response.statusCode = 404;
             console.log(error);
-            response.end(error);
-        })
-                next();
-    })
 
-        app.post('/api/:user/:createAUser', function (request, response,next) {
+            response.write(error,()=>{
+                response.end();
+            });
+        })
+
+    }),
+
+        app.post('/api/user/addUser', function (request, response,next) {
         console.log("Create A User");
         var data = request.body;
-        data.roleId = parseInt(data.roleId);
-        data.courseId = parseInt(data.courseId);
+        console.log(data);
 
+            data.roleId = parseInt(data.roleId,10);
+            data.courseId= parseInt(data.courseId,10);
+
+
+            console.log(data);
         createAUser(data).then(user => {
+            response.statusCode = 200;
             console.log(user);
-            response.end(user);
+
+            response.write("Successful",()=>{
+                response.end();
+            });
         }).catch(error => {
+            response.statusCode = 404;
             console.log(error);
-            response.end(error);
+
+            response.write(error,()=>{
+                response.end();
+            });
         })
-            next();
+
     }),
-        app.post('/api/:user/:updateAUser', function (request, response,next) {
+        app.post('/api/user/updateAUser', function (request, response) {
             console.log("Update A User");
+            response.setHeader('Content-Type', 'application/json' );
             var data = request.body;
             updateAUser(data).then(user => {
+                response.statusCode = 200;
                 console.log(user);
-                response.end(user);
+                response.send(user);
             }).catch(error => {
+                response.statusCode = 404;
                 console.log(error);
-                response.end(error);
+
+                response.write(error,()=>{
+                    response.end();
+                });
             })
-            next();
 
         }),
 
-        app.get('/api/:user/:getAllUsers', function (request, response,next) {
+
+
+        app.get('/api/user/getAllUsers/:username', function (request, response) {
             console.log("Get all Users");
 
             getAllUsers().then(user => {
+                response.statusCode = 200;
                 console.log(user[0].get(0));
-                response.end(user[0].get(0));
-            }).catch(error => {
+                response.write(user[0].get(0).toString(),()=>{
+                  response.end();
+                })
+                }).catch(error => {
+                response.statusCode = 404;
                 console.log(error);
-                response.end(error);
-            });
-            next();
+
+                response.write(error,()=>{
+                    response.end();
+                });
+            })
+
 
         }),
 
-        app.get('/api/:user/:getTables', function (request, response,next) {
-        getAllTables('a').then(data => {
-            console.log(data);
-        }).catch(error=>{
-            console.log(error);
-        })
-            next();
-    })
+            app.get('/api/getATableBelongToAUser/:username', function (request, response) {
+
+                console.log("getATableBelongToAUser");
+                response.setHeader('Content-Type', 'application/json' );
+                var username = request.query;
+                console.log(username);
+                username = request.params;
+                console.log(username);
+                getATableBelongToAUser(username).then(data => {
+                    response.statusCode = 200;
+                    console.log(data);
+                    response.write(data.toString(), () => {
+                        response.end();
+                    })
+                })
+                    .catch(error => {
+                        response.statusCode = 404;
+                        console.log(error);
+                        response.write(error, () => {
+                            response.end();
+                        });
+                    })
+
+            })
+
+
+
       /*
         app.get('/api/:user/:addARole', function (request, response,next) {
         addARole('a').then(data => {
@@ -291,20 +363,31 @@ function deleteUser(username){
     })
 }
 
-function getAllTables(data){
+function getATableBelongToAUser(username){
     return new Promise((resolve, reject) => {
+
         mUser.findAll({
-            include: [{
-                model: 'table',
-                /*
+            association: [{
+                model: 'tables',
                 where: {
-                    'username': 'berkan'
+                    username: username
                 }
-                */
             }]
         }).then(data=>{
-            console.log(data.get());
-            resolve(data.get());
+            console.log(data[0].get(0));
+            resolve(data[0].get(0));
+        }).catch(error => {
+            reject(error + " Cannot get all Tables Related to this ");
+        })
+    });
+}
+/*
+function getAllTables(){
+    return new Promise((resolve, reject) => {
+        mUser.findAll({
+        }).then(data=>{
+            console.log(data[0].get(0));
+            resolve(data[0].get(0));
         }).catch(error => {
             reject(error + "\nCannot get all Tables Related to this ");
         })
