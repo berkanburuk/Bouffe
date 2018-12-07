@@ -53,8 +53,6 @@ module.exports = function(app) {
 
         //checkUser
             app.get('/api/user/:username/:password', function (request, response) {
-
-                response.setHeader('Content-Type', 'application/json' );
                     var username = request.params.username;
                     var password = request.params.password;
                     console.log(username,password);
@@ -76,9 +74,8 @@ module.exports = function(app) {
 
     }),
 
-        app.post('/api/user/:createAUser', function (request, response,next) {
+        app.post('/api/user/addUser', function (request, response,next) {
         console.log("Create A User");
-        response.setHeader('Content-Type', 'application/json' );
         var data = request.body;
         data.roleId = parseInt(data.roleId);
         data.courseId = parseInt(data.courseId);

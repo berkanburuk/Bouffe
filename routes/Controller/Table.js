@@ -21,9 +21,10 @@ function save(data){
 
 function assignTableToUser(data){
     return new Promise((resolve, reject) => {
-        mTable.update(data, {where:
+        mTable.update(data, {
+            where:
                 {
-                    username: data.username
+                    'id': data.id
                 },
         }).then((table)=>{
             console.log(table[0]);
@@ -70,6 +71,20 @@ const GetATableWithChairs = (username) => {
             resolve(data.get());
         }).catch(error => {
             reject(error + "\nCannot get the Table!");
+        })
+    });
+}
+
+function getAllTables(){
+    return new Promise((resolve, reject) => {
+
+        mTable.findAll({
+                //   attributes: ['foo', 'bar']
+            }
+        ).then(table=>{
+            resolve(table[0].get(0));
+        }).catch(error => {
+            reject("Cannot get all Tables");
         })
     });
 }
@@ -123,33 +138,44 @@ const deleteTable = (username) =>{
 
 
 module.exports = function(app){
+
     app.get('/table', function (request, response) {
-        console.log('Instructor');
+        console.log('Table');
         //response.sendFile(path.resolve('../../public/Pages/Waiter.html'));
         //res.end();
     }),
 
-        app.post('/api/table/:addTable', function(request,response){
-        save(request.body).then((data)=>{
+        app.post('/api/table/addTable', function(request,response){
+            console.log('Add Table');
+            var data = request.body;
+            console.log(data);
+
+        save(data).then((data)=>{
             response.write('Table is created!',()=>{
+                response.statusCode = 200;
                 response.end();
             })
         }).catch(error=>{
-            response.write(error,()=>{
+            response.write(error.toString(),()=>{
+                response.statusCode = 404;
                 response.end();
             })
         })
-        response.end('Table Successfully Added!');
 
     }),
-        app.post('/api/table/:assignTableToUser', function(request,response){
+        app.post('/api/table/assignTableToUser', function(request,response){
+            console.log('assignTableToUser');
             var data = request.body;
+            console.log(data);
+
             assignTableToUser(data).then(data=>{
                 response.write('Table Successfully Updated!',()=>{
+                    response.statusCode = 200;
                     response.end();
                 })
             }).catch(error=>{
-                response.write(error,()=>{
+                response.write(error.toString(),()=>{
+                    response.statusCode = 404;
                     response.end();
                 })
             })
@@ -168,7 +194,18 @@ module.exports = function(app){
 */
 
         }),
-    app.get('/api/table/:getTables', function (request, response) {
+    app.get('/api/table/getAllTables/:value', function (request, response) {
+        console.log("Get Tables");
+        getAllTables().then(tables=>{
+            response.write(tables.toString(),()=>{
+                console.log(tables);
+                response.end();
+            })
+        }).catch(error=>{
+            response.write(error,()=>{
+                response.end();
+            })
+        })
 
         //res.end();
 
