@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add User</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Playfair+Display:400,400i,700|Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="../stylesheets/bootstrap2.min.css">
+    <link rel="stylesheet" href="../stylesheets/bootstrap.min.css">
+    <link rel="stylesheet" href="../stylesheets/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.debug.js"></script>
+    <script src=" https://cdnjs.cloudflare.com/ajax/libs/xls/0.7.4-a/xls.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+<div>
+    <form id="add_user_form" action="http://localhost:3000/api/user/addUser" method="POST">
+        <div class="form-group">
+            Username: <input type="text" class="form-control" name="username" id="username"><br>
+        </div>
+
+        <div class="form-group">
+            Password: <input type="password" class="form-control" name="password" id="password"><br>
+        </div>
+
+        <div class="form-group">
+            First name: <input type="text" class="form-control" name="firstName" id="firstName"><br>
+        </div>
+
+        <div class="form-group">
+            Last name: <input type="text" class="form-control" name="lastName" id="lastName"><br>
+        </div>
+
+        <div class="form-group">
+            BilkentID: <input type="text" class="form-control" name="bilkentId" id="bilkentId"><br>
+        </div>
+        <div><select name="roleId" id="roleId">
+            <option value="1"> Admin
+            <option value="2" selected> Student
+            <option value="3"> Chef
+            <option value="4"> Matre de Table
+            <option value="5"> Waiter
+            <option value="6"> Bartender
+        </select>
+            <select name="courseId" id="courseId">
+                <option value="246"> Restaurant Service
+                <option value="323" selected> International Cuisines
+            </select>
+
+        </div>
+        <br><br>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    <button type="button" class="btn btn-primary" onclick="send()">Send</button>
+
+</div>
+
+<section>
+    <h2>USERS</h2>
+    <table id="to-do-list">
+        <thead>
+        <tr>
+            <th scope="col"></th>
+            <th scope="col">Userame</th>
+            <th scope="col">Password</th>
+            <th scope="col">FirstName</th>
+            <th scope="col">LastName</th>
+            <th scope="col">BilkentID</th>
+            <th scope="col">RoleID</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</section>
+</body>
+</html>
+
+
