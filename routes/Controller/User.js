@@ -52,11 +52,14 @@ module.exports = function(app) {
         }),
 
         //checkUser
-            app.get('/api/user/:username/:password', function (request, response) {
+            app.post('/api/user/login', function (request, response) {
+                    /*
                     var username = request.params.username;
                     var password = request.params.password;
-                    console.log(username,password);
-        checkValidationOfUser(username,password).then(user => {
+                    */
+                    var data = request.body;
+
+        checkValidationOfUser(data.username,data.password).then(user => {
             response.statusCode = 200;
             console.log(user);
 

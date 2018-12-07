@@ -194,15 +194,17 @@ module.exports = function(app){
 */
 
         }),
-    app.get('/api/table/getAllTables/:value', function (request, response) {
+    app.get('/api/table/getAllTables', function (request, response) {
         console.log("Get Tables");
         getAllTables().then(tables=>{
             response.write(tables.toString(),()=>{
+                response.statusCode = 200;
                 console.log(tables);
                 response.end();
             })
         }).catch(error=>{
             response.write(error,()=>{
+                response.statusCode = 404;
                 response.end();
             })
         })
