@@ -7,7 +7,7 @@ app.use(express.static('public'));
 app.use(bodyParser.urlencoded({extended: true}));
 
 
-<<<<<<< HEAD
+
 //var appointmentServer = require('./routes/Controller/Appointment')(app);
 /*var beverageServer = require('./routes/Controller/Beverage')(app);
 var foodController = require('./routes/Controller/Food')(app);
@@ -17,11 +17,11 @@ var userServer = require('./routes/Controller/User')(app);
 var tableServer = require('./routes/Controller/Table')(app);
 */
 
-=======
+
 
 //var appointmentServer = require('./routes/Controller/Appointment')(app);
 //var reservationServer = require('./routes/Controller/Reservation')(app);
->>>>>>> origin/Berkan-Development
+
 var userServer = require('./routes/Controller/User')(app);
 var tableServer = require('./routes/Controller/Table')(app);
 //var beverageServer = require('./routes/Controller/Beverage')(app);
@@ -61,8 +61,8 @@ var server = app.listen(portNumber, function () {
     console.log("Example app listening at http://%s:%s", host, port)
 })
 
-<<<<<<< HEAD
-=======
+
+
 function getRouter(){
     return app;
 }
@@ -70,4 +70,4 @@ function getRouter(){
 module.exports = {
     getRouter
 }
->>>>>>> origin/Berkan-Development
+
