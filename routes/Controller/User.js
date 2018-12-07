@@ -234,8 +234,16 @@ function createAUser(data){
                 }
         }).then((user)=>{
             console.log(user[0].get(0));
-            user[0].addRoles(data.roleId);
-            user[0].addCourses(data.courseId);
+            user[0].addRoles(data.roleId).then(()=>{
+                console.log("Role is added!");
+            }).catch(error=>{
+                reject("Course could not be created!");
+            })
+            user[0].addCourses(data.courseId).then(()=>{
+                console.log("Course is added!");
+            }).catch(error=>{
+                reject("Course could not be created!");
+            })
 
             resolve("User is created successfully.");
         })

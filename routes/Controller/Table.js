@@ -20,16 +20,22 @@ function save(data){
     })
 }
 
-function assignTableToUser(data){
+function assignTableToUser(data,id){
+
     return new Promise((resolve, reject) => {
         mTable.update(data, {
             where:
                 {
-                    'id': data.id
+                    'id': id
                 },
         }).then((table)=>{
             console.log(table[0]);
-            resolve("Table is updated successfully.");
+            if(table[0]>0){
+                resolve("Table is updated successfully.");
+            }else {
+                reject("Table could not updated!");
+            }
+
         }).catch(error =>{
             reject(error);
         })
@@ -37,7 +43,6 @@ function assignTableToUser(data){
     })
 
 }
-
 function createAndAssignTableToUser(data){
     return new Promise((resolve, reject) => {
         mTable.findOrCreate({
@@ -166,10 +171,13 @@ module.exports = function(app){
         }),
         app.post('/api/table/assignTableToUser', function(request,response){
             console.log('assignTableToUser');
+            //id ve userUsername
             var data = request.body;
+            var id = parseInt(data.id);
+            delete data.id;
             console.log(data);
 
-            assignTableToUser(data).then(data=>{
+            assignTableToUser(data,id).then(data=>{
                 response.write('Table Successfully Updated!',()=>{
                     response.statusCode = 200;
                     response.end();
