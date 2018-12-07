@@ -150,19 +150,19 @@ module.exports = function(app){
             var data = request.body;
             console.log(data);
 
-        save(data).then((data)=>{
-            response.write('Table is created!',()=>{
-                response.statusCode = 200;
-                response.end();
+            save(data).then((data)=>{
+                response.write('Table is created!',()=>{
+                    response.statusCode = 200;
+                    response.end();
+                })
+            }).catch(error=>{
+                response.write(error.toString(),()=>{
+                    response.statusCode = 404;
+                    response.end();
+                })
             })
-        }).catch(error=>{
-            response.write(error.toString(),()=>{
-                response.statusCode = 404;
-                response.end();
-            })
-        })
 
-    }),
+        }),
         app.post('/api/table/assignTableToUser', function(request,response){
             console.log('assignTableToUser');
             var data = request.body;
@@ -194,22 +194,22 @@ module.exports = function(app){
 */
 
         }),
-    app.get('/api/table/getAllTables/:value', function (request, response) {
-        console.log("Get Tables");
-        getAllTables().then(tables=>{
-            response.write(tables.toString(),()=>{
-                console.log(tables);
-                response.end();
+        app.get('/api/table/getAllTables/:value', function (request, response) {
+            console.log("Get Tables");
+            getAllTables().then(tables=>{
+                response.write(tables.toString(),()=>{
+                    console.log(tables);
+                    response.end();
+                })
+            }).catch(error=>{
+                response.write(error,()=>{
+                    response.end();
+                })
             })
-        }).catch(error=>{
-            response.write(error,()=>{
-                response.end();
-            })
+
+            //res.end();
+
         })
-
-        //res.end();
-
-    })
 
 
 }
