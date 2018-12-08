@@ -12,17 +12,17 @@ let mTable = db.model(dbNames.table);
 
 module.exports = function(app) {
 
-/*
-    app.use('/user', function (req, res, next) {
-        if (req.method !== 'GET' || req.url !== '/')
-            return next();
-      //  app.use( "/book" , middleware);
-        // will match /book
-        // will match /book/author
-        // will match /book/subject
-        // ...
-    });
-*/
+    /*
+        app.use('/user', function (req, res, next) {
+            if (req.method !== 'GET' || req.url !== '/')
+                return next();
+          //  app.use( "/book" , middleware);
+            // will match /book
+            // will match /book/author
+            // will match /book/subject
+            // ...
+        });
+    */
     app.get('/user', function (request, response) {
         console.log('User Controller');
         response.sendFile(path.resolve('../../public/Pages/index.html'));
@@ -52,55 +52,58 @@ module.exports = function(app) {
         }),
 
         //checkUser
-            app.get('/api/user/:username/:password', function (request, response) {
-                    var username = request.params.username;
-                    var password = request.params.password;
-                    console.log(username,password);
-        checkValidationOfUser(username,password).then(user => {
-            response.statusCode = 200;
-            console.log(user);
+        app.post('/api/user/login', function (request, response) {
+            /*
+            var username = request.params.username;
+            var password = request.params.password;
+            */
+            var data = request.body;
 
-            response.write("Successful",()=>{
-                response.end();
-            });
-        }).catch(error => {
-            response.statusCode = 404;
-            console.log(error);
+            checkValidationOfUser(data.username,data.password).then(user => {
+                response.statusCode = 200;
+                console.log(user);
 
-            response.write(error,()=>{
-                response.end();
-            });
-        })
+                response.write("Successful",()=>{
+                    response.end();
+                });
+            }).catch(error => {
+                response.statusCode = 404;
+                console.log(error);
 
-    }),
+                response.write(error,()=>{
+                    response.end();
+                });
+            })
+
+        }),
 
         app.post('/api/user/addUser', function (request, response,next) {
-        console.log("Create A User");
-        var data = request.body;
-        console.log(data);
+            console.log("Create A User");
+            var data = request.body;
+            console.log(data);
 
             data.roleId = parseInt(data.roleId,10);
             data.courseId= parseInt(data.courseId,10);
 
 
             console.log(data);
-        createAUser(data).then(user => {
-            response.statusCode = 200;
-            console.log(user);
+            createAUser(data).then(user => {
+                response.statusCode = 200;
+                console.log(user);
 
-            response.write("Successful",()=>{
-                response.end();
-            });
-        }).catch(error => {
-            response.statusCode = 404;
-            console.log(error);
+                response.write("Successful",()=>{
+                    response.end();
+                });
+            }).catch(error => {
+                response.statusCode = 404;
+                console.log(error);
 
-            response.write(error,()=>{
-                response.end();
-            });
-        })
+                response.write(error,()=>{
+                    response.end();
+                });
+            })
 
-    }),
+        }),
         app.post('/api/user/updateAUser', function (request, response) {
             console.log("Update A User");
             response.setHeader('Content-Type', 'application/json' );
@@ -129,9 +132,9 @@ module.exports = function(app) {
                 response.statusCode = 200;
                 console.log(user[0].get(0));
                 response.write(user[0].get(0).toString(),()=>{
-                  response.end();
+                    response.end();
                 })
-                }).catch(error => {
+            }).catch(error => {
                 response.statusCode = 404;
                 console.log(error);
 
@@ -143,55 +146,52 @@ module.exports = function(app) {
 
         }),
 
-            app.get('/api/getATableBelongToAUser/:username', function (request, response) {
+        app.get('/api/getATableBelongToAUser/:username', function (request, response) {
+            console.log("getATableBelongToAUser");
 
-                console.log("getATableBelongToAUser");
-                response.setHeader('Content-Type', 'application/json' );
-                var username = request.query;
-                console.log(username);
-                username = request.params;
-                console.log(username);
-                getATableBelongToAUser(username).then(data => {
-                    response.statusCode = 200;
-                    console.log(data);
-                    response.write(data.toString(), () => {
-                        response.end();
-                    })
-                })
-                    .catch(error => {
-                        response.statusCode = 404;
-                        console.log(error);
-                        response.write(error, () => {
-                            response.end();
-                        });
-                    })
-
-            })
-
-
-
-      /*
-        app.get('/api/:user/:addARole', function (request, response,next) {
-        addARole('a').then(data => {
-            console.log(data);
-        }).catch(error=>{
-            console.log(error);
-        })
-            next();
-    })
-
-
-        app.get('/api/:user/:getAUserRole', function (request, response) {
-            console.log('getAUserRole');
-            getAUserRole('berkan').then(data => {
+            var username = request.params;
+            console.log(username);
+            getATableBelongToAUser(username).then(data => {
+                response.statusCode = 200;
                 console.log(data);
-                response.write('2');
-            }).catch(error => {
-                console.log(error);
-                response.write('2');
+                response.write(data.toString(), () => {
+                    response.end();
+                })
             })
+                .catch(error => {
+                    response.statusCode = 404;
+                    console.log(error);
+                    response.write(error, () => {
+                        response.end();
+                    });
+                })
 
         })
+
+
+
+    /*
+      app.get('/api/:user/:addARole', function (request, response,next) {
+      addARole('a').then(data => {
+          console.log(data);
+      }).catch(error=>{
+          console.log(error);
+      })
+          next();
+  })
+
+
+      app.get('/api/:user/:getAUserRole', function (request, response) {
+          console.log('getAUserRole');
+          getAUserRole('berkan').then(data => {
+              console.log(data);
+              response.write('2');
+          }).catch(error => {
+              console.log(error);
+              response.write('2');
+          })
+
+      })
 
 
 */
@@ -231,8 +231,16 @@ function createAUser(data){
                 }
         }).then((user)=>{
             console.log(user[0].get(0));
-            user[0].addRoles(data.roleId);
-            user[0].addCourses(data.courseId);
+            user[0].addRoles(data.roleId).then(()=>{
+                console.log("Role is added!");
+            }).catch(error=>{
+                reject("Course could not be created!");
+            })
+            user[0].addCourses(data.courseId).then(()=>{
+                console.log("Course is added!");
+            }).catch(error=>{
+                reject("Course could not be created!");
+            })
 
             resolve("User is created successfully.");
         })
@@ -363,9 +371,24 @@ function deleteUser(username){
     })
 }
 
-function getATableBelongToAUser(username){
+function getATableBelongToAUser(data){
     return new Promise((resolve, reject) => {
-
+        mTable.findAll({
+            where: { userUsername: data.username },
+            include: [{
+                model: mUser,
+            }]
+        }).then(data=>{
+            if (data[0]!= null && data[0] != undefined){
+                resolve(data[0].get(0));
+            }
+            else
+                reject("User does not have any table assigned!");
+        }).catch(error => {
+            reject(error + " Cannot get all Tables Related to this ");
+        })
+    });
+    /*
         mUser.findAll({
             association: [{
                 model: 'tables',
@@ -380,6 +403,7 @@ function getATableBelongToAUser(username){
             reject(error + " Cannot get all Tables Related to this ");
         })
     });
+    */
 }
 /*
 function getAllTables(){

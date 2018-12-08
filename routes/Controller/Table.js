@@ -1,3 +1,4 @@
+
 let path = require('path');
 let sequelize = require('../Util/DatabaseConnection').getSequelize;
 let tableNames = require('../Util/DatabaseConnection').getTableNames;
@@ -19,16 +20,22 @@ function save(data){
     })
 }
 
-function assignTableToUser(data){
+function assignTableToUser(data,id){
+
     return new Promise((resolve, reject) => {
         mTable.update(data, {
             where:
                 {
-                    'id': data.id
+                    'id': id
                 },
         }).then((table)=>{
             console.log(table[0]);
-            resolve("Table is updated successfully.");
+            if(table[0]>0){
+                resolve("Table is updated successfully.");
+            }else {
+                reject("Table could not updated!");
+            }
+
         }).catch(error =>{
             reject(error);
         })
@@ -36,7 +43,6 @@ function assignTableToUser(data){
     })
 
 }
-
 function createAndAssignTableToUser(data){
     return new Promise((resolve, reject) => {
         mTable.findOrCreate({
@@ -165,10 +171,13 @@ module.exports = function(app){
         }),
         app.post('/api/table/assignTableToUser', function(request,response){
             console.log('assignTableToUser');
+            //id ve userUsername
             var data = request.body;
+            var id = parseInt(data.id);
+            delete data.id;
             console.log(data);
 
-            assignTableToUser(data).then(data=>{
+            assignTableToUser(data,id).then(data=>{
                 response.write('Table Successfully Updated!',()=>{
                     response.statusCode = 200;
                     response.end();
@@ -194,6 +203,23 @@ module.exports = function(app){
 */
 
         }),
+
+        app.get('/api/table/getAllTables', function (request, response) {
+            console.log("Get Tables");
+            getAllTables().then(tables => {
+                response.write(tables.toString(), () => {
+                    response.statusCode = 200;
+                    console.log(tables);
+                    response.end();
+                })
+            }).catch(error => {
+                response.write(error, () => {
+                    response.statusCode = 404;
+                    response.end();
+                })
+            })
+        }),
+
         app.get('/api/table/getAllTables/:value', function (request, response) {
             console.log("Get Tables");
             getAllTables().then(tables=>{
@@ -205,6 +231,7 @@ module.exports = function(app){
                 response.write(error,()=>{
                     response.end();
                 })
+
             })
 
             //res.end();
@@ -213,6 +240,7 @@ module.exports = function(app){
 
 
 }
+
 
 
 
