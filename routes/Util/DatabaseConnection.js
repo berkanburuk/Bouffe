@@ -9,11 +9,11 @@ let role = require('../Model/Role');
 let user = require('../Model/User');
 let table = require('../Model/Table');
 let beverage = require('../Model/Beverage');
-let appointment= require('../Model/Appointment');
-let course = require('../Model/Course');
 
+let course = require('../Model/Course');
 let payment = require('../Model/Payment');
 let reservation = require('../Model/Reservation');
+let guestCheck = require('../Model/GuestCheck');
 
 const tableNames = {
     user:"user",
@@ -33,7 +33,8 @@ const tableNames = {
     userCourse:'userCourse',
     orderMenu:'orderMenu',
     waiter : 'waiter',
-    reservation:'reservation'
+    reservation:'reservation',
+    guestCheck:'guestCheck'
 }
 
 
@@ -91,6 +92,8 @@ menu.run(Sequelize,sequelize,tableNames.menu);
 beverage.run(Sequelize,sequelize,tableNames.beverage);
 
 reservation.run(Sequelize,sequelize,tableNames.reservation);
+
+guestCheck.run(Sequelize,sequelize,tableNames.guestCheck);
 
 sequelize.sync().then(()=>{
     role.createSimpleRoleData();

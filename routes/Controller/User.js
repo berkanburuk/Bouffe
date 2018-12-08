@@ -147,12 +147,9 @@ module.exports = function(app) {
         }),
 
         app.get('/api/getATableBelongToAUser/:username', function (request, response) {
-
             console.log("getATableBelongToAUser");
-            response.setHeader('Content-Type', 'application/json' );
-            var username = request.query;
-            console.log(username);
-            username = request.params;
+
+            var username = request.params;
             console.log(username);
             getATableBelongToAUser(username).then(data => {
                 response.statusCode = 200;
@@ -374,9 +371,24 @@ function deleteUser(username){
     })
 }
 
-function getATableBelongToAUser(username){
+function getATableBelongToAUser(data){
     return new Promise((resolve, reject) => {
-
+        mTable.findAll({
+            where: { userUsername: data.username },
+            include: [{
+                model: mUser,
+            }]
+        }).then(data=>{
+            if (data[0]!= null && data[0] != undefined){
+                resolve(data[0].get(0));
+            }
+            else
+                reject("User does not have any table assigned!");
+        }).catch(error => {
+            reject(error + " Cannot get all Tables Related to this ");
+        })
+    });
+    /*
         mUser.findAll({
             association: [{
                 model: 'tables',
@@ -391,6 +403,7 @@ function getATableBelongToAUser(username){
             reject(error + " Cannot get all Tables Related to this ");
         })
     });
+    */
 }
 /*
 function getAllTables(){
