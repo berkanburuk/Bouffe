@@ -30,8 +30,6 @@ function getFood(data){
                 reject(error);
             })
     })
-
-
 }
 
 function createAFood(data){

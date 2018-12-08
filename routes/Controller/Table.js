@@ -27,7 +27,7 @@ function assignTableToUser(data,id){
             where:
                 {
                     'id': id
-                },
+                }
         }).then((table)=>{
             console.log(table[0]);
             if(table[0]>0){

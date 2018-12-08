@@ -23,18 +23,7 @@ class BeverageModel {
         let mOrder = sequelize.model('order');
         let mOrderBeverage= sequelize.model('orderBeverage');
         Beverage.belongsToMany(mOrder,{through: mOrderBeverage});
-/*
-        Beverage.sync({
-            //force:true
-        }).then(() => {
-            console.log("Beverage Table is created!")
-        });
-        mOrderBeverage.sync({
-            //force: true
-        }).then(() => {
-            console.log("Order Beverage Table is created!");
-        });
-*/
+
         return Beverage;
     }
 
