@@ -5,18 +5,7 @@ let tableNames = require('../Util/DatabaseConnection').getTableNames;
 let db = sequelize();
 let dbNames = tableNames();
 let mFood = db.model(dbNames.food);
-/*
-const save = (data)=>{
-    return new Promise((resolve,reject)=>{
-        mFood.create(data).then(food=> {
-            console.log(food.get())
-            resolve(food);
-        }).catch(error => {
-            reject(error + 'Cannot create the Food!');
-        });
-    })
-}
-*/
+
 
 //Örnek
 function getFood(data){
@@ -37,10 +26,11 @@ function getFood(data){
             .catch(error => {
             reject(error);
         })
+            .catch(error=>{
+                reject(error);
+            })
     })
-        .catch(error=>{
-        reject(error);
-    })
+
 
 }
 
