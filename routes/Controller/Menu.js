@@ -5,6 +5,9 @@ let tableNames = require('../Util/DatabaseConnection').getTableNames;
 let db = sequelize();
 let dbNames = tableNames();
 let mMenu = db.model(dbNames.menu);
+let mFood = db.model(dbNames.food);
+let mMenuFood = db.model(dbNames.menuFood);
+
 
 
 
@@ -22,48 +25,51 @@ function getMenu(data){
                 else{
                     reject("There is no menu with this name: " + data.name);
                 }
-            })
-            .catch(error => {
+            }).catch(error => {
                 reject(error);
             })
-    })
-        .catch(error=>{
-        reject(error);
+            .catch(error=>{
+                reject(error);
+        })
+
     })
 }
 
 
 
-function createMenu(data){
+function createMenuAndAssignFood(data){
 
     return new Promise((resolve, reject) => {
-        mMenu.findOrCreate({
-            where:
-                {
-                    name: data.name
-                },
-            defaults:
-                {
-                    name: data.name,
-                    cousinRegion: data.cousinRegion,
-                    date: data.date,
-                    setPrice:data.setPrice
-                }
-        }).then((menu)=>{
-            console.log(menu[0].get(0));
-            menu[0].addFoods(data.foodName).then(()=>{
-                resolve("Food is added!");
-            }).catch(error=>{
-                reject("Food could not be added!");
-            })
+           return mMenu.findOrCreate({
+                where:
+                    {
+                        name: data.name
+                    },
+                defaults:
+                    {
+                        name: data.name,
+                        cousinRegion: data.cousinRegion,
+                        date: data.date,
+                        setPrice: data.setPrice
+                    }
+            }).then((menu) => {
+                console.log(menu[0]);
+                menu[0].addFood(data.foodName).then(menu => {
+                    console.log(menu);
+                    if (menu != null || menu != undefined)
+                        resolve("Food is added to Menu!");
+                    else
+                        reject("Food could not be added to Menu!");
+                }).catch(error => {
+                    reject(error);
+                })
+            }).catch(error => {
+               reject("Menu could not be created!" + error);
+           })
         })
-            .catch(error =>{
-                reject("Menu could not be created!" + error);
-            })
-    })
+
 
 }
-
 
 
 function deleteMenu(data){
@@ -83,6 +89,65 @@ function deleteMenu(data){
     })
 }
 
+
+function addFoodToMenu(data){
+    return new Promise((resolve, reject) => {
+
+        var c = mMenu.getFoods().then(c=>{
+            console.log(c);
+        }).catch(error=>{
+            console.log(error);
+        })
+
+        /*
+        mTable.findAll({
+            where: {
+                foodName: data.foodName,
+                menuName: data.menuName
+            },
+            include: [{
+                model: mUser,
+            }]
+        }).then(data=>{
+            if (data[0]!= null && data[0] != undefined){
+                resolve(data[0].get(0));
+            }
+            else
+                reject("User does not have any table assigned!");
+        }).catch(error => {
+            reject(error + " Cannot get all Tables Related to this ");
+        })
+        */
+    })
+}
+
+//Many to Many Example
+function getFoodOfMenu(data){
+    console.log(data);
+        return new Promise((resolve, reject) => {
+            mMenu.findAll({
+                where: {
+                    name: data.menuName
+                },
+                include: [
+                    {
+                        model:mFood,
+                        through: mMenuFood
+                    }
+                ]
+            }).then(data=>{
+                if (data != null && data != undefined){
+                    resolve(JSON.stringify(data));
+                }
+                else
+                    reject("Cannot get the Menu's Food!");
+            }).catch(error => {
+                reject(error);
+            })
+
+        })
+}
+
 module.exports = function (app) {
 
     app.get('/menu', function (request, response) {
@@ -93,16 +158,17 @@ module.exports = function (app) {
 
         app.post('/api/menu/addMenu', function (request, response) {
             var data = request.body;
-            createMenu(data).then(menu => {
+            console.log(data);
+            createMenuAndAssignFood(data).then(menu => {
                 response.statusCode = 200;
                 console.log(menu);
-                response.write(menu, () => {
+                response.write(menu.toString(), () => {
                     response.end();
                 });
             }).catch(error => {
-                response.statusCode(404);
+                response.statusCode = 404;
                 console.log(error);
-                response.write(error, () => {
+                response.write(error.toString(), () => {
                     response.end();
                 });
             })
@@ -129,10 +195,31 @@ module.exports = function (app) {
         app.get('/api/menu/getMenu/:name', function (request, response ) {
             console.log("Get a Food");
 
-            var data = request.params;
+            let data = request.params;
             console.log(data);
 
             getMenu(data).then(menu=> {
+                response.statusCode = 200;
+                console.log(menu);
+                response.write(menu.toString(),()=>{
+                    response.end();
+                });
+            }).catch(error => {
+                response.statusCode = 404;
+                console.log(error);
+                response.write(error.toString(),()=>{
+                    response.end();
+                });
+            })
+
+        }),
+
+        app.get('/api/menu/getFoodOfMenu/:menuName/:foodName', function (request, response ) {
+            console.log("getFoodOfMenu");
+
+            let data = request.params;
+            console.log(data);
+            getFoodOfMenu(data).then(menu=> {
                 response.statusCode = 200;
                 console.log(menu);
                 response.write(menu.toString(),()=>{
