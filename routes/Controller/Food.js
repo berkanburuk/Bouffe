@@ -5,7 +5,7 @@ let tableNames = require('../Util/DatabaseConnection').getTableNames;
 let db = sequelize();
 let dbNames = tableNames();
 let mFood = db.model(dbNames.food);
-
+/*
 const save = (data)=>{
     return new Promise((resolve,reject)=>{
         mFood.create(data).then(food=> {
@@ -16,19 +16,32 @@ const save = (data)=>{
         });
     })
 }
+*/
 
-const GetAFood = (name) => {
+//Örnek
+function getFood(data){
     return new Promise((resolve, reject) => {
         mFood.findOne({
             where:{
-                name:name
+                name:data.name
             }
-        }).then(food=>{
-            resolve(food.get(0));
-        }).catch(error => {
-            reject(error + "\nCannot get the Food!");
         })
-    });
+            .then(dbData=>{
+            if (dbData!= null && dbData != undefined){
+                resolve(JSON.stringify(dbData));
+            }
+            else{
+                reject("There is no food with this name: " + data.name);
+            }
+        })
+            .catch(error => {
+            reject(error);
+        })
+    })
+        .catch(error=>{
+        reject(error);
+    })
+
 }
 
 function createAFood(data){
@@ -57,11 +70,11 @@ function createAFood(data){
 }
 
 
-function deleteFood(name){
+function deleteFood(data){
     return new Promise((resolve,reject)=>{
         mFood.destroy({
             where: {
-                name: name
+                name: data.name
             }
         }).then(food=>{
             resolve('Food is deleted');
@@ -160,14 +173,14 @@ module.exports = function(app){
                 deleteFood(data.name).then(food=> {
                     response.statusCode = 200;
                     console.log(food);
-                    response.write(food,()=>{
+                    response.write(food.toString(),()=>{
                         response.end();
                     })
 
                 }).catch(error => {
                     console.log(error);
                     response.statusCode = 404;
-                    response.write(error,()=>{
+                    response.write(error.toString(),()=>{
                         response.end();
                     })
                 })
@@ -177,21 +190,21 @@ module.exports = function(app){
 
     app.post('/api/food/updateFood', function (request, response ) {
         console.log("Update Food");
-
         var data = request.body;
-        console.log("Will be Updated : " +  data["name"]);
+        console.log(request);
+        console.log("Will be Updated : " +  data);
 
         updateFood(data).then(food=> {
             response.statusCode = 200;
             console.log(food);
-            response.write(food,()=>{
+            response.write(food.toString(),()=>{
                 response.end();
             })
 
         }).catch(error => {
             response.statusCode = 404;
             console.log(error);
-            response.write(error,()=>{
+            response.write(error.toString(),()=>{
                 response.end();
             })
         })
@@ -200,13 +213,13 @@ module.exports = function(app){
     }),
 
 
-        app.get('/api/food/getAFood/:foodName', function (request, response ) {
+        app.get('/api/food/getAFood/:name', function (request, response ) {
             console.log("Get a Food");
-            var name = request.params.foodName;
-            console.log(request);
-            console.log(name);
 
-            GetAFood(name).then(food=> {
+            var data = request.params;
+            console.log(data);
+            console.log(data.name);
+            getFood(data).then(food=> {
                 response.statusCode = 200;
                 console.log(food);
                 response.write(food.toString(),()=>{

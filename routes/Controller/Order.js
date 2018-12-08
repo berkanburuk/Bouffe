@@ -53,7 +53,7 @@ module.exports = function (app) {
     }),
 
 //Post - Order
-        app.post('/api/order', function (request, response, next) {
+        app.post('/api/order', function (request, response) {
             var data = request.body;
 
             for (var key in data) {
@@ -62,32 +62,30 @@ module.exports = function (app) {
             notifications = notifications + "\n" + data;
             Order.save(data);
             response.end("Order is successfully Added!");
-            next();
         }),
 
-        app.post('/api/:order/:orderBeverage', function (request, response,next) {
+        app.post('/api/order/:orderBeverage', function (request, response) {
             var data = request.body;
             createAnBeverageOrder(data).then(beverage=>{
                 response.end(beverage);
             }).catch(error=>{
                 response.end(error);
             })
-            next();
+
         }),
 
 
-        app.get('/api/:order/:getNotification', function (request, response,next) {
+        app.get('/api/order/:getNotification', function (request, response) {
                 response.end(notifications + '\n');
-                next();
+
             }),
 
-    app.get('/api/:order/:getAllOrders', function (req, res, next) {
+    app.get('/api/order/:getAllOrders', function (req, res) {
         ordersController.findAll({ raw: true }).then(result =>{
             console.log(result);
             res.end(result);
         })
 
-        next();
     })
 
 

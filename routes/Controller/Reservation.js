@@ -6,9 +6,8 @@ let tableNames = require('../Util/DatabaseConnection').getTableNames;
 let db = sequelize();
 let dbNames = tableNames();
 let mReservation = db.model(dbNames.reservation);
-
+let mTable = db.model(dbNames.table);
 function createAReservation(data){
-    //var data = sampleUserData();
 
     console.log(data);
     return new Promise((resolve, reject) => {
@@ -71,27 +70,45 @@ function updateReservation(data){
 
 }
 
-function simpleData(){
-    var d = new Date();
-    d = d.getFullYear();
-    var data = {
-        fullName: 'ali kıran',
-        phoneNumber: 5554444444,
-        reservationDate: d,
-        tableId: 1,
-        numberOfCustomer: 4
-    }
-    console.log(data);
-    return data;
+//Örnek
+function getReservationAndTable(data){
+    return new Promise((resolve, reject) => {
+        mReservation.findAll({
+            where: { phoneNumber: data.phoneNumber },
+            include: [{
+                model: mTable,
+            }]
+        }).then(dbData=>{
+            if (dbData[0]!= null && dbData[0] != undefined){
+                resolve(JSON.stringify(dbData));
+            }
+            else
+                reject("There is no reservation with this phone number: " + data.phoneNumber );
+        }).catch(error => {
+            reject(error);
+        })
+    });
+
 }
 
-module.exports = function(app) {
-    app.get('/reservation', function (request, response) {
-        console.log('Reservation Controller');
-        response.sendFile(path.resolve('../../public/Pages/index.html'));
-        //response.render(path.resolve('../../public/Pages/index.html'));
+    module.exports = function(app) {
 
-    }),
+        /*
+            app.use('/user', function (req, res, next) {
+                if (req.method !== 'GET' || req.url !== '/')
+                    return next();
+              //  app.use( "/book" , middleware);
+                // will match /book
+                // will match /book/author
+                // will match /book/subject
+                // ...
+            });
+        */
+        app.get('/reservation', function (request, response) {
+            console.log('Reservation Controller');
+            response.sendFile(path.resolve('../../public/Pages/index.html'));
+            //response.render(path.resolve('../../public/Pages/index.html'));
+        }),
 
         app.post('/api/reservation/addReservation', function (request, response ) {
             console.log("Add Reservation");
@@ -149,8 +166,29 @@ module.exports = function(app) {
             })
         })
 
+    }),
+        app.get('/api/reservation/getReservationAndTable/:phoneNumber', function (request, response) {
+            console.log("getReservationAndTable");
+            // { phoneNumber: ... }
+            var data = request.params;
+            data.phoneNumber = parseInt(data.phoneNumber);
+            console.log(data);
+            getReservationAndTable(data).then(data => {
+                response.statusCode = 200;
+                console.log(data);
+                response.write(data.toString(), () => {
+                    response.end();
+                })
+            })
+                .catch(error => {
+                    response.statusCode = 404;
+                    console.log(error);
+                    response.write(error.toString(), () => {
+                        response.end();
+                    });
+                })
+        })
 
-    })
 
 
 }

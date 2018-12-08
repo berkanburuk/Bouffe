@@ -13,6 +13,9 @@ class MenuModel {
                 },
                 date: {
                     type: Sequelize.DATE
+                },
+                setPrice:{
+                    type:Sequelize.DOUBLE
                 }
             })
             //Order FK

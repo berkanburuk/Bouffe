@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Order</title>
-    <link src="../JsFiles/jQuery.js">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
 <body>
 
@@ -15,15 +15,10 @@
 
 <script>
     function order() {
-        var data = {
-           'key':'value'
-        };
-        data = JSON.stringify(data);
         $.ajax({
-            type: 'POST',
+            type: 'GET',
             dataType: 'application/json',
-            url:  'http://cemreberkdemirci.com:3000/api/order/',
-            data: data,
+            url:  'localhost:3000/api/guestCheck/nextGuestList',
             dataType: 'application/json',
             timeout: 5000,
             success: function(data, textStatus ){
@@ -33,7 +28,7 @@
             fail: function(xhr, textStatus, errorThrown){
                 alert('request failed');
             }
-        });
+        })
     }
 
 
