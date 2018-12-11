@@ -7,6 +7,13 @@ let dbNames = tableNames();
 let mFood = db.model(dbNames.food);
 
 
+let isAdmin = require('./RoleCheck').isAdmin;
+let isWaiter = require('./RoleCheck').isWaiter;
+let isBartender = require('./RoleCheck').isBartender;
+let isChef = require('./RoleCheck').isChef;
+let isMatre = require('./RoleCheck').isMatre;
+let errorMessage = require('./RoleCheck').errorMesage;
+
 //Örnek
 function getFood(data){
     return new Promise((resolve, reject) => {
@@ -124,7 +131,7 @@ const getAllFood = () => {
 
 
 
-module.exports = function(app){
+module.exports = function(app,session){
 
 
         app.get('/food', function (request, response) {
@@ -137,41 +144,56 @@ module.exports = function(app){
                 console.log("Add Food");
                 var data = request.body;
 
-                createAFood(data).then(food => {
-                    response.statusCode = 200;
-                    console.log(food);
-                    response.write(food,()=>{
-                        response.end();
-                    })
+                    if (session != undefined &&
+                        (isAdmin(session.roleId) || isChef(session.roleId)) ||isMatre(session.roleId)) {
+                        createAFood(data).then(food => {
+                            response.statusCode = 200;
+                            console.log(food);
+                            response.write(food, () => {
+                                response.end();
+                            })
 
-                }).catch(error => {
-                    console.log(error);
-                    response.statusCode = 404;
-                    response.write(error,()=>{
-                        response.end();
-                    })
-                })
+                        }).catch(error => {
+                            console.log(error);
+                            response.statusCode = 404;
+                            response.write(error, () => {
+                                response.end();
+                            })
+                        })
+                    }else {
+                        response.write(errorMessage().toString(), () => {
+                            response.statusCode = 404;
+                            response.end();
+                        })
+                    }
 
             }),
 
             app.post('/api/food/deleteFood', function (request, response ) {
                 console.log("Delete Reservation");
+                if (session != undefined &&
+                    (isAdmin(session.roleId) || isChef(session.roleId)) ||isMatre(session.roleId)) {
+                    var data = request.body;
+                    deleteFood(data.name).then(food => {
+                        response.statusCode = 200;
+                        console.log(food);
+                        response.write(food.toString(), () => {
+                            response.end();
+                        })
 
-                var data = request.body;
-                deleteFood(data.name).then(food=> {
-                    response.statusCode = 200;
-                    console.log(food);
-                    response.write(food.toString(),()=>{
+                    }).catch(error => {
+                        console.log(error);
+                        response.statusCode = 404;
+                        response.write(error.toString(), () => {
+                            response.end();
+                        })
+                    })
+                }else {
+                    response.write(errorMessage().toString(), () => {
+                        response.statusCode = 404;
                         response.end();
                     })
-
-                }).catch(error => {
-                    console.log(error);
-                    response.statusCode = 404;
-                    response.write(error.toString(),()=>{
-                        response.end();
-                    })
-                })
+                }
 
 
             })
@@ -179,23 +201,30 @@ module.exports = function(app){
     app.post('/api/food/updateFood', function (request, response ) {
         console.log("Update Food");
         var data = request.body;
-        console.log(request);
-        console.log("Will be Updated : " +  data);
+            if (session != undefined &&
+                (isAdmin(session.roleId) || isChef(session.roleId)) ||isMatre(session.roleId)) {
+                console.log(request);
+                console.log("Will be Updated : " + data);
 
-        updateFood(data).then(food=> {
-            response.statusCode = 200;
-            console.log(food);
-            response.write(food.toString(),()=>{
-                response.end();
-            })
-
-        }).catch(error => {
-            response.statusCode = 404;
-            console.log(error);
-            response.write(error.toString(),()=>{
-                response.end();
-            })
-        })
+                updateFood(data).then(food => {
+                    response.statusCode = 200;
+                    console.log(food);
+                    response.write(food.toString(), () => {
+                        response.end();
+                    })
+                }).catch(error => {
+                    response.statusCode = 404;
+                    console.log(error);
+                    response.write(error.toString(), () => {
+                        response.end();
+                    })
+                })
+            }else {
+                response.write(errorMessage().toString(), () => {
+                    response.statusCode = 404;
+                    response.end();
+                })
+            }
 
 
     }),
@@ -203,24 +232,30 @@ module.exports = function(app){
 
         app.get('/api/food/getAFood/:name', function (request, response ) {
             console.log("Get a Food");
-
-            var data = request.params;
-            console.log(data);
-            console.log(data.name);
-            getFood(data).then(food=> {
-                response.statusCode = 200;
-                console.log(food);
-                response.write(food.toString(),()=>{
+            if (session != undefined &&
+                (isAdmin(session.roleId) || isChef(session.roleId)) ||isMatre(session.roleId)) {
+                var data = request.params;
+                console.log(data);
+                console.log(data.name);
+                getFood(data).then(food => {
+                    response.statusCode = 200;
+                    console.log(food);
+                    response.write(food.toString(), () => {
+                        response.end();
+                    });
+                }).catch(error => {
+                    response.statusCode = 404;
+                    console.log(error);
+                    response.write(error.toString(), () => {
+                        response.end();
+                    });
+                })
+            }else {
+                response.write(errorMessage().toString(), () => {
+                    response.statusCode = 404;
                     response.end();
-                });
-            }).catch(error => {
-                response.statusCode = 404;
-                console.log(error);
-                response.write(error.toString(),()=>{
-                    response.end();
-                });
-            })
-
+                })
+            }
         })
 
 

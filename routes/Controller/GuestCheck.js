@@ -23,7 +23,7 @@ function nextGuestList(data) {
 }
 
 
-module.exports = function(app) {
+module.exports = function(app,session) {
 
         app.get('/api/guestCheck/nextGuestList', function (request, response) {
             console.log("Create New Guest List");

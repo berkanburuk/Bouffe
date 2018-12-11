@@ -3,8 +3,13 @@ let path = require('path');
 let sequelize = require('../Util/DatabaseConnection').getSequelize;
 let tableNames = require('../Util/DatabaseConnection').getTableNames;
 let mUserFunc = require('../Util/DatabaseConnection').getUserModel;
-//var sessions = require('../../server').getSession;
 
+let isAdmin = require('./RoleCheck').isAdmin;
+let isWaiter = require('./RoleCheck').isWaiter;
+let isBartender = require('./RoleCheck').isBartender;
+let isChef = require('./RoleCheck').isChef;
+let isMatre = require('./RoleCheck').isMatre;
+let errorMessage = require('./RoleCheck').errorMesage;
 
 
     let db = sequelize();
@@ -15,6 +20,7 @@ let mTable = db.model(dbNames.table);
 let mUserRoles = db.model(dbNames.userRoles);
 
 module.exports = function(app,session) {
+
 
     /*
         app.use('/user', function (req, res, next) {
@@ -33,25 +39,32 @@ module.exports = function(app,session) {
         //response.render(path.resolve('../../public/Pages/index.html'));
     }),
         app.get('/api/user/deleteUser/:username', function (request, response ) {
-            //localhost:3000/api/getATableBelongToAUser/berkan
 
-            //response.writeHead(200, { 'Content-Type': 'application/json' });
             console.log("Delete USER");
-            var username = request.params.deleteUser;
 
-            deleteUser(username).then(user => {
-                response.statusCode = 200;
-                console.log(user);
-                response.write("Successful",()=>{
-                    response.end();
-                });
-            }).catch(error => {
-                response.statusCode(404);
-                console.log(error);
-                response.write(error,()=>{
-                    response.end();
-                });
-            })
+            if (session != undefined && isAdmin(session.roleId)) {
+
+                    var username = request.params.username;
+
+                    deleteUser(username).then(user => {
+                        response.statusCode = 200;
+                        console.log(user);
+                        response.write("Successful", () => {
+                            response.end();
+                        });
+                    }).catch(error => {
+                        response.statusCode = 404;
+                        console.log(error);
+                        response.write(error, () => {
+                            response.end();
+                        });
+                    })
+                } else {
+                    response.write(errorMessage(), () => {
+                        response.statusCode = 404;
+                        response.end();
+                    })
+                }
 
         }),
 
@@ -62,11 +75,13 @@ module.exports = function(app,session) {
             var password = request.params.password;
             */
             var data = request.body;
+            console.log(request.body);
 
             checkValidationOfUser(data.username,data.password).then(user => {
                 response.statusCode = 200;
                 console.log(user);
                 response.write("Successful",()=>{
+
                     session.username=data.username;
                     getAUserRole(data.username).then(role=>{
                         var myRole = JSON.parse(role);
@@ -81,7 +96,6 @@ module.exports = function(app,session) {
             }).catch(error => {
                 response.statusCode = 404;
                 console.log(error);
-
                 response.write(error.toString(),()=>{
                     response.end();
                 });
@@ -93,92 +107,118 @@ module.exports = function(app,session) {
             console.log("Create A User");
             var data = request.body;
             console.log(data);
+                if (session != undefined && isAdmin(session.roleId)) {
+                    data.roleId = parseInt(data.roleId, 10);
+                    data.courseId = parseInt(data.courseId, 10);
 
-            data.roleId = parseInt(data.roleId,10);
-            data.courseId= parseInt(data.courseId,10);
 
+                    console.log(data);
+                    createAUser(data).then(user => {
+                        response.statusCode = 200;
+                        console.log(user);
 
-            console.log(data);
-            createAUser(data).then(user => {
-                response.statusCode = 200;
-                console.log(user);
+                        response.write("Successful", () => {
+                            response.end();
+                        });
+                    }).catch(error => {
+                        response.statusCode = 404;
+                        console.log(error);
 
-                response.write("Successful",()=>{
-                    response.end();
-                });
-            }).catch(error => {
-                response.statusCode = 404;
-                console.log(error);
-
-                response.write(error.toString(),()=>{
-                    response.end();
-                });
-            })
+                        response.write(error.toString(), () => {
+                            response.end();
+                        });
+                    })
+                } else {
+                    response.write(errorMessage(), () => {
+                        response.statusCode = 404;
+                        response.end();
+                    })
+                }
 
         }),
         app.post('/api/user/updateAUser', function (request, response) {
             console.log("Update A User");
-            response.setHeader('Content-Type', 'application/json' );
-            var data = request.body;
-            updateAUser(data).then(user => {
-                response.statusCode = 200;
-                console.log(user);
-                response.send(user.toString());
-            }).catch(error => {
-                response.statusCode = 404;
-                console.log(error);
+                if (session != undefined && isAdmin(session.roleId)) {
+                    var data = request.body;
+                    updateAUser(data).then(user => {
+                        response.statusCode = 200;
+                        console.log(user);
+                        response.send(user.toString());
+                    }).catch(error => {
+                        response.statusCode = 404;
+                        console.log(error);
 
-                response.write(error.toString(),()=>{
-                    response.end();
-                });
-            })
+                        response.write(error.toString(), () => {
+                            response.end();
+                        });
+                    })
+                }else {
+                    response.write(errorMessage(), () => {
+                        response.statusCode = 404;
+                        response.end();
+                    })
+                }
 
         }),
 
 
 
         app.get('/api/user/getAllUsers/:username', function (request, response) {
+
             console.log("Get all Users");
+                if (session != undefined && isAdmin(session.roleId)) {
+                    getAllUsers().then(user => {
+                        response.statusCode = 200;
+                        console.log(user[0].get(0));
+                        response.write(user[0].get(0).toString(), () => {
+                            response.end();
+                        })
+                    }).catch(error => {
+                        response.statusCode = 404;
+                        console.log(error);
 
-            getAllUsers().then(user => {
-                response.statusCode = 200;
-                console.log(user[0].get(0));
-                response.write(user[0].get(0).toString(),()=>{
-                    response.end();
-                })
-            }).catch(error => {
-                response.statusCode = 404;
-                console.log(error);
-
-                response.write(error,()=>{
-                    response.end();
-                });
-            })
-
+                        response.write(error, () => {
+                            response.end();
+                        });
+                    })
+                }else {
+                    response.write(errorMessage(), () => {
+                        response.statusCode = 404;
+                        response.end();
+                    })
+                }
 
         }),
 
         app.get('/api/getATableBelongToAUser/:username', function (request, response) {
             console.log("getATableBelongToAUser");
-
-            var username = request.params;
-            console.log(username);
-            getATableBelongToAUser(username).then(data => {
-                response.statusCode = 200;
-                console.log(data);
-                response.write(data.toString(), () => {
+            if (session != undefined &&
+                (isAdmin(session.roleId) || isWaiter(session.roleId) || isChef(session.roleId)) ||isMatre(session.roleId))
+            {
+                var username = request.params;
+                console.log(username);
+                getATableBelongToAUser(username).then(data => {
+                    response.statusCode = 200;
+                    console.log(data);
+                    response.write(data.toString(), () => {
+                        response.end();
+                    })
+                })
+                    .catch(error => {
+                        response.statusCode = 404;
+                        console.log(error);
+                        response.write(error, () => {
+                            response.end();
+                        });
+                    })
+            }else {
+                response.write(errorMessage(), () => {
+                    response.statusCode = 404;
                     response.end();
                 })
-            })
-                .catch(error => {
-                    response.statusCode = 404;
-                    console.log(error);
-                    response.write(error, () => {
-                        response.end();
-                    });
-                })
-
+            }
         })
+
 }
 
     /*

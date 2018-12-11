@@ -74,7 +74,7 @@ const deleteChair = (id) =>{
 }
 
 
-module.exports = function(app){
+module.exports = function(app,session){
     app.get('/chair', function (request, response) {
         console.log('Chair');
         response.sendFile(path.resolve('../../public/Pages/Chair.html'));

@@ -7,67 +7,69 @@ let db = sequelize();
 let dbNames = tableNames();
 let mReservation = db.model(dbNames.reservation);
 let mTable = db.model(dbNames.table);
-function createAReservation(data){
 
+
+function createAReservation(data){
     console.log(data);
-    return new Promise((resolve, reject) => {
-        mReservation.findOne({
-            where:
-                {
-                    tableId: data.tableId,
-                    reservationDate: data.reservationDate
+        return new Promise((resolve, reject) => {
+            mReservation.findOne({
+                where:
+                    {
+                        tableId: data.tableId,
+                        reservationDate: data.reservationDate
+                    }
+            }).then(reservation => {
+                console.log("Reservation " + reservation)
+                if (reservation == null || reservation == undefined) {
+                    mReservation.create(data);
+                    resolve("Reservation is created");
+                } else {
+                    reject("There is already a reservation for table day!");
                 }
-        }).then(reservation=>{
-            console.log("Reservation " + reservation)
-            if (reservation == null || reservation == undefined){
-                mReservation.create(data);
-                resolve("Reservation is created");
-            }else{
-                reject("There is already a reservation for table day!");
-            }
-        }).catch(error =>{
-            reject(error);
+            }).catch(error => {
+                reject(error);
+            })
         })
-    })
 }
 
 
 function deleteReservation(phoneNumber){
-    return new Promise((resolve,reject)=>{
-        mReservation.destroy({
-            where: {
-                phoneNumber: phoneNumber
-            }
-        }).then(reservation=>{
-            resolve('Reservation is deleted');
-        }).catch(error =>{
-            reject("Reservation could not be deleted!");
+
+        return new Promise((resolve, reject) => {
+            mReservation.destroy({
+                where: {
+                    phoneNumber: phoneNumber
+                }
+            }).then(reservation => {
+                resolve('Reservation is deleted');
+            }).catch(error => {
+                reject("Reservation could not be deleted!");
+            })
         })
-    })
-}
+    }
+
 
 
 function updateReservation(data){
-    return new Promise((resolve, reject) => {
-        mReservation.update(data, {
-            where:
-                {
-                    id: data.id
-                },
-        }).then((reservation)=>{
-            console.log(reservation[0]);
-            if(reservation[0]>0){
-                resolve("Reservation is updated successfully.");
-            }else {
-                reject("Reservation could not updated!");
-            }
+        return new Promise((resolve, reject) => {
+            mReservation.update(data, {
+                where:
+                    {
+                        id: data.id
+                    },
+            }).then((reservation) => {
+                console.log(reservation[0]);
+                if (reservation[0] > 0) {
+                    resolve("Reservation is updated successfully.");
+                } else {
+                    reject("Reservation could not updated!");
+                }
 
-        }).catch(error =>{
-            reject(error);
+            }).catch(error => {
+                reject(error);
+            })
+
         })
-
-    })
-
 }
 
 //Örnek
@@ -91,7 +93,7 @@ function getReservationAndTable(data){
 
 }
 
-    module.exports = function(app) {
+    module.exports = function(app,session) {
 
         /*
             app.use('/user', function (req, res, next) {
@@ -112,81 +114,111 @@ function getReservationAndTable(data){
 
         app.post('/api/reservation/addReservation', function (request, response ) {
             console.log("Add Reservation");
+                if (session != undefined &&
+                    (isAdmin(session.roleId) || isChef(session.roleId)) ||isMatre(session.roleId)) {
+                    var data = request.body;
+                    createAReservation(data).then(reservation => {
+                        console.log(reservation);
+                        response.write(reservation, () => {
+                            response.end();
+                        })
 
-            var data = request.body;
-            createAReservation(data).then(reservation => {
-                console.log(reservation);
-                response.write(reservation,()=>{
-                    response.end();
-                })
-
-            }).catch(error => {
-                console.log(error);
-                response.write(error,()=>{
-                    response.end();
-                })
-            })
-
+                    }).catch(error => {
+                        console.log(error);
+                        response.write(error, () => {
+                            response.end();
+                        })
+                    })
+                }
+                else {
+                    response.write(errorMessage(), () => {
+                        response.statusCode = 404;
+                        response.end();
+                    })
+                }
 
         }),
 
         app.post('/api/reservation/deleteReservation', function (request, response ) {
             console.log("Delete Reservation");
-            var phoneNumber = request.body;
-            deleteReservation(phoneNumber).then(reservation => {
-                console.log(reservation);
-                response.write(reservation,()=>{
+            if (session != undefined &&
+                (isAdmin(session.roleId) || isChef(session.roleId)) ||isMatre(session.roleId)) {
+                var phoneNumber = request.body;
+                deleteReservation(phoneNumber).then(reservation => {
+                    console.log(reservation);
+                    response.write(reservation, () => {
+                        response.end();
+                    })
+
+                }).catch(error => {
+                    console.log(error);
+                    response.write(error, () => {
+                        response.end();
+                    })
+                })
+            } else {
+                response.write(errorMessage(), () => {
+                    response.statusCode = 404;
                     response.end();
                 })
-
-            }).catch(error => {
-                console.log(error);
-                response.write(error,()=>{
-                    response.end();
-                })
-            })
-
+            }
 
         })
 
     app.post('/api/reservation/updateReservation', function (request, response ) {
         console.log("Delete Reservation");
+            if (session != undefined &&
+                (isAdmin(session.roleId) || isChef(session.roleId)) ||isMatre(session.roleId)) {
+                var data = request.body;
+                updateReservation(data).then(reservation => {
+                    console.log(reservation);
+                    response.write(reservation.toString(), () => {
+                        response.end();
+                    })
 
-        var data = request.body;
-        updateReservation(data).then(reservation => {
-            console.log(reservation);
-            response.write(reservation,()=>{
-                response.end();
-            })
-
-        }).catch(error => {
-            console.log(error);
-            response.write(error,()=>{
-                response.end();
-            })
-        })
+                }).catch(error => {
+                    console.log(error);
+                    response.write(error, () => {
+                        response.end();
+                    })
+                })
+            }else {
+                response.write(errorMessage(), () => {
+                    response.statusCode = 404;
+                    response.end();
+                })
+            }
 
     }),
         app.get('/api/reservation/getReservationAndTable/:phoneNumber', function (request, response) {
             console.log("getReservationAndTable");
             // { phoneNumber: ... }
-            var data = request.params;
-            data.phoneNumber = parseInt(data.phoneNumber);
-            console.log(data);
-            getReservationAndTable(data).then(data => {
-                response.statusCode = 200;
+            if (session != undefined &&
+                (isAdmin(session.roleId) || isChef(session.roleId)) ||isMatre(session.roleId)) {
+                var data = request.params;
+                data.phoneNumber = parseInt(data.phoneNumber);
                 console.log(data);
-                response.write(data.toString(), () => {
+                getReservationAndTable(data).then(data => {
+                    response.statusCode = 200;
+                    console.log(data);
+                    response.write(data.toString(), () => {
+                        response.end();
+                    })
+                })
+                    .catch(error => {
+                        response.statusCode = 404;
+                        console.log(error);
+                        response.write(error.toString(), () => {
+                            response.end();
+                        });
+                    })
+            }else {
+                response.write(errorMessage(), () => {
+                    response.statusCode = 404;
                     response.end();
                 })
-            })
-                .catch(error => {
-                    response.statusCode = 404;
-                    console.log(error);
-                    response.write(error.toString(), () => {
-                        response.end();
-                    });
-                })
+            }
+
         })
 
 
