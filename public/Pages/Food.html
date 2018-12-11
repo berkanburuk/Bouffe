@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css?family=Playfair+Display:400,400i,700|Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="../stylesheets/bootstrap2.min.css">
+    <link rel="stylesheet" href="../stylesheets/bootstrap.min.css">
+    <link rel="stylesheet" href="../stylesheets/style.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <title>Manage Beverage</title>
+</head>
+<body>
+
+<form id="add_food_form" action="http://localhost:3000/api/food/addFood" method="POST">
+    <div class="form-group">
+        Name <input type="text" class="form-control" name="name" id="name"><br>
+    </div>
+    <div class="form-group">
+        Type <select name="type" id="type">
+        <option value="Appetizer"> Appetizer
+        <option value="Main Course" selected> Main Course
+        <option value="Dessert"> Dessert
+    </select>
+    </div>
+    <div class="form-group">
+        Description <input type="password" class="form-control" name="description" id="description"><br>
+    </div>
+    <div class="form-group">
+        Availability <input type="text" class="form-control" name="available" id="available"><br>
+    </div>
+
+    <div class="form-group">
+        Price <input type="text" placeholder="0.00" class="form-control" name="price" id="price"><br>
+    </div>
+    <div>
+    </div>
+    <br><br>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+</body>
+</html>
+
+<script>
+
+    function addBeverage() {
+        var data = {
+            'name': $('#beverageName').val(),
+            'available': true,
+            'price': 10.0
+        };
+        $.ajax({
+            type: 'POST',
+            dataType: 'application/json',
+            url: 'http://cemreberkdemirci.com:3000/api/addBeverage/',
+            data: data,
+            timeout: 5000,
+            success: function (data, textStatus) {
+                alert('request successful');
+                console.log(data);
+            },
+            fail: function (xhr, textStatus, errorThrown) {
+                alert('request failed');
+            }
+        });
+    }
+
+</script>
