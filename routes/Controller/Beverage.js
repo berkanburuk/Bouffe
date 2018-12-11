@@ -146,10 +146,10 @@ function getFoodOfMenu(data){
     })
 }
 
-module.exports = function (app) {
+module.exports = function (app,session) {
 
     app.get('/menu', function (request, response) {
-        console.log('Menu');
+        console.log('Beverage');
         response.sendFile(path.resolve('../../public/Pages/Menu.html'));
 
     }),

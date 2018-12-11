@@ -8,6 +8,13 @@ let dbNames = tableNames();
 let mTable = db.model(dbNames.table);
 let mUser = db.model(dbNames.user);
 
+let isAdmin = require('./RoleCheck').isAdmin;
+let isWaiter = require('./RoleCheck').isWaiter;
+let isBartender = require('./RoleCheck').isBartender;
+let isChef = require('./RoleCheck').isChef;
+let isMatre = require('./RoleCheck').isMatre;
+let errorMessage = require('./RoleCheck').errorMesage;
+
 
 function save(data){
     return new Promise((resolve,reject)=>{
@@ -21,28 +28,34 @@ function save(data){
 }
 
 function assignTableToUser(data,id){
-
-    return new Promise((resolve, reject) => {
-        mTable.update(data, {
-            where:
-                {
-                    'id': id
+    if (session != undefined &&
+        (isAdmin(session.roleId) || isWaiter(session.roleId) || isChef(session.roleId)) ||isMatre(session.roleId)) {
+        return new Promise((resolve, reject) => {
+            mTable.update(data, {
+                where:
+                    {
+                        'id': id
+                    }
+            }).then((table) => {
+                console.log(table[0]);
+                if (table[0] > 0) {
+                    resolve("Table is updated successfully.");
+                } else {
+                    reject("Table could not updated!");
                 }
-        }).then((table)=>{
-            console.log(table[0]);
-            if(table[0]>0){
-                resolve("Table is updated successfully.");
-            }else {
-                reject("Table could not updated!");
-            }
 
-        }).catch(error =>{
-            reject(error);
+            }).catch(error => {
+                reject(error);
+            })
         })
-
-    })
-
+    }else {
+        response.write(errorMessage(), () => {
+            response.statusCode = 404;
+            response.end();
+        })
+    }
 }
+
 function createAndAssignTableToUser(data){
     return new Promise((resolve, reject) => {
         mTable.findOrCreate({
@@ -143,7 +156,7 @@ const deleteTable = (username) =>{
 }
 
 
-module.exports = function(app){
+module.exports = function(app,session){
 
     app.get('/table', function (request, response) {
         console.log('Table');
