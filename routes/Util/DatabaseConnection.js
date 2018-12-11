@@ -34,7 +34,8 @@ const tableNames = {
     orderMenu:'orderMenu',
     waiter : 'waiter',
     reservation:'reservation',
-    guestCheck:'guestCheck'
+    guestCheck:'guestCheck',
+    userRoles:'userRole'
 }
 
 

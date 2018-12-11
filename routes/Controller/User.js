@@ -3,14 +3,18 @@ let path = require('path');
 let sequelize = require('../Util/DatabaseConnection').getSequelize;
 let tableNames = require('../Util/DatabaseConnection').getTableNames;
 let mUserFunc = require('../Util/DatabaseConnection').getUserModel;
+//var sessions = require('../../server').getSession;
 
-let db = sequelize();
+
+
+    let db = sequelize();
 let dbNames = tableNames();
 let mUser = db.model(dbNames.user);
 let mRole = db.model(dbNames.role);
 let mTable = db.model(dbNames.table);
+let mUserRoles = db.model(dbNames.userRoles);
 
-module.exports = function(app) {
+module.exports = function(app,session) {
 
     /*
         app.use('/user', function (req, res, next) {
@@ -62,22 +66,30 @@ module.exports = function(app) {
             checkValidationOfUser(data.username,data.password).then(user => {
                 response.statusCode = 200;
                 console.log(user);
-
                 response.write("Successful",()=>{
+                    session.username=data.username;
+                    getAUserRole(data.username).then(role=>{
+                        var myRole = JSON.parse(role);
+                        console.log("myrole "+ myRole[0].roleId);
+                        session.roleId = myRole[0].roleId;
+                        console.log("Session: " + session.username + session.roleId);
+                    }).catch(error=>{
+                        console.log(error);
+                    })
                     response.end();
                 });
             }).catch(error => {
                 response.statusCode = 404;
                 console.log(error);
 
-                response.write(error,()=>{
+                response.write(error.toString(),()=>{
                     response.end();
                 });
             })
 
         }),
 
-        app.post('/api/user/addUser', function (request, response,next) {
+        app.post('/api/user/addUser', function (request, response) {
             console.log("Create A User");
             var data = request.body;
             console.log(data);
@@ -98,7 +110,7 @@ module.exports = function(app) {
                 response.statusCode = 404;
                 console.log(error);
 
-                response.write(error,()=>{
+                response.write(error.toString(),()=>{
                     response.end();
                 });
             })
@@ -111,12 +123,12 @@ module.exports = function(app) {
             updateAUser(data).then(user => {
                 response.statusCode = 200;
                 console.log(user);
-                response.send(user);
+                response.send(user.toString());
             }).catch(error => {
                 response.statusCode = 404;
                 console.log(error);
 
-                response.write(error,()=>{
+                response.write(error.toString(),()=>{
                     response.end();
                 });
             })
@@ -167,8 +179,7 @@ module.exports = function(app) {
                 })
 
         })
-
-
+}
 
     /*
       app.get('/api/:user/:addARole', function (request, response,next) {
@@ -181,23 +192,11 @@ module.exports = function(app) {
   })
 
 
-      app.get('/api/:user/:getAUserRole', function (request, response) {
-          console.log('getAUserRole');
-          getAUserRole('berkan').then(data => {
-              console.log(data);
-              response.write('2');
-          }).catch(error => {
-              console.log(error);
-              response.write('2');
-          })
-
-      })
-
 
 */
 
 
-}
+
 
 
 
@@ -310,17 +309,52 @@ function addARole(data){
     })
 }
 /*
-const getAUserRole = (username)=>{
-    return new Promise((resolve,reject)=>{
-        mUser.findByPk('username')
-            .then((user)=>{
-                resolve(user.getRoles())
-            }).catch(error=>{
+//Many to Many Example
+function getAUserRole(data){
+    console.log(data);
+    return new Promise((resolve, reject) => {
+        mUser.findAll({
+            where: {
+                username: data
+            },
+            include: [
+                {
+                    model:mRole,
+                    through: mUserRoles
+                }
+            ]
+        }).then(myData=>{
+            if (myData != null && myData != undefined){
+                resolve(JSON.stringify(myData));
+            }
+            else
+                reject("Cannot get the role Id!");
+        }).catch(error => {
             reject(error);
         })
+
     })
 }
 */
+function getAUserRole(data){
+    console.log(data);
+    return new Promise((resolve, reject) => {
+        mUserRoles.findAll({
+            where: {
+                userUsername: data
+            }
+        }).then(myData=>{
+            if (myData != null && myData != undefined){
+                resolve(JSON.stringify(myData));
+            }
+            else
+                reject("Cannot get the role Id!");
+        }).catch(error => {
+            reject(error);
+        })
+
+    })
+}
 
 function checkValidationOfUser(username, password){
     return new Promise((resolve, reject) => {
@@ -331,6 +365,8 @@ function checkValidationOfUser(username, password){
             }
         }).then(user=>{
             if (user != null && user != undefined ){
+                user = JSON.stringify(user);
+                //console.log(user);
                 resolve(user);
             }else{
                 reject("Username or Password is wrong!");
