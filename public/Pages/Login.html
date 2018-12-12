@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <title>Title</title>
+</head>
+
+
+    First name: <input type="text" name="username" id="username"><br>
+    Last name: <input type="text" name="password" id="password"><br>
+    <input type="button" onclick="order()"  value="Login">
+
+
+        <input type="button" onclick="myDel()" value="Delete" >
+
+</form>
+
+</html>
+
+<script>
+    function order() {
+        var data = {
+            username:$('#username').val(),
+            password:$('#password').val()
+        };
+        $.ajax({
+            type: 'POST',
+            dataType: 'application/json',
+            url:  '/api/user/login',
+            timeout: 5000,
+            data: data,
+            success: function(data, textStatus ){
+                alert(data);
+                console.log(data);
+            },
+            fail: function(xhr, textStatus, errorThrown){
+                alert('request failed');
+            }
+        })
+    }
+
+    function myDel() {
+        var data = $('#username').val();
+       $.ajax({
+           type: 'GET',
+           dataType: 'text',
+           url:  '/api/user/deleteUser/'+data,
+           timeout: 5000,
+           success: function(data, textStatus ){
+               alert(data);
+               console.log(data);
+           },
+           fail: function(xhr, textStatus, errorThrown){
+               alert('request failed');
+           }
+       });
+   }
+
+</script>
