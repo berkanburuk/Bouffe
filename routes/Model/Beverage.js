@@ -41,7 +41,7 @@ class BeverageModel {
     }
 }
 
-function run(Sequelize, sequelize, beverage) {
+exports.run = function (Sequelize, sequelize, beverage) {
     var f = new BeverageModel(Sequelize, sequelize, beverage);
     console.log("Beverage : " + f);
   //  console.log(f.getUserTable())
@@ -50,7 +50,4 @@ function getBeverages() {
     Beverage.findAll().then(function (beverage) {
         console.log(beverage[0].get('name'));
     });
-}
-module.exports = {
-   run
 }

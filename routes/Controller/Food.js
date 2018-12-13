@@ -79,9 +79,10 @@ function createAFood(data){
                     price: data.price
                 }
         }).then((food)=>{
-        if (food != null || food!= undefined){
-            reject('This food is already added!');
-        }
+            if (food[1] == false){
+                reject('This food is already added!');
+                return;
+            }
             resolve("Food is created successfully");
         })
             .catch(error =>{
