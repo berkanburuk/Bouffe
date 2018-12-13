@@ -10,9 +10,13 @@ class PaymentModel {
             },
             totalPrice : {
                 type:Sequelize.DOUBLE,
+                defaultValue:0.0
             },
             paymentType:{
-                type:Sequelize.INTEGER
+                type:Sequelize.INTEGER,
+                defaultValue: 0
+                //0->Cash
+                //1->Credit Card
             }
         });
         /*

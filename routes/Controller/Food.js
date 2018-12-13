@@ -5,7 +5,7 @@ let tableNames = require('../Util/DatabaseConnection').getTableNames;
 let db = sequelize();
 let dbNames = tableNames();
 let mFood = db.model(dbNames.food);
-
+let mMenuFood = db.model(dbNames.menuFood);
 
 let isAdmin = require('./RoleCheck').isAdmin;
 let isWaiter = require('./RoleCheck').isWaiter;
@@ -36,6 +36,22 @@ function getFood(data){
             .catch(error=>{
                 reject(error);
             })
+    })
+}
+
+exports.getAllFeaturesOfFood = function(foodName) {
+    return new Promise((resolve, reject) => {
+        mMenuFood.findOne({
+            where:{
+                name:foodName
+            }
+        }).then(result=>{
+            resolve(result[0]);
+        }).catch(error=>{
+            reject(error);
+        })
+    }).catch(error=>{
+        reject(error);
     })
 }
 
@@ -104,13 +120,13 @@ function updateFood(data){
 }
 
 
-const getAllFood = () => {
+function getAllFood (){
     return new Promise((resolve, reject) => {
         mFood.findAll({
                 //   attributes: ['foo', 'bar']
             }
         ).then(food=>{
-            resolve(food.get());
+            resolve(JSON.stringify(food));
         }).catch(error => {
             reject(error + "\nCannot get all Food");
         })
@@ -257,6 +273,36 @@ module.exports = function(app,session){
                 })
             }
         })
+
+
+    app.get('/api/food/getAllFood', function (request, response ) {
+        console.log("Get all Food");
+        if (session != undefined &&
+            (isAdmin(session.roleId) || isChef(session.roleId)) ||isMatre(session.roleId)) {
+            var data = request.params;
+            console.log(data);
+
+            getAllFood().then(food => {
+                response.statusCode = 200;
+                console.log(food);
+                response.write(food.toString(), () => {
+                    response.end();
+                });
+            }).catch(error => {
+                response.statusCode = 404;
+                console.log(error);
+                response.write(error.toString(), () => {
+                    response.end();
+                });
+            })
+        }else {
+            response.write(errorMessage().toString(), () => {
+                response.statusCode = 404;
+                response.end();
+            })
+        }
+    })
+
 
 
 

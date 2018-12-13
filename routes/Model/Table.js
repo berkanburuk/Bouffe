@@ -16,15 +16,25 @@ class TableModel {
                 type: Sequelize.INTEGER
             },
             status: {
-                type: Sequelize.INTEGER
+                type: Sequelize.INTEGER,
+                defaultValue:0
+                //0 kapalı
+                //1 açık
             },
             //Table Merge Daha Bitmedi
             mergedWith: {
                 type: Sequelize.INTEGER
             }
         });
+        //User - Table
         let mUser = sequelize.model('user');
         Table.belongsTo(mUser,{targetKey:'username',onDelete:'CASCADE'});
+
+        //
+        let mOrder= sequelize.define('order',{});
+        let mOrderTable= sequelize.define('orderTable');
+        Table.belongsToMany(mOrder,{through: mOrderTable,targetKey:'id', onDelete: 'CASCADE'});
+
 
         return Table;
     }

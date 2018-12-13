@@ -33,12 +33,13 @@ function createAReservation(data){
 }
 
 
-function deleteReservation(phoneNumber){
+function deleteReservation(phoneNumber,date){
 
         return new Promise((resolve, reject) => {
             mReservation.destroy({
                 where: {
-                    phoneNumber: phoneNumber
+                    phoneNumber: phoneNumber,
+                    reservationDate: date
                 }
             }).then(reservation => {
                 resolve('Reservation is deleted');
