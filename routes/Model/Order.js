@@ -168,7 +168,7 @@ exports.getWaiterNotificationApprovedFood = function(orderId){
 
 
 
-//Waiter 3'e setleyip, yemek teslim edildi diyor.
+//Waiter 3'e setleyip, yemek teslim edildi.
 exports.waiterCloseOrder = function (orderId) {
     return new Promise((resolve, reject) => {
         Order.update({
@@ -191,29 +191,13 @@ exports.waiterCloseOrder = function (orderId) {
 }
 
 
-exports.getWaiterFoodReady = function(orderId){
+exports.getWaiterFoodDone = function(orderId){
     return new Promise((resolve, reject) => {
         Order.findOne({
             where:
                 {
                     id: orderId,
                     isFoodReady: 3
-                }
-        }).then((order) => {
-            resolve(JSON.stringify(order));
-        }).catch(error=>{
-            reject(error);
-        })
-    })
-}
-
-exports.getWaiterNotificationRejected = function(orderId){
-    return new Promise((resolve, reject) => {
-        Order.findOne({
-            where:
-                {
-                    id: orderId,
-                    isFoodReady: 4
                 }
         }).then((order) => {
             resolve(JSON.stringify(order));
