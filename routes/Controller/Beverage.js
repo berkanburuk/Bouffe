@@ -9,6 +9,14 @@ let mOrder = db.model(dbNames.order);
 let mOrderBeverage = db.model(dbNames.orderBeverage);
 
 
+let isAdmin = require('./RoleCheck').isAdmin;
+let isWaiter = require('./RoleCheck').isWaiter;
+let isBartender = require('./RoleCheck').isBartender;
+let isChef = require('./RoleCheck').isChef;
+let isMatre = require('./RoleCheck').isMatre;
+let errorMessage = require('./RoleCheck').errorMesage;
+
+
 exports.getABeverage = function (id){
     console.log("getABeverage");
     return new Promise((resolve, reject) => {

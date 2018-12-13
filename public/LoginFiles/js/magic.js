@@ -18,7 +18,7 @@ $(document).ready(function() {
         'Content-Type': 'application/x-www-form-urlencoded'
     },
 
-            url         : 'http://cemreberkdemirci.com:3000/api/user/login', // the url where we want to POST
+            url         : '/api/user/login', // the url where we want to POST
             data        : formData, // our data object
             dataType    : 'json', // what type of data do we expect back from the server
                         encode          : true

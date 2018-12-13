@@ -7,6 +7,7 @@ let db = sequelize();
 let dbNames = tableNames();
 let mTable = db.model(dbNames.table);
 let mUser = db.model(dbNames.user);
+let mRole = db.model(dbNames.role);
 
 let isAdmin = require('./RoleCheck').isAdmin;
 let isWaiter = require('./RoleCheck').isWaiter;
@@ -130,17 +131,12 @@ User.findAll({
 */
 function getAUserTables(username) {
     return new Promise((resolve, reject) => {
-        mTable.findAll({
+        mUser.findAll({
             where:{
-                username:'berkan'
+                username:username
             },
             include: [{
-                model: 'user',
-                /*
-                where: {
-                    'username': 'berkan'
-                }
-                */
+                model: mTable,
             }]
         }).then(data=>{
             console.log(data[0].get(0));
@@ -149,6 +145,43 @@ function getAUserTables(username) {
             reject(error + "\nCannot get all Tables Related to this ");
         })
     });
+}
+
+
+function getUsersTable(data){
+    return new Promise((resolve, reject) => {
+        mUser.findAll({
+            attributes: {
+                exclude: ['password']
+            },
+            include: [{
+                model: mTable,
+                where: { userUsername: data.username },
+                //, as: 'saves' // <- 'saves' instead of 'savers'
+            }, {
+                model: mRole,
+                through: mUserRoles,
+            }
+            ]
+        }).then(data=> {
+
+            //console.log("1->"+JSON.stringify(data[0].dataValues));
+            if (data[0] != null && data[0] != undefined) {
+                //  if (data[0].roles.id==5) {
+                console.log(JSON.stringify(data));
+                resolve(JSON.stringify(data));
+                /*
+                 }else{
+                     reject("Only Waiter can get tables!");
+                 }*/
+            }
+            else
+                reject("User does not have any table assigned!");
+        })
+
+    }).catch(error => {
+        reject(error + " Cannot get all Tables Related to this ");
+    })
 }
 //primaryKey  = name olmalı
 function deleteTable(username){
@@ -194,72 +227,83 @@ module.exports = function(app,session){
         }),
         app.post('/api/table/assignTableToUser', function(request,response){
             console.log('assignTableToUser');
-            var data = request.body;
-            var id = parseInt(data.id);
-            delete data.id;
-            console.log(data);
+                if (session != undefined && isMatre(session.roleId)) {
+                    var data = request.body;
+                    var id = parseInt(data.id);
+                    delete data.id;
+                    console.log(data);
 
-            assignTableToUser(data,id).then(data=>{
-                response.write('Table Successfully Updated!',()=>{
+                    assignTableToUser(data, id).then(data => {
+                        response.write('Table Successfully Updated!', () => {
+                            response.statusCode = 200;
+                            response.end();
+                        })
+                    }).catch(error => {
+                        response.write(error.toString(), () => {
+                            response.statusCode = 404;
+                            response.end();
+                        })
+                    })
+                }else {
+                    response.write(errorMessage(), () => {
+                        response.statusCode = 404;
+                        response.end();
+                    })
+                }
+
+        }),
+
+        app.get('/api/table/getUsersTable/:username', function (request, response) {
+            console.log("getATableBelongToAUser");
+            if (session != undefined &&
+                (isAdmin(session.roleId) || isWaiter(session.roleId) || isChef(session.roleId)) ||isMatre(session.roleId))
+            {
+                var username = request.params;
+                console.log(username);
+                getUsersTable(username).then(data => {
                     response.statusCode = 200;
-                    response.end();
+                    console.log(data);
+                    response.write(data.toString(), () => {
+                        response.end();
+                    })
                 })
-            }).catch(error=>{
-                response.write(error.toString(),()=>{
+                    .catch(error => {
+                        response.statusCode = 404;
+                        console.log(error);
+                        response.write(error.toString(), () => {
+                            response.end();
+                        });
+                    })
+            }else {
+                response.write(errorMessage(), () => {
                     response.statusCode = 404;
                     response.end();
                 })
-            })
-
-
-        }),
-
-        app.get('/api/table/getTables', function(request,response){
-            var username = request.params.getTables;
-            /*
-            getAUserTables(username).then(table=>{
-                response.end(table);
-            }).catch(error=>{
-                response.end(error)
-            })
-*/
-
-        }),
-
-        app.get('/api/table/getAllTables', function (request, response) {
-            console.log("Get Tables");
-            getAllTables().then(tables => {
-                response.write(tables.toString(), () => {
-                    response.statusCode = 200;
-                    console.log(tables);
-                    response.end();
-                })
-            }).catch(error => {
-                response.write(error, () => {
-                    response.statusCode = 404;
-                    response.end();
-                })
-            })
-        }),
-
-        app.get('/api/table/getAllTables/:value', function (request, response) {
-            console.log("Get Tables");
-            getAllTables().then(tables=>{
-                response.write(tables.toString(),()=>{
-                    console.log(tables);
-                    response.end();
-                })
-            }).catch(error=>{
-                response.write(error,()=>{
-                    response.end();
-                })
-
-            })
-
-            //res.end();
-
+            }
         })
 
+        app.get('/api/table/getAllTables', function (request, response) {
+                if (session != undefined && (isMatre(session.roleId)||isAdmin(session.roleId))) {
+                    console.log("Get Tables");
+                    getAllTables().then(tables => {
+                        response.write(tables.toString(), () => {
+                            response.statusCode = 200;
+                            console.log(tables);
+                            response.end();
+                        })
+                    }).catch(error => {
+                        response.write(error, () => {
+                            response.statusCode = 404;
+                            response.end();
+                        })
+                    })
+                }else {
+                    response.write(errorMessage(), () => {
+                        response.statusCode = 404;
+                        response.end();
+                    })
+                }
+        })
 
 }
 

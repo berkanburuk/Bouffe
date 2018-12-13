@@ -9,6 +9,13 @@ let dbNames = tableNames();
 let mPayment = db.model(dbNames.payment);
 
 
+let isAdmin = require('./RoleCheck').isAdmin;
+let isWaiter = require('./RoleCheck').isWaiter;
+let isBartender = require('./RoleCheck').isBartender;
+let isChef = require('./RoleCheck').isChef;
+let isMatre = require('./RoleCheck').isMatre;
+let errorMessage = require('./RoleCheck').errorMesage;
+
 exports.isExists = function(id) {
     return new Promise((resolve, reject) => {
         mPayment.findOne({

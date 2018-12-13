@@ -9,6 +9,13 @@ let mReservation = db.model(dbNames.reservation);
 let mTable = db.model(dbNames.table);
 
 
+let isAdmin = require('./RoleCheck').isAdmin;
+let isWaiter = require('./RoleCheck').isWaiter;
+let isBartender = require('./RoleCheck').isBartender;
+let isChef = require('./RoleCheck').isChef;
+let isMatre = require('./RoleCheck').isMatre;
+let errorMessage = require('./RoleCheck').errorMesage;
+
 function createAReservation(data){
     console.log(data);
         return new Promise((resolve, reject) => {
