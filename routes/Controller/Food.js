@@ -104,7 +104,7 @@ function deleteFood(name){
             if (food>0)
             resolve('Food is deleted');
             else{
-                reject("Food could not be deleted!");
+                reject("There is no food with this name: " + name);
             }
         }).catch(error =>{
             reject(error);
@@ -203,7 +203,7 @@ module.exports = function(app,session){
             }),
 
             app.post('/api/food/deleteFood', function (request, response ) {
-                console.log("Delete Reservation");
+                console.log("Delete Food");
                 console.log(request.body);
                 if (session != undefined &&
                     (isAdmin(session.roleId) || isChef(session.roleId)) ||isMatre(session.roleId)) {
