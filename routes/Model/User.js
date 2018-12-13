@@ -35,6 +35,10 @@ class UserModel {
         let mUserRole= sequelize.model('userRole');
         User.belongsToMany(mRole,{through: mUserRole,targetKey:'username', onDelete: 'CASCADE'});
 
+        //Table
+        let mTable= sequelize.define('table',{});
+        User.hasOne(mTable,{onDelete:'CASCADE'});
+
         //UserCourse
         const mCourse = sequelize.define('course', {})
         const mUserCourse = sequelize.define('userCourse', {})

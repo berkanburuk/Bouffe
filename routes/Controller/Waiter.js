@@ -7,16 +7,6 @@ let dbNames = tableNames();
 let mWaiter = db.model(dbNames.waiter);
 
 
-const save = (data)=>{
-    return new Promise((resolve,reject)=>{
-        mWaiter.create(data).then(data=> {
-            console.log(data.get())
-            resolve(data);
-        }).catch(error => {
-            reject(error + 'Cannot create the Waiter!');
-        });
-    })
-}
 
 const GetAWaiter = (username) => {
     return new Promise((resolve, reject) => {
@@ -45,20 +35,7 @@ const getAllWaiters = () => {
         })
     });
 }
-//primaryKey  = name olmalı
-const deleteWaiter = (username) =>{
-    return new Promise((resolve,reject)=>{
-        mWaiter.destroy({
-            where: {
-                'username': username
-            }
-        }).then(data=>{
-            resolve(data + ' Waiter is deleted');
-        }).catch(error =>{
-            reject(error + ' Waiter could not be deleted!');
-        })
-    })
-}
+
 
 
 module.exports = function(app){

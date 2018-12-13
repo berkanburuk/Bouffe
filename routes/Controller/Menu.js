@@ -17,6 +17,10 @@ let errorMessage = require('./RoleCheck').errorMesage;
 
 
 function getMenu(data){
+    /*
+    data.name
+
+     */
     return new Promise((resolve, reject) => {
         mMenu.findOne({
             where:{
@@ -39,25 +43,16 @@ function getMenu(data){
 
     })
 }
-exports.getMenusFood = function(menuName) {
-    return new Promise((resolve, reject) => {
-        mMenuFood.findAll({
-            where:{
-                menuName:menuName
-            }
-        }).then(result=>{
-            resolve(result[0]);
-        }).catch(error=>{
-            reject(error);
-        })
-    }).catch(error=>{
-        reject(error);
-    })
-}
 
 
 function createMenuAndAssignFood(data){
-
+    /*
+                        data.name,
+                        data.cousinRegion,
+                        data.date,
+                        data.setPrice,
+                        data.foodName
+     */
     return new Promise((resolve, reject) => {
            return mMenu.findOrCreate({
                 where:
@@ -92,6 +87,9 @@ function createMenuAndAssignFood(data){
 
 
 function deleteMenu(data){
+    /*
+    data.name
+     */
     return new Promise((resolve,reject)=>{
         mMenu.destroy({
             where: {
@@ -110,6 +108,9 @@ function deleteMenu(data){
 
 
 function addFoodToMenu(data){
+    /*
+
+    */
     return new Promise((resolve, reject) => {
 
         var c = mMenu.getFoods().then(c=>{
@@ -140,8 +141,31 @@ function addFoodToMenu(data){
     })
 }
 
+
+exports.getMenusFood = function(menuName) {
+    /*
+    Get All Food names of Menu
+     */
+    return new Promise((resolve, reject) => {
+        mMenuFood.findAll({
+            where:{
+                menuName:menuName
+            }
+        }).then(result=>{
+            resolve(JSON.stringify(result[0]));
+        }).catch(error=>{
+            reject(JSON.stringify(error));
+        })
+    }).catch(error=>{
+        reject(error);
+    })
+}
+
 //Many to Many Example
 function getFoodOfMenu(data){
+    /*
+    Get All Food Of Menu
+     */
     console.log(data);
         return new Promise((resolve, reject) => {
             mMenu.findAll({

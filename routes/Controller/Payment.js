@@ -16,8 +16,14 @@ exports.isExists = function(id) {
                 {
                     id: id
                 }
-        }).then((payment)=>{
-            resolve(true);
+        })
+        .then(dbData=>{
+                if (dbData!= null && dbData != undefined){
+                    resolve(true);
+                }
+                else{
+                    reject("There is no payment with this id: " + id);
+                }
         })
             .catch(error =>{
                 reject(false);

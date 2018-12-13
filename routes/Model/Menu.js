@@ -64,21 +64,10 @@ class MenuModel {
 
 }
 
-function run(Sequelize, sequelize, menu) {
+exports.run = function (Sequelize, sequelize, menu) {
     var f = new MenuModel(Sequelize, sequelize, menu);
     console.log("Menu : " + f);
 
 }
 
 
-function getMenus() {
-    Menu.findAll().then(function (menu) {
-        console.log(menu[0].get('name'));
-    });
-}
-
-
-
-module.exports = {
-    run
-}
