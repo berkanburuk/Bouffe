@@ -39,7 +39,21 @@ function getMenu(data){
 
     })
 }
-
+exports.getMenusFood = function(menuName) {
+    return new Promise((resolve, reject) => {
+        mMenuFood.findAll({
+            where:{
+                menuName:menuName
+            }
+        }).then(result=>{
+            resolve(result[0]);
+        }).catch(error=>{
+            reject(error);
+        })
+    }).catch(error=>{
+        reject(error);
+    })
+}
 
 
 function createMenuAndAssignFood(data){

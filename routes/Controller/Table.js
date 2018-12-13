@@ -80,19 +80,6 @@ function createAndAssignTableToUser(data){
     })
 
 }
-const GetATableWithChairs = (username) => {
-    return new Promise((resolve, reject) => {
-        mTable.findOne({
-            where: {
-                'id': id
-            }
-        }).then(data=>{
-            resolve(data.get());
-        }).catch(error => {
-            reject(error + "\nCannot get the Table!");
-        })
-    });
-}
 
 function getAllTables(){
     return new Promise((resolve, reject) => {
@@ -107,6 +94,36 @@ function getAllTables(){
         })
     });
 }
+
+exports.isTableExists = function(id){
+    return new Promise((resolve, reject) => {
+
+        mTable.findOne({
+                id:id
+            }
+        ).then(table=>{
+            //resolve(table[0].id);
+            resolve(true);
+        }).catch(error => {
+            reject(false);
+        })
+    });
+}
+exports.isTableOpen = function(id){
+    return new Promise((resolve, reject) => {
+
+        mTable.findOne({
+                id:id
+            }
+        ).then(table=>{
+            //resolve(table[0].id);
+            resolve(true);
+        }).catch(error => {
+            reject(false);
+        })
+    });
+}
+
 /*
 User.findAll({
     include: [{
@@ -118,7 +135,7 @@ User.findAll({
     }]
 });
 */
-const getAUserTables = (username) => {
+function getAUserTables(username) {
     return new Promise((resolve, reject) => {
         mTable.findAll({
             where:{
@@ -141,7 +158,7 @@ const getAUserTables = (username) => {
     });
 }
 //primaryKey  = name olmalı
-const deleteTable = (username) =>{
+function deleteTable(username){
     return new Promise((resolve,reject)=>{
         mTable.destroy({
             where: {
@@ -206,7 +223,7 @@ module.exports = function(app,session){
         }),
 
         app.get('/api/table/:getTables', function(request,response){
-            var username = request.params.username;
+            var username = request.params.getTables;
             /*
             getAUserTables(username).then(table=>{
                 response.end(table);
@@ -253,7 +270,5 @@ module.exports = function(app,session){
 
 
 }
-
-
 
 

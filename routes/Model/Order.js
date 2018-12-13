@@ -18,31 +18,54 @@ class OrderModel {
                 type: Sequelize.STRING
             },
             isPaid:{
-                type:Sequelize.BOOLEAN
+                type:Sequelize.BOOLEAN,
+                defaultValue: false
             },
             isFoodReady:{
-              type:Sequelize.INTEGER
-
+              type:Sequelize.INTEGER,
+                defaultValue: 0
+                //0 -> default Value(Just Ordered) -> Şefin önüne onaylanması için düşecek
+                //1 -> Chef OK dedi.
+                //2 -> Chef yemek hazır dedi. waiter önüne düşecek.
+                //3 -> Waiter onaylayacak. Bitecek
+                //4 -> Şef reject edecek->
+                //5 -> Waiter reject mesajı gidecek
             },isBeverageReady:{
-                type:Sequelize.INTEGER
-//0 -> default Value(Just Ordered)
-//1 -> if chef notification, if waiter notification
-//3 -> done
-//4 -> reject
-            }
+                type:Sequelize.INTEGER,
+                defaultValue: 0
+                //0 -> default Value(Just Ordered)-> bartender önüne düşecek -> 1 e update
+                //1 ->Bartender Ok dicek-> 2 ye update
+                //2 ->Waiter önüne düşecek -> 3 e update
+                //3 -> done
+                //4 -> BArtender reject edecek->
+                //5 -> Waiter reject mesajı gidecek
+            },
+            orderOpen: {
+                type:Sequelize.BOOLEAN,
+                defaultValue: true
+        }
         });
         //Foreign Keys
-        let mChair = sequelize.model('chair');
+        //let mChair = sequelize.model('chair');
+        //Order.belongsTo(mChair);
+        //Payment FK
         let mPayment = sequelize.model('payment');
-        //let mUser = sequelize.model('user');
-        //Order.belongsTo
-        Order.belongsTo(mChair);
         Order.belongsTo(mPayment);
 
-        //OrderBeverage
+
+        //Table FK
+        let mTable= sequelize.model('table');
+        //Order.belongsTo(mTable,{targetKey:'id', onDelete: 'CASCADE'});
+        Order.belongsTo(mTable,{onDelete: 'CASCADE'});
+
+        //OrderMenu FK
+        const mMenu = sequelize.define('menu', {})
+        const mOrderMenu = sequelize.define('orderMenu', {})
+        Order.belongsToMany(mMenu,{targetKey:'id', through: mOrderMenu});
+
+        //OrderBeverage FK
         const mBeverage = sequelize.define('beverage', {})
         const mOrderBeverage = sequelize.define('orderBeverage', {})
-
         Order.belongsToMany(mBeverage,{through: mOrderBeverage});
 
         return Order;

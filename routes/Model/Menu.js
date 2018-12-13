@@ -18,20 +18,34 @@ class MenuModel {
                     type:Sequelize.DOUBLE
                 }
             })
+            /*
             //Order FK
             let mOrder = sequelize.model('order');
             Menu.belongsTo(mOrder);
-
+            */
             //Food FK
             let mFood = sequelize.model('food');
             let mMenuFood = sequelize.model('menuFood');
-
             Menu.belongsToMany(mFood,
                 {
                     through: mMenuFood,
                     targetKey:'name',
                     onDelete: 'CASCADE'
                 });
+
+
+            //OrderMenu
+            let mOrder = sequelize.model('order');
+            let mOrderMenu = sequelize.model('orderMenu');
+            Menu.belongsToMany(mOrder,{
+                through: mOrderMenu,
+                    targetKey:'name',
+                onDelete: 'CASCADE'
+            });
+
+
+
+
             return Menu;
         }
 

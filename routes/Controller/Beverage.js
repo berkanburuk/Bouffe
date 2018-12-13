@@ -9,19 +9,21 @@ let mOrder = db.model(dbNames.order);
 let mOrderBeverage = db.model(dbNames.orderBeverage);
 
 
-function getMenu(data){
+exports.getABeverage = function (id){
+    console.log("getABeverage");
     return new Promise((resolve, reject) => {
-        mMenu.findOne({
+        mBeverage.findOne({
             where:{
-                name:data.name
+                id:id
             }
         })
             .then(dbData=>{
+                console.log("Beverage Data " + dbData);
                 if (dbData!= null && dbData != undefined){
-                    resolve(JSON.stringify(dbData));
+                    resolve(dbData);
                 }
                 else{
-                    reject("There is no menu with this name: " + data.name);
+                    reject("There is no beverage with this name: " + data.name);
                 }
             }).catch(error => {
             reject(error);
@@ -234,4 +236,3 @@ module.exports = function (app,session) {
         })
 
 }
-
