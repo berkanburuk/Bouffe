@@ -44,6 +44,17 @@ function getMenu(data){
     })
 }
 
+function menuType(type) {
+        if (type == "appetizer")
+                return type;
+        else if (type == "mainCourse")
+            return type;
+        else if (type == "dessert")
+            return type;
+        else
+            return false;
+}
+
 
 function createMenuAndAssignFood(data){
     /*
@@ -285,6 +296,7 @@ module.exports = function (app,session) {
                 }
 
         }),
+
 
         app.get('/api/menu/getFoodOfMenu/:menuName/:foodName', function (request, response ) {
             console.log("getFoodOfMenu");
