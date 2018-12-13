@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload SRS</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.debug.js"></script>
+    <script src=" https://cdnjs.cloudflare.com/ajax/libs/xls/0.7.4-a/xls.js"></script>
+
+</head>
+<body>
+<div>
+    <input type="file" id="my_file_input"/>
+    <table id='my_file_output'></table>
+</div>
+</body>
+</html>
+
+<script type="text/javascript">
+    var oFileIn;
+    var stuInfoArr = [];
+    var totalCol = 0;
+
+    $(function () {
+        oFileIn = document.getElementById('my_file_input');
+        if (oFileIn.addEventListener) {
+            oFileIn.addEventListener('change', filePicked, false);
+        }
+    });
+
+    function filePicked(oEvent) {
+        // Get The File From The Input
+        var oFile = oEvent.target.files[0];
+        var sFilename = oFile.name;
+        // Create A File Reader HTML5
+        var reader = new FileReader();
+
+
+        // Ready The Event For When A File Gets Selected
+        reader.onload = function (e) {
+            var data = e.target.result;
+            var cfb = XLS.CFB.read(data, {type: 'binary'});
+            var wb = XLS.parse_xlscfb(cfb);
+            // Loop Over Each Sheet
+            wb.SheetNames.forEach(function (sheetName) {
+                // Obtain The Current Row As CSV
+                var sCSV = XLS.utils.make_csv(wb.Sheets[sheetName]);
+                var data = XLS.utils.sheet_to_json(wb.Sheets[sheetName], {header: 1});
+                console.log(data);
+                $.each(data, function (indexR, valueR) {
+                    var sRow = "<tr>";
+                    $.each(data[indexR], function (indexC, valueC) {
+                        sRow = sRow + "<td>" + valueC + "</td>";
+                        if (indexC == 6 && indexR != 0)
+                            sRow = sRow + "<td><select name='stuRole' id='stuRole" + indexR + "'><option value=5 selected> Waiter <option value='cashier'> Cashier <option value=6> Bartender <option value='waiter'> Chef </select></td>";
+                        totalCol++;
+                    });
+
+                    var myData = {
+                        'username': data[indexR][6],
+                        'password': 555,
+                        'firstName': data[indexR][2],
+                        'lastName': data[indexR][1],
+                        'roleId': 1,
+                        'bilkentId': data[indexR][3],
+                        'currentRole': 5
+                    }
+
+                    stuInfoArr.push(myData);
+                    sRow = sRow + "</tr>";
+                    $("#my_file_output").append(sRow);
+                });
+            });
+        };
+
+        // Tell JS To Start Reading The File.. You could delay this if desired
+        reader.readAsBinaryString(oFile);
+        console.log(stuInfoArr);
+        console.log(stuInfoArr.length);
+    }
+
+</script>
