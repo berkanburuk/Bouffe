@@ -16,6 +16,9 @@ let errorMessage = require('./RoleCheck').errorMesage;
 
 //Örnek
 function getFood(data){
+    /*
+    data.name
+     */
     return new Promise((resolve, reject) => {
         mFood.findOne({
             where:{
@@ -39,19 +42,25 @@ function getFood(data){
     })
 }
 
-exports.getAllFeaturesOfFood = function(foodName) {
+exports.getFeaturesOfAFood = function(foodName) {
+    /*
+
+     */
     return new Promise((resolve, reject) => {
         mMenuFood.findOne({
-            where:{
-                name:foodName
+            where: {
+                name: foodName
             }
-        }).then(result=>{
-            resolve(result[0]);
-        }).catch(error=>{
+        }).then(dbData => {
+            if (dbData != null && dbData != undefined) {
+                resolve(JSON.stringify(dbData));
+            }
+            else {
+                reject("There is no food with this name: " + data.name);
+            }
+        }).catch(error => {
             reject(error);
         })
-    }).catch(error=>{
-        reject(error);
     })
 }
 
@@ -70,7 +79,10 @@ function createAFood(data){
                     price: data.price
                 }
         }).then((food)=>{
-            resolve("Food is created successfully.");
+        if (food != null || food!= undefined){
+            reject('This food is already added!');
+        }
+            resolve("Food is created successfully");
         })
             .catch(error =>{
                 reject("Food cannot be created!" + error);
@@ -81,16 +93,21 @@ function createAFood(data){
 }
 
 
-function deleteFood(data){
+function deleteFood(name){
     return new Promise((resolve,reject)=>{
         mFood.destroy({
             where: {
-                name: data.name
+                name: name
             }
         }).then(food=>{
+            console.log(food);
+            if (food>0)
             resolve('Food is deleted');
+            else{
+                reject("Food could not be deleted!");
+            }
         }).catch(error =>{
-            reject("Food could not be deleted!");
+            reject(error);
         })
     })
 }
@@ -153,7 +170,7 @@ module.exports = function(app,session){
         app.get('/food', function (request, response) {
             console.log('Food');
             response.sendFile(path.resolve('../../public/Pages/Food.html'));
-            //res.end();
+
         }),
 
             app.post('/api/food/addFood', function (request, response ) {
@@ -187,9 +204,11 @@ module.exports = function(app,session){
 
             app.post('/api/food/deleteFood', function (request, response ) {
                 console.log("Delete Reservation");
+                console.log(request.body);
                 if (session != undefined &&
                     (isAdmin(session.roleId) || isChef(session.roleId)) ||isMatre(session.roleId)) {
                     var data = request.body;
+
                     deleteFood(data.name).then(food => {
                         response.statusCode = 200;
                         console.log(food);

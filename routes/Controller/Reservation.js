@@ -24,7 +24,7 @@ function createAReservation(data){
                     mReservation.create(data);
                     resolve("Reservation is created");
                 } else {
-                    reject("There is already a reservation for table day!");
+                    reject("There is already a reservation for this table, for this day!");
                 }
             }).catch(error => {
                 reject(error);

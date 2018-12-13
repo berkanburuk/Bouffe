@@ -84,32 +84,166 @@ class OrderModel {
     }
 }
 
-function run(Sequelize, sequelize, order) {
+exports.run = function(Sequelize, sequelize, order) {
     var f = new OrderModel(Sequelize, sequelize, order);
     console.log("Order : " + f);
 }
 
-function getAllOrders() {
-    return Order.findAll().then(function (price) {
-        console.log(price[0].get('price'));
-    });
+//isFoodReady 0 ise şef önünde ekranda duracak
+exports.getChefNotification = function (orderId) {
+    return new Promise((resolve, reject) => {
+        Order.findOne({
+            where:
+                {
+                    id: orderId,
+                    isFoodReady: 0
+                }
+        }).then((order) => {
+            resolve(JSON.stringify(order));
+        }).catch(error=>{
+            reject(error);
+        })
+    })
+}
+//chef onaylıyor (1) yapıyor
+exports.chefApprovesOrder = function (orderId) {
+        return new Promise((resolve, reject) => {
+            Order.update({
+                where:
+                    {
+                        id: orderId,
+                        isFoodReady: 1
+                    }
+            }).then((order)=>{
+                console.log(order);
+                if (order>0)
+                resolve("Chef approved.");
+                else
+                    reject('Chef did not approve!');
+            })
+                .catch(error =>{
+                    reject(error);
+                })
+        })
+    }
+
+//chef onaylıyor (2) yapıyor
+exports.chefApprovesFoodReady = function (orderId) {
+    return new Promise((resolve, reject) => {
+        Order.update({
+            where:
+                {
+                    id: orderId,
+                    isFoodReady: 2
+                }
+        }).then((order)=>{
+            console.log(order);
+            if (order>0)
+                resolve("Chef approved.");
+            else
+                reject('Chef did not approve!');
+        })
+            .catch(error =>{
+                reject(error);
+            })
+    })
 }
 
-function getOrderModel(){
-    let s = sequ();
-    let mOrder = s.model("order");
-    return mOrder;
+//Waiter Food Approved mesajını alıyor.
+exports.getWaiterNotificationApprovedFood = function(orderId){
+    return new Promise((resolve, reject) => {
+        Order.findOne({
+            where:
+                {
+                    id: orderId,
+                    isFoodReady: 2
+                }
+        }).then((order) => {
+            resolve(JSON.stringify(order));
+        }).catch(error=>{
+            reject(error);
+        })
+    })
 }
 
-function save(data) {
-    let mOrder = getOrderModel();
-    mOrder.create(data)
-        .then(newUser => {
-           // console.log(newUser.id);
-        });
+
+
+//Waiter 3'e setleyip, yemek teslim edildi diyor.
+exports.waiterCloseOrder = function (orderId) {
+    return new Promise((resolve, reject) => {
+        Order.update({
+            where:
+                {
+                    id: orderId,
+                    isFoodReady: 3
+                }
+        }).then((order)=>{
+            console.log(order);
+            if (order>0)
+                resolve("Chef approved.");
+            else
+                reject('Chef did not approve!');
+        })
+            .catch(error =>{
+                reject(error);
+            })
+    })
 }
 
 
-module.exports = {
-    run
+exports.getWaiterFoodReady = function(orderId){
+    return new Promise((resolve, reject) => {
+        Order.findOne({
+            where:
+                {
+                    id: orderId,
+                    isFoodReady: 3
+                }
+        }).then((order) => {
+            resolve(JSON.stringify(order));
+        }).catch(error=>{
+            reject(error);
+        })
+    })
 }
+
+exports.getWaiterNotificationRejected = function(orderId){
+    return new Promise((resolve, reject) => {
+        Order.findOne({
+            where:
+                {
+                    id: orderId,
+                    isFoodReady: 4
+                }
+        }).then((order) => {
+            resolve(JSON.stringify(order));
+        }).catch(error=>{
+            reject(error);
+        })
+    })
+}
+
+exports.getFoodRejected = function(orderId){
+    return new Promise((resolve, reject) => {
+        Order.findOne({
+            where:
+                {
+                    id: orderId,
+                    isFoodReady: 4
+                }
+        }).then((order) => {
+            resolve(JSON.stringify(order));
+        }).catch(error=>{
+            reject(error);
+        })
+    })
+}
+
+
+
+//0 -> default Value(Just Ordered) -> Şefin önüne onaylanması için düşecek
+//1 -> Chef OK dedi.
+//2 -> Chef yemek hazır dedi. waiter önüne düşecek.
+//3 -> Waiter onaylayacak. Bitecek
+//4 -> Şef reject edecek->
+//5 -> Waiter reject mesajı gidecek

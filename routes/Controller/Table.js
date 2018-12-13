@@ -28,8 +28,6 @@ function save(data){
 }
 
 function assignTableToUser(data,id){
-    if (session != undefined &&
-        (isAdmin(session.roleId) || isWaiter(session.roleId) || isChef(session.roleId)) ||isMatre(session.roleId)) {
         return new Promise((resolve, reject) => {
             mTable.update(data, {
                 where:
@@ -48,12 +46,7 @@ function assignTableToUser(data,id){
                 reject(error);
             })
         })
-    }else {
-        response.write(errorMessage(), () => {
-            response.statusCode = 404;
-            response.end();
-        })
-    }
+
 }
 
 function createAndAssignTableToUser(data){
@@ -164,7 +157,7 @@ function deleteTable(username){
             where: {
                 'username': username
             }
-        }).then(data=>{
+        }).then(dbData=>{
             resolve(data + ' Table is deleted');
         }).catch(error =>{
             reject(error + ' Table could not be deleted!');
@@ -201,7 +194,6 @@ module.exports = function(app,session){
         }),
         app.post('/api/table/assignTableToUser', function(request,response){
             console.log('assignTableToUser');
-            //id ve userUsername
             var data = request.body;
             var id = parseInt(data.id);
             delete data.id;
@@ -222,7 +214,7 @@ module.exports = function(app,session){
 
         }),
 
-        app.get('/api/table/:getTables', function(request,response){
+        app.get('/api/table/getTables', function(request,response){
             var username = request.params.getTables;
             /*
             getAUserTables(username).then(table=>{

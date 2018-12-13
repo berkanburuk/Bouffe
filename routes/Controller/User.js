@@ -35,7 +35,7 @@ module.exports = function(app,session) {
     */
     app.get('/user', function (request, response) {
         console.log('User Controller');
-        response.sendFile(path.resolve('../../public/Pages/index.html'));
+        response.sendFile(path.resolve('public/Pages/Login.html'));
         //response.render(path.resolve('../../public/Pages/index.html'));
     }),
         app.get('/api/user/deleteUser/:username', function (request, response ) {
@@ -111,7 +111,6 @@ module.exports = function(app,session) {
                     data.roleId = parseInt(data.roleId, 10);
                     data.courseId = parseInt(data.courseId, 10);
 
-
                     console.log(data);
                     createAUser(data).then(user => {
                         response.statusCode = 200;
@@ -163,14 +162,14 @@ module.exports = function(app,session) {
 
 
 
-        app.get('/api/user/getAllUsers/:username', function (request, response) {
+        app.get('/api/user/getAllUsers', function (request, response) {
 
             console.log("Get all Users");
                 if (session != undefined && isAdmin(session.roleId)) {
                     getAllUsers().then(user => {
                         response.statusCode = 200;
-                        console.log(user[0].get(0));
-                        response.write(user[0].get(0).toString(), () => {
+                        console.log(user);
+                        response.write(user, () => {
                             response.end();
                         })
                     }).catch(error => {
@@ -190,7 +189,7 @@ module.exports = function(app,session) {
 
         }),
 
-        app.get('/api/getATableBelongToAUser/:username', function (request, response) {
+        app.get('/api/user/getATableBelongToAUser/:username', function (request, response) {
             console.log("getATableBelongToAUser");
             if (session != undefined &&
                 (isAdmin(session.roleId) || isWaiter(session.roleId) || isChef(session.roleId)) ||isMatre(session.roleId))
@@ -207,7 +206,7 @@ module.exports = function(app,session) {
                     .catch(error => {
                         response.statusCode = 404;
                         console.log(error);
-                        response.write(error, () => {
+                        response.write(error.toString(), () => {
                             response.end();
                         });
                     })
@@ -269,6 +268,9 @@ function createAUser(data){
                     bilkentId: data.bilkentId
                 }
         }).then((user)=>{
+            if (user != null || user != undefined){
+                reject('This user is already added!');
+            }
             console.log(user[0].get(0));
             user[0].addRoles(data.roleId).then(()=>{
                 console.log("Role is added!");
@@ -401,19 +403,31 @@ function checkValidationOfUser(username, password){
         mUser.findOne({
             where:{
                 username: username,
-                password : password
             }
         }).then(user=>{
-            if (user != null && user != undefined ){
-                user = JSON.stringify(user);
-                //console.log(user);
-                resolve(user);
-            }else{
-                reject("Username or Password is wrong!");
+            if (user == null || user ==undefined){
+                reject("There is no user with this username " + username);
             }
-        }).catch(error => {
+            mUser.findOne({
+                where:{
+                    username: username,
+                    password : password
+                }
+            }).then(user=>{
+                if (user != null && user != undefined ){
+                    user = JSON.stringify(user);
+                    //console.log(user);
+                    resolve(user);
+                }else{
+                    reject("Username or Password is wrong!");
+                }
+            }).catch(error => {
+                reject(error);
+            })
+        }).catch(error=>{
             reject(error);
         })
+
     });
 }
 
@@ -424,9 +438,12 @@ function getAllUsers(){
 
         mUser.findAll({
                 //   attributes: ['foo', 'bar']
+            attributes: {
+                exclude: ['password']
+            },
             }
         ).then(user=>{
-            resolve(user);
+            resolve(JSON.stringify(user));
         }).catch(error => {
             reject("Cannot get all Users");
         })
@@ -449,21 +466,39 @@ function deleteUser(username){
 
 function getATableBelongToAUser(data){
     return new Promise((resolve, reject) => {
-        mTable.findAll({
-            where: { userUsername: data.username },
-            include: [{
-                model: mUser,
-            }]
-        }).then(data=>{
-            if (data[0]!= null && data[0] != undefined){
-                resolve(data[0].get(0));
+        mUser.findAll({
+            attributes: {
+                exclude: ['password']
+            },
+        include: [{
+                model: mTable,
+                where: { userUsername: data.username },
+                //, as: 'saves' // <- 'saves' instead of 'savers'
+            }, {
+                model: mRole,
+                through: mUserRoles,
+            }
+            ]
+        }).then(data=> {
+
+            //console.log("1->"+JSON.stringify(data[0].dataValues));
+            if (data[0] != null && data[0] != undefined) {
+                //  if (data[0].roles.id==5) {
+                console.log(JSON.stringify(data));
+                resolve(JSON.stringify(data));
+                /*
+                 }else{
+                     reject("Only Waiter can get tables!");
+                 }*/
             }
             else
                 reject("User does not have any table assigned!");
+        })
+
         }).catch(error => {
             reject(error + " Cannot get all Tables Related to this ");
         })
-    });
+    }
     /*
         mUser.findAll({
             association: [{
@@ -480,7 +515,7 @@ function getATableBelongToAUser(data){
         })
     });
     */
-}
+
 /*
 function getAllTables(){
     return new Promise((resolve, reject) => {
