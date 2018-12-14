@@ -73,21 +73,18 @@ function createMenuAndAssignFood(data){
                 }
         }).then((menu) => {
             console.log(menu[0]);
+            /*
             menu[0].addFood(data.foodName).then(menu => {
                 console.log(menu);
                 if (menu != null || menu != undefined)
                     resolve("Food is added to Menu!");
                 else
-                    reject("Food does not entered to assign to Menu!");
+                */
+                    resolve("Menu Created Successfully!");
             }).catch(error => {
-                reject(error);
+                reject("Menu could not be created!" + error);
             })
-        }).catch(error => {
-            reject("Menu could not be created!" + error);
         })
-    })
-
-
 }
 
 
@@ -248,6 +245,22 @@ function getFoodOfMenu(data){
     })
 }
 
+function getAllMenu(){
+    return new Promise((resolve, reject) => {
+        mMenu.findAll({
+
+        }).then(data=>{
+            if (data != null && data != undefined){
+                resolve(JSON.stringify(data));
+            }
+            else
+                reject("Cannot get the Menu!");
+        }).catch(error => {
+            reject(error);
+        })
+
+    })
+}
 module.exports = function (app) {
 
     app.get('/menu', function (request, response) {
@@ -409,6 +422,37 @@ module.exports = function (app) {
             }
 
         })
+
+    app.get('/api/menu/getAllMenu', function (request, response ) {
+
+
+        if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)||
+            checkUsersRole.isChef(request.session.roleId) ||  checkUsersRole.isChef(request.session.roleId))) {
+            getAllMenu().then(menu => {
+                response.statusCode = 200;
+                console.log(menu);
+                response.write(menu, () => {
+                    response.end();
+                });
+            }).catch(error => {
+                response.statusCode = 404;
+                console.log(error);
+                response.write(error.toString(), () => {
+                    response.end();
+                });
+            })
+        }
+        else {
+            response.write(checkUsersRole.errorMesage(), () => {
+                response.statusCode = 404;
+                response.end();
+            })
+        }
+
+    })
+
+
+
 
 }
 
