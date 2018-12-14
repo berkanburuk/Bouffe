@@ -108,8 +108,7 @@ module.exports = function(app) {
 
         //checkUser
         app.get('/api/user/login/:username/:password', function (request, response) {
-                if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
-                    ||  checkUsersRole.isAdmin(request.session.roleId) || checkUsersRole.isCashier(request.session.roleId))) {
+
                     var data = {
                         username: '',
                         password: ''
@@ -162,13 +161,6 @@ module.exports = function(app) {
                             response.end();
                         });
                     })
-                }else {
-                    response.write(checkUsersRole.errorMesage(), () => {
-                        response.statusCode = 404;
-                        response.end();
-                    })
-                }
-
         }),
 
         app.post('/api/user/addUser', function (request, response) {
