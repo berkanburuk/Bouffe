@@ -7,13 +7,7 @@ let dbNames = tableNames();
 let mGuestCheck = db.model(dbNames.guestCheck);
 
 
-let isAdmin = require('./RoleCheck').isAdmin;
-let isWaiter = require('./RoleCheck').isWaiter;
-let isBartender = require('./RoleCheck').isBartender;
-let isChef = require('./RoleCheck').isChef;
-let isMatre = require('./RoleCheck').isMatre;
-let errorMessage = require('./RoleCheck').errorMesage;
-
+let checkUsersRole = require('./RoleCheck');
 
 function nextGuestList(data) {
     return new Promise((resolve, reject) => {
@@ -32,19 +26,29 @@ function nextGuestList(data) {
 module.exports = function(app,session) {
 
         app.get('/api/guestCheck/nextGuestList', function (request, response) {
-            console.log("Create New Guest List");
-            nextGuestList().then(data => {
-                response.statusCode = 200;
-                response.write(data.toString(), () => {
+            if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
+                ||  checkUsersRole.isCashier(request.session.roleId))) {
+                console.log("Create New Guest List");
+                nextGuestList().then(data => {
+                    response.statusCode = 200;
+                    response.write(data.toString(), () => {
+                        response.end();
+                    });
+                }).catch(error => {
+                    response.statusCode = 404;
+                    console.log(error);
+                    response.write(error.toString(), () => {
+                        response.end();
+                    });
+                })
+            }
+            else {
+                response.write(checkUsersRole.errorMesage(), () => {
+                    response.statusCode = 404;
                     response.end();
-                });
-            }).catch(error => {
-                response.statusCode = 404;
-                console.log(error);
-                response.write(error.toString(), () => {
-                    response.end();
-                });
-            })
+                })
+            }
+
         })
 }
 

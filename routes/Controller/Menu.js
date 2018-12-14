@@ -53,7 +53,7 @@ function menuType(type) {
 function createMenuAndAssignFood(data){
     /*
                         data.name,
-                        data.cousinRegion,
+                        data.cuisineRegion,
                         data.date,
                         data.setPrice,
                         data.foodName
@@ -67,7 +67,7 @@ function createMenuAndAssignFood(data){
             defaults:
                 {
                     name: data.name,
-                    cousinRegion: data.cousinRegion,
+                    cuisineRegion: data.cuisineRegion,
                     date: data.date,
                     setPrice: data.setPrice
                 }
@@ -94,8 +94,8 @@ function createMenuAndAssignFood(data){
 
 function assignFoodToMenu(data){
     /*
-                        data.name,
-                        data.cousinRegion,
+                        data.menuName,
+                        data.cuisineRegion,
                         data.date,
                         data.setPrice,
                         data.foodName
@@ -108,6 +108,24 @@ function assignFoodToMenu(data){
                 }
         }).then((menu) => {
             console.log(data.foods)
+            /*
+              {
+                foods:[
+                          {},
+                          {}
+                      ]
+              }
+             */
+            /*
+            data = JSON.stringify(data);
+            console.log(data);
+                var parsedJSON = JSON.parse(data.foods);
+                for (var i=0;i<parsedJSON.length;i++) {
+                    alert(parsedJSON[i].foodName);
+                }
+
+*/
+
             var parsedJSON = JSON.parse(data);
             console.log(parsedJSON);
             for (var i=0;i<parsedJSON.length;i++) {

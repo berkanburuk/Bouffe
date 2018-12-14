@@ -8,7 +8,7 @@ class MenuModel {
                     primaryKey: true,
                     type:Sequelize.STRING
                 },
-                cousinRegion:{
+                cuisineRegion:{
                     type:Sequelize.STRING
                 },
                 date: {
