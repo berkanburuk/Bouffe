@@ -9,7 +9,7 @@ var app = new express();
 var router = express.Router();
 const portNumber = 3000;
 var bodyParser = require('body-parser');
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({extended: true}));
 // initialize cookie-parser to allow us access the cookies stored in the browser.
 app.use(cookieParser());

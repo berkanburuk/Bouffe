@@ -13,12 +13,12 @@ $(document).ready(function() {
 
         // process the form
         $.ajax({
-            type        : 'POST', // define the type of HTTP verb we want to use (POST for our form)
+            type        : 'GET', // define the type of HTTP verb we want to use (POST for our form)
             headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
     },
 
-            url         : '/api/user/login', // the url where we want to POST
+            url         : '/api/user/login/'+formData.username+'/'+formData.password, // the url where we want to POST
             data        : formData, // our data object
             dataType    : 'json', // what type of data do we expect back from the server
                         encode          : true

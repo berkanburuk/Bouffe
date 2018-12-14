@@ -4,12 +4,10 @@ let sequelize = require('../Util/DatabaseConnection').getSequelize;
 let tableNames = require('../Util/DatabaseConnection').getTableNames;
 let mUserFunc = require('../Util/DatabaseConnection').getUserModel;
 
-let isAdmin = require('./RoleCheck').isAdmin;
-let isWaiter = require('./RoleCheck').isWaiter;
-let isBartender = require('./RoleCheck').isBartender;
-let isChef = require('./RoleCheck').isChef;
-let isMatre = require('./RoleCheck').isMatre;
-let errorMessage = require('./RoleCheck').errorMesage;
+let checkUsersRole = require('./RoleCheck');
+
+
+
 
 
     let db = sequelize();
@@ -38,17 +36,27 @@ module.exports = function(app,session) {
         response.sendFile(path.resolve('public/Pages/Login.html'));
         //response.render(path.resolve('../../public/Pages/index.html'));
     }),
-        app.get('/signup', function (request, response) {
-            console.log('Signup Controller');
-            response.sendFile(path.resolve('../../public/Pages/AddUserManually.html'));
+        app.get('/uploadSRSFile', function (request, response) {
+            console.log('User Controller');
+            response.sendFile(path.resolve('public/Pages/uploadSRSFile.html'));
             //response.render(path.resolve('../../public/Pages/index.html'));
         }),
+        app.get('/signup', function (request, response) {
+            console.log('Signup Controller');
+            response.sendFile(path.resolve('public/Pages/AddUserManually.html'));
 
+            //response.render(path.resolve('../../public/Pages/index.html'));
+        }),
+        app.get('/navigation', function (request, response) {
+            console.log('Navigation');
+            response.sendFile(path.resolve('public/Pages/Navigation.html'));
+            //response.render(path.resolve('../../public/Pages/index.html'));
+        }),
         app.get('/api/user/deleteUser/:username', function (request, response ) {
 
             console.log("Delete USER");
 
-            if (session != undefined && isAdmin(session.roleId)) {
+            if (session != undefined && checkUsersRole.isAdmin(session.roleId)) {
 
                     var username = request.params.username;
 
@@ -75,45 +83,61 @@ module.exports = function(app,session) {
         }),
 
         //checkUser
-        app.post('/api/user/login', function (request, response) {
-            /*
-            var username = request.params.username;
-            var password = request.params.password;
-            */
-            var data = request.body;
+        app.get('/api/user/login/:username/:password', function (request, response) {
+            var data={
+                username:'',
+                password:''
+            }
+            console.log(request.params);
+            data.username = request.params.username;
+            data.password = request.params.password;
+
+            //var data = request.body;
             console.log(request.body);
+            checkValidationOfUser(data.username, data.password).then(user => {
 
-            checkValidationOfUser(data.username,data.password).then(user => {
-                response.statusCode = 200;
                 console.log(user);
-                response.write("Successful",()=>{
-
-                    session.username=data.username;
-                    getAUserRole(data.username).then(role=>{
-                        var myRole = JSON.parse(role);
-                        console.log("myrole "+ myRole[0].roleId);
-                        session.roleId = myRole[0].roleId;
-                        console.log("Session: " + session.username + session.roleId);
-                    }).catch(error=>{
-                        console.log(error);
-                    })
+                getAUserRole(data.username).then(role => {
+                    var myRole = JSON.parse(role);
+                    session.username = data.username;
+                    session.roleId = myRole[0].roleId;
+                    console.log("Session: " + session.username + session.roleId);
+                    response.statusCode = 301;
+                    //response.sendFile(path.resolve('public/Pages/Navigation.html'));
+                    //response.redirect(path.resolve('public/Pages/Navigation.html'));
+                    /*
+                    response.writeHead(302,
+                        {
+                            loc:'/navigation'
+                        })
+                        */
+                    response.writeHead(302, {
+                        'Location': path.resolve('localhost:3000/navigation')
+                    });
                     response.end();
-                });
+
+
+                }).catch(error => {
+                    response.statusCode = 404;
+                    console.log(error);
+                    response.write("This user does not have an roleId", () => {
+                        response.end();
+                    });
+                })
             }).catch(error => {
                 response.statusCode = 404;
                 console.log(error);
-                response.write(error.toString(),()=>{
+                response.write(error.toString(), () => {
                     response.end();
                 });
             })
-
         }),
 
         app.post('/api/user/addUser', function (request, response) {
             console.log("Create A User");
             var data = request.body;
             console.log(data);
-                if (session != undefined && isAdmin(session.roleId)) {
+                if (session != undefined && checkUsersRole.isAdmin(session.roleId)) {
                     data.roleId = parseInt(data.roleId, 10);
                     data.courseId = parseInt(data.courseId, 10);
 
@@ -143,7 +167,7 @@ module.exports = function(app,session) {
         }),
         app.post('/api/user/updateAUser', function (request, response) {
             console.log("Update A User");
-                if (session != undefined && isAdmin(session.roleId)) {
+                if (session != undefined && checkUsersRole.isAdmin(session.roleId)) {
                     var data = request.body;
                     updateAUser(data).then(user => {
                         response.statusCode = 200;
@@ -171,7 +195,7 @@ module.exports = function(app,session) {
         app.get('/api/user/getAllUsers', function (request, response) {
 
             console.log("Get all Users");
-                if (session != undefined && isAdmin(session.roleId)) {
+                if (session != undefined && checkUsersRole.isAdmin(session.roleId)) {
                     getAllUsers().then(user => {
                         response.statusCode = 200;
                         console.log(user);
