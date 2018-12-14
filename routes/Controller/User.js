@@ -10,7 +10,7 @@ let checkUsersRole = require('./RoleCheck');
 
 
 
-    let db = sequelize();
+let db = sequelize();
 let dbNames = tableNames();
 let mUser = db.model(dbNames.user);
 let mRole = db.model(dbNames.role);
@@ -58,27 +58,27 @@ module.exports = function(app) {
 
             if (session != undefined && checkUsersRole.isAdmin(session.roleId)) {
 
-                    var username = request.params.username;
+                var username = request.params.username;
 
-                    deleteUser(username).then(user => {
-                        response.statusCode = 200;
-                        console.log(user);
-                        response.write("Successful", () => {
-                            response.end();
-                        });
-                    }).catch(error => {
-                        response.statusCode = 404;
-                        console.log(error);
-                        response.write(error, () => {
-                            response.end();
-                        });
-                    })
-                } else {
-                    response.write(errorMessage(), () => {
-                        response.statusCode = 404;
+                deleteUser(username).then(user => {
+                    response.statusCode = 200;
+                    console.log(user);
+                    response.write("Successful", () => {
                         response.end();
-                    })
-                }
+                    });
+                }).catch(error => {
+                    response.statusCode = 404;
+                    console.log(error);
+                    response.write(error, () => {
+                        response.end();
+                    });
+                })
+            } else {
+                response.write(errorMessage(), () => {
+                    response.statusCode = 404;
+                    response.end();
+                })
+            }
 
         }),
 
@@ -139,56 +139,56 @@ module.exports = function(app) {
             console.log("Create A User");
             var data = request.body;
             console.log(data);
-                if (request.session != undefined && checkUsersRole.isAdmin(request.session.roleId)) {
-                    data.roleId = parseInt(data.roleId, 10);
-                    data.courseId = parseInt(data.courseId, 10);
+            if (request.session != undefined && checkUsersRole.isAdmin(request.session.roleId)) {
+                data.roleId = parseInt(data.roleId, 10);
+                data.courseId = parseInt(data.courseId, 10);
 
-                    console.log(data);
-                    createAUser(data).then(user => {
-                        response.statusCode = 200;
-                        console.log(user);
+                console.log(data);
+                createAUser(data).then(user => {
+                    response.statusCode = 200;
+                    console.log(user);
 
-                        response.write("Successful", () => {
-                            response.end();
-                        });
-                    }).catch(error => {
-                        response.statusCode = 404;
-                        console.log(error);
-
-                        response.write(error.toString(), () => {
-                            response.end();
-                        });
-                    })
-                } else {
-                    response.write(checkUsersRole.errorMesage(), () => {
-                        response.statusCode = 404;
+                    response.write("Successful", () => {
                         response.end();
-                    })
-                }
+                    });
+                }).catch(error => {
+                    response.statusCode = 404;
+                    console.log(error);
+
+                    response.write(error.toString(), () => {
+                        response.end();
+                    });
+                })
+            } else {
+                response.write(checkUsersRole.errorMesage(), () => {
+                    response.statusCode = 404;
+                    response.end();
+                })
+            }
 
         }),
         app.post('/api/user/updateAUser', function (request, response) {
             console.log("Update A User");
-                if (session != undefined && checkUsersRole.isAdmin(session.roleId)) {
-                    var data = request.body;
-                    updateAUser(data).then(user => {
-                        response.statusCode = 200;
-                        console.log(user);
-                        response.send(user.toString());
-                    }).catch(error => {
-                        response.statusCode = 404;
-                        console.log(error);
+            if (session != undefined && checkUsersRole.isAdmin(session.roleId)) {
+                var data = request.body;
+                updateAUser(data).then(user => {
+                    response.statusCode = 200;
+                    console.log(user);
+                    response.send(user.toString());
+                }).catch(error => {
+                    response.statusCode = 404;
+                    console.log(error);
 
-                        response.write(error.toString(), () => {
-                            response.end();
-                        });
-                    })
-                }else {
-                    response.write(checkUsersRole.errorMesage(), () => {
-                        response.statusCode = 404;
+                    response.write(error.toString(), () => {
                         response.end();
-                    })
-                }
+                    });
+                })
+            }else {
+                response.write(checkUsersRole.errorMesage(), () => {
+                    response.statusCode = 404;
+                    response.end();
+                })
+            }
 
         }),
 
@@ -197,37 +197,37 @@ module.exports = function(app) {
         app.get('/api/user/getAllUsers', function (request, response) {
 
             console.log("Get all Users");
-                if (session != undefined && checkUsersRole.isAdmin(session.roleId)) {
-                    getAllUsers().then(user => {
-                        response.statusCode = 200;
-                        console.log(user);
-                        response.write(user, () => {
-                            response.end();
-                        })
-                    }).catch(error => {
-                        response.statusCode = 404;
-                        console.log(error);
-
-                        response.write(error, () => {
-                            response.end();
-                        });
-                    })
-                }else {
-                    response.write(checkUsersRole.errorMesage(), () => {
-                        response.statusCode = 404;
+            if (session != undefined && checkUsersRole.isAdmin(session.roleId)) {
+                getAllUsers().then(user => {
+                    response.statusCode = 200;
+                    console.log(user);
+                    response.write(user, () => {
                         response.end();
                     })
-                }
+                }).catch(error => {
+                    response.statusCode = 404;
+                    console.log(error);
+
+                    response.write(error, () => {
+                        response.end();
+                    });
+                })
+            }else {
+                response.write(checkUsersRole.errorMesage(), () => {
+                    response.statusCode = 404;
+                    response.end();
+                })
+            }
         })
 
     app.get('/api/user/getRole', function (request, response) {
         var a = request.session;
         console.log("getRole "+JSON.stringify(a));
         if (request.session != undefined  && request.session.roleId != undefined) {
-               response.statusCode = 200;
-                var data = JSON.stringify(request.session.roleId);
-                response.write(data, () => {
-                    response.end();
+            response.statusCode = 200;
+            var data = JSON.stringify(request.session.roleId);
+            response.write(data, () => {
+                response.end();
             })
         }else {
             response.write(checkUsersRole.errorMesage(), () => {
@@ -255,15 +255,15 @@ module.exports = function(app) {
         })
 }
 
-    /*
-      app.get('/api/:user/:addARole', function (request, response,next) {
-      addARole('a').then(data => {
-          console.log(data);
-      }).catch(error=>{
-          console.log(error);
-      })
-          next();
+/*
+  app.get('/api/:user/:addARole', function (request, response,next) {
+  addARole('a').then(data => {
+      console.log(data);
+  }).catch(error=>{
+      console.log(error);
   })
+      next();
+})
 
 
 
@@ -475,9 +475,9 @@ function getAllUsers(){
 
         mUser.findAll({
                 //   attributes: ['foo', 'bar']
-            attributes: {
-                exclude: ['password']
-            },
+                attributes: {
+                    exclude: ['password']
+                },
             }
         ).then(user=>{
             resolve(JSON.stringify(user));
@@ -502,22 +502,22 @@ function deleteUser(username){
 }
 
 
-    /*
-        mUser.findAll({
-            association: [{
-                model: 'tables',
-                where: {
-                    username: username
-                }
-            }]
-        }).then(data=>{
-            console.log(data[0].get(0));
-            resolve(data[0].get(0));
-        }).catch(error => {
-            reject(error + " Cannot get all Tables Related to this ");
-        })
-    });
-    */
+/*
+    mUser.findAll({
+        association: [{
+            model: 'tables',
+            where: {
+                username: username
+            }
+        }]
+    }).then(data=>{
+        console.log(data[0].get(0));
+        resolve(data[0].get(0));
+    }).catch(error => {
+        reject(error + " Cannot get all Tables Related to this ");
+    })
+});
+*/
 
 /*
 function getAllTables(){
