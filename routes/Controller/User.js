@@ -194,6 +194,21 @@ module.exports = function(app,session) {
                 }
         })
 
+    app.get('/api/user/getRole', function (request, response) {
+        console.log("getRole");
+        if (session != undefined  && session.roleId != undefined) {
+               response.statusCode = 200;
+                var data = JSON.stringify(session.roleId);
+                response.write(data, () => {
+                    response.end();
+            })
+        }else {
+            response.write(errorMessage(), () => {
+                response.statusCode = 404;
+                response.end();
+            })
+        }
+    })
 }
 
     /*
