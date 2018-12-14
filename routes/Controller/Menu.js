@@ -255,7 +255,7 @@ module.exports = function (app) {
             ||  checkUsersRole.isChef(request.session.roleId)
             ||  checkUsersRole.isChef(request.session.roleId))) {
             console.log('Menu');
-            response.sendFile(path.resolve('../../public/Pages/Menu.html'));
+            response.sendFile(path.resolve('public/Pages/Menu.html'));
         }else {
             response.write(checkUsersRole.errorMesage(), () => {
                 response.statusCode = 404;

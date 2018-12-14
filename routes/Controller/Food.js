@@ -198,7 +198,7 @@ module.exports = function(app){
                 if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)
                     ||  checkUsersRole.isChef(request.session.roleId)
                     ||  checkUsersRole.isChef(request.session.roleId))) {
-                    response.sendFile(path.resolve('../../public/Pages/Food.html'));
+                    response.sendFile(path.resolve('public/Pages/Food.html'));
                 }else {
                     response.write(checkUsersRole.errorMesage(), () => {
                         response.statusCode = 404;
