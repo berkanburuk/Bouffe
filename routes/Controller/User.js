@@ -17,7 +17,7 @@ let mRole = db.model(dbNames.role);
 let mTable = db.model(dbNames.table);
 let mUserRoles = db.model(dbNames.userRoles);
 
-module.exports = function(app,session) {
+module.exports = function(app) {
 
 
     /*
@@ -99,23 +99,21 @@ module.exports = function(app,session) {
                 console.log(user);
                 getAUserRole(data.username).then(role => {
                     var myRole = JSON.parse(role);
-                    session.username = data.username;
-                    session.roleId = myRole[0].roleId;
-                    console.log("Session: " + session.username + session.roleId);
+
+                    request.session.username = data.username;
+                    request.session.roleId = {'roleId':myRole[0].roleId };
+                    console.log("request.session.username = "+request.session.username);
+                    console.log("Session: " + request.session.username + request.session.roleId);
                     response.statusCode = 301;
                     //response.sendFile(path.resolve('public/Pages/Navigation.html'));
-                    //response.redirect(path.resolve('public/Pages/Navigation.html'));
+                    //return response.redirect('/navigation');
+                    //response.render('Navigation.html');
                     /*
                     response.writeHead(302,
                         {
                             loc:'/navigation'
                         })
                         */
-                    response.writeHead(302, {
-                        'Location': path.resolve('localhost:3000/navigation')
-                    });
-                    response.end();
-
 
                 }).catch(error => {
                     response.statusCode = 404;
@@ -137,7 +135,7 @@ module.exports = function(app,session) {
             console.log("Create A User");
             var data = request.body;
             console.log(data);
-                if (session != undefined && checkUsersRole.isAdmin(session.roleId)) {
+                if (request.session != undefined && checkUsersRole.isAdmin(request.session.roleId)) {
                     data.roleId = parseInt(data.roleId, 10);
                     data.courseId = parseInt(data.courseId, 10);
 
@@ -158,7 +156,7 @@ module.exports = function(app,session) {
                         });
                     })
                 } else {
-                    response.write(errorMessage(), () => {
+                    response.write(checkUsersRole.errorMesage(), () => {
                         response.statusCode = 404;
                         response.end();
                     })
@@ -182,7 +180,7 @@ module.exports = function(app,session) {
                         });
                     })
                 }else {
-                    response.write(errorMessage(), () => {
+                    response.write(checkUsersRole.errorMesage(), () => {
                         response.statusCode = 404;
                         response.end();
                     })
@@ -211,7 +209,7 @@ module.exports = function(app,session) {
                         });
                     })
                 }else {
-                    response.write(errorMessage(), () => {
+                    response.write(checkUsersRole.errorMesage(), () => {
                         response.statusCode = 404;
                         response.end();
                     })
@@ -219,20 +217,38 @@ module.exports = function(app,session) {
         })
 
     app.get('/api/user/getRole', function (request, response) {
-        console.log("getRole");
-        if (session != undefined  && session.roleId != undefined) {
+        var a = request.session;
+        console.log("getRole "+JSON.stringify(a));
+        if (request.session != undefined  && request.session.roleId != undefined) {
                response.statusCode = 200;
                 var data = JSON.stringify(session.roleId);
                 response.write(data, () => {
                     response.end();
             })
         }else {
-            response.write(errorMessage(), () => {
+            response.write(checkUsersRole.errorMesage(), () => {
                 response.statusCode = 404;
                 response.end();
             })
         }
-    })
+    }),
+
+        app.get('/api/user/logout', function (request, response) {
+            console.log("logout");
+            if (session != undefined  && session.roleId != undefined) {
+                request.session.destroy();
+                response.statusCode = 200;
+                //redirect
+                response.write(() => {
+                    response.end();
+                })
+            }else {
+                response.write(checkUsersRole.errorMesage(), () => {
+                    response.statusCode = 404;
+                    response.end();
+                })
+            }
+        })
 }
 
     /*
