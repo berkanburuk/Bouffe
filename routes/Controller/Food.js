@@ -158,6 +158,36 @@ function getAllFood (){
     */
 }
 
+function getFoodByType(type){
+
+    return new Promise((resolve, reject) => {
+        /*var type = menuType(type);
+        console.log(type)
+        if(type == false){
+            reject("Menu type is not a valid!");
+            return;
+        }*/
+        mFood.findAll({
+            where:{
+                type:type
+            }
+        })
+            .then(dbData=>{
+                if (dbData != null && dbData !=undefined){
+                    resolve(JSON.stringify(dbData));
+                }
+                else{
+                    reject("There is not any appetizer!");
+                }
+            }).catch(error => {
+            reject(error);
+        })
+            .catch(error=>{
+                reject(error);
+            })
+
+    })
+}
 
 
 
@@ -183,7 +213,7 @@ module.exports = function(app,session){
                         createAFood(data).then(food => {
                             response.statusCode = 200;
                             console.log(food);
-                            response.write(food, () => {
+                            response.write(JSON.stringify(food), () => {
                                 response.end();
                             })
 
@@ -321,7 +351,35 @@ module.exports = function(app,session){
                 response.end();
             })
         }
-    })
+    }),
+        app.get('/api/food/getType/:name', function (request, response ) {
+            console.log("Get a Food");
+            let type = request.params.name;
+            console.log(type);
+            if (session != undefined &&
+                (isAdmin(session.roleId) || isChef(session.roleId)) ||isMatre(session.roleId)) {
+
+                getFoodByType(type).then(menu => {
+                    response.statusCode = 200;
+                    console.log(menu);
+                    response.write(menu, () => {
+                        response.end();
+                    });
+                }).catch(error => {
+                    response.statusCode = 404;
+                    console.log(error);
+                    response.write(error.toString(), () => {
+                        response.end();
+                    });
+                })
+            }else {
+                response.write(errorMessage().toString(), () => {
+                    response.statusCode = 404;
+                    response.end();
+                })
+            }
+
+        })
 
 
 
