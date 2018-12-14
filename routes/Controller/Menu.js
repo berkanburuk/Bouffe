@@ -230,7 +230,7 @@ function getFoodOfMenu(data){
     })
 }
 
-module.exports = function (app,session) {
+module.exports = function (app) {
 
     app.get('/menu', function (request, response) {
         if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)
