@@ -84,7 +84,7 @@ function createMenuAndAssignFood(data){
                     if (menu != null || menu != undefined)
                         resolve("Food is added to Menu!");
                     else
-                        reject("Food could not be added to Menu!");
+                        reject("Food does not entered to assign to Menu!");
                 }).catch(error => {
                     reject(error);
                 })
@@ -96,6 +96,40 @@ function createMenuAndAssignFood(data){
 
 }
 
+
+
+function assignFoodToMenu(data){
+    /*
+                        data.name,
+                        data.cousinRegion,
+                        data.date,
+                        data.setPrice,
+                        data.foodName
+     */
+    return new Promise((resolve, reject) => {
+        return mMenu.findOne({
+            where:
+                {
+                    name: data.menuName
+                }
+        }).then((menu) => {
+                console.log(data.foods)
+            var parsedJSON = JSON.parse(data);
+            console.log(parsedJSON);
+            for (var i=0;i<parsedJSON.length;i++) {
+                menu.addFood(parsedJSON.foods[i].foodName).then(menu => {
+                    console.log(menu);
+                    if (menu != null || menu != undefined)
+                        resolve("Food is added to Menu!");
+                    else
+                        reject("Food does not entered to assign to Menu!");
+            })
+            }
+            }).catch(error => {
+                reject(error);
+            })
+        })
+}
 
 function deleteMenu(data){
     /*
@@ -242,6 +276,36 @@ module.exports = function (app,session) {
                     })
                 }
         }),
+        app.post('/api/menu/assignFoodToMenu', function (request, response) {
+            var data = request.body;
+            console.log("assignFoodToMenu" + data);
+
+            if (session != undefined &&
+                (isAdmin(session.roleId) || isChef(session.roleId)) ||isMatre(session.roleId)) {
+                assignFoodToMenu(data).then(menu => {
+                    response.statusCode = 200;
+
+
+                    response.write(menu.toString(), () => {
+                        response.end();
+                    });
+                }).catch(error => {
+                    response.statusCode = 404;
+                    console.log(error);
+                    response.write(error.toString(), () => {
+                        response.end();
+                    });
+                })
+            }else {
+                response.write(errorMessage().toString(), () => {
+                    response.statusCode = 404;
+                    response.end();
+                })
+            }
+        }),
+
+
+
                 app.get('/api/menu/deleteMenu/:name', function (request, response) {
                     console.log('Delete Menu');
                     var data = request.params;
@@ -296,6 +360,7 @@ module.exports = function (app,session) {
                 }
 
         }),
+
 
 
         app.get('/api/menu/getFoodOfMenu/:menuName/:foodName', function (request, response ) {

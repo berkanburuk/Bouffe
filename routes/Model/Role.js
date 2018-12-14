@@ -52,12 +52,14 @@ function createSimpleRoleData(){
         }).catch(err=>{
 
     });
-        Role.create({
-        id:2,
-        roleName:'student'
-        }).catch(err=>{
 
-        });
+
+    Role.create({
+        id:2,
+        roleName:'cashier'
+    }).catch(err=>{
+    });
+
         Role.create({
         id:3,
         roleName:'chef'
@@ -113,32 +115,6 @@ function m() {
             id: id
         }
     });
-}
-
-function getRoles() {
-    Role.findAll().then(function (roles) {
-        console.log(roles[0].get('id'));
-    });
-}
-function getRoleModel(){
-    console.log(sequ());
-    let s = sequ();
-    console.log("s " +  s);
-    let mRole = s.model("role");
-    return mRole;
-}
-function getRole(){
-    console.log("INSIDE ROLEEE -> " + Role);
-    return Role;
-}
-
-
-function save(data) {
-    let mRole = getRoleModel();
-    mRole.create(data)
-        .then(newUser => {
-            console.log(newUser.id);
-        });
 }
 
 

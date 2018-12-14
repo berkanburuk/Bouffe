@@ -6,6 +6,15 @@ function isAdmin(roleId) {
         return false;
     }
 }
+
+function isCashier(roleId) {
+    if(roleId==2){
+        return true;
+    }else{
+        return false;
+    }
+}
+
 function isChef(roleId) {
     if(roleId==3){
         return true;
