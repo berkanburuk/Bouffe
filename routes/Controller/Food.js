@@ -195,8 +195,16 @@ module.exports = function(app){
 
         app.get('/food', function (request, response) {
             console.log('Food');
-            response.sendFile(path.resolve('../../public/Pages/Food.html'));
-
+                if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)
+                    ||  checkUsersRole.isChef(request.session.roleId)
+                    ||  checkUsersRole.isChef(request.session.roleId))) {
+                    response.sendFile(path.resolve('../../public/Pages/Food.html'));
+                }else {
+                    response.write(checkUsersRole.errorMesage(), () => {
+                        response.statusCode = 404;
+                        response.end();
+                    })
+                }
         }),
 
             app.post('/api/food/addFood', function (request, response ) {

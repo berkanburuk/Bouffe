@@ -9,12 +9,7 @@ let mReservation = db.model(dbNames.reservation);
 let mTable = db.model(dbNames.table);
 
 
-let isAdmin = require('./RoleCheck').isAdmin;
-let isWaiter = require('./RoleCheck').isWaiter;
-let isBartender = require('./RoleCheck').isBartender;
-let isChef = require('./RoleCheck').isChef;
-let isMatre = require('./RoleCheck').isMatre;
-let errorMessage = require('./RoleCheck').errorMesage;
+let checkUsersRole = require('./RoleCheck');
 
 function createAReservation(data){
     console.log(data);
@@ -116,14 +111,23 @@ function getReservationAndTable(data){
         */
         app.get('/reservation', function (request, response) {
             console.log('Reservation Controller');
-            response.sendFile(path.resolve('../../public/Pages/index.html'));
-            //response.render(path.resolve('../../public/Pages/index.html'));
+                if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
+                    ||  checkUsersRole.isCashier(request.session.roleId))) {
+                    response.sendFile(path.resolve('../../public/Pages/index.html'));
+                }	else {
+                    response.write(checkUsersRole.errorMesage(), () => {
+                        response.statusCode = 404;
+                        response.end();
+                    })
+                }
+
+
         }),
 
         app.post('/api/reservation/addReservation', function (request, response ) {
             console.log("Add Reservation");
-                if (session != undefined &&
-                    (isAdmin(session.roleId) || isChef(session.roleId)) ||isMatre(session.roleId)) {
+            if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
+                ||  checkUsersRole.isCashier(request.session.roleId))) {
                     var data = request.body;
                     createAReservation(data).then(reservation => {
                         console.log(reservation);
@@ -138,19 +142,19 @@ function getReservationAndTable(data){
                         })
                     })
                 }
-                else {
-                    response.write(errorMessage(), () => {
-                        response.statusCode = 404;
-                        response.end();
-                    })
-                }
+            else {
+                response.write(checkUsersRole.errorMesage(), () => {
+                    response.statusCode = 404;
+                    response.end();
+                })
+            }
 
         }),
 
         app.post('/api/reservation/deleteReservation', function (request, response ) {
             console.log("Delete Reservation");
-            if (session != undefined &&
-                (isAdmin(session.roleId) || isChef(session.roleId)) ||isMatre(session.roleId)) {
+            if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
+                ||  checkUsersRole.isCashier(request.session.roleId))) {
                 var phoneNumber = request.body;
                 deleteReservation(phoneNumber).then(reservation => {
                     console.log(reservation);
@@ -165,7 +169,7 @@ function getReservationAndTable(data){
                     })
                 })
             } else {
-                response.write(errorMessage(), () => {
+                response.write(checkUsersRole.errorMesage(), () => {
                     response.statusCode = 404;
                     response.end();
                 })
@@ -175,8 +179,8 @@ function getReservationAndTable(data){
 
     app.post('/api/reservation/updateReservation', function (request, response ) {
         console.log("Delete Reservation");
-            if (session != undefined &&
-                (isAdmin(session.roleId) || isChef(session.roleId)) ||isMatre(session.roleId)) {
+        if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
+            ||  checkUsersRole.isCashier(request.session.roleId))) {
                 var data = request.body;
                 updateReservation(data).then(reservation => {
                     console.log(reservation);
@@ -190,19 +194,19 @@ function getReservationAndTable(data){
                         response.end();
                     })
                 })
-            }else {
-                response.write(errorMessage(), () => {
-                    response.statusCode = 404;
-                    response.end();
-                })
-            }
+            }	else {
+            response.write(checkUsersRole.errorMesage(), () => {
+                response.statusCode = 404;
+                response.end();
+            })
+        }
 
     }),
         app.get('/api/reservation/getReservationAndTable/:phoneNumber', function (request, response) {
             console.log("getReservationAndTable");
             // { phoneNumber: ... }
-            if (session != undefined &&
-                (isAdmin(session.roleId) || isChef(session.roleId)) ||isMatre(session.roleId)) {
+            if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
+                ||  checkUsersRole.isCashier(request.session.roleId))) {
                 var data = request.params;
                 data.phoneNumber = parseInt(data.phoneNumber);
                 console.log(data);
@@ -221,7 +225,7 @@ function getReservationAndTable(data){
                         });
                     })
             }else {
-                response.write(errorMessage(), () => {
+                response.write(checkUsersRole.errorMesage(), () => {
                     response.statusCode = 404;
                     response.end();
                 })

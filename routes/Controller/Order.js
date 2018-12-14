@@ -14,6 +14,7 @@ let mPayment = db.model(dbNames.payment);
 let mMenuFood = db.model(dbNames.menuFood);
 let mBeverage = db.model(dbNames.beverage);
 
+let checkUsersRole = require('./RoleCheck');
 //0 -> default Value(Just Ordered)
 //1 -> if chef notification, if waiter notification
 //3 -> done
@@ -359,31 +360,39 @@ module.exports = function (app,session) {
 
     app.get('/order', function (request, response) {
         console.log('Order');
-        response.sendFile(path.resolve('../../public/Pages/Order.html'));
+            if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
+                ||  checkUsersRole.isCashier(request.session.roleId))) {
+                response.sendFile(path.resolve('../../public/Pages/Order.html'));
+            }
+            else {
+                    response.write(checkUsersRole.errorMesage(), () => {
+                        response.statusCode = 404;
+                        response.end();
+                    })
+                }
+
         //res.end();
 
     }),
 
-//Post - Order
-        app.post('/api/order', function (request, response) {
-            var data = request.body;
 
-            for (var key in data) {
-                console.log(data[key]);
-            }
-            notifications = notifications + "\n" + data;
-            Order.save(data);
-            response.end("Order is successfully Added!");
-        }),
 
         app.post('/api/order/orderBeverage', function (request, response) {
-            var data = request.body;
-            createAnBeverageOrder(data).then(beverage=>{
-                response.end(beverage.toString());
-            }).catch(error=>{
-                response.end(error.toString());
-            })
-
+                if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
+                    ||  checkUsersRole.isCashier(request.session.roleId))) {
+                    var data = request.body;
+                    createAnBeverageOrder(data).then(beverage => {
+                        response.end(beverage.toString());
+                    }).catch(error => {
+                        response.end(error.toString());
+                    })
+                }
+                else {
+                    response.write(checkUsersRole.errorMesage(), () => {
+                        response.statusCode = 404;
+                        response.end();
+                    })
+                }
         }),
 
 /*
@@ -401,16 +410,23 @@ module.exports = function (app,session) {
     }),
     */
     app.get('/api/order/:getPaymentOfTable', function (request, response) {
-        var tableId = request.params.getPaymentOfTable;
+        if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
+            ||  checkUsersRole.isCashier(request.session.roleId))) {
+            var tableId = request.params.getPaymentOfTable;
 
-        tableId = parseInt(tableId);
-        getPaymentOfTable(tableId).then(beverage=>{
-            response.end(beverage.toString());
-        }).catch(error=>{
-            response.end(error.toString());
-        })
-
-
+            tableId = parseInt(tableId);
+            getPaymentOfTable(tableId).then(beverage => {
+                response.end(beverage.toString());
+            }).catch(error => {
+                response.end(error.toString());
+            })
+        }
+        else {
+            response.write(checkUsersRole.errorMesage(), () => {
+                response.statusCode = 404;
+                response.end();
+            })
+        }
     })
 
 

@@ -9,12 +9,7 @@ let mTable = db.model(dbNames.table);
 let mUser = db.model(dbNames.user);
 let mRole = db.model(dbNames.role);
 
-let isAdmin = require('./RoleCheck').isAdmin;
-let isWaiter = require('./RoleCheck').isWaiter;
-let isBartender = require('./RoleCheck').isBartender;
-let isChef = require('./RoleCheck').isChef;
-let isMatre = require('./RoleCheck').isMatre;
-let errorMessage = require('./RoleCheck').errorMesage;
+let checkUsersRole = require('./RoleCheck');
 
 
 function save(data){
@@ -203,31 +198,53 @@ module.exports = function(app,session){
 
     app.get('/table', function (request, response) {
         console.log('Table');
-        //response.sendFile(path.resolve('../../public/Pages/Waiter.html'));
+            if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
+                ||  checkUsersRole.isCashier(request.session.roleId)) || checkUsersRole.isAdmin(request.session.roleId)) {
+                //response.sendFile(path.resolve('../../public/Pages/Waiter.html'));
+            }
+            else {
+                    response.write(checkUsersRole.errorMesage(), () => {
+                        response.statusCode = 404;
+                        response.end();
+                    })
+                }
+
         //res.end();
     }),
 
-        app.post('/api/table/addTable', function(request,response){
-            console.log('Add Table');
-            var data = request.body;
-            console.log(data);
+        app.post('/api/table/addTable', function(request,response) {
+            if (request.session != undefined && (checkUsersRole.isMatre(request.session.roleId)
+                || checkUsersRole.isCashier(request.session.roleId)) || checkUsersRole.isAdmin(request.session.roleId)) {
+                console.log('Add Table');
+                var data = request.body;
+                console.log(data);
 
-            save(data).then((data)=>{
-                response.write('Table is created!',()=>{
-                    response.statusCode = 200;
-                    response.end();
+                save(data).then((data) => {
+                    response.write('Table is created!', () => {
+                        response.statusCode = 200;
+                        response.end();
+                    })
+                }).catch(error => {
+                    response.write(error.toString(), () => {
+                        response.statusCode = 404;
+                        response.end();
+                    })
                 })
-            }).catch(error=>{
-                response.write(error.toString(),()=>{
+            }
+            else {
+                response.write(checkUsersRole.errorMesage(), () => {
                     response.statusCode = 404;
                     response.end();
                 })
-            })
+            }
 
         }),
         app.post('/api/table/assignTableToUser', function(request,response){
             console.log('assignTableToUser');
-                if (session != undefined && isMatre(session.roleId)) {
+
+            if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
+                ||  checkUsersRole.isCashier(request.session.roleId)) || checkUsersRole.isAdmin(request.session.roleId))
+            {
                     var data = request.body;
                     var id = parseInt(data.id);
                     delete data.id;
@@ -244,19 +261,19 @@ module.exports = function(app,session){
                             response.end();
                         })
                     })
-                }else {
-                    response.write(errorMessage(), () => {
-                        response.statusCode = 404;
-                        response.end();
-                    })
-                }
+                }	else {
+                response.write(checkUsersRole.errorMesage(), () => {
+                    response.statusCode = 404;
+                    response.end();
+                })
+            }
 
         }),
 
         app.get('/api/table/getUsersTable/:username', function (request, response) {
             console.log("getATableBelongToAUser");
-            if (session != undefined &&
-                (isAdmin(session.roleId) || isWaiter(session.roleId) || isChef(session.roleId)) ||isMatre(session.roleId))
+            if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
+                ||  checkUsersRole.isCashier(request.session.roleId)) || checkUsersRole.isAdmin(request.session.roleId))
             {
                 var username = request.params;
                 console.log(username);
@@ -275,15 +292,18 @@ module.exports = function(app,session){
                         });
                     })
             }else {
-                response.write(errorMessage(), () => {
+                response.write(checkUsersRole.errorMesage(), () => {
                     response.statusCode = 404;
                     response.end();
                 })
             }
+
         })
 
         app.get('/api/table/getAllTables', function (request, response) {
-                if (session != undefined && (isMatre(session.roleId)||isAdmin(session.roleId))) {
+            if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
+                ||  checkUsersRole.isCashier(request.session.roleId)) || checkUsersRole.isAdmin(request.session.roleId))
+            {
                     console.log("Get Tables");
                     getAllTables().then(tables => {
                         response.write(tables.toString(), () => {
@@ -297,12 +317,14 @@ module.exports = function(app,session){
                             response.end();
                         })
                     })
-                }else {
-                    response.write(errorMessage(), () => {
-                        response.statusCode = 404;
-                        response.end();
-                    })
-                }
+                }	else {
+                response.write(checkUsersRole.errorMesage(), () => {
+                    response.statusCode = 404;
+                    response.end();
+                })
+            }
+
+
         })
 
 }

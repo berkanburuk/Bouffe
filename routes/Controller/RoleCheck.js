@@ -49,5 +49,5 @@ function errorMesage(){
 }
 
 module.exports = {
-    isAdmin,isWaiter,isMatre,isChef,isBartender,errorMesage
+    isAdmin,isWaiter,isMatre,isChef,isBartender,errorMesage,isCashier
 }

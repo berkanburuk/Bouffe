@@ -37,26 +37,48 @@ module.exports = function(app) {
         //response.render(path.resolve('../../public/Pages/index.html'));
     }),
         app.get('/uploadSRSFile', function (request, response) {
-            console.log('User Controller');
-            response.sendFile(path.resolve('public/Pages/uploadSRSFile.html'));
-            //response.render(path.resolve('../../public/Pages/index.html'));
+            console.log('UploadSRSFile');
+            if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
+                ||  checkUsersRole.isAdmin(request.session.roleId))){
+                response.sendFile(path.resolve('public/Pages/uploadSRSFile.html'));
+            }else {
+                response.write(checkUsersRole.errorMesage(), () => {
+                    response.statusCode = 404;
+                    response.end();
+                })
+            }
         }),
         app.get('/signup', function (request, response) {
             console.log('Signup Controller');
-            response.sendFile(path.resolve('public/Pages/AddUserManually.html'));
+            if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
+                    ||  checkUsersRole.isAdmin(request.session.roleId))) {
+                    response.sendFile(path.resolve('public/Pages/AddUserManually.html'));
+                }else {
+                response.write(checkUsersRole.errorMesage(), () => {
+                    response.statusCode = 404;
+                    response.end();
+                })
+            }
 
             //response.render(path.resolve('../../public/Pages/index.html'));
         }),
         app.get('/navigation', function (request, response) {
             console.log('Navigation');
-            response.sendFile(path.resolve('public/Pages/Navigation.html'));
-            //response.render(path.resolve('../../public/Pages/index.html'));
+                if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
+                    ||  checkUsersRole.isAdmin(request.session.roleId) || checkUsersRole.isCashier(request.session.roleId))) {
+                    response.sendFile(path.resolve('public/Pages/Navigation.html'));
+                }else {
+                    response.write(checkUsersRole.errorMesage(), () => {
+                        response.statusCode = 404;
+                        response.end();
+                    })
+                }
         }),
         app.get('/api/user/deleteUser/:username', function (request, response ) {
 
             console.log("Delete USER");
-
-            if (session != undefined && checkUsersRole.isAdmin(session.roleId)) {
+            if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
+                ||  checkUsersRole.isAdmin(request.session.roleId))){
 
                 var username = request.params.username;
 
@@ -73,73 +95,88 @@ module.exports = function(app) {
                         response.end();
                     });
                 })
-            } else {
-                response.write(errorMessage(), () => {
+            }
+            else {
+                response.write(checkUsersRole.errorMesage(), () => {
                     response.statusCode = 404;
                     response.end();
                 })
             }
+
 
         }),
 
         //checkUser
         app.get('/api/user/login/:username/:password', function (request, response) {
-            var data={
-                username:'',
-                password:''
-            }
-            console.log(request.params);
-            data.username = request.params.username;
-            data.password = request.params.password;
+                if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
+                    ||  checkUsersRole.isAdmin(request.session.roleId) || checkUsersRole.isCashier(request.session.roleId))) {
+                    var data = {
+                        username: '',
+                        password: ''
+                    }
+                    console.log(request.params);
+                    data.username = request.params.username;
+                    data.password = request.params.password;
 
-            //var data = request.body;
-            console.log(request.body);
-            checkValidationOfUser(data.username, data.password).then(user => {
-                console.log(data);
+                    //var data = request.body;
+                    console.log(request.body);
+                    checkValidationOfUser(data.username, data.password).then(user => {
+                        console.log(data);
 
-                getAUserRole(data.username).then(role => {
-                    response.statusCode = 200;
-                    var myRole = JSON.parse(role);
-                    request.session.username = data.username;
-                    request.session.roleId = myRole[0].roleId ;
+                        getAUserRole(data.username).then(role => {
+                            response.statusCode = 200;
+                            var myRole = JSON.parse(role);
+                            request.session.username = data.username;
+                            request.session.roleId = myRole[0].roleId;
 
-                    console.log("Session: " + request.session.username + request.session.roleId);
+                            console.log("Session: " + request.session.username + request.session.roleId);
 
-                    response.write("Successful", () => {
-                        console.log("successsss");
-                        response.end();
-                    });
-                    //response.sendFile(path.resolve('public/Pages/Navigation.html'));
-                    //return response.redirect('/navigation');
-                    //response.render('Navigation.html');
-                    /*
-                    response.writeHead(302,
-                        {
-                            loc:'/navigation'
+                            //response.render(path.join('/public/Pages/Navigation.html'));
+
+                            response.write("Successful", () => {
+                                console.log("successsss");
+                                response.end();
+                            });
+
+                            //response.sendFile(path.resolve('public/Pages/Navigation.html'));
+                            //return response.redirect('/navigation');
+                            //response.render('Navigation.html');
+                            /*
+                            response.writeHead(302,
+                                {
+                                    loc:'/navigation'
+                                })
+                                */
+
+                        }).catch(error => {
+                            response.statusCode = 404;
+                            console.log(error);
+                            response.write("This user does not have an roleId", () => {
+                                response.end();
+                            });
                         })
-                        */
-
-                }).catch(error => {
-                    response.statusCode = 404;
-                    console.log(error);
-                    response.write("This user does not have an roleId", () => {
+                    }).catch(error => {
+                        response.statusCode = 404;
+                        console.log(error);
+                        response.write(error.toString(), () => {
+                            response.end();
+                        });
+                    })
+                }else {
+                    response.write(checkUsersRole.errorMesage(), () => {
+                        response.statusCode = 404;
                         response.end();
-                    });
-                })
-            }).catch(error => {
-                response.statusCode = 404;
-                console.log(error);
-                response.write(error.toString(), () => {
-                    response.end();
-                });
-            })
+                    })
+                }
+
         }),
 
         app.post('/api/user/addUser', function (request, response) {
             console.log("Create A User");
             var data = request.body;
             console.log(data);
-            if (request.session != undefined && checkUsersRole.isAdmin(request.session.roleId)) {
+            if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
+                ||  checkUsersRole.isAdmin(request.session.roleId))){
                 data.roleId = parseInt(data.roleId, 10);
                 data.courseId = parseInt(data.courseId, 10);
 
@@ -169,7 +206,8 @@ module.exports = function(app) {
         }),
         app.post('/api/user/updateAUser', function (request, response) {
             console.log("Update A User");
-            if (session != undefined && checkUsersRole.isAdmin(session.roleId)) {
+            if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
+                ||  checkUsersRole.isAdmin(request.session.roleId))){
                 var data = request.body;
                 updateAUser(data).then(user => {
                     response.statusCode = 200;
@@ -197,7 +235,9 @@ module.exports = function(app) {
         app.get('/api/user/getAllUsers', function (request, response) {
 
             console.log("Get all Users");
-            if (session != undefined && checkUsersRole.isAdmin(session.roleId)) {
+
+            if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
+                ||  checkUsersRole.isAdmin(request.session.roleId))){
                 getAllUsers().then(user => {
                     response.statusCode = 200;
                     console.log(user);
@@ -212,7 +252,7 @@ module.exports = function(app) {
                         response.end();
                     });
                 })
-            }else {
+            }		else {
                 response.write(checkUsersRole.errorMesage(), () => {
                     response.statusCode = 404;
                     response.end();
@@ -223,7 +263,8 @@ module.exports = function(app) {
     app.get('/api/user/getRole', function (request, response) {
         var a = request.session;
         console.log("getRole "+JSON.stringify(a));
-        if (request.session != undefined  && request.session.roleId != undefined) {
+        if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
+            ||  checkUsersRole.isAdmin(request.session.roleId))){
             response.statusCode = 200;
             var data = JSON.stringify(request.session.roleId);
             response.write(data, () => {
@@ -239,7 +280,8 @@ module.exports = function(app) {
 
         app.get('/api/user/logout', function (request, response) {
             console.log("logout");
-            if (request.session != undefined  && request.session.roleId != undefined) {
+            if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
+                ||  checkUsersRole.isAdmin(request.session.roleId))){
                 request.session.destroy();
                 response.statusCode = 200;
                 //redirect
