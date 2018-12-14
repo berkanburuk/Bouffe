@@ -8,13 +8,7 @@ let mMenu = db.model(dbNames.menu);
 let mFood = db.model(dbNames.food);
 let mMenuFood = db.model(dbNames.menuFood);
 
-let isAdmin = require('./RoleCheck').isAdmin;
-let isWaiter = require('./RoleCheck').isWaiter;
-let isBartender = require('./RoleCheck').isBartender;
-let isChef = require('./RoleCheck').isChef;
-let isMatre = require('./RoleCheck').isMatre;
-let errorMessage = require('./RoleCheck').errorMesage;
-
+let checkUsersRole = require('./RoleCheck');
 
 function getMenu(data){
     /*
@@ -35,24 +29,24 @@ function getMenu(data){
                     reject("There is no menu with this name: " + data.name);
                 }
             }).catch(error => {
-                reject(error);
-            })
+            reject(error);
+        })
             .catch(error=>{
                 reject(error);
-        })
+            })
 
     })
 }
 
 function menuType(type) {
-        if (type == "appetizer")
-                return type;
-        else if (type == "mainCourse")
-            return type;
-        else if (type == "dessert")
-            return type;
-        else
-            return false;
+    if (type == "appetizer")
+        return type;
+    else if (type == "mainCourse")
+        return type;
+    else if (type == "dessert")
+        return type;
+    else
+        return false;
 }
 
 
@@ -65,33 +59,33 @@ function createMenuAndAssignFood(data){
                         data.foodName
      */
     return new Promise((resolve, reject) => {
-           return mMenu.findOrCreate({
-                where:
-                    {
-                        name: data.name
-                    },
-                defaults:
-                    {
-                        name: data.name,
-                        cousinRegion: data.cousinRegion,
-                        date: data.date,
-                        setPrice: data.setPrice
-                    }
-            }).then((menu) => {
-                console.log(menu[0]);
-                menu[0].addFood(data.foodName).then(menu => {
-                    console.log(menu);
-                    if (menu != null || menu != undefined)
-                        resolve("Food is added to Menu!");
-                    else
-                        reject("Food does not entered to assign to Menu!");
-                }).catch(error => {
-                    reject(error);
-                })
+        return mMenu.findOrCreate({
+            where:
+                {
+                    name: data.name
+                },
+            defaults:
+                {
+                    name: data.name,
+                    cousinRegion: data.cousinRegion,
+                    date: data.date,
+                    setPrice: data.setPrice
+                }
+        }).then((menu) => {
+            console.log(menu[0]);
+            menu[0].addFood(data.foodName).then(menu => {
+                console.log(menu);
+                if (menu != null || menu != undefined)
+                    resolve("Food is added to Menu!");
+                else
+                    reject("Food does not entered to assign to Menu!");
             }).catch(error => {
-               reject("Menu could not be created!" + error);
-           })
+                reject(error);
+            })
+        }).catch(error => {
+            reject("Menu could not be created!" + error);
         })
+    })
 
 
 }
@@ -113,7 +107,7 @@ function assignFoodToMenu(data){
                     name: data.menuName
                 }
         }).then((menu) => {
-                console.log(data.foods)
+            console.log(data.foods)
             var parsedJSON = JSON.parse(data);
             console.log(parsedJSON);
             for (var i=0;i<parsedJSON.length;i++) {
@@ -123,12 +117,12 @@ function assignFoodToMenu(data){
                         resolve("Food is added to Menu!");
                     else
                         reject("Food does not entered to assign to Menu!");
-            })
+                })
             }
-            }).catch(error => {
-                reject(error);
-            })
+        }).catch(error => {
+            reject(error);
         })
+    })
 }
 
 function deleteMenu(data){
@@ -142,7 +136,7 @@ function deleteMenu(data){
             }
         }).then(menu=>{
             if (menu>0)
-            resolve('Menu is deleted');
+                resolve('Menu is deleted');
             else
                 reject("There is no food with name of : "+data.name);
         }).catch(error =>{
@@ -212,76 +206,79 @@ function getFoodOfMenu(data){
     Get All Food Of Menu
      */
     console.log(data);
-        return new Promise((resolve, reject) => {
-            mMenu.findAll({
-                where: {
-                    name: data.menuName
-                },
-                include: [
-                    {
-                        model:mFood,
-                        through: mMenuFood
-                    }
-                ]
-            }).then(data=>{
-                if (data != null && data != undefined){
-                    resolve(JSON.stringify(data));
+    return new Promise((resolve, reject) => {
+        mMenu.findAll({
+            where: {
+                name: data.menuName
+            },
+            include: [
+                {
+                    model:mFood,
+                    through: mMenuFood
                 }
-                else
-                    reject("Cannot get the Menu's Food!");
-            }).catch(error => {
-                reject(error);
-            })
-
+            ]
+        }).then(data=>{
+            if (data != null && data != undefined){
+                resolve(JSON.stringify(data));
+            }
+            else
+                reject("Cannot get the Menu's Food!");
+        }).catch(error => {
+            reject(error);
         })
+
+    })
 }
 
 module.exports = function (app,session) {
 
     app.get('/menu', function (request, response) {
-            if (session != undefined &&
-                (isAdmin(session.roleId) || isChef(session.roleId)) ||isMatre(session.roleId)) {
-                console.log('Menu');
-                response.sendFile(path.resolve('../../public/Pages/Menu.html'));
-            }else {
-                response.write(errorMessage().toString(), () => {
-                    response.statusCode = 404;
-                    response.end();
-                })
-            }
+        if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)
+            ||  checkUsersRole.isChef(request.session.roleId)
+            ||  checkUsersRole.isChef(request.session.roleId))) {
+            console.log('Menu');
+            response.sendFile(path.resolve('../../public/Pages/Menu.html'));
+        }else {
+            response.write(checkUsersRole.errorMesage(), () => {
+                response.statusCode = 404;
+                response.end();
+            })
+        }
+
     }),
 
         app.post('/api/menu/addMenu', function (request, response) {
             var data = request.body;
             console.log(data);
-                if (session != undefined &&
-                    (isAdmin(session.roleId) || isChef(session.roleId)) ||isMatre(session.roleId)) {
-                    createMenuAndAssignFood(data).then(menu => {
-                        response.statusCode = 200;
-                        console.log(menu);
-                        response.write(menu.toString(), () => {
-                            response.end();
-                        });
-                    }).catch(error => {
-                        response.statusCode = 404;
-                        console.log(error);
-                        response.write(error.toString(), () => {
-                            response.end();
-                        });
-                    })
-                }else {
-                    response.write(errorMessage().toString(), () => {
-                        response.statusCode = 404;
+            if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)||
+                checkUsersRole.isChef(request.session.roleId) ||  checkUsersRole.isChef(request.session.roleId))) {
+                createMenuAndAssignFood(data).then(menu => {
+                    response.statusCode = 200;
+                    console.log(menu);
+                    response.write(menu.toString(), () => {
                         response.end();
-                    })
-                }
+                    });
+                }).catch(error => {
+                    response.statusCode = 404;
+                    console.log(error);
+                    response.write(error.toString(), () => {
+                        response.end();
+                    });
+                })
+            }else {
+                response.write(checkUsersRole.errorMesage(), () => {
+                    response.statusCode = 404;
+                    response.end();
+                })
+            }
+
         }),
         app.post('/api/menu/assignFoodToMenu', function (request, response) {
             var data = request.body;
             console.log("assignFoodToMenu" + data);
 
-            if (session != undefined &&
-                (isAdmin(session.roleId) || isChef(session.roleId)) ||isMatre(session.roleId)) {
+            if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)||
+                checkUsersRole.isChef(request.session.roleId) ||  checkUsersRole.isChef(request.session.roleId))) {
                 assignFoodToMenu(data).then(menu => {
                     response.statusCode = 200;
 
@@ -297,7 +294,7 @@ module.exports = function (app,session) {
                     });
                 })
             }else {
-                response.write(errorMessage().toString(), () => {
+                response.write(checkUsersRole.errorMesage(), () => {
                     response.statusCode = 404;
                     response.end();
                 })
@@ -306,70 +303,41 @@ module.exports = function (app,session) {
 
 
 
-                app.get('/api/menu/deleteMenu/:name', function (request, response) {
-                    console.log('Delete Menu');
-                    var data = request.params;
-                        if (session != undefined &&
-                            (isAdmin(session.roleId) || isChef(session.roleId)) ||isMatre(session.roleId)) {
-                            deleteMenu(data).then(menu => {
-                                response.statusCode = 200;
-                                console.log(menu);
-                                response.write(menu.toString(), () => {
-                                    response.end();
-                                })
+        app.get('/api/menu/deleteMenu/:name', function (request, response) {
+            console.log('Delete Menu');
+            var data = request.params;
+            if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)||
+                checkUsersRole.isChef(request.session.roleId) ||  checkUsersRole.isChef(request.session.roleId))) {
 
-                            }).catch(error => {
-                                console.log(error);
-                                response.statusCode = 404;
-                                response.write(error.toString(), () => {
-                                    response.end();
-                                })
-                            })
-                        }else {
-                            response.write(errorMessage().toString(), () => {
-                                response.statusCode = 404;
-                                response.end();
-                            })
-                        }
+                deleteMenu(data).then(menu => {
+                    response.statusCode = 200;
+                    console.log(menu);
+                    response.write(menu.toString(), () => {
+                        response.end();
+                    })
 
-                }),
+                }).catch(error => {
+                    console.log(error);
+                    response.statusCode = 404;
+                    response.write(error.toString(), () => {
+                        response.end();
+                    })
+                })
+            }else {
+                response.write(checkUsersRole.errorMesage(), () => {
+                    response.statusCode = 404;
+                    response.end();
+                })
+            }
+
+        }),
         app.get('/api/menu/getMenu/:name', function (request, response ) {
             console.log("Get a Food");
             let data = request.params;
             console.log(data);
-                if (session != undefined &&
-                    (isAdmin(session.roleId) || isChef(session.roleId)) ||isMatre(session.roleId)) {
-                    getMenu(data).then(menu => {
-                        response.statusCode = 200;
-                        console.log(menu);
-                        response.write(menu.toString(), () => {
-                            response.end();
-                        });
-                    }).catch(error => {
-                        response.statusCode = 404;
-                        console.log(error);
-                        response.write(error.toString(), () => {
-                            response.end();
-                        });
-                    })
-                }else {
-                    response.write(errorMessage().toString(), () => {
-                        response.statusCode = 404;
-                        response.end();
-                    })
-                }
-
-        }),
-
-
-
-        app.get('/api/menu/getFoodOfMenu/:menuName/:foodName', function (request, response ) {
-            console.log("getFoodOfMenu");
-            let data = request.params;
-            console.log(data);
-            if (session != undefined &&
-                (isAdmin(session.roleId) || isChef(session.roleId)) ||isMatre(session.roleId)) {
-                getFoodOfMenu(data).then(menu => {
+            if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)||
+                checkUsersRole.isChef(request.session.roleId) ||  checkUsersRole.isChef(request.session.roleId))) {
+                getMenu(data).then(menu => {
                     response.statusCode = 200;
                     console.log(menu);
                     response.write(menu.toString(), () => {
@@ -383,7 +351,40 @@ module.exports = function (app,session) {
                     });
                 })
             }else {
-                response.write(errorMessage().toString(), () => {
+                response.write(checkUsersRole.errorMesage(), () => {
+                    response.statusCode = 404;
+                    response.end();
+                })
+            }
+
+
+        }),
+
+
+
+        app.get('/api/menu/getFoodOfMenu/:menuName/:foodName', function (request, response ) {
+            console.log("getFoodOfMenu");
+            let data = request.params;
+            console.log(data);
+
+            if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)||
+                checkUsersRole.isChef(request.session.roleId) ||  checkUsersRole.isChef(request.session.roleId))) {
+                getFoodOfMenu(data).then(menu => {
+                    response.statusCode = 200;
+                    console.log(menu);
+                    response.write(menu.toString(), () => {
+                        response.end();
+                    });
+                }).catch(error => {
+                    response.statusCode = 404;
+                    console.log(error);
+                    response.write(error.toString(), () => {
+                        response.end();
+                    });
+                })
+            }
+            else {
+                response.write(checkUsersRole.errorMesage(), () => {
                     response.statusCode = 404;
                     response.end();
                 })
@@ -391,5 +392,5 @@ module.exports = function (app,session) {
 
         })
 
-        }
+}
 
