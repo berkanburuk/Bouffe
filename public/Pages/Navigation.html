@@ -362,6 +362,18 @@ html { height: 100%;}
         });
 
       function getMenu() {
+          var x="<script src='../navigationFiles/jquery-1.11.1.min.js'>";
+          x+="<";
+          x+="/script>";
+          x+="<script";
+          x+=">"
+          x+="\$(document).ready(function(){";
+          x+="\$('ul#opList li').click( function() {";
+          x+="\$(location).attr('href', \$(this).attr('value'));";
+          x+="console.log(\$(this).attr('value')+ ' Fuck sake');";
+          x+="});});";
+          x+="<";
+          x+="/script>";
           custom_list = '<li class="sidebar-brand"><p>Bouffe Control Panel</p></li>';
           if (role == 1) {
               custom_list += '<li id="userManagement" value="/addUserManually"><p>User Management</p></li>';
@@ -404,7 +416,7 @@ html { height: 100%;}
           }
           custom_list += '<li id="logOut" value="/api/user/logout"><p>Log Out</p></li>';
 
-          return custom_list
+          return custom_list + x;
 
       }
   });
@@ -415,16 +427,7 @@ html { height: 100%;}
         <div class="overlay" style="display: none;"></div>
 
         <!-- Sidebar -->
-            <script src="../navigationFiles/jquery-1.11.1.min.js"></script>
-            <script>
-                $(document).ready(function(){
-                    $('ul#opList li').click( function() {
-                        <!-- Do whatever in here boi value olarak page ismi koyabilirsiniz efem -->
-                        $(location).attr('href', $(this).attr('value'));
-                        console.log($(this).attr('value')+ " Fuck sake");
-                    });
-                });
-            </script>
+
         <nav class="navbar navbar-inverse navbar-fixed-top" id="sidebar-wrapper" role="navigation">
             <ul id="opList" class="nav sidebar-nav">
 
