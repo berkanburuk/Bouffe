@@ -95,16 +95,20 @@ module.exports = function(app) {
             //var data = request.body;
             console.log(request.body);
             checkValidationOfUser(data.username, data.password).then(user => {
+                console.log(data);
 
-                console.log(user);
                 getAUserRole(data.username).then(role => {
+                    response.statusCode = 200;
                     var myRole = JSON.parse(role);
-
                     request.session.username = data.username;
-                    request.session.roleId = {'roleId':myRole[0].roleId };
-                    console.log("request.session.username = "+request.session.username);
+                    request.session.roleId = myRole[0].roleId ;
+
                     console.log("Session: " + request.session.username + request.session.roleId);
-                    response.statusCode = 301;
+
+                    response.write("Successful", () => {
+                        console.log("successsss");
+                        response.end();
+                    });
                     //response.sendFile(path.resolve('public/Pages/Navigation.html'));
                     //return response.redirect('/navigation');
                     //response.render('Navigation.html');
@@ -221,7 +225,7 @@ module.exports = function(app) {
         console.log("getRole "+JSON.stringify(a));
         if (request.session != undefined  && request.session.roleId != undefined) {
                response.statusCode = 200;
-                var data = JSON.stringify(session.roleId);
+                var data = JSON.stringify(request.session.roleId);
                 response.write(data, () => {
                     response.end();
             })
