@@ -7,12 +7,7 @@ let dbNames = tableNames();
 let mFood = db.model(dbNames.food);
 let mMenuFood = db.model(dbNames.menuFood);
 
-let isAdmin = require('./RoleCheck').isAdmin;
-let isWaiter = require('./RoleCheck').isWaiter;
-let isBartender = require('./RoleCheck').isBartender;
-let isChef = require('./RoleCheck').isChef;
-let isMatre = require('./RoleCheck').isMatre;
-let errorMessage = require('./RoleCheck').errorMesage;
+let checkUsersRole = require('./RoleCheck');
 
 //Örnek
 function getFood(data){
@@ -195,7 +190,7 @@ function getFoodByType(type){
 
 
 
-module.exports = function(app,session){
+module.exports = function(app){
 
 
         app.get('/food', function (request, response) {
@@ -208,8 +203,9 @@ module.exports = function(app,session){
                 console.log("Add Food");
                 var data = request.body;
 
-                    if (session != undefined &&
-                        (isAdmin(session.roleId) || isChef(session.roleId)) ||isMatre(session.roleId)) {
+                if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)
+                    ||  checkUsersRole.isChef(request.session.roleId)
+                    ||  checkUsersRole.isChef(request.session.roleId))){
                         createAFood(data).then(food => {
                             response.statusCode = 200;
                             console.log(food);
@@ -225,19 +221,20 @@ module.exports = function(app,session){
                             })
                         })
                     }else {
-                        response.write(errorMessage().toString(), () => {
-                            response.statusCode = 404;
-                            response.end();
-                        })
-                    }
+                    response.write(checkUsersRole.errorMesage(), () => {
+                        response.statusCode = 404;
+                        response.end();
+                    })
+                }
 
             }),
 
             app.post('/api/food/deleteFood', function (request, response ) {
                 console.log("Delete Food");
                 console.log(request.body);
-                if (session != undefined &&
-                    (isAdmin(session.roleId) || isChef(session.roleId)) ||isMatre(session.roleId)) {
+                if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)
+                    ||  checkUsersRole.isChef(request.session.roleId)
+                    ||  checkUsersRole.isChef(request.session.roleId))){
                     var data = request.body;
 
                     deleteFood(data.name).then(food => {
@@ -255,7 +252,7 @@ module.exports = function(app,session){
                         })
                     })
                 }else {
-                    response.write(errorMessage().toString(), () => {
+                    response.write(checkUsersRole.errorMesage(), () => {
                         response.statusCode = 404;
                         response.end();
                     })
@@ -267,8 +264,9 @@ module.exports = function(app,session){
     app.post('/api/food/updateFood', function (request, response ) {
         console.log("Update Food");
         var data = request.body;
-            if (session != undefined &&
-                (isAdmin(session.roleId) || isChef(session.roleId)) ||isMatre(session.roleId)) {
+        if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)
+            ||  checkUsersRole.isChef(request.session.roleId)
+            ||  checkUsersRole.isChef(request.session.roleId))){
                 console.log(request);
                 console.log("Will be Updated : " + data);
 
@@ -286,11 +284,11 @@ module.exports = function(app,session){
                     })
                 })
             }else {
-                response.write(errorMessage().toString(), () => {
-                    response.statusCode = 404;
-                    response.end();
-                })
-            }
+            response.write(checkUsersRole.errorMesage(), () => {
+                response.statusCode = 404;
+                response.end();
+            })
+        }
 
 
     }),
@@ -298,8 +296,9 @@ module.exports = function(app,session){
 
         app.get('/api/food/getAFood/:name', function (request, response ) {
             console.log("Get a Food");
-            if (session != undefined &&
-                (isAdmin(session.roleId) || isChef(session.roleId)) ||isMatre(session.roleId)) {
+            if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)
+                ||  checkUsersRole.isChef(request.session.roleId)
+                ||  checkUsersRole.isChef(request.session.roleId))){
                 var data = request.params;
                 console.log(data);
                 console.log(data.name);
@@ -317,7 +316,7 @@ module.exports = function(app,session){
                     });
                 })
             }else {
-                response.write(errorMessage().toString(), () => {
+                response.write(checkUsersRole.errorMesage(), () => {
                     response.statusCode = 404;
                     response.end();
                 })
@@ -327,8 +326,10 @@ module.exports = function(app,session){
 
     app.get('/api/food/getAllFood', function (request, response ) {
         console.log("Get all Food");
-        if (session != undefined &&
-            (isAdmin(session.roleId) || isChef(session.roleId)) ||isMatre(session.roleId)) {
+
+            if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)
+                ||  checkUsersRole.isChef(request.session.roleId)
+                ||  checkUsersRole.isChef(request.session.roleId))){
             var data = request.params;
             console.log(data);
 
@@ -346,18 +347,19 @@ module.exports = function(app,session){
                 });
             })
         }else {
-            response.write(errorMessage().toString(), () => {
-                response.statusCode = 404;
-                response.end();
-            })
-        }
+                response.write(checkUsersRole.errorMesage(), () => {
+                    response.statusCode = 404;
+                    response.end();
+                })
+            }
     }),
         app.get('/api/food/getType/:name', function (request, response ) {
             console.log("Get a Food");
             let type = request.params.name;
             console.log(type);
-            if (session != undefined &&
-                (isAdmin(session.roleId) || isChef(session.roleId)) ||isMatre(session.roleId)) {
+            if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)
+                ||  checkUsersRole.isChef(request.session.roleId)
+                ||  checkUsersRole.isChef(request.session.roleId))){
 
                 getFoodByType(type).then(menu => {
                     response.statusCode = 200;
@@ -373,7 +375,7 @@ module.exports = function(app,session){
                     });
                 })
             }else {
-                response.write(errorMessage().toString(), () => {
+                response.write(checkUsersRole.errorMesage(), () => {
                     response.statusCode = 404;
                     response.end();
                 })
