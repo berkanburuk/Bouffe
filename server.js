@@ -44,13 +44,13 @@ var orderController = require('./routes/Controller/Order')(app,session);
 
 //Starting Page of The Web Application
 app.get('/', function (request, response,next)  {
-    console.log("ilk " +request.session.username);
+    console.log("ilk " +request.session.username);/*
     if (request.cookies.roleId== undefined){
         response.sendFile(path.resolve('public/Pages/Login.html'));
     }else{
         response.sendFile(path.resolve('public/Pages/Index.html'));
     }
-
+*/
     next();
 });
 

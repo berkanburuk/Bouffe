@@ -37,46 +37,26 @@ module.exports = function(app) {
         //response.render(path.resolve('../../public/Pages/index.html'));
     }),
         app.get('/uploadSRSFile', function (request, response) {
-                if (request.session != undefined  && checkUsersRole.isAdmin(request.session.roleId)) {
-                    response.sendFile(path.resolve('public/Pages/uploadSRSFile.html'));
-                }else {
-                    response.write(checkUsersRole.errorMesage(), () => {
-                        response.statusCode = 404;
-                        response.end();
-                    })
-                }
+            console.log('User Controller');
+            response.sendFile(path.resolve('public/Pages/uploadSRSFile.html'));
             //response.render(path.resolve('../../public/Pages/index.html'));
         }),
         app.get('/signup', function (request, response) {
             console.log('Signup Controller');
-            if (request.session != undefined && checkUsersRole.isAdmin(request.session.roleId)) {
-                response.sendFile(path.resolve('public/Pages/AddUserManually.html'));
-            }
-            else {
-                response.write(checkUsersRole.errorMesage(), () => {
-                    response.statusCode = 404;
-                    response.end();
-                })
-            }
-        })
+            response.sendFile(path.resolve('public/Pages/AddUserManually.html'));
 
+            //response.render(path.resolve('../../public/Pages/index.html'));
+        }),
         app.get('/navigation', function (request, response) {
             console.log('Navigation');
-                if (request.session != undefined && checkUsersRole.isAdmin(request.session.roleId)) {
-                    response.sendFile(path.resolve('public/Pages/Navigation.html'));
-                }else {
-                    response.write(checkUsersRole.errorMesage(), () => {
-                        response.statusCode = 404;
-                        response.end();
-                    })
-                }
+            response.sendFile(path.resolve('public/Pages/Navigation.html'));
             //response.render(path.resolve('../../public/Pages/index.html'));
         }),
         app.get('/api/user/deleteUser/:username', function (request, response ) {
 
             console.log("Delete USER");
 
-            if (request.session != undefined  && checkUsersRole.isAdmin(request.session.roleId)) {
+            if (session != undefined && checkUsersRole.isAdmin(session.roleId)) {
 
                     var username = request.params.username;
 
@@ -159,7 +139,7 @@ module.exports = function(app) {
             console.log("Create A User");
             var data = request.body;
             console.log(data);
-            if (request.session != undefined  && checkUsersRole.isAdmin(request.session.roleId)) {
+                if (request.session != undefined && checkUsersRole.isAdmin(request.session.roleId)) {
                     data.roleId = parseInt(data.roleId, 10);
                     data.courseId = parseInt(data.courseId, 10);
 
@@ -189,7 +169,7 @@ module.exports = function(app) {
         }),
         app.post('/api/user/updateAUser', function (request, response) {
             console.log("Update A User");
-            if (request.session != undefined  && checkUsersRole.isAdmin(request.session.roleId)) {
+                if (session != undefined && checkUsersRole.isAdmin(session.roleId)) {
                     var data = request.body;
                     updateAUser(data).then(user => {
                         response.statusCode = 200;
@@ -217,7 +197,7 @@ module.exports = function(app) {
         app.get('/api/user/getAllUsers', function (request, response) {
 
             console.log("Get all Users");
-            if (request.session != undefined  && checkUsersRole.isAdmin(request.session.roleId)) {
+                if (session != undefined && checkUsersRole.isAdmin(session.roleId)) {
                     getAllUsers().then(user => {
                         response.statusCode = 200;
                         console.log(user);
@@ -243,7 +223,7 @@ module.exports = function(app) {
     app.get('/api/user/getRole', function (request, response) {
         var a = request.session;
         console.log("getRole "+JSON.stringify(a));
-        if (request.session != undefined  && checkUsersRole.isAdmin(request.session.roleId)) {
+        if (request.session != undefined  && request.session.roleId != undefined) {
                response.statusCode = 200;
                 var data = JSON.stringify(request.session.roleId);
                 response.write(data, () => {
@@ -259,11 +239,11 @@ module.exports = function(app) {
 
         app.get('/api/user/logout', function (request, response) {
             console.log("logout");
-            if (request.session != undefined  && checkUsersRole.isAdmin(request.session.roleId)) {
+            if (request.session != undefined  && request.session.roleId != undefined) {
                 request.session.destroy();
                 response.statusCode = 200;
                 //redirect
-                response.write(() => {
+                response.write("true",() => {
                     response.end();
                 })
             }else {
