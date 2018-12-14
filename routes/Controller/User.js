@@ -239,11 +239,11 @@ module.exports = function(app) {
 
         app.get('/api/user/logout', function (request, response) {
             console.log("logout");
-            if (session != undefined  && session.roleId != undefined) {
+            if (request.session != undefined  && request.session.roleId != undefined) {
                 request.session.destroy();
                 response.statusCode = 200;
                 //redirect
-                response.write(() => {
+                response.write("true",() => {
                     response.end();
                 })
             }else {
