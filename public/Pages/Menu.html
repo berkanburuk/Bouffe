@@ -3,273 +3,263 @@
 <head>
     <meta charset="UTF-8">
     <title>Menu</title>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="../stylesheets/style.css"/>
+    <link rel="stylesheet" href="../stylesheets/bootstrap-datepicker.css">
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+            integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+            crossorigin="anonymous"></script>
 
-    <style type="text/css">
-        @import url(https://fonts.googleapis.com/css?family=Roboto:400,500,700,300,100);
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+            integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+            crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
 
-        body {
-            font-family: "Roboto", helvetica, arial, sans-serif;
-            font-size: 16px;
-            font-weight: 400;
-            text-rendering: optimizeLegibility;
-        }
+    <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+    <script src="../JsFiles/bootstrap-datepicker.js"></script>
 
-        div.table-title {
-            display: block;
-            margin: auto;
-            max-width: 600px;
-            padding: 5px;
-            width: 100%;
-        }
-
-        .table-title h3 {
-            color: #fafafa;
-            font-size: 30px;
-            font-weight: 400;
-            font-style: normal;
-            font-family: "Roboto", helvetica, arial, sans-serif;
-            text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.1);
-            text-transform: uppercase;
-        }
-
-        /*** Table Styles **/
-
-        .table-fill {
-            background: white;
-            border-radius: 3px;
-            border-collapse: collapse;
-            height: 320px;
-            margin: auto;
-            max-width: 600px;
-            padding: 5px;
-            width: 100%;
-            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-            animation: float 5s infinite;
-        }
-
-        th {
-            color: #D5DDE5;;
-            background: #1b1e24;
-            border-bottom: 4px solid #9ea7af;
-            border-right: 1px solid #343a45;
-            font-size: 23px;
-            font-weight: 100;
-            padding: 24px;
-            text-align: left;
-            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
-            vertical-align: middle;
-        }
-
-        th:first-child {
-            border-top-left-radius: 3px;
-        }
-
-        th:last-child {
-            border-top-right-radius: 3px;
-            border-right: none;
-        }
-
-        tr {
-            border-top: 1px solid #C1C3D1;
-            border-bottom-: 1px solid #C1C3D1;
-            color: #666B85;
-            font-size: 16px;
-            font-weight: normal;
-            text-shadow: 0 1px 1px rgba(256, 256, 256, 0.1);
-        }
-
-        tr:hover td {
-            background: #4E5066;
-            color: #FFFFFF;
-            border-top: 1px solid #22262e;
-        }
-
-        tr:first-child {
-            border-top: none;
-        }
-
-        tr:last-child {
-            border-bottom: none;
-        }
-
-        tr:nth-child(odd) td {
-            background: #EBEBEB;
-        }
-
-        tr:nth-child(odd):hover td {
-            background: #4E5066;
-        }
-
-        tr:last-child td:first-child {
-            border-bottom-left-radius: 3px;
-        }
-
-        tr:last-child td:last-child {
-            border-bottom-right-radius: 3px;
-        }
-
-        td {
-            background: #FFFFFF;
-            padding: 20px;
-            text-align: left;
-            vertical-align: middle;
-            font-weight: 300;
-            font-size: 18px;
-            text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.1);
-            border-right: 1px solid #C1C3D1;
-        }
-
-        td:last-child {
-            border-right: 0px;
-        }
-
-        th.text-left {
-            text-align: left;
-        }
-
-        th.text-center {
-            text-align: center;
-        }
-
-        th.text-right {
-            text-align: right;
-        }
-
-        td.text-left {
-            text-align: left;
-        }
-
-        td.text-center {
-            text-align: center;
-        }
-
-        td.text-right {
-            text-align: right;
-        }
-
-        .button {
-            display: inline-block;
-            padding: 15px 25px;
-            font-size: 24px;
-            cursor: pointer;
-            text-align: center;
-            text-decoration: none;
-            outline: none;
-            color: #fff;
-            background-color: #4CAF50;
-            border: none;
-            border-radius: 15px;
-            box-shadow: 0 9px #999;
-        }
-
-        .button:hover {
-            background-color: #3e8e41
-        }
-
-        .button:active {
-            background-color: #3e8e41;
-            box-shadow: 0 5px #666;
-            transform: translateY(4px);
-        }
-    </style>
 </head>
 <body>
-<table>
-    <caption>Menu Creation</caption>
-    <thead>
-    <tr>
-        <th class="text-left">Menu Item Type</th>
-        <th class="text-left">Food Name</th>
-    </tr>
-    </thead>
-    <tr>
-        <td class="text-left">1st Appetizer</td>
-        <td class="text-left"><select name="appetizers" id="apt1"></select></td>
-    </tr>
-    <tr>
-        <td class="text-left">2nd Appetizer</td>
-        <td class="text-left"><select name="appetizers" id="apt2"></select></td>
-    </tr>
-    <tr>
-        <td class="text-left">1st Main Course</td>
-        <td class="text-left"><select name="mainCourses" id="main1"></select></td>
-    </tr>
-    <tr>
-        <td class="text-left">2nd Main Course</td>
-        <td class="text-left"><select name="mainCourses" id="main2"></select></td>
-    </tr>
-    <tr>
-        <td>1st Dessert</td>
-        <td><select name="desserts" id="dess1"></select></td>
-    </tr>
-    <tr>
-        <td class="text-left">2nd Dessert</td>
-        <td class="text-left"><select name="desserts" id="dess2"></select></td>
-    </tr>
-</table>
+<div class="container box" style="margin-top: 20px">
 
-<button class="button" onclick="sendFoods()">Create Menu</button>
+    <!--
+    <div class="table-responsive-sm" style="margin-top: 20px">
+        <table id="food_data" class="table table-hover table-bordered table-striped">
+            <caption>Menu Creation</caption>
+            <thead>
+            <tr>
+                <th class="text-left">Menu Item Type</th>
+                <th class="text-left">Food Name</th>
+            </tr>
+            </thead>
+            <tbody id="food_data_body">
+            <tr>
+                <td class="text-left">1st Appetizer</td>
+                <td class="text-left"><select name="appetizers" id="apt1"></select></td>
+            </tr>
+            <tr>
+                <td class="text-left">2nd Appetizer</td>
+                <td class="text-left"><select name="appetizers" id="apt2"></select></td>
+            </tr>
+            <tr>
+                <td class="text-left">1st Main Course</td>
+                <td class="text-left"><select name="mainCourses" id="main1"></select></td>
+            </tr>
+            <tr>
+                <td class="text-left">2nd Main Course</td>
+                <td class="text-left"><select name="mainCourses" id="main2"></select></td>
+            </tr>
+            <tr>
+                <td>1st Dessert</td>
+                <td><select name="desserts" id="dess1"></select></td>
+            </tr>
+            <tr>
+                <td class="text-left">2nd Dessert</td>
+                <td class="text-left"><select name="desserts" id="dess2"></select></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>*/-->
+    <button class="btn btn-primary" data-toggle="modal" data-target="#modal_form_add_menu">Create Menu</button>
+    <div class="table-responsive-sm" style="margin-top: 20px">
+        <table id="menu_data" class="table table-hover table-bordered table-striped">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Cuisine</th>
+                <th>Date</th>
+                <th>Set Price</th>
+                <th>Manage</th>
+            </tr>
+            </thead>
+            <tbody id="menu_data_body">
+            </tbody>
+        </table>
+    </div>
+</div>
 </body>
+<!-- Bootstrap modal -->
+<div class="modal fade" id="modal_form" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Create New Menu</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="form-control">
+                <table id="food_data" class="table table-hover table-bordered table-striped">
+                    <thead>
+                    <tr>
+                        <th class="text-left">Menu Item Type</th>
+                        <th class="text-left">Food Name</th>
+                    </tr>
+                    </thead>
+                    <tbody id="food_data_body">
+                    <tr>
+                        <td class="text-left">1st Appetizer</td>
+                        <td class="text-left"><select name="appetizers" id="apt1"></select></td>
+                    </tr>
+                    <tr>
+                        <td class="text-left">2nd Appetizer</td>
+                        <td class="text-left"><select name="appetizers" id="apt2"></select></td>
+                    </tr>
+                    <tr>
+                        <td class="text-left">1st Main Course</td>
+                        <td class="text-left"><select name="mainCourses" id="main1"></select></td>
+                    </tr>
+                    <tr>
+                        <td class="text-left">2nd Main Course</td>
+                        <td class="text-left"><select name="mainCourses" id="main2"></select></td>
+                    </tr>
+                    <tr>
+                        <td>1st Dessert</td>
+                        <td><select name="desserts" id="dess1"></select></td>
+                    </tr>
+                    <tr>
+                        <td class="text-left">2nd Dessert</td>
+                        <td class="text-left"><select name="desserts" id="dess2"></select></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="modal-footer">
+                    <input type="submit" name="submit" id="submit-update-food" value="Save"
+                           class="btn btn-primary"/>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- End Bootstrap modal -->
+<!-- Bootstrap modal -->
+<div class="modal fade" id="modal_form_add_menu" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Create New Menu</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="add_menu_form">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="col-form-label col-md-3">Name</label>
+                        <div class="col-md-11">
+                            <input name="name" id="name" placeholder="January - 1st Week Menu" class="form-control"
+                                   type="text">
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label col-md-3">Cuisine</label>
+                        <div class="col-md-11">
+                            <input name="cuisine" id="cuisine" placeholder="Anatolian Cuisine" class="form-control"
+                                   type="text">
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label col-md-5">Set Menu Price</label>
+                        <div class="col-md-11">
+                            <input name="setPrice" id="setPrice" placeholder="40.00" class="form-control" type="number">
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label col-md-3">Date</label>
+                        <div class="col-md-11">
+                            <input type="text" class="form-control" id="date">
+                            <span class="help-block"></span>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <input type="submit" name="submit" value="Save"
+                               class="btn btn-primary"/>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- End Bootstrap modal -->
 </html>
 
 <script>
 
-    var mydata = {
-        "foods": [
-            {
-                "name": "Cause de Camarones",
-                "desc": "Peruvian layered potato cake with shrimp",
-                "type": "appetizer",
-                "price": 10
-            },
-            {
-                "name": "Home Style Meatballs ",
-                "desc": "Served with tomato sauce and mashed potatoes",
-                "type": "mainCourse",
-                "price": 20
-            },{
-                "name": "Southern Style Fried Chicken",
-                "desc": "Served with gravy",
-                "type": "mainCourse",
-                "price": 20
-            },{
-                "name": "New York Style Cheesecake",
-                "desc": "Accompanied with blueberry sauce",
-                "type": "dessert",
-                "price": 15
-            },{
-                "name": "Traditional Brownie",
-                "desc": "Served with vanilla sauce and ice cream",
-                "type": "dessert",
-                "price": 15
-            }
-        ]
-    };
-
-    var food = available = $("#food");
-
+    $('#date').datepicker({
+        'format': 'mm/dd/yyyy',
+        'autoclose': true
+    });
     $.ajax({
-        type: 'GET',
+        url: '/api/menu/getAllMenu',
         dataType: 'application/json',
-        url: '/api/menu/getType/appetizer',
-        data: {get_param: 'value'},
-        success: function (data) {
-            $.each(data, function (index, element) {
-                console.log(element.name);
+        type: 'GET',
+        timeout: 5000,
+        statusCode: {
+            200: function (x) {
+                console.log(x);
+                var jArray = JSON.parse(x.responseText);
+                var receive_body = "";
+                var btnid = 0;
 
-            });
+                $.each(jArray, function (index, val) {
+                    receive_body += '<tr><th scope="row">' + val.name + '</th>' +
+                        '<td>' + val.cuisineRegion + '</td>' +
+                        '<td>' + val.date + '</td>' +
+                        '<td>' + val.setPrice + '.00</td>' +
+                        '<td><button class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal_form_update" onclick="updateFood(\'' + val.name + '\',\'' +
+                        val.type + '\',\'' + val.description + '\',\'' + val.available + '\',\'' + val.price + '\')"><i class="fa fa-bars"></i></button>' +
+                        '<button class="btn btn-danger btn-sm" id="' + btnid + '" onclick="deleteFood(\'' + val.name + '\')"><i class="fa fa-trash"></i></button></td></tr>';
+                    btnid++;
+                });
+                $('#menu_data_body').html(receive_body);
+                $('#menu_data').DataTable();
+
+            },
+            404: function (x) {
+                alert(x.responseText);
+            }
         }
     });
 
-    function sendFoods() {
-        var data = {
-            name: $('#apt1').find(":selected").text()
+    $('#add_menu_form').on('submit', function (e) {
+        e.preventDefault();
+        var data2 = {
+            name: $('#name').val(),
+            cuisineRegion: $('#cuisine').val(),
+            date: $('#date').val(),
+            setPrice: $('#setPrice').val(),
         };
-        console.log(mydata['foods'][0]);
+        $.ajax({
+            url: '/api/menu/addMenu',
+            dataType: 'application/json',
+            data: data2,
+            type: 'POST',
+            timeout: 5000,
+            statusCode: {
+                200: function (x) {
+                    $('#modal_form').modal('hide');
+                    alert(x.responseText);
+                    location.reload();
+                },
+                404: function (x) {
+                    alert(x.responseText);
+                }
+            }
+        });
+    });
 
-
-        console.log(data);
+    function sendFoods() {
         $.ajax({
             type: 'POST',
             dataType: 'application/json',

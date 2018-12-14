@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -57,12 +56,12 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form id="add_food_form" action="http://localhost:3000/api/food/addFood" method="POST">
+            <form id="add_food_form">
                 <div class="modal-body">
                     <div class="form-group">
                         <label class="col-form-label col-md-3">Food Name</label>
                         <div class="col-md-11">
-                            <input name="name" placeholder="Food Name" class="form-control" type="text">
+                            <input name="name" id="name" placeholder="Food Name" class="form-control" type="text">
                             <span class="help-block"></span>
                         </div>
                     </div>
@@ -80,7 +79,8 @@
                     <div class="form-group">
                         <label class="col-form-label col-md-3">Description</label>
                         <div class="col-md-11">
-                            <input name="description" placeholder="Side meals, ingredients etc." class="form-control"
+                            <input name="description" id="description" placeholder="Side meals, ingredients etc."
+                                   class="form-control"
                                    type="text">
                             <span class="help-block"></span>
                         </div>
@@ -89,15 +89,16 @@
                         <label class="col-form-label col-md-3">Availability</label>
                         <div class="col-md-11">
                             <select name="available" id="available" class="form-control">
-                                <option value="0"> Available
-                                <option value="1" selected> Unavailable
+                                <option value="true"> Available
+                                <option value="false" selected> Unavailable
                             </select>
                             <span class="help-block"></span>
                         </div>
                         <div class="form-group">
                             <label class="col-form-label col-md-3">Price</label>
                             <div class="col-md-11">
-                                <input name="price" placeholder="15.00" class="form-control" min="0" type="number">
+                                <input name="price" id="price" placeholder="15.00" class="form-control" min="0"
+                                       type="number">
                                 <span class="help-block"></span>
                             </div>
                         </div>
@@ -112,85 +113,182 @@
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 <!-- End Bootstrap modal -->
+
+
+<!-- Bootstrap modal -->
+<div class="modal fade" id="modal_form_update" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Update Food Form</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="update_food_form">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="col-form-label col-md-3">Food Name</label>
+                        <div class="col-md-11">
+                            <input name="uname" id="uname" placeholder="Food Name" class="form-control" type="text">
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label col-md-3">Type</label>
+                        <div class="col-md-11">
+                            <select name="utype" id="utype" class="form-control">
+                                <option value="appetizer"> Appetizer
+                                <option value="mainCourse" selected> Main Course
+                                <option value="dessert"> Dessert
+                            </select>
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label col-md-3">Description</label>
+                        <div class="col-md-11">
+                            <input name="description" id="udescription" placeholder="Side meals, ingredients etc."
+                                   class="form-control"
+                                   type="text">
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label col-md-3">Availability</label>
+                        <div class="col-md-11">
+                            <select name="uavailable" id="uavailable" class="form-control">
+                                <option value="true"> Available
+                                <option value="false" selected> Unavailable
+                            </select>
+                            <span class="help-block"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-form-label col-md-3">Price</label>
+                            <div class="col-md-11">
+                                <input name="uprice" id="uprice" placeholder="15.00" class="form-control" min="0"
+                                       type="number">
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="submit" name="submit" id="submit-update-food" value="Save"
+                               class="btn btn-primary"/>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- End Bootstrap modal -->
+</body>
 </body>
 </html>
 
 <script type="text/javascript">
-    var jArray = [
-        {
-            name: "Boeuf Bourguignon",
-            type: "mainCourse",
-            description: "Traditional stew of beef braised in red wine and served with egg noodles",
-            available: true,
-            price: 20.00
-        },
-        {
-            name: "Boeuf Stroganoff",
-            type: "mainCourse",
-            description: "Served with fried potatoes",
-            available: false,
-            price: 20.00
-        },
-        {
-            name: "Borscht",
-            type: "appetizer",
-            description: "Traditional beetroot soup",
-            available: true,
-            price: 10.00
-        },
-        {
-            name: "Crêpesaux Légumes et à la Ricotta",
-            type: "appetizer",
-            description: "Thin pancakes served with vegetables and ricotta cheese",
-            available: true,
-            price: 10.00
-        },
-        {
-            name: "Medovik",
-            type: "dessert",
-            description: "Honey cake served with ice cream",
-            available: true,
-            price: 15.00
-        },
-    ];
-    var receive_body = "";
-    var btnid = 0;
-    $.each(jArray, function (index, val) {
-        receive_body += '<tr><th scope="row">' + val.name + '</th>' +
-            '<td>' + val.type + '</td>' +
-            '<td>' + val.description + '</td>' +
-            '<td>' + val.available + '</td>' +
-            '<td>' + val.price + '.00</td>' +
-            '<td><button class="btn btn-info btn-sm"><i class="fa fa-bars"></i></button>' +
-            '<button class="btn btn-danger btn-sm" id="' + btnid + '" onclick="delete_food(\'' + val.name + '\')"><i class="fa fa-trash"></i></button></td></tr>';
-        btnid++;
-    });
-    $('#food_data_body').html(receive_body);
 
+    $.ajax({
+        url: '/api/food/getAllFood',
+        dataType: 'application/json',
+        type: 'GET',
+        timeout: 5000,
+        statusCode: {
+            200: function (x) {
+                console.log(x);
+                var jArray = JSON.parse(x.responseText);
+                var receive_body = "";
+                var btnid = 0;
 
-    function delete_food(name) {
-        var data = {
-            name:'Borscht'
-        };
-        $.ajax({
-            type: 'POST',
-            dataType: 'application/json',
-            url:  '/api/food/deleteFood',
-            timeout: 5000,
-            data: data,
-            success: function(data, textStatus ){
-                alert(data);
-                console.log(data);
+                $.each(jArray, function (index, val) {
+                    receive_body += '<tr><th scope="row">' + val.name + '</th>' +
+                        '<td>' + val.type + '</td>' +
+                        '<td>' + val.description + '</td>' +
+                        '<td>' + val.available + '</td>' +
+                        '<td>' + val.price + '.00</td>' +
+                        '<td><button class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal_form_update" onclick="updateFood(\'' + val.name + '\',\'' +
+                        val.type + '\',\'' + val.description + '\',\'' + val.available + '\',\'' + val.price + '\')"><i class="fa fa-bars"></i></button>' +
+                        '<button class="btn btn-danger btn-sm" id="' + btnid + '" onclick="deleteFood(\'' + val.name + '\')"><i class="fa fa-trash"></i></button></td></tr>';
+                    btnid++;
+                });
+                $('#food_data_body').html(receive_body);
+                $('#food_data').DataTable();
+
             },
-            fail: function(xhr, textStatus, errorThrown){
-                alert('request failed');
+            404: function (x) {
+                alert(x.responseText);
             }
-        })
+        }
+    });
+
+    function deleteFood(name) {
+        if (confirm("Are you sure to delete food:" + name)) {
+            var data = {
+                name: name,
+            };
+
+            $.ajax({
+                type: 'POST',
+                dataType: 'application/json',
+                url: '/api/food/deleteFood',
+                timeout: 5000,
+                data: data, statusCode: {
+                    200: function (x) {
+                        location.reload();
+                    },
+                    404: function (x) {
+                        alert(x.responseText);
+                    }
+                },
+                success: function (data, textStatus) {
+                    alert(data);
+                    console.log(data);
+                },
+                fail: function (xhr, textStatus, errorThrown) {
+                    alert('request failed');
+                }
+            })
+        }
     }
 
+    function updateFood(name, type, desc, avalaible, price) {
+        $('#uname').val(name);
+        $('#utype').val(type);
+        $('#udescription').val(desc);
+        $('#uavailable').val(avalaible);
+        $('#uprice').val(price);
+    }
+
+    $('#update_food_form').on('submit', function (e) {
+        e.preventDefault();
+        var data2 = {
+            name: $('#uname').val(),
+            type: $('#utype').val(),
+            description: $('#udescription').val(),
+            available: $('#uavailable').val(),
+            price: $('#uprice').val()
+        };
+        $.ajax({
+            url: '/api/food/addFood',
+            dataType: 'application/json',
+            data: data2,
+            type: 'POST',
+            timeout: 5000,
+            statusCode: {
+                200: function (x) {
+                    $('#modal_form').modal('hide');
+                    alert(x.responseText);
+                    location.reload();
+                },
+                404: function (x) {
+                    alert(x.responseText);
+                }
+            }
+        });
+    });
 
     $(document).ready(function () {
-        $('#food_data').DataTable();
 
         $('[data-dismiss=modal]').on('click', function (e) {
             var $t = $(this),
@@ -202,116 +300,34 @@
                 .end()
         });
 
-        function toJSONString(form) {
-            var obj = {};
-            var elements = form.querySelectorAll("input[type=text], input[type=number], select, textarea");
-            for (var i = 0; i < elements.length; ++i) {
-                var element = elements[i];
-                var name = element.name;
-                var value = element.value;
+        $('#add_food_form').on('submit', function (e) {
+            e.preventDefault();
+            var data2 = {
+                name: $('#name').val(),
+                type: $('#type').val(),
+                description: $('#description').val(),
+                available: $('#available').val(),
+                price: $('#price').val()
+            };
+            $.ajax({
+                url: '/api/food/addFood',
+                dataType: 'application/json',
+                data: data2,
+                type: 'POST',
+                timeout: 5000,
+                statusCode: {
+                    200: function (x) {
+                        $('#modal_form').modal('hide');
+                        alert(x.responseText);
+                        location.reload();
 
-                if (name) {
-                    obj[name] = value;
-                }
-            }
-
-            return JSON.stringify(obj);
-        }
-
-        /*
-                $('#add_food_form').on('submit', function (e) {
-                    e.preventDefault();
-                    var json = toJSONString(this);
-                    console.log(json)
-
-                    if ($('#name').val() == '') {
-                        console.log("Name is required");
-                    } else if ($('#description').val() == '') {
-                        console.log("Description is required");
-                    } else if ($('#price').val() == '') {
-                        console.log("Price is required");
-                    } else {
-                        $.ajax({
-                            url: '',
-                            dataType: 'application/json',
-                            method: 'POST',
-                            data: json,
-
-                            success: function (data) {
-                                $('#modal_form').modal('hide');
-                            }
-                        });
+                    },
+                    404: function (x) {
+                        alert(x.responseText);
                     }
-                });*/
+                }
+            });
+        });
     });
 
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <link href="https://fonts.googleapis.com/css?family=Playfair+Display:400,400i,700|Raleway" rel="stylesheet">
-    <link rel="stylesheet" href="../stylesheets/bootstrap2.min.css">
-    <link rel="stylesheet" href="../stylesheets/bootstrap.min.css">
-    <link rel="stylesheet" href="../stylesheets/style.css">
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <title>Manage Beverage</title>
-</head>
-<body>
-
-<form id="add_food_form" action="http://localhost:3000/api/food/addFood" method="POST">
-    <div class="form-group">
-        Name <input type="text" class="form-control" name="name" id="name"><br>
-    </div>
-    <div class="form-group">
-        Type <select name="type" id="type">
-        <option value="Appetizer"> Appetizer
-        <option value="Main Course" selected> Main Course
-        <option value="Dessert"> Dessert
-    </select>
-    </div>
-    <div class="form-group">
-        Description <input type="password" class="form-control" name="description" id="description"><br>
-    </div>
-    <div class="form-group">
-        Availability <input type="text" class="form-control" name="available" id="available"><br>
-    </div>
-
-    <div class="form-group">
-        Price <input type="text" placeholder="0.00" class="form-control" name="price" id="price"><br>
-    </div>
-    <div>
-    </div>
-    <br><br>
-    <button type="submit" class="btn btn-primary">Submit</button>
-</form>
-</body>
-</html>
-
-<script>
-
-    function addBeverage() {
-        var data = {
-            'name': $('#beverageName').val(),
-            'available': true,
-            'price': 10.0
-        };
-        $.ajax({
-            type: 'POST',
-            dataType: 'application/json',
-            url: 'http://cemreberkdemirci.com:3000/api/addBeverage/',
-            data: data,
-            timeout: 5000,
-            success: function (data, textStatus) {
-                alert('request successful');
-                console.log(data);
-            },
-            fail: function (xhr, textStatus, errorThrown) {
-                alert('request failed');
-            }
-        });
-    }
-
 </script>
-
