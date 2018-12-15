@@ -84,56 +84,32 @@
 </div>
 </body>
 <!-- Bootstrap modal -->
-<div class="modal fade" id="modal_form" tabindex="-1" role="dialog">
+<div class="modal fade" id="modal_form_add_food_to_menu" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title">Create New Menu</h3>
+                <h3 class="modal-title">Add Item to Menu</h3>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="form-control">
-                <table id="food_data" class="table table-hover table-bordered table-striped">
-                    <thead>
-                    <tr>
-                        <th class="text-left">Menu Item Type</th>
-                        <th class="text-left">Food Name</th>
-                    </tr>
-                    </thead>
-                    <tbody id="food_data_body">
-                    <tr>
-                        <td class="text-left">1st Appetizer</td>
-                        <td class="text-left"><select name="appetizers" id="apt1"></select></td>
-                    </tr>
-                    <tr>
-                        <td class="text-left">2nd Appetizer</td>
-                        <td class="text-left"><select name="appetizers" id="apt2"></select></td>
-                    </tr>
-                    <tr>
-                        <td class="text-left">1st Main Course</td>
-                        <td class="text-left"><select name="mainCourses" id="main1"></select></td>
-                    </tr>
-                    <tr>
-                        <td class="text-left">2nd Main Course</td>
-                        <td class="text-left"><select name="mainCourses" id="main2"></select></td>
-                    </tr>
-                    <tr>
-                        <td>1st Dessert</td>
-                        <td><select name="desserts" id="dess1"></select></td>
-                    </tr>
-                    <tr>
-                        <td class="text-left">2nd Dessert</td>
-                        <td class="text-left"><select name="desserts" id="dess2"></select></td>
-                    </tr>
-                    </tbody>
-                </table>
-                <div class="modal-footer">
-                    <input type="submit" name="submit" id="submit-update-food" value="Save"
-                           class="btn btn-primary"/>
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+            <form id="add_menu_food_item">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="col-form-label col-md-3">Food</label>
+                        <div class="col-md-11">
+                            <select name="foodNames" id="foodNames" class="form-control">
+                            </select>
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="submit" name="submit" value="Save"
+                               class="btn btn-primary"/>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                    </div>
                 </div>
-            </div>
+            </form>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
@@ -210,17 +186,15 @@
                 console.log(x);
                 var jArray = JSON.parse(x.responseText);
                 var receive_body = "";
-                var btnid = 0;
 
                 $.each(jArray, function (index, val) {
                     receive_body += '<tr><th scope="row">' + val.name + '</th>' +
                         '<td>' + val.cuisineRegion + '</td>' +
                         '<td>' + val.date + '</td>' +
                         '<td>' + val.setPrice + '.00</td>' +
-                        '<td><button class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal_form_update" onclick="updateFood(\'' + val.name + '\',\'' +
-                        val.type + '\',\'' + val.description + '\',\'' + val.available + '\',\'' + val.price + '\')"><i class="fa fa-bars"></i></button>' +
-                        '<button class="btn btn-danger btn-sm" id="' + btnid + '" onclick="deleteFood(\'' + val.name + '\')"><i class="fa fa-trash"></i></button></td></tr>';
-                    btnid++;
+                        '<td><button class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal_form_update" ><i class="fa fa-bars"></i></button>' +
+                        '<button class="btn btn-danger btn-sm"  onclick="deleteMenu(\'' + val.name + '\')"><i class="fa fa-trash"></i></button>' +
+                        '<button class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal_form_add_food_to_menu" onclick="addFoodToMenu(\'' + val.name + '\')"><i class="fa fa-plus"></i></button></td></tr>';
                 });
                 $('#menu_data_body').html(receive_body);
                 $('#menu_data').DataTable();
@@ -231,6 +205,34 @@
             }
         }
     });
+
+    $.ajax({
+        url: '/api/food/getAllFood',
+        dataType: 'application/json',
+        type: 'GET',
+        timeout: 5000,
+        statusCode: {
+            200: function (x) {
+                console.log(x);
+                var jArray = JSON.parse(x.responseText);
+                var receive_body = "";
+
+                $.each(jArray, function (index, val) {
+                    receive_body += '<option value="' + val.name + '">' + val.name;
+                });
+                $('#foodNames').html(receive_body);
+            },
+            404: function (x) {
+                alert(x.responseText);
+            }
+        }
+    });
+
+    var globalMenuName;
+
+    function addFoodToMenu(menuName) {
+        globalMenuName = menuName;
+    }
 
     $('#add_menu_form').on('submit', function (e) {
         e.preventDefault();
@@ -258,21 +260,53 @@
             }
         });
     });
-
-    function sendFoods() {
+    $('#add_menu_food_item').on('submit', function (e) {
+        e.preventDefault();
+        var data2 = {
+            foodName: $('#foodNames').val(),
+            menuName: globalMenuName,
+        };
         $.ajax({
-            type: 'POST',
+            url: '/api/menu/assignFoodToMenu',
             dataType: 'application/json',
-            url: 'http://cemreberkdemirci.com:3000/api/addMenu',
-            data: data,
+            data: data2,
+            type: 'POST',
             timeout: 5000,
-            success: function (data, textStatus) {
-                alert('request successful');
-                console.log(data);
-            },
-            fail: function (xhr, textStatus, errorThrown) {
-                alert('request failed');
+            statusCode: {
+                200: function (x) {
+                    $('#modal_form_add_food_to_menu').modal('hide');
+                    alert(x.responseText);
+                },
+                404: function (x) {
+                    alert(x.responseText);
+                }
             }
         });
+    });
+
+    function deleteMenu(name) {
+        if (confirm("Are you sure to delete food:" + name)) {
+            $.ajax({
+                type: 'GET',
+                dataType: 'application/json',
+                url: '/api/menu/deleteMenu/' + name,
+                timeout: 5000,
+                statusCode: {
+                    200: function (x) {
+                        location.reload();
+                    },
+                    404: function (x) {
+                        alert(x.responseText);
+                    }
+                },
+                success: function (data, textStatus) {
+                    alert(data);
+                    console.log(data);
+                },
+                fail: function (xhr, textStatus, errorThrown) {
+                    alert('request failed');
+                }
+            })
+        }
     }
 </script>
