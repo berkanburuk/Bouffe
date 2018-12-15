@@ -447,7 +447,7 @@ module.exports = function (app) {
 
 
 
-        app.get('/api/menu/getFoodOfMenu/:menuName/:foodName', function (request, response ) {
+        app.get('/api/menu/getFoodOfMenu/:menuName', function (request, response ) {
             console.log("getFoodOfMenu");
             let data = request.params;
             console.log(data);

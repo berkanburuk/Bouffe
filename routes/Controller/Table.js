@@ -306,7 +306,7 @@ module.exports = function(app,session){
             {
                     console.log("Get Tables");
                     getAllTables().then(tables => {
-                        response.write(tables.toString(), () => {
+                        response.write(JSON.stringify(tables), () => {
                             response.statusCode = 200;
                             console.log(tables);
                             response.end();
