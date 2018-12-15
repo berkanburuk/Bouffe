@@ -20,91 +20,149 @@
 
 
 
-    <script >
-        var count = 15;
-        var custom_list;
-        $(document).ready(function() {
+    <script>
+            var count = 15;
+            var custom_list;
+            $(document).ready(function() {
 
-         var ans =  $.ajax({
-            url: '/api/table/getAllTables',
-            type: "GET",
+             var ans =  $.ajax({
+                url: '/api/table/getAllTables',
+                type: "GET",
 
-            statusCode: {
-                404: function() {
-                    console.log("-1-1-1-1 WE GOT 404!");
-                },
-                200: function(responseBody) {
-                    console.log(responseBody);
-                    var dat=JSON.parse(responseBody);
-                    console.log(dat);
-                    console.log(responseBody);
+                statusCode: {
+                    404: function() {
+                        console.log("-1-1-1-1 WE GOT 404!");
+                    },
+                    200: function(responseBody) {
+                        console.log(responseBody);
+                        var dat=JSON.parse(responseBody);
+                        console.log(dat);
+                        console.log(responseBody);
 
-                    //role=x.length;
-                    //console.log(role);
-                    //custom_list = getMenu();
-                    //$('#tables').html(custom_list);
-                    custom_list = getMenu(dat);
-                    $('#tables').html(custom_list);
+                        //role=x.length;
+                        //console.log(role);
+                        //custom_list = getMenu();
+                        //$('#tables').html(custom_list);
+                        custom_list = getMenu(dat);
+                        $('#tables').html(custom_list);
+
+                    }
+                }
+            });
+
+
+          function getMenu(array) {
+            <!-- 1) Birlesik masalar recursive kontrol edilecek -->
+            <!-- 2) ilk masaya tum masalarin adi yazilacak -->
+            <!-- 3) kalan masalara id basilmayacak -->
+            <!-- 4) Masanin on click functionu olacak oradan merge veya state i degisecek -->
+            <!-- 5)   -->
+
+
+
+              //var x="<script src='../TableFiles/vendor/jquery/jquery.min.js'>";
+
+              var x="<script src='https://cdn.jsdelivr.net/npm/sweetalert2@7.32.2/dist/sweetalert2.all.min.js'>";
+              x+="<";
+              x+="/script>\n";
+              x+="<script";
+              x+=">\n"
+              x+="\$(document).ready(function(){\n";
+
+              //x+="var mylist = $('#main');";
+              //x+="var listitems = mylist.children('div').get();";
+              //listitems.sort(function(a, b) {
+              //    var compA = $(a).attr('id').toUpperCase();
+              //    var compB = $(b).attr('id').toUpperCase();
+              //    return (compA < compB) ? -1 : (compA > compB) ? 1 : 0;
+              //})
+              //$.each(listitems, function(idx, itm) {
+              //    mylist.append(itm);
+              //});​
+
+              x+="\$('div#tables div#utable').click( function(e) {\n";
+              //x+="\$(location).attr('href', \$(this).attr('value'));";
+              x+="var y=\$(this).attr('value');\n";
+              x+="e.preventDefault();\n";
+              //x+="var dialog = new $.Zebra_Dialog('The link was clicked!',{type: 'question',title: 'Custom buttons',buttons: ['Yes', 'No', 'Help'],onClose: function(caption) {alert((caption != '' ? '\"' + caption + '\"' : 'nothing') + ' was clicked');}});";
+              x+="Swal({\n";
+              x+="title: 'Are you sure?',\n";
+              x+="text: \"You won't be able to revert \"+ y +\" this!\",\n";
+              x+="  type: 'warning',\n";
+              x+="  showCancelButton: true,\n";
+              x+="confirmButtonColor: '#3085d6',\n";
+              x+="cancelButtonColor: '#d33',\n";
+              x+="  confirmButtonText: 'Yes, delete it!'\n";
+              x+="}).then((result) => {\n";
+              x+="  if (result.value) {\n";
+              x+="    Swal(\n";
+              x+="      'Deleted!',\n";
+              x+="      'Your file has been deleted.',\n";
+              x+="      'success'\n";
+              x+="    )}})\n";
+              x+="});});\n";
+              x+="<";
+              x+="/script>\n";
+              var items="";
+              var mergedList=[];
+
+              for (var i = 0; i < array.length ; i++) {
+
+                  var txt=array[i].id+"";
+
+
+
+                if (jQuery.inArray(array[i].id, mergedList)==-1 && array[i].mergedWith!=-1){
+                    var mergedOnes=i;
+                    while(array[mergedOnes].mergedWith >= 0 && mergedOnes>=0 )
+                    {
+
+                        txt+="-"+array[mergedOnes].mergedWith;
+                        mergedList[mergedList.length]=array[mergedOnes].mergedWith;
+                        console.log(txt);
+                        var sMO=mergedOnes;
+                        //mergedOnes=jQuery.inArray( array[mergedOnes].mergedWith, array );
+                        $.each(array, function (index,val) {
+                            if (val.id == array[sMO].mergedWith) {
+                                mergedOnes = index;
+                                return false;
+                            }
+                            else
+                                {
+                                    mergedOnes= -1;
+                                }
+                        });
+
+                        console.log(mergedOnes);
+                        console.log(mergedList);
+
+
+                    }
+                    if(array[i].structure == "circular") {
+
+                    items += "<div id='" + "utable" + "' value='table" + array[i].id + "'" +" name='"+txt+"' "+ "class='col-lg-3 col-md-4 col-xs-6'><div class='d-block mb-4 h-100' style='/*height: 400px ; weight: 300px ;*/ background-color: #0a6ebd;'>" + array[i].id + " idli masa kare bir masa" + "</div></div>";
+
+                } else {
+                    items += "<div id='" + "utable" + "' value='table" + array[i].id + "'" +" name='"+txt+"' "+ "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='http://placehold.it/400x300' alt=''></p></div>";
 
                 }
-            }
-        });
+              }
+                else
+                    {
+
+                        items += "<div id='" + "mtable" + "' value='table" + array[i].id + "'" +" name='"+txt+"' "+ "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='http://placehold.it/400x300' alt=''></p></div>";
+
+                    }
+              }
 
 
-      function getMenu(array) {
-        <!-- 1) Birlesik masalar recursive kontrol edilecek -->
-        <!-- 2) ilk masaya tum masalarin adi yazilacak -->
-        <!-- 3) kalan masalara id basilmayacak -->
-        <!-- 4) Masanin on click functionu olacak oradan merge veya state i degisecek -->
-        <!-- 5)   -->
 
 
+              return items+"\n"+x;
 
-          //var x="<script src='../TableFiles/vendor/jquery/jquery.min.js'>";
-          var x="<script src='https://cdn.jsdelivr.net/npm/sweetalert2@7.32.2/dist/sweetalert2.all.min.js'>";
-          x+="<";
-          x+="/script>\n";
-          x+="<script";
-          x+=">\n"
-          x+="\$(document).ready(function(){\n";
-          x+="\$('div#tables div').click( function(e) {\n";
-          //x+="\$(location).attr('href', \$(this).attr('value'));";
-          x+="var y=\$(this).attr('value');\n";
-          x+="e.preventDefault();\n";
-          //x+="var dialog = new $.Zebra_Dialog('The link was clicked!',{type: 'question',title: 'Custom buttons',buttons: ['Yes', 'No', 'Help'],onClose: function(caption) {alert((caption != '' ? '\"' + caption + '\"' : 'nothing') + ' was clicked');}});";
-          x+="Swal({\n";
-          x+="title: 'Are you sure?',\n";
-          x+="text: \"You won't be able to revert \"+ y +\" this!\",\n";
-          x+="  type: 'warning',\n";
-          x+="  showCancelButton: true,\n";
-          x+="confirmButtonColor: '#3085d6',\n";
-          x+="cancelButtonColor: '#d33',\n";
-          x+="  confirmButtonText: 'Yes, delete it!'\n";
-          x+="}).then((result) => {\n";
-          x+="  if (result.value) {\n";
-          x+="    Swal(\n";
-          x+="      'Deleted!',\n";
-          x+="      'Your file has been deleted.',\n";
-          x+="      'success'\n";
-          x+="    )}})\n";
-          x+="});});\n";
-          x+="<";
-          x+="/script>\n";
-          var items="";
-
-          for (var i = 0; i < array.length ; i++) {
-            items+="<div id='" + array[i].id + "' value='table"+i+"' class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' src='http://placehold.it/400x300' alt=''></p></div>";
           }
-
-
-
-
-
-          return items+"\n"+x;
-
-      }
-  });
-    </script>
+      });
+        </script>
 
   </head>
 
