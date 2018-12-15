@@ -305,11 +305,14 @@ module.exports = function(app) {
                 response.statusCode = 200;
                 //redirect
 //path.resolve('public/Pages/Login.html'));
+                /*
                 response.writeHead(302, {
                     'Location': 'localhost:3000/user'
                     //add other headers here...
                 });
                 response.end();
+*/
+                return response.redirect('/user');
 
                 /*
                 response.write("true",() => {
@@ -573,7 +576,7 @@ function getRoleWithId(id){
             })
         .then(result=>{
             if (result[0]!=null && result[0]!=undefined){
-                resolve(JSON.stringify(result[0]));
+                resolve(JSON.stringify(result));
             } else{
                 reject("Could not get the role with id:" +id);
             }
