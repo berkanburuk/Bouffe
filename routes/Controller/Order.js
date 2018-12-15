@@ -356,7 +356,7 @@ function createAnMenuOrder(data){
 
 
 
-module.exports = function (app,session) {
+module.exports = function (app) {
 
     app.get('/order', function (request, response) {
         console.log('Order');

@@ -66,3 +66,36 @@ exports.isSymbol = function (value) {
 exports.errorMesage =function(){
     return "The value entered is not valid";
 }
+exports.errorMesageEmpty =function(){
+    return "Values cannot be empty!";
+}
+exports.isObjectValuesEmpty  = function(data){
+    var keysArray = Object.keys(data)
+    var valuesArray = Object.values(data)
+
+    for(let i = 0; i < valuesArray.length; i++){
+        if (valuesArray[i].trim()==''){
+            return false;
+        }
+    }
+    return true;
+}
+/*
+JSON ARRAY için
+
+ let myArray = [{"child": ["one", "two", "three", "four"]},
+               {"child": ["five", "six", "seven", "eight"]}];
+
+for(let i = 0; i < myArray.length; i++){
+
+   let childArray = myArray[i].child;
+
+   for(let j = 0; j < childArray.length; j++){
+
+  console.log(childArray[j]);
+
+   }
+
+}
+*
+* */
