@@ -178,24 +178,17 @@
 
 <script type="text/javascript">
     getAllTables();
+    getWaiter('5');
 
-    function getWaiter() {
+    function getWaiter(id) {
         $.ajax({
-            url: '/api/user/addTable',
+            url: '/api/user/getRoleWithId/' + id,
             dataType: 'application/json',
-            data: data2,
-            type: 'POST',
+            type: 'GET',
             timeout: 5000,
             statusCode: {
                 200: function (x) {
-                    $('#modal_form').modal('hide');
-                    /*  $('#name').val("");
-                     $('#description').val("");
-                     $('#quantity').val("");
-                     $('#price').val("");
-                     getAllFoods();*/
-                    location.reload();
-
+                    console.log(JSON.parse(x.responseText));
                 },
                 404: function (x) {
                     alert(x.responseText);
