@@ -5,7 +5,7 @@ let tableNames = require('../Util/DatabaseConnection').getTableNames;
 let mUserFunc = require('../Util/DatabaseConnection').getUserModel;
 
 let checkUsersRole = require('./RoleCheck');
-
+let checkDataType = require('../Util/TypeCheck');
 
 
 
@@ -33,7 +33,6 @@ module.exports = function(app) {
     app.get('/user', function (request, response) {
         console.log('User Controller');
         response.sendFile(path.resolve('public/Pages/Login.html'));
-        //response.render(path.resolve('../../public/Pages/index.html'));
     }),
         app.get('/uploadSRSFile', function (request, response) {
             console.log('UploadSRSFile');
@@ -41,10 +40,8 @@ module.exports = function(app) {
                 ||  checkUsersRole.isAdmin(request.session.roleId))){
                 response.sendFile(path.resolve('public/Pages/uploadSRSFile.html'));
             }else {
-                response.write(checkUsersRole.errorMesage(), () => {
-                    response.statusCode = 404;
-                    response.end();
-                })
+                response.statusCode = 401;
+                return response.redirect('/noAuthority');
             }
         }),
         app.get('/signup', function (request, response) {
@@ -53,24 +50,20 @@ module.exports = function(app) {
                     ||  checkUsersRole.isAdmin(request.session.roleId))) {
                     response.sendFile(path.resolve('public/Pages/AddUserManually.html'));
                 }else {
-                response.write(checkUsersRole.errorMesage(), () => {
-                    response.statusCode = 404;
-                    response.end();
-                })
+                response.statusCode = 401;
+                return response.redirect('/noAuthority');
             }
 
             //response.render(path.resolve('../../public/Pages/index.html'));
         }),
         app.get('/navigation', function (request, response) {
             console.log('Navigation');
-                if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
-                    ||  checkUsersRole.isAdmin(request.session.roleId) || checkUsersRole.isCashier(request.session.roleId))) {
+            if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
+                ||  checkUsersRole.isAdmin(request.session.roleId))) {
                     response.sendFile(path.resolve('public/Pages/Navigation.html'));
                 }else {
-                    response.write(checkUsersRole.errorMesage(), () => {
-                        response.statusCode = 404;
-                        response.end();
-                    })
+                    response.statusCode = 401;
+                    return response.redirect('/noAuthority');
                 }
         }),
         app.get('/api/user/deleteUser/:username', function (request, response ) {
@@ -96,10 +89,8 @@ module.exports = function(app) {
                 })
             }
             else {
-                response.write(checkUsersRole.errorMesage(), () => {
-                    response.statusCode = 404;
-                    response.end();
-                })
+                response.statusCode = 401;
+                return response.redirect('/noAuthority');
             }
 
 
@@ -108,11 +99,8 @@ module.exports = function(app) {
         //checkUser
         app.get('/api/user/login/:username/:password', function (request, response) {
 
-                    var data = {
-                        username: '',
-                        password: ''
-                    }
                     console.log(request.params);
+                    var data = {}
                     data.username = request.params.username;
                     data.password = request.params.password;
 
@@ -129,23 +117,8 @@ module.exports = function(app) {
 
                             console.log("Session: " + request.session.username + request.session.roleId);
 
-                            //response.render(path.join('/public/Pages/Navigation.html'));
+                            return response.redirect('/navigation');
 
-                            /*
-                            response.write("Successful", () => {
-                                console.log("successsss");
-                                response.end();
-                            });
-*/
-                            response.sendFile(path.resolve('public/Pages/Navigation.html'));
-                            //return response.redirect('/navigation');
-                            //response.render('Navigation.html');
-                            /*
-                            response.writeHead(302,
-                                {
-                                    loc:'/navigation'
-                                })
-                                */
 
                         }).catch(error => {
                             response.statusCode = 404;
@@ -189,10 +162,8 @@ module.exports = function(app) {
                     });
                 })
             } else {
-                response.write(checkUsersRole.errorMesage(), () => {
-                    response.statusCode = 404;
-                    response.end();
-                })
+                response.statusCode = 401;
+                return response.redirect('/noAuthority');
             }
 
         }),
@@ -214,10 +185,8 @@ module.exports = function(app) {
                     });
                 })
             }else {
-                response.write(checkUsersRole.errorMesage(), () => {
-                    response.statusCode = 404;
-                    response.end();
-                })
+                response.statusCode = 401;
+                return response.redirect('/noAuthority');
             }
 
         }),
@@ -245,10 +214,8 @@ module.exports = function(app) {
                     });
                 })
             }		else {
-                response.write(checkUsersRole.errorMesage(), () => {
-                    response.statusCode = 404;
-                    response.end();
-                })
+                response.statusCode = 401;
+                return response.redirect('/noAuthority');
             }
         })
 
@@ -264,10 +231,8 @@ module.exports = function(app) {
                 response.end();
             })
         }else {
-            response.write(checkUsersRole.errorMesage(), () => {
-                response.statusCode = 404;
-                response.end();
-            })
+            response.statusCode = 401;
+            return response.redirect('/noAuthority');
         }
     }),
 
@@ -290,10 +255,8 @@ module.exports = function(app) {
                     });
                 })
             }		else {
-                response.write(checkUsersRole.errorMesage(), () => {
-                    response.statusCode = 404;
-                    response.end();
-                })
+                response.statusCode = 401;
+                return response.redirect('/noAuthority');
             }
         }),
 
@@ -304,26 +267,11 @@ module.exports = function(app) {
                 request.session.destroy();
                 response.statusCode = 200;
                 //redirect
-//path.resolve('public/Pages/Login.html'));
-                /*
-                response.writeHead(302, {
-                    'Location': 'localhost:3000/user'
-                    //add other headers here...
-                });
-                response.end();
-*/
                 return response.redirect('/user');
 
-                /*
-                response.write("true",() => {
-                    response.end();
-                })
-                */
             }else {
-                response.write(checkUsersRole.errorMesage(), () => {
-                    response.statusCode = 404;
-                    response.end();
-                })
+                response.statusCode = 301;
+                return response.redirect('/user');
             }
 
         })

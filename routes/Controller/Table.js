@@ -76,6 +76,75 @@ function updateTable(data){
 }
 
 
+function createAMerge(data){
+    data.tableId1 = parseInt(data.tableId1);
+    data.tableId2 = parseInt(data.tableId2);
+    if (data.tableId1>data.tableId2){
+        var temp;
+        temp = data.tableId1;
+        data.tableId1=data.tableId2;
+        data.tableId2 = temp;
+    }
+    /*
+    data.tableId1
+    data.tableId2
+
+    */
+    return new Promise((resolve, reject) => {
+        mTable.update(
+            {
+                mergedWith:data.tableId2,
+            }
+            ,{
+                where:
+                    {
+                        id: data.tableId1
+                    },
+            }).then((result)=>{
+            console.log(result);
+            if(result[0]>0){
+                resolve("Table is updated successfully.");
+            }else {
+                reject("Table could not be updated!");
+            }
+
+        }).catch(error =>{
+            reject(error);
+        })
+
+    })
+
+}
+
+function updateStatus(data){
+
+    return new Promise((resolve, reject) => {
+        mTable.update(
+            {
+                status:data.status,
+            }
+            ,{
+                where:
+                    {
+                        id: data.tableId
+                    },
+            }).then((result)=>{
+            console.log(result);
+            if(result[0]>0){
+                resolve("Table is updated successfully.");
+            }else {
+                reject("Table could not be updated!");
+            }
+
+        }).catch(error =>{
+            reject(error);
+        })
+
+    })
+
+}
+
+
 function assignTableToUser(data,id){
         return new Promise((resolve, reject) => {
             mTable.update(data, {
@@ -356,10 +425,8 @@ module.exports = function(app){
                 response.sendFile(path.resolve('public/Pages/TableManagement.html'));
             }
             else {
-                    response.write(checkUsersRole.errorMesage(), () => {
-                        response.statusCode = 404;
-                        response.end();
-                    })
+                response.statusCode = 401;
+                return response.redirect('/noAuthority');
                 }
 
         //res.end();
@@ -371,10 +438,8 @@ module.exports = function(app){
                 response.sendFile(path.resolve('public/Pages/addTable.html'));
             }
             else {
-                response.write(checkUsersRole.errorMesage(), () => {
-                    response.statusCode = 404;
-                    response.end();
-                })
+                response.statusCode = 401;
+                return response.redirect('/noAuthority');
             }
 
             //res.end();
@@ -397,10 +462,8 @@ module.exports = function(app){
                     })
                 })
             }	else {
-                response.write(checkUsersRole.errorMesage(), () => {
-                    response.statusCode = 404;
-                    response.end();
-                })
+                response.statusCode = 401;
+                return response.redirect('/noAuthority');
             }
         }),
 
@@ -409,30 +472,27 @@ module.exports = function(app){
             console.log('assignTableToUser');
 
             if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
-                ||  checkUsersRole.isCashier(request.session.roleId)) || checkUsersRole.isAdmin(request.session.roleId))
-            {
-                    var data = request.body;
-                    var id = parseInt(data.id);
-                    delete data.id;
-                    console.log(data);
+                ||  checkUsersRole.isCashier(request.session.roleId)) || checkUsersRole.isAdmin(request.session.roleId)) {
+                var data = request.body;
+                var id = parseInt(data.id);
+                delete data.id;
+                console.log(data);
 
-                    assignTableToUser(data, id).then(data => {
-                        response.write('Table Successfully Updated!', () => {
-                            response.statusCode = 200;
-                            response.end();
-                        })
-                    }).catch(error => {
-                        response.write(error.toString(), () => {
-                            response.statusCode = 404;
-                            response.end();
-                        })
+                assignTableToUser(data, id).then(data => {
+                    response.write('Table Successfully Updated!', () => {
+                        response.statusCode = 200;
+                        response.end();
                     })
-                }	else {
-                response.write(checkUsersRole.errorMesage(), () => {
-                    response.statusCode = 404;
-                    response.end();
+                }).catch(error => {
+                    response.write(error.toString(), () => {
+                        response.statusCode = 404;
+                        response.end();
+                    })
                 })
-            }
+            }	else {
+                response.statusCode = 401;
+                return response.redirect('/noAuthority');
+                }
 
         }),
 
@@ -459,10 +519,8 @@ module.exports = function(app){
                     });
                 })
         }else {
-            response.write(checkUsersRole.errorMesage(), () => {
-                response.statusCode = 404;
-                response.end();
-            })
+            response.statusCode = 401;
+            return response.redirect('/noAuthority');
         }
 
     })
@@ -489,10 +547,8 @@ module.exports = function(app){
                         });
                     })
             }else {
-                response.write(checkUsersRole.errorMesage(), () => {
-                    response.statusCode = 404;
-                    response.end();
-                })
+                response.statusCode = 401;
+                return response.redirect('/noAuthority');
             }
 
         }),
@@ -520,14 +576,73 @@ module.exports = function(app){
                         })
                     })
                 }else {
-                    response.write(checkUsersRole.errorMesage(), () => {
-                        response.statusCode = 404;
-                        response.end();
-                    })
+                    response.statusCode = 401;
+                    return response.redirect('/noAuthority');
                 }
 
 
             }),
+            app.post('/api/table/createAMerge', function (request, response ) {
+                var data = request.body;
+
+                if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)
+                    ||  checkUsersRole.isChef(request.session.roleId)
+                    ||  checkUsersRole.isMatre(request.session.roleId)))
+                {
+                    console.log(request);
+                    console.log("Will be Updated : " + data);
+
+                    createAMerge(data).then(result=> {
+                        response.statusCode = 200;
+                        console.log(result);
+                        response.write(JSON.stringify(result), () => {
+                            response.end();
+                        })
+                    }).catch(error => {
+                        response.statusCode = 404;
+                        console.log(error);
+                        response.write(error.toString(), () => {
+                            response.end();
+                        })
+                    })
+                }else {
+                    response.statusCode = 401;
+                    return response.redirect('/noAuthority');
+                }
+
+
+            }),
+            app.post('/api/table/updateStatus', function (request, response ) {
+                var data = request.body;
+
+                if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)
+                    ||  checkUsersRole.isChef(request.session.roleId)
+                    ||  checkUsersRole.isMatre(request.session.roleId)))
+                {
+                    console.log(request);
+                    console.log("Will be Updated : " + data);
+
+                    updateStatus(data).then(result=> {
+                        response.statusCode = 200;
+                        console.log(result);
+                        response.write(JSON.stringify(result), () => {
+                            response.end();
+                        })
+                    }).catch(error => {
+                        response.statusCode = 404;
+                        console.log(error);
+                        response.write(error.toString(), () => {
+                            response.end();
+                        })
+                    })
+                }else {
+                    response.statusCode = 401;
+                    return response.redirect('/noAuthority');
+                }
+
+
+            }),
+
 
 
     app.get('/api/table/deleteTable/:id', function (request, response ) {
@@ -551,10 +666,8 @@ module.exports = function(app){
             })
         }
         else {
-            response.write(checkUsersRole.errorMesage(), () => {
-                response.statusCode = 404;
-                response.end();
-            })
+            response.statusCode = 401;
+            return response.redirect('/noAuthority');
         }
 
 
@@ -582,10 +695,8 @@ module.exports = function(app){
                         })
                     })
                 }	else {
-                response.write(checkUsersRole.errorMesage(), () => {
-                    response.statusCode = 404;
-                    response.end();
-                })
+                response.statusCode = 401;
+                return response.redirect('/noAuthority');
             }
 
 
@@ -622,10 +733,8 @@ module.exports = function(app){
                         })
                     }
                 }else {
-                    response.write(checkUsersRole.errorMesage(), () => {
-                        response.statusCode = 404;
-                        response.end();
-                    })
+                    response.statusCode = 401;
+                    return response.redirect('/noAuthority');
                 }
 
             })

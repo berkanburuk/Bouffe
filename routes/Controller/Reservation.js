@@ -23,8 +23,11 @@ function createAReservation(data){
             }).then(reservation => {
                 console.log("Reservation " + reservation)
                 if (reservation == null || reservation == undefined) {
-                    mReservation.create(data);
-                    resolve("Reservation is created");
+                    mReservation.create(data).then(()=>{
+                        resolve("Reservation is created");
+                    }).catch(error=>{
+                        reject(error);
+                    })
                 } else {
                     reject("There is already a reservation for this table, for this day!");
                 }
@@ -115,12 +118,9 @@ function getReservationAndTable(data){
                     ||  checkUsersRole.isCashier(request.session.roleId))) {
                     response.sendFile(path.resolve('public/Pages/MakeReservation.html'));
                 }	else {
-                    response.write(checkUsersRole.errorMesage(), () => {
-                        response.statusCode = 404;
-                        response.end();
-                    })
+                    response.statusCode = 401;
+                    return response.redirect('/noAuthority');
                 }
-
 
         }),
 
@@ -143,10 +143,8 @@ function getReservationAndTable(data){
                     })
                 }
             else {
-                response.write(checkUsersRole.errorMesage(), () => {
-                    response.statusCode = 404;
-                    response.end();
-                })
+                response.statusCode = 401;
+                return response.redirect('/noAuthority');
             }
 
         }),
@@ -169,10 +167,8 @@ function getReservationAndTable(data){
                     })
                 })
             } else {
-                response.write(checkUsersRole.errorMesage(), () => {
-                    response.statusCode = 404;
-                    response.end();
-                })
+                response.statusCode = 401;
+                return response.redirect('/noAuthority');
             }
 
         })
@@ -195,10 +191,8 @@ function getReservationAndTable(data){
                     })
                 })
             }	else {
-            response.write(checkUsersRole.errorMesage(), () => {
-                response.statusCode = 404;
-                response.end();
-            })
+            response.statusCode = 401;
+            return response.redirect('/noAuthority');
         }
 
     }),
@@ -225,10 +219,8 @@ function getReservationAndTable(data){
                         });
                     })
             }else {
-                response.write(checkUsersRole.errorMesage(), () => {
-                    response.statusCode = 404;
-                    response.end();
-                })
+                response.statusCode = 401;
+                return response.redirect('/noAuthority');
             }
 
         })
