@@ -481,6 +481,29 @@ function getAUserRole(data){
     })
 }
 
+function getPeopleWithSpecificRole(id){
+    //5 Waiter
+    console.log(id);
+    return new Promise((resolve, reject) => {
+        mUserRoles.findAll({
+            where: {
+                roleId:id
+            }
+        }).then(myData=>{
+            if (myData != null && myData != undefined){
+                resolve(JSON.stringify(myData));
+            }
+            else
+                reject("Cannot get the role Id!");
+        }).catch(error => {
+            reject(error);
+        })
+
+    })
+}
+
+
+
 function checkValidationOfUser(username, password){
     return new Promise((resolve, reject) => {
         mUser.findOne({
