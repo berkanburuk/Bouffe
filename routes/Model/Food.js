@@ -16,12 +16,13 @@ class FoodModel {
                 type: Sequelize.STRING,
                 allowNull: false
             },
-            available: {
-                type: Sequelize.BOOLEAN
-            },
             price: {
                 type: Sequelize.DOUBLE
-            }
+            },
+             quantity:{
+                type:Sequelize.INTEGER,
+                defaultValue:15
+             }
         });
         //FoodTable.belongsTo(Order, {foreignKey: 'fk_Order',targetKey:'foodId'});
         const mMenu = sequelize.define('menu', {})

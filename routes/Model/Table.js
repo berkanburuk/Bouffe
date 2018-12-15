@@ -23,7 +23,8 @@ class TableModel {
             },
             //Table Merge Daha Bitmedi
             mergedWith: {
-                type: Sequelize.INTEGER
+                type: Sequelize.INTEGER,
+                defaultValue: -1
             }
         });
         //User - Table

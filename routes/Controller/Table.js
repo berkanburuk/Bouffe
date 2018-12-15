@@ -195,7 +195,7 @@ function deleteTable(username){
 }
 
 
-module.exports = function(app,session){
+module.exports = function(app){
 
     app.get('/table', function (request, response) {
         console.log('Table');

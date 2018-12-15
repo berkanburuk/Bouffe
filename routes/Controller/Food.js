@@ -8,7 +8,7 @@ let mFood = db.model(dbNames.food);
 let mMenuFood = db.model(dbNames.menuFood);
 
 let checkUsersRole = require('./RoleCheck');
-
+let checkDataType = require('../Util/TypeCheck');
 //Örnek
 function getFood(data){
     /*
@@ -81,7 +81,7 @@ function createAFood(data){
             resolve("Food is created successfully");
         })
             .catch(error =>{
-                reject("Food cannot be created!" + error);
+                reject("Food could not be created!" + error);
             })
 
     })
@@ -108,8 +108,30 @@ function deleteFood(name){
     })
 }
 
+exports.updateQuantity = function (data){
+    return new Promise((resolve, reject) => {
+        mFood.update(data.quantity,{
+                where:
+                    {
+                        name: data.foodName
+                    },
+            }).then((food)=>{
+            console.log(food);
+            if(food[0]>0){
+                resolve("Quantity is updated successfully.");
+            }else {
+                reject("Quantity could not be updated!");
+            }
 
-function updateFood(data){
+        }).catch(error =>{
+            reject(error);
+        })
+
+    })
+
+}
+
+exports.updateFood = function (data){
     return new Promise((resolve, reject) => {
         mFood.update(
             {
@@ -118,6 +140,7 @@ function updateFood(data){
                 description : data.description,
                 available:data.available,
                 price:data.price,
+                quantity:data.quantity
             }
             , {
             where:
@@ -205,7 +228,7 @@ module.exports = function(app){
             console.log('Food');
                 if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)
                     ||  checkUsersRole.isChef(request.session.roleId)
-                    ||  checkUsersRole.isChef(request.session.roleId))) {
+                    ||  checkUsersRole.isMatre(request.session.roleId))) {
                     response.sendFile(path.resolve('public/Pages/Food.html'));
                 }else {
                     response.write(checkUsersRole.errorMesage(), () => {
@@ -217,11 +240,19 @@ module.exports = function(app){
 
             app.post('/api/food/addFood', function (request, response ) {
                 console.log("Add Food");
-                var data = request.body;
 
                 if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)
                     ||  checkUsersRole.isChef(request.session.roleId)
-                    ||  checkUsersRole.isChef(request.session.roleId))){
+                    ||  checkUsersRole.isMatre(request.session.roleId))) {
+                    var data = request.body;
+                    if (!checkDataType.isObjectValuesEmpty(data)) {
+                        response.write(checkDataType.errorMesageEmpty(), () => {
+                            response.statusCode = 404;
+                            //response.statusCode = 400;
+                            response.end();
+                        })
+                        return false;
+                    } else {
                         createAFood(data).then(food => {
                             response.statusCode = 200;
                             console.log(food);
@@ -236,7 +267,8 @@ module.exports = function(app){
                                 response.end();
                             })
                         })
-                    }else {
+                    }
+                }else {
                     response.write(checkUsersRole.errorMesage(), () => {
                         response.statusCode = 404;
                         response.end();
@@ -250,7 +282,7 @@ module.exports = function(app){
                 console.log(request.body);
                 if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)
                     ||  checkUsersRole.isChef(request.session.roleId)
-                    ||  checkUsersRole.isChef(request.session.roleId))){
+                    ||  checkUsersRole.isMatre(request.session.roleId))){
                     var data = request.body;
 
                     deleteFood(data.name).then(food => {
@@ -283,7 +315,7 @@ module.exports = function(app){
 
         if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)
             ||  checkUsersRole.isChef(request.session.roleId)
-            ||  checkUsersRole.isChef(request.session.roleId)))
+            ||  checkUsersRole.isMatre(request.session.roleId)))
         {
                 console.log(request);
                 console.log("Will be Updated : " + data);
@@ -316,7 +348,7 @@ module.exports = function(app){
             console.log("Get a Food");
             if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)
                 ||  checkUsersRole.isChef(request.session.roleId)
-                ||  checkUsersRole.isChef(request.session.roleId))){
+                ||  checkUsersRole.isMatre(request.session.roleId))){
                 var data = request.params;
                 console.log(data);
                 console.log(data.name);
@@ -347,7 +379,7 @@ module.exports = function(app){
 
             if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)
                 ||  checkUsersRole.isChef(request.session.roleId)
-                ||  checkUsersRole.isChef(request.session.roleId))){
+                ||  checkUsersRole.isMatre(request.session.roleId))){
             var data = request.params;
             console.log(data);
 
@@ -377,7 +409,7 @@ module.exports = function(app){
             console.log(type);
             if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)
                 ||  checkUsersRole.isChef(request.session.roleId)
-                ||  checkUsersRole.isChef(request.session.roleId))){
+                ||  checkUsersRole.isMatre(request.session.roleId))){
 
                 getFoodByType(type).then(menu => {
                     response.statusCode = 200;

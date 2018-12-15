@@ -8,7 +8,11 @@ let mMenu = db.model(dbNames.menu);
 let mFood = db.model(dbNames.food);
 let mMenuFood = db.model(dbNames.menuFood);
 
+let foodController = require('./Food');
+
 let checkUsersRole = require('./RoleCheck');
+let checkDataType = require('../Util/TypeCheck');
+
 
 function getMenu(data){
     /*
@@ -89,30 +93,63 @@ function createMenuAndAssignFood(data){
 
 function updateAMenu(data){
     return new Promise((resolve, reject) => {
-        mMenu.update(data, {
-            where:
-                {
-                    name: data.name
-                }
-        }).then((menu) => {
-            console.log(menu[0]);
-            if (menu[0] > 0) {
+        mFood.update(
+            {
+                name:data.newName,
+                cuisineRegion:data.cuisineRegion,
+                date : data.date,
+                setPrice:data.setPrice,
+            }
+            , {
+                where:
+                    {
+                        name: data.name
+                    },
+            }).then((menu)=>{
+            console.log(menu);
+            if(food[0]>0){
                 resolve("Menu is updated successfully.");
-            } else {
+            }else {
                 reject("Menu could not be updated!");
             }
 
-        }).catch(error => {
+        }).catch(error =>{
             reject(error);
         })
+
     })
+
 }
 
 
-function assignFoodToMenu(data){
+
+function isExistsOnMenu(data){
     /*
-                        data.menuName,
-                        data.foodName
+    Get All Food Of Menu
+     */
+    console.log(data);
+    return new Promise((resolve, reject) => {
+        mMenuFood.findOne({
+            where: {
+                menuName: data.menuName,
+                foodName:data.foodName
+            }
+            }).then(data=>{
+            if (data != null && data != undefined){
+                resolve(true);
+            }
+            else
+                resolve(false);
+        }).catch(error => {
+            reject(error);
+        })
+
+    })
+}
+
+function assignFoodToMenu(data) {
+    /*
+      data.menuName,data.foodName,data.quantity
      */
     return new Promise((resolve, reject) => {
         mMenu.findOne({
@@ -120,37 +157,37 @@ function assignFoodToMenu(data){
                 {
                     name: data.menuName
                 }
-        }).then((menu) => {
-            console.log(data.foods)
-            /*
-              {
-                foods:[
-                          {},
-                          {}
-                      ]
-              }
-             */
-            /*
-            data = JSON.stringify(data);
-            console.log(data);
-                var parsedJSON = JSON.parse(data.foods);
-                for (var i=0;i<parsedJSON.length;i++) {
-                    alert(parsedJSON[i].foodName);
-                }
-
-*/
-            menu.addFood(data.foodName).then(food => {
-                console.log(food);
-                if (food!= null || food!= undefined)
-                    resolve("Food is added to Menu successfully!");
-                else
-                reject("Food is already added to Menu!");
-                })
-        }).catch(error => {
-            reject(error);
         })
+            .then((menu) => {
+                console.log("data.foods" + data.foods)
+
+                isExistsOnMenu(data).then(food => {
+                    console.log(food);
+                    if (!food) {
+                        menu.addFood(data.foodName)
+                            .then(food => {
+                                console.log(food);
+                                resolve("Food is added to Menu successfully!");
+                            })
+                            .catch(error => {
+                                reject("Food could not be added to Menu!");
+                            })
+                    } else {
+                        reject("Food already exists in Menu!");
+                    }
+                })
+                    .catch(error => {
+                        reject(error);
+                    })
+            })
+            .catch(error => {
+                reject(error);
+            })
     })
 }
+
+
+
 
 function deleteMenu(data){
     /*
@@ -365,21 +402,34 @@ module.exports = function (app) {
             var data = request.body;
             console.log("updateAMenu" + data);
 
-            if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)||
-                checkUsersRole.isChef(request.session.roleId) ||  checkUsersRole.isChef(request.session.roleId))) {
-                updateAMenu(data).then(menu => {
-                    response.statusCode = 200;
-                    response.write(menu.toString(), () => {
-                        response.end();
-                    });
-                }).catch(error => {
-                    response.statusCode = 404;
-                    console.log(error);
-                    response.write(error.toString(), () => {
-                        response.end();
-                    });
-                })
-            }else {
+                if (request.session != undefined && (checkUsersRole.isAdmin(request.session.roleId) ||
+                    checkUsersRole.isChef(request.session.roleId) || checkUsersRole.isChef(request.session.roleId))) {
+
+                    if (!checkDataType.isString(data.name)) {
+                        response.write(checkDataType.errorMesage(), () => {
+                            response.statusCode = 400;
+                            response.end();
+
+                        })
+                        return false;
+                    }
+                    else {
+
+                    updateAMenu(data).then(menu => {
+                        response.statusCode = 200;
+                        response.write(menu.toString(), () => {
+                            response.end();
+                        });
+                    }).catch(error => {
+                        response.statusCode = 404;
+                        console.log(error);
+                        response.write(error.toString(), () => {
+                            response.end();
+                        });
+                    })
+                }
+            }
+            else {
                 response.write(checkUsersRole.errorMesage(), () => {
                     response.statusCode = 404;
                     response.end();
@@ -393,22 +443,34 @@ module.exports = function (app) {
             var data = request.params;
             if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)||
                 checkUsersRole.isChef(request.session.roleId) ||  checkUsersRole.isChef(request.session.roleId))) {
+                console.log(checkDataType.isString(data.name));
 
-                deleteMenu(data).then(menu => {
-                    response.statusCode = 200;
-                    console.log(menu);
-                    response.write(menu.toString(), () => {
+                if (!checkDataType.isString(data.name)) {
+                    response.write(checkDataType.errorMesage(), () => {
+                        response.statusCode = 400;
                         response.end();
-                    })
 
-                }).catch(error => {
-                    console.log(error);
-                    response.statusCode = 404;
-                    response.write(error.toString(), () => {
-                        response.end();
                     })
-                })
-            }else {
+                    return false;
+                } else {
+
+                    deleteMenu(data).then(menu => {
+                        response.statusCode = 200;
+                        console.log(menu);
+                        response.write(menu.toString(), () => {
+                            response.end();
+                        })
+
+                    }).catch(error => {
+                        console.log(error);
+                        response.statusCode = 404;
+                        response.write(error.toString(), () => {
+                            response.end();
+                        })
+                    })
+                }
+            }
+            else {
                 response.write(checkUsersRole.errorMesage(), () => {
                     response.statusCode = 404;
                     response.end();
