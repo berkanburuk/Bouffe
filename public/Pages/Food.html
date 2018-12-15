@@ -252,7 +252,9 @@
         }
     }
 
+    var globalUpdateName;
     function updateFood(name, type, desc, avalaible, price) {
+        globalUpdateName = name;
         $('#uname').val(name);
         $('#utype').val(type);
         $('#udescription').val(desc);
@@ -263,7 +265,8 @@
     $('#update_food_form').on('submit', function (e) {
         e.preventDefault();
         var data2 = {
-            name: $('#uname').val(),
+            name: globalUpdateName,
+            newName: $('#uname').val(),
             type: $('#utype').val(),
             description: $('#udescription').val(),
             available: $('#uavailable').val(),
