@@ -26,9 +26,10 @@
 <body>
 <div class="container">
     <div class="table-responsive-sm" style="margin-top: 20px">
-        <table id="food_data" class="table table-hover table-bordered table-striped">
+        <table id="table_data" class="table table-hover table-bordered table-striped">
             <thead>
             <tr>
+                <th>Table ID</th>
                 <th>Structure</th>
                 <th>Capacity</th>
                 <th>Status</th>
@@ -37,10 +38,10 @@
                 <th>Manage</th>
             </tr>
             </thead>
-            <tbody id="food_data_body">
+            <tbody id="table_data_body">
             </tbody>
         </table>
-        <button type="button" class="btn btn-primary float-md-right" id="btnAddFood" data-toggle="modal"
+        <button type="button" class="btn btn-primary float-md-right" data-toggle="modal"
                 data-target="#modal_form"
                 style="margin-top: 20px">Add Table
         </button>
@@ -72,19 +73,30 @@
                             <span class="help-block"></span>
                         </div>
                     </div>
-
                     <div class="form-group">
-                        <label class="col-form-label col-md-8">Assigned Waiter</label>
+                        <label class="col-form-label col-md-8">Table Structure</label>
                         <div class="col-md-11">
-                            <select name="username" id="username" class="form-control">
-                                <option selected value="">Please Choose a Waiter
-
+                            <select name="structure" id="structure" class="form-control">
+                                <option selected value="Square">Square
+                                <option value="Circle">Circle
                             </select>
                             <span class="help-block"></span>
                         </div>
                     </div>
-
-
+                    <div class="form-group">
+                        <label class="col-form-label col-md-8">Assigned Waiter</label>
+                        <div class="col-md-11">
+                            <select name="userUsername" id="userUsername" class="form-control">
+                                <option selected value="">Please Choose a Waiter
+                            </select>
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="submit" name="submit" value="Save"
+                               class="btn btn-primary"/>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                    </div>
                 </div>
             </form>
         </div><!-- /.modal-content -->
@@ -98,15 +110,15 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title">Update Food Form</h3>
+                <h3 class="modal-title">Update Table Form</h3>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form id="update_food_form">
+            <form id="update_table_form">
                 <div class="modal-body">
                     <div class="form-group">
-                        <label class="col-form-label col-md-3">Food Name</label>
+                        <label class="col-form-label col-md-3">Table Name</label>
                         <div class="col-md-11">
                             <input name="uname" id="uname" placeholder="Food Name" class="form-control" type="text">
                             <span class="help-block"></span>
@@ -149,7 +161,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <input type="submit" name="submit" id="submit-update-food" value="Save"
+                        <input type="submit" name="submit" value="Save"
                                class="btn btn-primary"/>
                         <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
                     </div>
@@ -164,34 +176,33 @@
 </html>
 
 <script type="text/javascript">
-    getAllFoods();
+    getAllTables();
 
-    function getAllFoods() {
+    function getAllTables() {
         $.ajax({
-            url: '/api/food/getAllFood',
+            url: '/api/table/getAllTables',
             dataType: 'application/json',
             type: 'GET',
             timeout: 5000,
             statusCode: {
                 200: function (x) {
-                    console.log(x);
+                    console.log(JSON.parse(x.responseText));
                     var jArray = JSON.parse(x.responseText);
                     var receive_body = "";
-                    var btnid = 0;
 
                     $.each(jArray, function (index, val) {
-                        receive_body += '<tr><th scope="row">' + val.name + '</th>' +
-                            '<td>' + val.type + '</td>' +
-                            '<td>' + val.description + '</td>' +
-                            '<td>' + val.quantity + '</td>' +
-                            '<td>' + val.price + '.00</td>' +
-                            '<td><button class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal_form_update" onclick="updateMyFood(\'' + val.name + '\',\'' +
+                        receive_body += '<tr><th scope="row">' + val.id + '</th>' +
+                            '<td>' + val.structure + '</td>' +
+                            '<td>' + val.capacity + '</td>' +
+                            '<td>' + val.status + '</td>' +
+                            '<td>' + val.mergedWith + '</td>' +
+                            '<td>' + val.userUsername + '</td>' +
+                            '<td><button class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal_form_update" onclick="updateMyTable(\'' + val.name + '\',\'' +
                             val.type + '\',\'' + val.description + '\',\'' + val.quantity + '\',\'' + val.price + '\')"><i class="fa fa-bars"></i></button>' +
-                            '<button class="btn btn-danger btn-sm" id="' + btnid + '" onclick="deleteFood(\'' + val.id + '\')"><i class="fa fa-trash"></i></button></td></tr>';
-                        btnid++;
+                            '<button class="btn btn-danger btn-sm" onclick="deleteTable(\'' + val.id + '\')"><i class="fa fa-trash"></i></button></td></tr>';
                     });
-                    $('#food_data_body').html(receive_body);
-                    $('#food_data').DataTable({
+                    $('#table_data_body').html(receive_body);
+                    $('#table_data').DataTable({
                         "columnDefs": [
                             {"className": "", "targets": "_all"}
                         ]
@@ -204,8 +215,8 @@
         });
     }
 
-    function deleteFood(name) {
-        if (confirm("Are you sure to delete food:" + name)) {
+    function deleteTable(name) {
+        if (confirm("Are you sure to delete table: " + name)) {
             var data = {
                 name: name,
             };
@@ -213,7 +224,7 @@
             $.ajax({
                 type: 'POST',
                 dataType: 'application/json',
-                url: '/api/food/deleteFood',
+                url: '/api/table/deleteTable',
                 timeout: 5000,
                 data: data, statusCode: {
                     200: function (x) {
@@ -237,7 +248,7 @@
 
     var globalUpdateName;
 
-    function updateMyFood(name, type, desc, quantity, price) {
+    function updateMyTable(name, type, desc, quantity, price) {
         globalUpdateName = name;
         $('#uname').val(name);
         $('#utype').val(type);
@@ -246,7 +257,7 @@
         $('#uprice').val(price);
     }
 
-    $('#update_food_form').on('submit', function (e) {
+    $('#update_table_form').on('submit', function (e) {
         e.preventDefault();
         var data2 = {
             name: globalUpdateName,
@@ -257,7 +268,7 @@
             price: $('#uprice').val().trim()
         };
         $.ajax({
-            url: '/api/food/updateFood',
+            url: '/api/table/updateTable',
             dataType: 'application/json',
             data: data2,
             type: 'POST',
@@ -290,15 +301,24 @@
 
         $('#add_table_form').on('submit', function (e) {
             e.preventDefault();
-            var data2 = {
-                name: $('#name').val().toUpperCase(),
-                type: $('#type').val(),
-                description: $('#description').val(),
-                quantity: $('#quantity').val(),
-                price: $('#price').val()
-            };
+            var data2;
+            if($('#userUsername').val() == ""){
+                data2 = {
+                    id: $('#id').val(),
+                    structure: $('#structure').val(),
+                    capacity: $('#capacity').val(),
+                };
+            }else {
+                data2 = {
+                    id: $('#id').val(),
+                    structure: $('#structure').val(),
+                    capacity: $('#capacity').val(),
+                    userUsername: $('#userUsername').val(),
+                };
+            }
+
             $.ajax({
-                url: '/api/food/addFood',
+                url: '/api/table/addTable',
                 dataType: 'application/json',
                 data: data2,
                 type: 'POST',
