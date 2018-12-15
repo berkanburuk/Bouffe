@@ -118,46 +118,47 @@
             <form id="update_table_form">
                 <div class="modal-body">
                     <div class="form-group">
-                        <label class="col-form-label col-md-3">Table Name</label>
+                        <label class="col-form-label col-md-3">Table ID</label>
                         <div class="col-md-11">
-                            <input name="uname" id="uname" placeholder="Food Name" class="form-control" type="text">
+                            <input name="uid" id="uid" placeholder="Table Id" class="form-control" type="text">
                             <span class="help-block"></span>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-form-label col-md-3">Type</label>
+                        <label class="col-form-label col-md-3">Structure</label>
                         <div class="col-md-11">
-                            <select name="utype" id="utype" class="form-control">
-                                <option value="appetizer"> Appetizer
-                                <option value="mainCourse" selected> Main Course
-                                <option value="dessert"> Dessert
+                            <select name="ustructure" id="ustructure" class="form-control">
+                                <option selected value="Square">Square
+                                <option value="Circle">Circle
                             </select>
                             <span class="help-block"></span>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-form-label col-md-3">Description</label>
+                        <label class="col-form-label col-md-3">Capacity</label>
                         <div class="col-md-11">
-                            <input name="description" id="udescription" placeholder="Side meals, ingredients etc."
+                            <input name="ucapacity" id="ucapacity" placeholder="4"
                                    class="form-control"
-                                   type="text">
+                                   type="number">
                             <span class="help-block"></span>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-form-label col-md-3">Quantity</label>
+                        <label class="col-form-label col-md-3">Assigned Waiter</label>
                         <div class="col-md-11">
-                            <input name="uquantity" id="uquantity" placeholder="15" class="form-control" min="0"
-                                   type="number">
+                            <select name="umerged" id="umerged" class="form-control">
+                                <option selected value="">Please Choose a Waiter
+                            </select>
                             <span class="help-block"></span>
                         </div>
-                        <div class="form-group">
-                            <label class="col-form-label col-md-3">Price</label>
-                            <div class="col-md-11">
-                                <input name="uprice" id="uprice" placeholder="15.00" class="form-control" min="0"
-                                       type="number">
-                                <span class="help-block"></span>
-                            </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label col-md-3">Assigned Waiter</label>
+                        <div class="col-md-11">
+                            <select name="uuserUsername" id="uuserUsername" class="form-control">
+                                <option selected value="">Please Choose a Waiter
+                            </select>
+                            <span class="help-block"></span>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -178,6 +179,31 @@
 <script type="text/javascript">
     getAllTables();
 
+    function getWaiter() {
+        $.ajax({
+            url: '/api/user/addTable',
+            dataType: 'application/json',
+            data: data2,
+            type: 'POST',
+            timeout: 5000,
+            statusCode: {
+                200: function (x) {
+                    $('#modal_form').modal('hide');
+                    /*  $('#name').val("");
+                     $('#description').val("");
+                     $('#quantity').val("");
+                     $('#price').val("");
+                     getAllFoods();*/
+                    location.reload();
+
+                },
+                404: function (x) {
+                    alert(x.responseText);
+                }
+            }
+        });
+    }
+
     function getAllTables() {
         $.ajax({
             url: '/api/table/getAllTables',
@@ -197,8 +223,8 @@
                             '<td>' + val.status + '</td>' +
                             '<td>' + val.mergedWith + '</td>' +
                             '<td>' + val.userUsername + '</td>' +
-                            '<td><button class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal_form_update" onclick="updateMyTable(\'' + val.name + '\',\'' +
-                            val.type + '\',\'' + val.description + '\',\'' + val.quantity + '\',\'' + val.price + '\')"><i class="fa fa-bars"></i></button>' +
+                            '<td><button class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal_form_update" onclick="updateMyTable(\'' + val.id + '\',\'' +
+                            val.structure + '\',\'' + val.capacity + '\',\'' + val.mergedWith + '\',\'' + val.userUsername + '\')"><i class="fa fa-bars"></i></button>' +
                             '<button class="btn btn-danger btn-sm" onclick="deleteTable(\'' + val.id + '\')"><i class="fa fa-trash"></i></button></td></tr>';
                     });
                     $('#table_data_body').html(receive_body);
@@ -217,16 +243,12 @@
 
     function deleteTable(name) {
         if (confirm("Are you sure to delete table: " + name)) {
-            var data = {
-                name: name,
-            };
-
             $.ajax({
-                type: 'POST',
+                type: 'GET',
                 dataType: 'application/json',
-                url: '/api/table/deleteTable',
+                url: '/api/table/deleteTable/' + name,
                 timeout: 5000,
-                data: data, statusCode: {
+                statusCode: {
                     200: function (x) {
                         //  getAllFoods()
                         location.reload();
@@ -234,34 +256,27 @@
                     404: function (x) {
                         alert(x.responseText);
                     }
-                },
-                success: function (data, textStatus) {
-                    alert(data);
-                    console.log(data);
-                },
-                fail: function (xhr, textStatus, errorThrown) {
-                    alert('request failed');
                 }
             })
         }
     }
 
-    var globalUpdateName;
+    var globalUpdateId;
 
-    function updateMyTable(name, type, desc, quantity, price) {
-        globalUpdateName = name;
-        $('#uname').val(name);
-        $('#utype').val(type);
-        $('#udescription').val(desc);
-        $('#uquantity').val(quantity);
-        $('#uprice').val(price);
+    function updateMyTable(id, structure, capacity, mergedWith, userUsername) {
+        globalUpdateId = id;
+        $('#uuserUsername').val(userUsername);
+        $('#uid').val(uid);
+        $('#ustructure').val(structure);
+        $('#ucapacity').val(capacity);
+        $('#').val(price);
     }
 
     $('#update_table_form').on('submit', function (e) {
         e.preventDefault();
         var data2 = {
-            name: globalUpdateName,
-            newName: $('#uname').val().trim(),
+            id: globalUpdateId,
+            newId: $('#uname').val().trim(),
             type: $('#utype').val(),
             description: $('#udescription').val().trim(),
             quantity: $('#uquantity').val(),
@@ -302,13 +317,13 @@
         $('#add_table_form').on('submit', function (e) {
             e.preventDefault();
             var data2;
-            if($('#userUsername').val() == ""){
+            if ($('#userUsername').val() == "") {
                 data2 = {
                     id: $('#id').val(),
                     structure: $('#structure').val(),
                     capacity: $('#capacity').val(),
                 };
-            }else {
+            } else {
                 data2 = {
                     id: $('#id').val(),
                     structure: $('#structure').val(),
