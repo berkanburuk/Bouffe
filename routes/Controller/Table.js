@@ -235,6 +235,21 @@ module.exports = function(app){
 
         //res.end();
     }),
+        app.get('/tableCreation', function (request, response) {
+            console.log('tableCreation');
+            if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
+                ||  checkUsersRole.isCashier(request.session.roleId)) || checkUsersRole.isAdmin(request.session.roleId)) {
+                response.sendFile(path.resolve('public/Pages/addTable.html'));
+            }
+            else {
+                response.write(checkUsersRole.errorMesage(), () => {
+                    response.statusCode = 404;
+                    response.end();
+                })
+            }
+
+            //res.end();
+        }),
 
         app.post('/api/table/assignTableToUser', function(request,response){
             console.log('assignTableToUser');
