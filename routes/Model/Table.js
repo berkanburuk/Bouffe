@@ -20,6 +20,7 @@ class TableModel {
                 defaultValue:0
                 //0 kapalı
                 //1 açık
+                //2 aktif değil
             },
 
             //Table Merge Daha Bitmedi
