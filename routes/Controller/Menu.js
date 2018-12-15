@@ -115,7 +115,7 @@ function assignFoodToMenu(data){
                         data.foodName
      */
     return new Promise((resolve, reject) => {
-        return mMenu.findOne({
+        mMenu.findOne({
             where:
                 {
                     name: data.menuName
@@ -139,12 +139,12 @@ function assignFoodToMenu(data){
                 }
 
 */
-            menu.addFood(data.foodName).then(menu => {
-                console.log(menu);
-                if (menu != null || menu != undefined)
+            menu.addFood(data.foodName).then(food => {
+                console.log(food);
+                if (food!= null || food!= undefined)
                     resolve("Food is added to Menu successfully!");
                 else
-                reject("Food could not added to menu!");
+                reject("Food is already added to Menu!");
                 })
         }).catch(error => {
             reject(error);
@@ -311,7 +311,7 @@ module.exports = function (app) {
             var data = request.body;
             console.log(data);
             if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)||
-                checkUsersRole.isChef(request.session.roleId) ||  checkUsersRole.isChef(request.session.roleId))) {
+                checkUsersRole.isChef(request.session.roleId) ||  checkUsersRole.isMatre(request.session.roleId))) {
                 createMenuAndAssignFood(data).then(menu => {
                     response.statusCode = 200;
                     console.log(menu);
@@ -338,7 +338,7 @@ module.exports = function (app) {
             console.log("assignFoodToMenu" + data);
 
             if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)||
-                checkUsersRole.isChef(request.session.roleId) ||  checkUsersRole.isChef(request.session.roleId))) {
+                checkUsersRole.isChef(request.session.roleId) ||  checkUsersRole.isMatre(request.session.roleId))) {
                 assignFoodToMenu(data).then(menu => {
                     response.statusCode = 200;
 
@@ -363,7 +363,7 @@ module.exports = function (app) {
 
         app.post('/api/menu/updateAMenu', function (request, response) {
             var data = request.body;
-            console.log("assignFoodToMenu" + data);
+            console.log("updateAMenu" + data);
 
             if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)||
                 checkUsersRole.isChef(request.session.roleId) ||  checkUsersRole.isChef(request.session.roleId))) {
