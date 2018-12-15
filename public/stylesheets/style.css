@@ -23,3 +23,21 @@ thead {
     border-bottom: 1px solid #e5e5e5;
     color: white;
 }
+
+@media (min-width: 768px) {
+    .container {
+        max-width: 890px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .container {
+        max-width: 1350px;
+    }
+}
+
+.container{
+    margin: 0px auto;
+    padding-top: 150px;
+}
+
