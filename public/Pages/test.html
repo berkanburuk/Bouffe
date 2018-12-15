@@ -62,19 +62,18 @@
                                     JSON.stringify(result.value),
                                 confirmButtonText: 'Lovely!'
                             })
-                          console.log(result.value);
+                            console.log(result.value);
                         }
                     })
-                } else if (
-                    result.dismiss === Swal.DismissReason.cancel
-                ) {
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
                     Swal(
                         'Activated',
                         'table activasion',
                         'success'
-                    ).then((result)=> {
+                    ).then((result) => {
                         console.log("selam ben button");
                     })
+
                 }
             })
         });

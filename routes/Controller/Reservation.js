@@ -23,8 +23,11 @@ function createAReservation(data){
             }).then(reservation => {
                 console.log("Reservation " + reservation)
                 if (reservation == null || reservation == undefined) {
-                    mReservation.create(data);
-                    resolve("Reservation is created");
+                    mReservation.create(data).then(()=>{
+                        resolve("Reservation is created");
+                    }).catch(error=>{
+                        reject(error);
+                    })
                 } else {
                     reject("There is already a reservation for this table, for this day!");
                 }
@@ -35,13 +38,12 @@ function createAReservation(data){
 }
 
 
-function deleteReservation(phoneNumber,date){
+function deleteReservation(id){
 
         return new Promise((resolve, reject) => {
             mReservation.destroy({
                 where: {
-                    phoneNumber: phoneNumber,
-                    reservationDate: date
+                    id:id
                 }
             }).then(reservation => {
                 resolve('Reservation is deleted');
@@ -96,6 +98,44 @@ function getReservationAndTable(data){
 
 }
 
+//Örnek
+function getEmptyTablesForReservation(){
+    return new Promise((resolve, reject) => {
+        mReservation.findAll({
+            where:
+                {
+                    tableId: null
+                }
+        }).then(dbData=>{
+            if (dbData!= null && dbData != undefined){
+                resolve(JSON.stringify(dbData));
+            }
+            else
+                reject("Reservation is full");
+        }).catch(error => {
+            reject(error);
+        })
+    });
+
+}
+
+function getAllReservation(){
+    return new Promise((resolve, reject) => {
+        mReservation.findAll({
+
+        }).then(dbData=>{
+            if (dbData[0]!= null && dbData[0] != undefined){
+                resolve(JSON.stringify(dbData));
+            }
+            else
+                reject("Could not get all reservations");
+        }).catch(error => {
+            reject(error);
+        })
+    });
+
+}
+
     module.exports = function(app,session) {
 
         /*
@@ -115,12 +155,9 @@ function getReservationAndTable(data){
                     ||  checkUsersRole.isCashier(request.session.roleId))) {
                     response.sendFile(path.resolve('public/Pages/MakeReservation.html'));
                 }	else {
-                    response.write(checkUsersRole.errorMesage(), () => {
-                        response.statusCode = 404;
-                        response.end();
-                    })
+                    response.statusCode = 401;
+                    return response.redirect('/noAuthority');
                 }
-
 
         }),
 
@@ -143,25 +180,22 @@ function getReservationAndTable(data){
                     })
                 }
             else {
-                response.write(checkUsersRole.errorMesage(), () => {
-                    response.statusCode = 404;
-                    response.end();
-                })
+                response.statusCode = 401;
+                return response.redirect('/noAuthority');
             }
 
         }),
 
-        app.post('/api/reservation/deleteReservation', function (request, response ) {
+        app.get('/api/reservation/deleteReservation/:id', function (request, response ) {
             console.log("Delete Reservation");
             if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
                 ||  checkUsersRole.isCashier(request.session.roleId))) {
-                var phoneNumber = request.body;
-                deleteReservation(phoneNumber).then(reservation => {
+                var id = request.params.id;
+                deleteReservation(id).then(reservation => {
                     console.log(reservation);
                     response.write(reservation, () => {
                         response.end();
                     })
-
                 }).catch(error => {
                     console.log(error);
                     response.write(error, () => {
@@ -169,10 +203,8 @@ function getReservationAndTable(data){
                     })
                 })
             } else {
-                response.write(checkUsersRole.errorMesage(), () => {
-                    response.statusCode = 404;
-                    response.end();
-                })
+                response.statusCode = 401;
+                return response.redirect('/noAuthority');
             }
 
         })
@@ -195,10 +227,8 @@ function getReservationAndTable(data){
                     })
                 })
             }	else {
-            response.write(checkUsersRole.errorMesage(), () => {
-                response.statusCode = 404;
-                response.end();
-            })
+            response.statusCode = 401;
+            return response.redirect('/noAuthority');
         }
 
     }),
@@ -225,13 +255,63 @@ function getReservationAndTable(data){
                         });
                     })
             }else {
-                response.write(checkUsersRole.errorMesage(), () => {
-                    response.statusCode = 404;
-                    response.end();
+                response.statusCode = 401;
+                return response.redirect('/noAuthority');
+            }
+
+        }),
+        app.get('/api/reservation/getEmptyTablesForReservation', function (request, response) {
+            console.log("getReservationAndTable");
+
+            if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
+                ||  checkUsersRole.isCashier(request.session.roleId))) {
+
+                getEmptyTablesForReservation().then(data => {
+                    response.statusCode = 200;
+                    response.write(data, () => {
+                        response.end();
+                    })
                 })
+                    .catch(error => {
+                        response.statusCode = 404;
+                        console.log(error);
+                        response.write(error.toString(), () => {
+                            response.end();
+                        });
+                    })
+            }else {
+                response.statusCode = 401;
+                return response.redirect('/noAuthority');
+            }
+
+        }),
+        app.get('/api/reservation/getAllReservation', function (request, response) {
+            console.log("getReservationAndTable");
+
+            if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
+                ||  checkUsersRole.isCashier(request.session.roleId))) {
+
+                getAllReservation().then(data => {
+                    response.statusCode = 200;
+                    response.write(data, () => {
+                        response.end();
+                    })
+                })
+                    .catch(error => {
+                        response.statusCode = 404;
+                        console.log(error);
+                        response.write(error.toString(), () => {
+                            response.end();
+                        });
+                    })
+            }else {
+                response.statusCode = 401;
+                return response.redirect('/noAuthority');
             }
 
         })
+
+
 
 
 
