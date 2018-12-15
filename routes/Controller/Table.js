@@ -10,17 +10,36 @@ let mUser = db.model(dbNames.user);
 let mRole = db.model(dbNames.role);
 
 let checkUsersRole = require('./RoleCheck');
+let checkDataType = require('../Util/TypeCheck');
 
+function createATable(data){
+    return new Promise((resolve, reject) => {
+        mTable.findOrCreate({
+            where:
+                {
+                    id: data.id
+                },
+            defaults:
+                {
+                    structure: data.structure,
+                    capacity: data.capacity,
+                    status: data.status,
+                    mergedWith: data.mergedWith,
+                    userUsername:data.username
+                }
+        }).then((food)=>{
+            if (food[1] == false){
+                reject('This table is already added!');
+                return;
+            }
+            resolve("Table is created successfully");
+        })
+            .catch(error =>{
+                reject("Table could not be created!" + error);
+            })
 
-function save(data){
-    return new Promise((resolve,reject)=>{
-        mTable.create(data).then(data=> {
-            console.log(data.get())
-            resolve(data);
-        }).catch(error => {
-            reject(error + 'Cannot create the Table!');
-        });
     })
+
 }
 
 function assignTableToUser(data,id){
@@ -75,6 +94,10 @@ function getAllTables(){
 
         mTable.findAll({
                 //   attributes: ['foo', 'bar']
+            order: [
+                ['id', 'ASC'],
+                //['name', 'ASC'],
+            ],
             }
         ).then(table=>{
             console.log(JSON.stringify(table))
@@ -213,33 +236,6 @@ module.exports = function(app){
         //res.end();
     }),
 
-        app.post('/api/table/addTable', function(request,response) {
-            if (request.session != undefined && (checkUsersRole.isMatre(request.session.roleId)
-                || checkUsersRole.isCashier(request.session.roleId)) || checkUsersRole.isAdmin(request.session.roleId)) {
-                console.log('Add Table');
-                var data = request.body;
-                console.log(data);
-
-                save(data).then((data) => {
-                    response.write('Table is created!', () => {
-                        response.statusCode = 200;
-                        response.end();
-                    })
-                }).catch(error => {
-                    response.write(error.toString(), () => {
-                        response.statusCode = 404;
-                        response.end();
-                    })
-                })
-            }
-            else {
-                response.write(checkUsersRole.errorMesage(), () => {
-                    response.statusCode = 404;
-                    response.end();
-                })
-            }
-
-        }),
         app.post('/api/table/assignTableToUser', function(request,response){
             console.log('assignTableToUser');
 
@@ -302,9 +298,10 @@ module.exports = function(app){
         })
 
         app.get('/api/table/getAllTables', function (request, response) {
-            if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
+            /*if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
                 ||  checkUsersRole.isCashier(request.session.roleId)) || checkUsersRole.isAdmin(request.session.roleId))
             {
+            */if(true){
                     console.log("Get Tables");
                     getAllTables().then(tables => {
                         response.write(JSON.stringify(tables), () => {
@@ -326,7 +323,46 @@ module.exports = function(app){
             }
 
 
-        })
+        }),
+            app.post('/api/table/addTable', function (request, response ) {
+                console.log("Add Food");
+/*
+                if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)
+                    ||  checkUsersRole.isChef(request.session.roleId)
+                    ||  checkUsersRole.isMatre(request.session.roleId))) {
+                    */if(true){
+                    var data = request.body;
+                    if (!checkDataType.isObjectValuesEmpty(data)) {
+                        response.statusCode = 404;
+                        response.write(checkDataType.errorMesageEmpty(), () => {
+                            //response.statusCode = 400;
+                            response.end();
+                        })
+                        return false;
+                    } else {
+                        createATable(data).then(food => {
+                            response.statusCode = 200;
+                            console.log(food);
+                            response.write(JSON.stringify(food), () => {
+                                response.end();
+                            })
+
+                        }).catch(error => {
+                            console.log(error);
+                            response.statusCode = 404;
+                            response.write(error.toString(), () => {
+                                response.end();
+                            })
+                        })
+                    }
+                }else {
+                    response.write(checkUsersRole.errorMesage(), () => {
+                        response.statusCode = 404;
+                        response.end();
+                    })
+                }
+
+            })
 
 }
 

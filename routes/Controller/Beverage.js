@@ -19,7 +19,6 @@ exports.updateBeverage = function (data){
         mBeverage.update(
             {
                 name:data.name,
-                available:data.available,
                 price:data.price
             }
             , {
@@ -81,7 +80,6 @@ function createBeverage(data){
             defaults:
                 {
                     name: data.name,
-                    available: data.available,
                     price: data.lastName,
                 }
         }).then((beverage)=>{
