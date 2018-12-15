@@ -10,12 +10,71 @@
     <!-- Bootstrap core CSS -->
     <link href="../TableFiles/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
+    <script src='https://cdn.jsdelivr.net/npm/sweetalert2@7.32.2/dist/sweetalert2.all.min.js'></script>
     <title>Title</title>
 </head>
 <body>
 <div class="container box">
-    <button type="button" class="btn btn-primary" id="btn" style="margin-top: 20px">Alert
+    <button type="button" class="btn btn-primary" value="btn1" id="btn" style="margin-top: 20px">Alert
     </button>
-    <br/>
+    <br/></div>
+
 </body>
 </html>
+
+<script>
+    $(document).ready(function () {
+        $('#btn').click(function (e) {
+            var y = $(this).attr('value');
+            e.preventDefault();
+            Swal({
+                title: 'Are you sure?',
+                text: "You won't be able to revert " + y + " this!",
+                type: 'warning',
+                showCancelButton: true,
+                showCloseButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#18426B',
+                confirmButtonText: 'Combine/Divide',
+                cancelButtonText: 'Activate/Deactivate'
+            }).then((result) => {
+                if (result.value) {
+                    Swal.mixin({
+                        input: 'select',
+                        inputOptions: {
+                            '0': 'Zero',
+                            '1': 'One',
+                            '2': 'Two',
+                            '3': 'Three'
+                        },
+                        confirmButtonText: 'Next &rarr;',
+                        showCancelButton: true,
+                    }).queue([
+                        {
+                            title: 'Manage Table',
+                            text: 'Select Table to combine/divide'
+                        }]).then((result) => {
+                        if (result.value) {
+                            Swal({
+                                title: 'All done!',
+                                html:
+                                    'Your answers:' +
+                                    JSON.stringify(result.value),
+                                confirmButtonText: 'Lovely!'
+                            })
+                          console.log(result.value);
+                        }
+                    })
+                } else if (
+                    result.dismiss === Swal.DismissReason.cancel
+                ) {
+                    Swal(
+                        'Activated',
+                        'table activasion',
+                        'success'
+                    )
+                }
+            })
+        });
+    });
+</script>
