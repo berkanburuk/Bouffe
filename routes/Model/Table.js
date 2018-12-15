@@ -24,7 +24,9 @@ class TableModel {
             //Table Merge Daha Bitmedi
             mergedWith: {
                 type: Sequelize.INTEGER,
-                defaultValue: -1
+                defaultValue: -2
+                //-2 ise hiçbir table'a bağlı değil
+                //-1 ise table'a bağlı
             }
         });
         //User - Table

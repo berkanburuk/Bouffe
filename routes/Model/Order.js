@@ -105,7 +105,7 @@ exports.getChefNotification = function (orderId) {
         })
     })
 }
-//chef onaylıyor (1) yapıyor
+//chef onaylıyor (1) yapıyor, Garsona Food onaylandı görünecek
 exports.chefApprovesOrder = function (orderId) {
         return new Promise((resolve, reject) => {
             Order.update({
@@ -127,7 +127,25 @@ exports.chefApprovesOrder = function (orderId) {
         })
     }
 
-//chef onaylıyor (2) yapıyor
+
+//Garson get Food Onaylandı
+exports.getWaiterFoodApproved = function (orderId) {
+    return new Promise((resolve, reject) => {
+        Order.findOne({
+            where:
+                {
+                    id: orderId,
+                    isFoodReady: 1
+                }
+        }).then((order) => {
+            resolve(JSON.stringify(order));
+        }).catch(error=>{
+            reject(error);
+        })
+    })
+}
+
+//chef onaylıyor (2) Yemek hazır. Garson
 exports.chefApprovesFoodReady = function (orderId) {
     return new Promise((resolve, reject) => {
         Order.update({
@@ -149,7 +167,7 @@ exports.chefApprovesFoodReady = function (orderId) {
     })
 }
 
-//Waiter Food Approved mesajını alıyor.
+//Waiter Food Ready mesajını alıyor.
 exports.getWaiterNotificationApprovedFood = function(orderId){
     return new Promise((resolve, reject) => {
         Order.findOne({
@@ -168,7 +186,7 @@ exports.getWaiterNotificationApprovedFood = function(orderId){
 
 
 
-//Waiter 3'e setleyip, yemek teslim edildi.
+//Waiter 3'e setleyip, yemek teslim edildi. Successfull
 exports.waiterCloseOrder = function (orderId) {
     return new Promise((resolve, reject) => {
         Order.update({

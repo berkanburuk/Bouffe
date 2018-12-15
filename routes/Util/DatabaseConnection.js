@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 
-let chair = require('../Model/Chair');
+
 let deviceList = require('../Model/DeviceList');
 let food = require('../Model/Food');
 let menu = require('../Model/Menu');
@@ -21,7 +21,6 @@ const tableNames = {
     order:"order",
     menu:"menu",
     food:"food",
-    chair:"chair",
     deviceList:"deviceList",
     table:"table",
     beverage:"beverage",
@@ -79,8 +78,7 @@ let userModel =  user.run(Sequelize,sequelize,tableNames.user);
 course.run(Sequelize,sequelize,tableNames.course);
 //5.
 table.run(Sequelize,sequelize,tableNames.table);
-//6.
-chair.run(Sequelize,sequelize,tableNames.chair);
+
 //7.
 payment.run(Sequelize,sequelize,tableNames.payment);
 //11.
@@ -100,11 +98,9 @@ sequelize.sync().then(()=>{
     role.createSimpleRoleData();
         course.createCourseData();
         user.createDefaultUser();
-        chair.defaultValuesForChair();
 
 })
 
-//chair.defaultValuesForChair();
 
 /*
 module.exports = {

@@ -132,12 +132,13 @@ module.exports = function(app) {
 
                             //response.render(path.join('/public/Pages/Navigation.html'));
 
+                            /*
                             response.write("Successful", () => {
                                 console.log("successsss");
                                 response.end();
                             });
-
-                            //response.sendFile(path.resolve('public/Pages/Navigation.html'));
+*/
+                            response.sendFile(path.resolve('public/Pages/Navigation.html'));
                             //return response.redirect('/navigation');
                             //response.render('Navigation.html');
                             /*
@@ -270,23 +271,34 @@ module.exports = function(app) {
         }
     }),
 
-        app.get('/api/user/logout', function (request, response) {
+        app.get('/api/user/logout', function (request, response,next) {
             console.log("logout");
             if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
                 ||  checkUsersRole.isAdmin(request.session.roleId))){
                 request.session.destroy();
                 response.statusCode = 200;
                 //redirect
+//path.resolve('public/Pages/Login.html'));
+                response.writeHead(302, {
+                    'Location': 'localhost:3000/user'
+                    //add other headers here...
+                });
+                response.end();
+
+                /*
                 response.write("true",() => {
                     response.end();
                 })
+                */
             }else {
                 response.write(checkUsersRole.errorMesage(), () => {
                     response.statusCode = 404;
                     response.end();
                 })
             }
+
         })
+
 }
 
 /*
