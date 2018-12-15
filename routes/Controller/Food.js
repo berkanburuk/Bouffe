@@ -246,8 +246,8 @@ module.exports = function(app){
                     ||  checkUsersRole.isMatre(request.session.roleId))) {
                     var data = request.body;
                     if (!checkDataType.isObjectValuesEmpty(data)) {
+                        response.statusCode = 404;
                         response.write(checkDataType.errorMesageEmpty(), () => {
-                            response.statusCode = 404;
                             //response.statusCode = 400;
                             response.end();
                         })
