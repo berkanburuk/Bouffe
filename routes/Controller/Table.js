@@ -42,6 +42,40 @@ function createATable(data){
 
 }
 
+
+function updateTable(data){
+    return new Promise((resolve, reject) => {
+        mTable.update(
+            {
+                id:data.newId,
+                structure:data.structure,
+                capacity: data.capacity,
+                status:data.status,
+                mergedWith:data.mergedWith,
+                userUsername:data.username
+            }
+            ,{
+                where:
+                    {
+                        id: data.id
+                    },
+            }).then((result)=>{
+            console.log(result);
+            if(result[0]>0){
+                resolve("Table is updated successfully.");
+            }else {
+                reject("Table could not be updated!");
+            }
+
+        }).catch(error =>{
+            reject(error);
+        })
+
+    })
+
+}
+
+
 function assignTableToUser(data,id){
         return new Promise((resolve, reject) => {
             mTable.update(data, {
@@ -185,7 +219,7 @@ function getTableMinus() {
 
 
 
-function updateMergedWithField(id){
+function updateMergedTablesToDivide(id){
     return new Promise((resolve, reject) => {
         mTable.update(id, {
             where:
@@ -219,14 +253,12 @@ function divideTables(id) {
         }).then(data=>{
             console.log(data);
 
-            if (data.mergedWith>0){
+            do {
                 mergedTable=data.mergedWith;
-                updateMergedWithField(data.id).then(()=>{
+                updateMergedTablesToDivide(data.id).then(()=>{
 
                 })
-            }else{
-
-            }
+            }while (mergedTable>0);
 
             resolve(data);
         }).catch(error => {
@@ -292,12 +324,12 @@ function getUsersTable(data){
         reject(error + " Cannot get all Tables Related to this ");
     })
 }
-//primaryKey  = name olmalı
-function deleteTable(username){
+
+function deleteTable(id){
     return new Promise((resolve,reject)=>{
         mTable.destroy({
             where: {
-                'username': username
+                id: id
             }
         }).then(dbData=>{
             resolve(data + ' Table is deleted');
@@ -456,7 +488,73 @@ module.exports = function(app){
                 })
             }
 
-        })
+        }),
+            app.post('/api/table/updateTable', function (request, response ) {
+                var data = request.body;
+
+                if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)
+                    ||  checkUsersRole.isChef(request.session.roleId)
+                    ||  checkUsersRole.isMatre(request.session.roleId)))
+                {
+                    console.log(request);
+                    console.log("Will be Updated : " + data);
+
+                    updateTable(data).then(result=> {
+                        response.statusCode = 200;
+                        console.log(result);
+                        response.write(JSON.stringify(result), () => {
+                            response.end();
+                        })
+                    }).catch(error => {
+                        response.statusCode = 404;
+                        console.log(error);
+                        response.write(error.toString(), () => {
+                            response.end();
+                        })
+                    })
+                }else {
+                    response.write(checkUsersRole.errorMesage(), () => {
+                        response.statusCode = 404;
+                        response.end();
+                    })
+                }
+
+
+            }),
+
+
+    app.get('/api/table/deleteTable/:id', function (request, response ) {
+
+        console.log("Delete Table");
+        if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
+            ||  checkUsersRole.isAdmin(request.session.roleId))){
+            var id= request.params.id;
+            deleteTable(id).then(result=> {
+                response.statusCode = 200;
+                console.log(result);
+                response.write("Successful", () => {
+                    response.end();
+                });
+            }).catch(error => {
+                response.statusCode = 404;
+                console.log(error);
+                response.write(error, () => {
+                    response.end();
+                });
+            })
+        }
+        else {
+            response.write(checkUsersRole.errorMesage(), () => {
+                response.statusCode = 404;
+                response.end();
+            })
+        }
+
+
+    }),
+
+
+
 
         app.get('/api/table/getAllTables', function (request, response) {
             /*if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)

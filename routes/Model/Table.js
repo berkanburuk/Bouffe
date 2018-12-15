@@ -21,6 +21,7 @@ class TableModel {
                 //0 kapalı
                 //1 açık
             },
+
             //Table Merge Daha Bitmedi
             mergedWith: {
                 type: Sequelize.INTEGER,
@@ -33,6 +34,10 @@ class TableModel {
         let mUser = sequelize.model('user');
         Table.belongsTo(mUser,{targetKey:'username',onDelete:'CASCADE'});
 
+        /*
+        let mTable= sequelize.define('table',{});
+        Table.belongsTo(mTable,{foreignKey:'mergedWith',targetKey:'id',onDelete:'CASCADE'});
+        */
         //
         let mOrder= sequelize.define('order',{});
         let mOrderTable= sequelize.define('orderTable');
