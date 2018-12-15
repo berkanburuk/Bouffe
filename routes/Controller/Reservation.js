@@ -113,7 +113,7 @@ function getReservationAndTable(data){
             console.log('Reservation Controller');
                 if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
                     ||  checkUsersRole.isCashier(request.session.roleId))) {
-                    response.sendFile(path.resolve('../../public/Pages/index.html'));
+                    response.sendFile(path.resolve('public/Pages/MakeReservation.html'));
                 }	else {
                     response.write(checkUsersRole.errorMesage(), () => {
                         response.statusCode = 404;

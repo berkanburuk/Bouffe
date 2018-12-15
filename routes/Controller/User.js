@@ -272,13 +272,12 @@ module.exports = function(app) {
     }),
 
         app.get('/api/user/getRoleWithId/:id', function (request, response) {
-
+                console.log("getRoleWithId");
             if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
                 ||  checkUsersRole.isAdmin(request.session.roleId))){
                 var id = request.params.id;
                 getRoleWithId(id).then(res=> {
                     response.statusCode = 200;
-                    console.log(res);
                     response.write(res, () => {
                         response.end();
                     })
@@ -568,10 +567,12 @@ function checkValidationOfUser(username, password){
 function getRoleWithId(id){
     return new Promise((resolve, reject) => {
         mUserRoles.findAll({
-                id:id
+            where: {
+                roleId: id,
             }
-        ).then(result=>{
-            if (result[0]>0){
+            })
+        .then(result=>{
+            if (result[0]!=null && result[0]!=undefined){
                 resolve(JSON.stringify(result[0]));
             } else{
                 reject("Could not get the role with id:" +id);
