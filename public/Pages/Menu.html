@@ -240,7 +240,6 @@
             }
         }
     });
-
     $.ajax({
         url: '/api/food/getAllFood',
         dataType: 'application/json',
@@ -262,6 +261,7 @@
             }
         }
     });
+
 
     var globalMenuName;
 
@@ -354,8 +354,9 @@
                 timeout: 5000,
                 statusCode: {
                     200: function (x) {
-                        $('#modal_form_update_menu').('hide');
-                        $('#food_data').load('/menu #food_data');
+                    //   $('#modal_form_update_menu').modal('hide');
+                        updateMenu(menuName);
+                        console.log(x);
                     },
                     404: function (x) {
                         alert(x.responseText);
