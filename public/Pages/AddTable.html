@@ -143,16 +143,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-form-label col-md-3">Assigned Waiter</label>
-                        <div class="col-md-11">
-                            <select name="umerged" id="umerged" class="form-control">
-                                <option selected value="">Please choose table
-                            </select>
-                            <span class="help-block"></span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-form-label col-md-3">Assigned Waiter</label>
+                        <label class="col-form-label col-md-8">Assigned Waiter</label>
                         <div class="col-md-11">
                             <select name="uuserUsername" id="uuserUsername" class="form-control">
                             </select>
@@ -221,10 +212,11 @@
                             '<td>' + val.structure + '</td>' +
                             '<td>' + val.capacity + '</td>' +
                             '<td>' + val.status + '</td>' +
-                            '<td>' + val.mergedWith + '</td>' +
-                            '<td>' + val.userUsername + '</td>' +
-                            '<td><button class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal_form_update" onclick="updateMyTable(\'' + val.id + '\',\'' +
-                            val.structure + '\',\'' + val.capacity + '\',\'' + val.mergedWith + '\',\'' + val.userUsername + '\')"><i class="fa fa-bars"></i></button>' +
+                            '<td>' + val.mergedWith + '</td>';
+                        if (val.userUsername == null) receive_body += '<td>No waiter</td>';
+                        else receive_body += '<td>' + val.userUsername + '</td>';
+                        receive_body += '<td><button class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal_form_update" onclick="updateMyTable(\'' + val.id + '\',\'' +
+                            val.structure + '\',\'' + val.capacity  + '\',\'' + val.userUsername + '\')"><i class="fa fa-bars"></i></button>' +
                             '<button class="btn btn-danger btn-sm" onclick="deleteTable(\'' + val.id + '\')"><i class="fa fa-trash"></i></button></td></tr>';
                     });
                     $('#table_data_body').html(receive_body);
@@ -263,24 +255,22 @@
 
     var globalUpdateId;
 
-    function updateMyTable(id, structure, capacity, mergedWith, userUsername) {
+    function updateMyTable(id, structure, capacity, userUsername) {
         globalUpdateId = id;
         $('#uuserUsername').val(userUsername);
         $('#uid').val(id);
         $('#ustructure').val(structure);
         $('#ucapacity').val(capacity);
-        $('#').val(price);
     }
 
     $('#update_table_form').on('submit', function (e) {
         e.preventDefault();
         var data2 = {
             id: globalUpdateId,
-            newId: $('#uname').val().trim(),
-            type: $('#utype').val(),
-            description: $('#udescription').val().trim(),
-            quantity: $('#uquantity').val(),
-            price: $('#uprice').val().trim()
+            newId: $('#uid').val(),
+            structure: $('#ustructure').val(),
+            capacity: $('#ucapacity').val(),
+            username: $('#uuserUsername').val()
         };
         $.ajax({
             url: '/api/table/updateTable',

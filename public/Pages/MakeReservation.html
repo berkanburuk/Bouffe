@@ -1,58 +1,412 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link src="../JsFiles/jQuery.js">
-    <style>
-        table, th, td {
-            border: 1px solid black;
-            border-collapse: collapse;
-            align-content: center;
-        }
-    </style>
-    <title>View Menu</title>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservation</title>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="../stylesheets/style.css"/>
+    <link rel="stylesheet" href="../stylesheets/bootstrap-datepicker.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+            integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+            crossorigin="anonymous"></script>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+            integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+            crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+
+    <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+    <script src="../JsFiles/bootstrap-datepicker.js"></script>
+
 </head>
 <body>
-<h1>Manage Reservation</h1>
+<div class="container box" style="margin-top: 20px">
 
-<form>
+    <!--
+    <div class="table-responsive-sm" style="margin-top: 20px">
+        <table id="food_data" class="table table-hover table-bordered table-striped">
+            <caption>Menu Creation</caption>
+            <thead>
+            <tr>
+                <th class="text-left">Menu Item Type</th>
+                <th class="text-left">Food Name</th>
+            </tr>
+            </thead>
+            <tbody id="food_data_body">
+            <tr>
+                <td class="text-left">1st Appetizer</td>
+                <td class="text-left"><select name="appetizers" id="apt1"></select></td>
+            </tr>
+            <tr>
+                <td class="text-left">2nd Appetizer</td>
+                <td class="text-left"><select name="appetizers" id="apt2"></select></td>
+            </tr>
+            <tr>
+                <td class="text-left">1st Main Course</td>
+                <td class="text-left"><select name="mainCourses" id="main1"></select></td>
+            </tr>
+            <tr>
+                <td class="text-left">2nd Main Course</td>
+                <td class="text-left"><select name="mainCourses" id="main2"></select></td>
+            </tr>
+            <tr>
+                <td>1st Dessert</td>
+                <td><select name="desserts" id="dess1"></select></td>
+            </tr>
+            <tr>
+                <td class="text-left">2nd Dessert</td>
+                <td class="text-left"><select name="desserts" id="dess2"></select></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>*/-->
+    <div class="table-responsive-sm" style="margin-top: 20px">
+        <table id="menu_data" class="table table-hover table-bordered table-striped">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Cuisine</th>
+                <th>Date</th>
+                <th>Set Price</th>
+                <th>Manage</th>
+            </tr>
+            </thead>
+            <tbody id="menu_data_body">
+            </tbody>
+        </table>
+    </div>
+    <button class="btn btn-primary float-md-right" data-toggle="modal" data-target="#modal_form_add_menu">Create Menu</button>
 
-    <h4>Please Enter Reservation Date</h4><br>
-    <br>
-    Reservation Date
-    <input type="date" name="Reservation">
-    <br>
-    <br>
-    <button type="button" id="save"> Search for Available Space for Chosen Date</button>
-    <br>
-    <br>
-    <table>
-        <tr>
-
-            <th>Name</th>
-            <th>Surname</th>
-            <th>Cellphone Number</th>
-            <th>Guest Number</th>
-        </tr>
-
-        <tr>
-            <th><br>Enter Name<br><br><input type="text"></th>
-            <th><br>Enter Surname<br><br><input type="text"></th>
-            <th><br>Enter Cellphone<br><br><input type="text"></th>
-            <th><br>Enter Guest Number<br><br><input type="text"></th>
-        </tr>
-
-        <tr>
-            <th colspan="5">
-                <button type="button"> Reserve</button>
-            </th>
-        </tr>
-
-
-    </table>
-</form>
-
-
+</div>
 </body>
+<!-- Bootstrap modal -->
+<div class="modal fade" id="modal_form_add_food_to_menu" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Add Item to Menu</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="add_menu_food_item">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="col-form-label col-md-3">Food</label>
+                        <div class="col-md-11">
+                            <select name="foodNames" id="foodNames" class="form-control">
+                            </select>
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="submit" name="submit" value="Save"
+                               class="btn btn-primary"/>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- End Bootstrap modal -->
+<!-- Bootstrap modal -->
+<div class="modal fade" id="modal_form_add_menu" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Create New Menu</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="add_menu_form">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="col-form-label col-md-3">Name</label>
+                        <div class="col-md-11">
+                            <input name="name" id="name" placeholder="January - 1st Week Menu" class="form-control"
+                                   type="text">
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label col-md-3">Cuisine</label>
+                        <div class="col-md-11">
+                            <input name="cuisine" id="cuisine" placeholder="Anatolian Cuisine" class="form-control"
+                                   type="text">
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label col-md-5">Set Menu Price</label>
+                        <div class="col-md-11">
+                            <input name="setPrice" id="setPrice" placeholder="40.00" class="form-control" type="number">
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label col-md-3">Date</label>
+                        <div class="col-md-11">
+                            <input type="text" class="form-control" id="date">
+                            <span class="help-block"></span>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <input type="submit" name="submit" value="Save"
+                               class="btn btn-primary"/>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- End Bootstrap modal -->
+<!-- Bootstrap modal -->
+<div class="modal fade" id="modal_form_update_menu" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Update Menu</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive-sm" style="margin-top: 20px">
+                    <table id="food_data" class="table table-hover table-bordered table-striped">
+                        <thead>
+                        <tr>
+                            <th class="text-left">Menu Item Type</th>
+                            <th class="text-left">Food Name</th>
+                            <th class="text-left"></th>
+
+                        </tr>
+                        </thead>
+                        <tbody id="food_data_body">
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" name="submit" value="Save"
+                           class="btn btn-primary"/>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- End Bootstrap modal -->
 </html>
+
+<script>
+
+    $('#date').datepicker({
+        'format': 'mm/dd/yyyy',
+        'autoclose': true
+    });
+    $.ajax({
+        url: '/api/menu/getAllMenu',
+        dataType: 'application/json',
+        type: 'GET',
+        timeout: 5000,
+        statusCode: {
+            200: function (x) {
+                console.log(x);
+                var jArray = JSON.parse(x.responseText);
+                var receive_body = "";
+
+                $.each(jArray, function (index, val) {
+                    receive_body += '<tr><th scope="row">' + val.name + '</th>' +
+                        '<td>' + val.cuisineRegion + '</td>' +
+                        '<td>' + val.date + '</td>' +
+                        '<td>' + val.setPrice + '.00</td>' +
+                        '<td><button class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal_form_update_menu" onclick="updateMenu(\'' + val.name + '\')" ><i class="fa fa-bars"></i></button>' +
+                        '<button class="btn btn-danger btn-sm"  onclick="deleteMenu(\'' + val.name + '\')"><i class="fa fa-trash"></i></button>' +
+                        '<button class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal_form_add_food_to_menu" onclick="addFoodToMenu(\'' + val.name + '\')"><i class="fa fa-plus"></i></button></td></tr>';
+                });
+                $('#menu_data_body').html(receive_body);
+                $('#menu_data').DataTable({
+                    "columnDefs": [
+                        {"className": "dt-center", "targets": "_all"}
+                    ]
+                });
+
+            },
+            404: function (x) {
+                alert(x.responseText);
+            }
+        }
+    });
+    $.ajax({
+        url: '/api/food/getAllFood',
+        dataType: 'application/json',
+        type: 'GET',
+        timeout: 5000,
+        statusCode: {
+            200: function (x) {
+                console.log(x);
+                var jArray = JSON.parse(x.responseText);
+                var receive_body = "<option value='0' disabled selected>Please choose a food";
+
+                $.each(jArray, function (index, val) {
+                    receive_body += '<option value="' + val.name + '">' + val.name;
+                });
+                $('#foodNames').html(receive_body);
+            },
+            404: function (x) {
+                alert(x.responseText);
+            }
+        }
+    });
+
+
+    var globalMenuName;
+
+    function addFoodToMenu(menuName) {
+        globalMenuName = menuName;
+    }
+
+    $('#add_menu_form').on('submit', function (e) {
+        e.preventDefault();
+        var data2 = {
+            name: $('#name').val().toUpperCase(),
+            cuisineRegion: $('#cuisine').val(),
+            date: $('#date').val(),
+            setPrice: $('#setPrice').val(),
+        };
+        $.ajax({
+            url: '/api/menu/addMenu',
+            dataType: 'application/json',
+            data: data2,
+            type: 'POST',
+            timeout: 5000,
+            statusCode: {
+                200: function (x) {
+                    $('#modal_form').modal('hide');
+                    alert(x.responseText);
+                    location.reload();
+                },
+                404: function (x) {
+                    alert(x.responseText);
+                }
+            }
+        });
+    });
+    $('#add_menu_food_item').on('submit', function (e) {
+        e.preventDefault();
+        var data2 = {
+            foodName: $('#foodNames').val(),
+            menuName: globalMenuName,
+        };
+        $.ajax({
+            url: '/api/menu/assignFoodToMenu',
+            dataType: 'application/json',
+            data: data2,
+            type: 'POST',
+            timeout: 5000,
+            statusCode: {
+                200: function (x) {
+                    $('#foodNames').val(0);
+                    alert(x.responseText);
+                },
+                404: function (x) {
+                    alert(x.responseText);
+                }
+            }
+        });
+    });
+
+    function deleteMenu(name) {
+        if (confirm("Are you sure to delete food:" + name)) {
+            $.ajax({
+                type: 'GET',
+                dataType: 'application/json',
+                url: '/api/menu/deleteMenu/' + name,
+                timeout: 5000,
+                statusCode: {
+                    200: function (x) {
+                        location.reload();
+                    },
+                    404: function (x) {
+                        alert(x.responseText);
+                    }
+                },
+                success: function (data, textStatus) {
+                    alert(data);
+                    console.log(data);
+                },
+                fail: function (xhr, textStatus, errorThrown) {
+                    alert('request failed');
+                }
+            })
+        }
+    }
+
+    function deleteMenuItem(foodName, menuName) {
+        if (confirm("Are you sure to delete food: " + foodName + " from " + menuName)) {
+            $.ajax({
+                type: 'GET',
+                dataType: 'application/json',
+                url: '/api/menu/deleteFoodFromMenu/' + menuName + '/' + foodName,
+                timeout: 5000,
+                statusCode: {
+                    200: function (x) {
+                        //   $('#modal_form_update_menu').modal('hide');
+                        updateMenu(menuName);
+                        console.log(x);
+                    },
+                    404: function (x) {
+                        alert(x.responseText);
+                    }
+                },
+                success: function (data, textStatus) {
+                    alert(data);
+                    console.log(data);
+                },
+                fail: function (xhr, textStatus, errorThrown) {
+                    alert('request failed');
+                }
+            })
+        }
+    }
+
+    function updateMenu(name) {
+        $.ajax({
+            type: 'GET',
+            dataType: 'application/json',
+            url: '/api/menu/getFoodOfMenu/' + name,
+            timeout: 5000,
+            statusCode: {
+                200: function (x) {
+                    console.log(JSON.parse(x.responseText));
+                    var foods = JSON.parse(x.responseText);
+                    var receive_body = "";
+                    $.each(foods[0].food, function (index, val) {
+                        receive_body += '<tr><th scope="row">' + val.type + '</th>' +
+                            '<td>' + val.name + '</td>' +
+                            '<td><button class="btn btn-danger btn-sm" onclick="deleteMenuItem(\'' + val.name + '\',\'' + val.menuFood.menuName + '\')"><i class="fa fa-trash"></i></button></td></tr>';
+                    });
+                    $('#food_data_body').html(receive_body);
+                },
+                404: function (x) {
+                    alert(x.responseText);
+                }
+            },
+            success: function (data, textStatus) {
+                alert(data);
+                console.log(data);
+            },
+            fail: function (xhr, textStatus, errorThrown) {
+                alert('request failed');
+            }
+        })
+    }
+</script>
