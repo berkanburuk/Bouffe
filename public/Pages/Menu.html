@@ -185,6 +185,8 @@
                         <tr>
                             <th class="text-left">Menu Item Type</th>
                             <th class="text-left">Food Name</th>
+                            <th class="text-left"></th>
+
                         </tr>
                         </thead>
                         <tbody id="food_data_body">
@@ -343,11 +345,37 @@
         }
     }
 
+    function deleteMenuItem(foodName, menuName) {
+        if (confirm("Are you sure to delete food: " + foodName + " from " + menuName)) {
+            $.ajax({
+                type: 'GET',
+                dataType: 'application/json',
+                url: '/api/menu/deleteFoodFromMenu/' + menuName + '/' + foodName,
+                timeout: 5000,
+                statusCode: {
+                    200: function (x) {
+                        $('#modal_form_update_menu').modal('hide');
+                    },
+                    404: function (x) {
+                        alert(x.responseText);
+                    }
+                },
+                success: function (data, textStatus) {
+                    alert(data);
+                    console.log(data);
+                },
+                fail: function (xhr, textStatus, errorThrown) {
+                    alert('request failed');
+                }
+            })
+        }
+    }
+
     function updateMenu(name) {
         $.ajax({
             type: 'GET',
             dataType: 'application/json',
-            url: '/api/menu/getFoodOfMenu/' + name + '/0',
+            url: '/api/menu/getFoodOfMenu/' + name,
             timeout: 5000,
             statusCode: {
                 200: function (x) {
@@ -357,9 +385,8 @@
                     $.each(foods[0].food, function (index, val) {
                         receive_body += '<tr><th scope="row">' + val.type + '</th>' +
                             '<td>' + val.name + '</td>' +
-                            '</td></tr>';
+                            '<td><button class="btn btn-danger btn-sm"  onclick="deleteMenuItem(\'' + val.name + '\',\'' + val.menuFood.menuName + '\')"><i class="fa fa-trash"></i></button></td></tr>';
                     });
-                    sortTable();
                     $('#food_data_body').html(receive_body);
                 },
                 404: function (x) {
@@ -374,40 +401,5 @@
                 alert('request failed');
             }
         })
-    }
-
-    function sortTable() {
-        var table, rows, switching, i, x, y, shouldSwitch;
-        table = document.getElementById("food_data");
-        switching = true;
-        /* Make a loop that will continue until
-        no switching has been done: */
-        while (switching) {
-            // Start by saying: no switching is done:
-            switching = false;
-            rows = table.rows;
-            /* Loop through all table rows (except the
-            first, which contains table headers): */
-            for (i = 1; i < (rows.length - 1); i++) {
-                // Start by saying there should be no switching:
-                shouldSwitch = false;
-                /* Get the two elements you want to compare,
-                one from current row and one from the next: */
-                x = rows[i].getElementsByTagName("TD")[0];
-                y = rows[i + 1].getElementsByTagName("TD")[0];
-                // Check if the two rows should switch place:
-                if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-                    // If so, mark as a switch and break the loop:
-                    shouldSwitch = true;
-                    break;
-                }
-            }
-            if (shouldSwitch) {
-                /* If a switch has been marked, make the switch
-                and mark that a switch has been done: */
-                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-                switching = true;
-            }
-        }
     }
 </script>
