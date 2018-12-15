@@ -35,7 +35,7 @@ function assignTableToUser(data,id){
                 if (table[0] > 0) {
                     resolve("Table is updated successfully.");
                 } else {
-                    reject("Table could not updated!");
+                    reject("Table could not be updated!");
                 }
 
             }).catch(error => {
