@@ -200,7 +200,7 @@ module.exports = function(app,session){
         console.log('Table');
             if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
                 ||  checkUsersRole.isCashier(request.session.roleId)) || checkUsersRole.isAdmin(request.session.roleId)) {
-                //response.sendFile(path.resolve('../../public/Pages/Waiter.html'));
+                response.sendFile(path.resolve('public/Pages/TableManagement.html'));
             }
             else {
                     response.write(checkUsersRole.errorMesage(), () => {
