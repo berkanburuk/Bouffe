@@ -38,6 +38,16 @@ thead {
 
 .container{
     margin: 0px auto;
-    padding-top: 150px;
+    padding-top: 10px;
 }
 
+.btn-sm{
+    margin-left: 10px;
+}
+
+td{
+    vertical-align: center;
+}
+body{
+    line-height: 0.2;
+}

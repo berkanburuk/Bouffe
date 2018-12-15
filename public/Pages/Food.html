@@ -40,8 +40,9 @@
             <tbody id="food_data_body">
             </tbody>
         </table>
-        <button type="button" class="btn btn-primary float-md-right" id="btnAddFood" data-toggle="modal" data-target="#modal_form"
-                style="margin-top: 200px">Add Food
+        <button type="button" class="btn btn-primary float-md-right" id="btnAddFood" data-toggle="modal"
+                data-target="#modal_form"
+                style="margin-top: 20px">Add Food
         </button>
     </div>
 </div>
@@ -204,14 +205,17 @@
                             '<td>' + val.description + '</td>' +
                             '<td>' + val.quantity + '</td>' +
                             '<td>' + val.price + '.00</td>' +
-                            '<td><button class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal_form_update" onclick="updateFood(\'' + val.name + '\',\'' +
+                            '<td><button class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal_form_update" onclick="updateMyFood(\'' + val.name + '\',\'' +
                             val.type + '\',\'' + val.description + '\',\'' + val.quantity + '\',\'' + val.price + '\')"><i class="fa fa-bars"></i></button>' +
                             '<button class="btn btn-danger btn-sm" id="' + btnid + '" onclick="deleteFood(\'' + val.name + '\')"><i class="fa fa-trash"></i></button></td></tr>';
                         btnid++;
                     });
                     $('#food_data_body').html(receive_body);
-                    $('#food_data').DataTable();
-
+                    $('#food_data').DataTable({
+                        "columnDefs": [
+                            {"className": "", "targets": "_all"}
+                        ]
+                    });
                 },
                 404: function (x) {
                     alert(x.responseText);
@@ -233,7 +237,8 @@
                 timeout: 5000,
                 data: data, statusCode: {
                     200: function (x) {
-                        getAllFoods();
+                        //  getAllFoods()
+                        location.reload();
                     },
                     404: function (x) {
                         alert(x.responseText);
@@ -252,7 +257,7 @@
 
     var globalUpdateName;
 
-    function updateFood(name, type, desc, quantity, price) {
+    function updateMyFood(name, type, desc, quantity, price) {
         globalUpdateName = name;
         $('#uname').val(name);
         $('#utype').val(type);
@@ -269,7 +274,7 @@
             type: $('#utype').val(),
             description: $('#udescription').val().trim(),
             quantity: $('#uquantity').val(),
-            price: $('#uprice').val().trim()
+            price: $('#uprice').val()
         };
         $.ajax({
             url: '/api/food/updateFood',
@@ -281,7 +286,8 @@
                 200: function (x) {
                     $('#modal_form_update').modal('hide');
                     alert(x.responseText);
-                    getAllFoods();
+                    //getAllFoods();
+                    location.reload();
                 },
                 404: function (x) {
                     alert(x.responseText);
@@ -305,7 +311,7 @@
         $('#add_food_form').on('submit', function (e) {
             e.preventDefault();
             var data2 = {
-                name: $('#name').val(),
+                name: $('#name').val().toUpperCase(),
                 type: $('#type').val(),
                 description: $('#description').val(),
                 quantity: $('#quantity').val(),
@@ -320,10 +326,13 @@
                 statusCode: {
                     200: function (x) {
                         $('#modal_form').modal('hide');
-                        $('#name').val("");
-                        $('#description').val("");
-                        $('#price').val("");
-                        getAllFoods();
+                        /*  $('#name').val("");
+                         $('#description').val("");
+                         $('#quantity').val("");
+                         $('#price').val("");
+                         getAllFoods();*/
+                        location.reload();
+
                     },
                     404: function (x) {
                         alert(x.responseText);

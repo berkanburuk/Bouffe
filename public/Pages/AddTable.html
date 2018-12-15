@@ -26,19 +26,23 @@
 <body>
 <div class="container">
     <div class="table-responsive-sm" style="margin-top: 20px">
-        <table id="beverage_data" class="table table-hover table-bordered table-striped">
+        <table id="food_data" class="table table-hover table-bordered table-striped">
             <thead>
             <tr>
-                <th>Name</th>
-                <th>Price</th>
+                <th>Structure</th>
+                <th>Capacity</th>
+                <th>Status</th>
+                <th>Merged With</th>
+                <th>Assigned Waiter</th>
                 <th>Manage</th>
             </tr>
             </thead>
-            <tbody id="beverage_data_body">
+            <tbody id="food_data_body">
             </tbody>
         </table>
-        <button type="button" class="btn btn-primary float-md-right" data-toggle="modal" data-target="#modal_form"
-                style="margin-top: 20px">Add Beverage
+        <button type="button" class="btn btn-primary float-md-right" id="btnAddFood" data-toggle="modal"
+                data-target="#modal_form"
+                style="margin-top: 20px">Add Table
         </button>
     </div>
 </div>
@@ -47,32 +51,40 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title">Add Beverage Form</h3>
+                <h3 class="modal-title">Add Table Form</h3>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form id="add_beverage_form">
+            <form id="add_table_form">
                 <div class="modal-body">
                     <div class="form-group">
-                        <label class="col-form-label col-md-5">Beverage Name</label>
+                        <label class="col-form-label col-md-3">Table Id</label>
                         <div class="col-md-11">
-                            <input name="name" id="name" placeholder="Beverage Name" class="form-control" type="text">
+                            <input name="id" id="id" placeholder="Table Id" class="form-control" type="text">
                             <span class="help-block"></span>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-form-label col-md-3">Price</label>
+                        <label class="col-form-label col-md-3">Capacity</label>
                         <div class="col-md-11">
-                            <input name="price" id="price" placeholder="15.00" class="form-control" min="0"
-                                   type="number">
+                            <input name="capacity" id="capacity" placeholder="4" class="form-control" type="text">
                             <span class="help-block"></span>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <input type="submit" name="submit" value="Save" class="btn btn-primary"/>
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+
+                    <div class="form-group">
+                        <label class="col-form-label col-md-8">Assigned Waiter</label>
+                        <div class="col-md-11">
+                            <select name="username" id="username" class="form-control">
+                                <option selected value="">Please Choose a Waiter
+
+                            </select>
+                            <span class="help-block"></span>
+                        </div>
                     </div>
+
+
                 </div>
             </form>
         </div><!-- /.modal-content -->
@@ -86,30 +98,58 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title">Update Beverage Form</h3>
+                <h3 class="modal-title">Update Food Form</h3>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form id="update_beverage_form">
+            <form id="update_food_form">
                 <div class="modal-body">
                     <div class="form-group">
-                        <label class="col-form-label col-md-5">Beverage Name</label>
+                        <label class="col-form-label col-md-3">Food Name</label>
                         <div class="col-md-11">
-                            <input name="uname" id="uname" placeholder="Beverage Name" class="form-control" type="text">
+                            <input name="uname" id="uname" placeholder="Food Name" class="form-control" type="text">
                             <span class="help-block"></span>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-form-label col-md-3">Price</label>
+                        <label class="col-form-label col-md-3">Type</label>
                         <div class="col-md-11">
-                            <input name="uprice" id="uprice" placeholder="15.00" class="form-control" min="0"
+                            <select name="utype" id="utype" class="form-control">
+                                <option value="appetizer"> Appetizer
+                                <option value="mainCourse" selected> Main Course
+                                <option value="dessert"> Dessert
+                            </select>
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label col-md-3">Description</label>
+                        <div class="col-md-11">
+                            <input name="description" id="udescription" placeholder="Side meals, ingredients etc."
+                                   class="form-control"
+                                   type="text">
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label col-md-3">Quantity</label>
+                        <div class="col-md-11">
+                            <input name="uquantity" id="uquantity" placeholder="15" class="form-control" min="0"
                                    type="number">
                             <span class="help-block"></span>
                         </div>
+                        <div class="form-group">
+                            <label class="col-form-label col-md-3">Price</label>
+                            <div class="col-md-11">
+                                <input name="uprice" id="uprice" placeholder="15.00" class="form-control" min="0"
+                                       type="number">
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-footer">
-                        <input type="submit" name="submit" value="Save"
+                        <input type="submit" name="submit" id="submit-update-food" value="Save"
                                class="btn btn-primary"/>
                         <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
                     </div>
@@ -124,11 +164,11 @@
 </html>
 
 <script type="text/javascript">
-    getAllBeverages();
+    getAllFoods();
 
-    function getAllBeverages() {
+    function getAllFoods() {
         $.ajax({
-            url: '/api/beverage/getAllBeverage',
+            url: '/api/food/getAllFood',
             dataType: 'application/json',
             type: 'GET',
             timeout: 5000,
@@ -141,14 +181,17 @@
 
                     $.each(jArray, function (index, val) {
                         receive_body += '<tr><th scope="row">' + val.name + '</th>' +
+                            '<td>' + val.type + '</td>' +
+                            '<td>' + val.description + '</td>' +
+                            '<td>' + val.quantity + '</td>' +
                             '<td>' + val.price + '.00</td>' +
-                            '<td><button class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal_form_update" onclick="updateMyBeverage(\'' + val.name + '\',\'' +val.id + '\',\''+
-                            val.price + '\')"><i class="fa fa-bars"></i></button>' +
-                            '<button class="btn btn-danger btn-sm" id="' + btnid + '" onclick="deleteBeverage(\'' + val.id + '\')"><i class="fa fa-trash"></i></button></td></tr>';
+                            '<td><button class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal_form_update" onclick="updateMyFood(\'' + val.name + '\',\'' +
+                            val.type + '\',\'' + val.description + '\',\'' + val.quantity + '\',\'' + val.price + '\')"><i class="fa fa-bars"></i></button>' +
+                            '<button class="btn btn-danger btn-sm" id="' + btnid + '" onclick="deleteFood(\'' + val.id + '\')"><i class="fa fa-trash"></i></button></td></tr>';
                         btnid++;
                     });
-                    $('#beverage_data_body').html(receive_body);
-                    $('#beverage_data').DataTable({
+                    $('#food_data_body').html(receive_body);
+                    $('#food_data').DataTable({
                         "columnDefs": [
                             {"className": "", "targets": "_all"}
                         ]
@@ -161,15 +204,18 @@
         });
     }
 
-    function deleteBeverage(name) {
-        if (confirm("Are you sure to delete beverage:" + name)) {
+    function deleteFood(name) {
+        if (confirm("Are you sure to delete food:" + name)) {
+            var data = {
+                name: name,
+            };
 
             $.ajax({
-                type: 'GET',
+                type: 'POST',
                 dataType: 'application/json',
-                url: '/api/beverage/deleteBeverage/' + name,
+                url: '/api/food/deleteFood',
                 timeout: 5000,
-                statusCode: {
+                data: data, statusCode: {
                     200: function (x) {
                         //  getAllFoods()
                         location.reload();
@@ -189,23 +235,29 @@
         }
     }
 
-    var globalUpdateId;
+    var globalUpdateName;
 
-    function updateMyBeverage(name,id, price) {
-        globalUpdateId = id;
+    function updateMyFood(name, type, desc, quantity, price) {
+        globalUpdateName = name;
         $('#uname').val(name);
+        $('#utype').val(type);
+        $('#udescription').val(desc);
+        $('#uquantity').val(quantity);
         $('#uprice').val(price);
     }
 
-    $('#update_beverage_form').on('submit', function (e) {
+    $('#update_food_form').on('submit', function (e) {
         e.preventDefault();
         var data2 = {
-            id: globalUpdateId,
+            name: globalUpdateName,
             newName: $('#uname').val().trim(),
-            price: $('#uprice').val()
+            type: $('#utype').val(),
+            description: $('#udescription').val().trim(),
+            quantity: $('#uquantity').val(),
+            price: $('#uprice').val().trim()
         };
         $.ajax({
-            url: '/api/beverage/updateBeverage',
+            url: '/api/food/updateFood',
             dataType: 'application/json',
             data: data2,
             type: 'POST',
@@ -236,14 +288,17 @@
                 .end()
         });
 
-        $('#add_beverage_form').on('submit', function (e) {
+        $('#add_table_form').on('submit', function (e) {
             e.preventDefault();
             var data2 = {
                 name: $('#name').val().toUpperCase(),
+                type: $('#type').val(),
+                description: $('#description').val(),
+                quantity: $('#quantity').val(),
                 price: $('#price').val()
             };
             $.ajax({
-                url: '/api/beverage/addBeverage',
+                url: '/api/food/addFood',
                 dataType: 'application/json',
                 data: data2,
                 type: 'POST',
