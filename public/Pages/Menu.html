@@ -387,7 +387,7 @@
                     $.each(foods[0].food, function (index, val) {
                         receive_body += '<tr><th scope="row">' + val.type + '</th>' +
                             '<td>' + val.name + '</td>' +
-                            '<td><button class="btn btn-danger btn-sm"  onclick="deleteMenuItem(\'' + val.name + '\',\'' + val.menuFood.menuName + '\')"><i class="fa fa-trash"></i></button></td></tr>';
+                            '<td><button class="btn btn-danger btn-sm" onclick="deleteMenuItem(\'' + val.name + '\',\'' + val.menuFood.menuName + '\')"><i class="fa fa-trash"></i></button></td></tr>';
                     });
                     $('#food_data_body').html(receive_body);
                 },
