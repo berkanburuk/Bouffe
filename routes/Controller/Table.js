@@ -167,6 +167,96 @@ function getAUserTables(username) {
 }
 
 
+function getTableMinus() {
+    return new Promise((resolve, reject) => {
+        mTable.findAll({
+            $or: [
+                {mergedWith: -1},
+                {mergedWith: -2}
+                ]
+        }).then(data=>{
+            console.log(data[0]);
+            resolve(data[0]);
+        }).catch(error => {
+            reject(error + "\nCannot get all Tables Related to this ");
+        })
+    });
+}
+
+
+
+function updateMergedWithField(id){
+    return new Promise((resolve, reject) => {
+        mTable.update(id, {
+            where:
+                {
+                    id:id,
+                    mergedWith: -2
+                }
+        }).then((table) => {
+            console.log(table[0]);
+            if (table[0] > 0) {
+                resolve("Table is updated successfully.");
+            } else {
+                reject("Table could not be updated!");
+            }
+
+        }).catch(error => {
+            reject(error);
+        })
+    })
+
+}
+
+function divideTables(id) {
+    return new Promise((resolve, reject) => {
+        var flag = true;
+        var mergedTable=-5;
+        mTable.findOne({
+            where:{
+                id:id
+            }
+        }).then(data=>{
+            console.log(data);
+
+            if (data.mergedWith>0){
+                mergedTable=data.mergedWith;
+                updateMergedWithField(data.id).then(()=>{
+
+                })
+            }else{
+
+            }
+
+            resolve(data);
+        }).catch(error => {
+            reject(error + "\nCannot get all Tables Related to this ");
+        })
+    });
+}
+
+
+function getATable(id) {
+    return new Promise((resolve, reject) => {
+        mTable.findOne({
+            where:{
+                id:id
+            }
+        }).then(data=>{
+            if (data!=null &&data!=undefined){
+                resolve(JSON.stringify(data));
+            }else{
+                reject("There is no table with this id: "+id);
+            }
+        }).catch(error => {
+            reject(error + "\nCannot get all Tables Related to this ");
+        })
+    });
+}
+
+
+
+
 function getUsersTable(data){
     return new Promise((resolve, reject) => {
         mUser.findAll({
@@ -250,6 +340,31 @@ module.exports = function(app){
 
             //res.end();
         }),
+        app.get('/api/table/getTableMinus', function (request, response) {
+            console.log('getTablesWithSpefic');
+            if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
+                ||  checkUsersRole.isCashier(request.session.roleId)) || checkUsersRole.isAdmin(request.session.roleId))
+            {
+
+                getTableMinus().then(data => {
+                    response.write(JSON.stringify(data), () => {
+                        response.statusCode = 200;
+                        response.end();
+                    })
+                }).catch(error => {
+                    response.write(error.toString(), () => {
+                        response.statusCode = 404;
+                        response.end();
+                    })
+                })
+            }	else {
+                response.write(checkUsersRole.errorMesage(), () => {
+                    response.statusCode = 404;
+                    response.end();
+                })
+            }
+        }),
+
 
         app.post('/api/table/assignTableToUser', function(request,response){
             console.log('assignTableToUser');
@@ -281,6 +396,37 @@ module.exports = function(app){
             }
 
         }),
+
+
+    app.get('/api/table/getATable/:id', function (request, response) {
+        console.log("getATable");
+        if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
+            ||  checkUsersRole.isCashier(request.session.roleId)) || checkUsersRole.isAdmin(request.session.roleId))
+        {
+            var id = request.params.id;
+
+            getATable(id).then(data => {
+                response.statusCode = 200;
+                console.log(data);
+                response.write(data, () => {
+                    response.end();
+                })
+            })
+                .catch(error => {
+                    response.statusCode = 404;
+                    console.log(error);
+                    response.write(error.toString(), () => {
+                        response.end();
+                    });
+                })
+        }else {
+            response.write(checkUsersRole.errorMesage(), () => {
+                response.statusCode = 404;
+                response.end();
+            })
+        }
+
+    })
 
         app.get('/api/table/getUsersTable/:username', function (request, response) {
             console.log("getATableBelongToAUser");
