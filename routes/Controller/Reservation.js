@@ -23,8 +23,11 @@ function createAReservation(data){
             }).then(reservation => {
                 console.log("Reservation " + reservation)
                 if (reservation == null || reservation == undefined) {
-                    mReservation.create(data);
-                    resolve("Reservation is created");
+                    mReservation.create(data).then(()=>{
+                        resolve("Reservation is created");
+                    }).catch(error=>{
+                        reject(error);
+                    })
                 } else {
                     reject("There is already a reservation for this table, for this day!");
                 }
