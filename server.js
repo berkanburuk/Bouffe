@@ -36,7 +36,7 @@ console.log("reservationServer "+reservationServer);
 var userServer = require('./routes/Controller/User')(app);
 var tableServer = require('./routes/Controller/Table')(app,session);
 var guestCheck = require('./routes/Controller/GuestCheck')(app,session);
-//var beverageServer = require('./routes/Controller/Beverage')(app,session);
+var beverageServer = require('./routes/Controller/Beverage')(app);
 var foodController = require('./routes/Controller/Food')(app);
 var menuController =  require('./routes/Controller/Menu')(app);
 var orderController = require('./routes/Controller/Order')(app,session);
