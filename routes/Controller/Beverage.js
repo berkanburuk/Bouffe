@@ -14,7 +14,7 @@ let checkDataType = require('../Util/TypeCheck');
 
 
 
-exports.updateBeverage = function (data){
+function updateBeverage (data){
     return new Promise((resolve, reject) => {
         mBeverage.update(
             {
@@ -80,10 +80,10 @@ function createBeverage(data){
             defaults:
                 {
                     name: data.name,
-                    price: data.lastName,
+                    price: data.price,
                 }
         }).then((beverage)=>{
-            console.log("Beverage" + user[1]);
+            console.log("Beverage" + beverage[1]);
             if (beverage[1] == false){
                 reject('This beverage is already added!');
                 return;

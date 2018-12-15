@@ -131,7 +131,7 @@ exports.updateQuantity = function (data){
 
 }
 
-exports.updateFood = function (data){
+ function updateFood(data){
     return new Promise((resolve, reject) => {
         mFood.update(
             {
