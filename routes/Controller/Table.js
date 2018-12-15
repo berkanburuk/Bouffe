@@ -77,7 +77,8 @@ function getAllTables(){
                 //   attributes: ['foo', 'bar']
             }
         ).then(table=>{
-            resolve(table[0].get(0));
+            console.log(JSON.stringify(table))
+            resolve(table);
         }).catch(error => {
             reject("Cannot get all Tables");
         })
