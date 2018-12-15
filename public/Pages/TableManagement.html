@@ -33,11 +33,11 @@
                 404: function() {
                     console.log("-1-1-1-1 WE GOT 404!");
                 },
-                200: function(x) {
-                    console.log(x);
-                    var dat=JSON.parse(x);
+                200: function(responseBody) {
+                    console.log(responseBody);
+                    var dat=JSON.parse(responseBody);
                     console.log(dat);
-                    console.log(x);
+                    console.log(responseBody);
 
                     //role=x.length;
                     //console.log(role);
@@ -63,33 +63,33 @@
           //var x="<script src='../TableFiles/vendor/jquery/jquery.min.js'>";
           var x="<script src='https://cdn.jsdelivr.net/npm/sweetalert2@7.32.2/dist/sweetalert2.all.min.js'>";
           x+="<";
-          x+="/script>";
+          x+="/script>\n";
           x+="<script";
-          x+=">"
-          x+="\$(document).ready(function(){";
-          x+="\$('div#tables div').click( function(e) {";
+          x+=">\n"
+          x+="\$(document).ready(function(){\n";
+          x+="\$('div#tables div').click( function(e) {\n";
           //x+="\$(location).attr('href', \$(this).attr('value'));";
-          x+="var y=\$(this).attr('value');";
-          x+="e.preventDefault();";
+          x+="var y=\$(this).attr('value');\n";
+          x+="e.preventDefault();\n";
           //x+="var dialog = new $.Zebra_Dialog('The link was clicked!',{type: 'question',title: 'Custom buttons',buttons: ['Yes', 'No', 'Help'],onClose: function(caption) {alert((caption != '' ? '\"' + caption + '\"' : 'nothing') + ' was clicked');}});";
-          x+="Swal({";
-          x+="title: 'Are you sure?',";
-          x+="text: \"You won't be able to revert \"+ y +\" this!\",";
-          x+="  type: 'warning',";
-          x+="  showCancelButton: true,";
-          x+="confirmButtonColor: '#3085d6',";
-          x+="cancelButtonColor: '#d33',";
-          x+="  confirmButtonText: 'Yes, delete it!'";
-          x+="}).then((result) => {";
-          x+="  if (result.value) {";
-          x+="    Swal(";
-          x+="      'Deleted!',";
-          x+="      'Your file has been deleted.',";
-          x+="      'success'";
-          x+="    )}})";
-          x+="});});";
+          x+="Swal({\n";
+          x+="title: 'Are you sure?',\n";
+          x+="text: \"You won't be able to revert \"+ y +\" this!\",\n";
+          x+="  type: 'warning',\n";
+          x+="  showCancelButton: true,\n";
+          x+="confirmButtonColor: '#3085d6',\n";
+          x+="cancelButtonColor: '#d33',\n";
+          x+="  confirmButtonText: 'Yes, delete it!'\n";
+          x+="}).then((result) => {\n";
+          x+="  if (result.value) {\n";
+          x+="    Swal(\n";
+          x+="      'Deleted!',\n";
+          x+="      'Your file has been deleted.',\n";
+          x+="      'success'\n";
+          x+="    )}})\n";
+          x+="});});\n";
           x+="<";
-          x+="/script>";
+          x+="/script>\n";
           var items="";
 
           for (var i = 0; i < array.length ; i++) {
@@ -100,7 +100,7 @@
 
 
 
-          return items+x;
+          return items+"\n"+x;
 
       }
   });
