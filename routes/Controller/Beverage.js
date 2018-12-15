@@ -293,7 +293,7 @@ module.exports = function(app){
                 response.end();
             })
         }
-    }),
+    })
 
 
 

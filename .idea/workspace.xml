@@ -4,8 +4,6 @@
     <list default="true" id="33d936ae-31d7-4e01-8485-8c78b24783e0" name="Default Changelist" comment="Controller Session Fixed">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/Controller/Beverage.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/Controller/Beverage.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/Controller/Menu.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/Controller/Menu.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/Controller/Table.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/Controller/Table.js" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -62,24 +60,24 @@
       <usages-collector id="statistics.file.extensions.open">
         <counts>
           <entry key="html" value="7" />
-          <entry key="js" value="16" />
+          <entry key="js" value="20" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
           <entry key="HTML" value="7" />
-          <entry key="JavaScript" value="16" />
+          <entry key="JavaScript" value="20" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="js" value="231" />
+          <entry key="js" value="234" />
           <entry key="txt" value="6" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="JavaScript" value="231" />
+          <entry key="JavaScript" value="234" />
           <entry key="PLAIN_TEXT" value="6" />
         </counts>
       </usages-collector>
@@ -88,10 +86,10 @@
   <component name="FileEditorManager">
     <leaf>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/routes/Controller/Table.js">
+        <entry file="file://$PROJECT_DIR$/routes/Controller/Beverage.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="529">
-              <caret line="311" column="43" lean-forward="true" selection-start-line="311" selection-start-column="43" selection-end-line="311" selection-end-column="43" />
+              <caret line="295" column="6" lean-forward="true" selection-start-line="295" selection-start-column="6" selection-end-line="295" selection-end-column="6" />
             </state>
           </provider>
         </entry>
@@ -156,11 +154,11 @@
         <option value="$PROJECT_DIR$/routes/Controller/Order.js" />
         <option value="$PROJECT_DIR$/routes/Controller/GuestCheck.js" />
         <option value="$PROJECT_DIR$/routes/Controller/Payment.js" />
-        <option value="$PROJECT_DIR$/routes/Controller/Food.js" />
         <option value="$PROJECT_DIR$/routes/Controller/User.js" />
-        <option value="$PROJECT_DIR$/routes/Controller/Menu.js" />
-        <option value="$PROJECT_DIR$/routes/Controller/Beverage.js" />
         <option value="$PROJECT_DIR$/routes/Controller/Table.js" />
+        <option value="$PROJECT_DIR$/routes/Controller/Menu.js" />
+        <option value="$PROJECT_DIR$/routes/Controller/Food.js" />
+        <option value="$PROJECT_DIR$/routes/Controller/Beverage.js" />
       </list>
     </option>
   </component>
@@ -339,11 +337,18 @@
       <option name="project" value="LOCAL" />
       <updated>1544865761511</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Controller Session Fixed">
+      <created>1544866413233</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1544866413233</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="13891000" />
+    <option name="totallyTimeSpent" value="14018000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1680" height="1050" extended-state="0" />
@@ -355,7 +360,7 @@
       <window_info id="Favorites" order="3" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32907802" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.20376176" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.4996986" visible="true" weight="0.20376176" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -363,8 +368,8 @@
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Messages" order="8" weight="0.32897604" />
       <window_info anchor="bottom" id="Version Control" order="9" />
-      <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
-      <window_info anchor="bottom" id="Terminal" order="11" weight="0.26227796" />
+      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.50030136" side_tool="true" weight="0.20376176" />
+      <window_info anchor="bottom" id="Terminal" order="11" sideWeight="0.49909583" weight="0.26227796" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -400,9 +405,9 @@
     <MESSAGE value="Dev" />
     <MESSAGE value="Default Changelist" />
     <MESSAGE value="Food Session Fixed" />
-    <MESSAGE value="Controller Session Fixed" />
     <MESSAGE value="Food &amp; Beverage" />
-    <option name="LAST_COMMIT_MESSAGE" value="Food &amp; Beverage" />
+    <MESSAGE value="Controller Session Fixed" />
+    <option name="LAST_COMMIT_MESSAGE" value="Controller Session Fixed" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/public/Pages/AssignRole.html">
@@ -509,13 +514,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/routes/Controller/Order.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-694">
-          <caret line="363" column="70" lean-forward="true" selection-start-line="363" selection-start-column="70" selection-end-line="363" selection-end-column="70" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/routes/Controller/Payment.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="187">
@@ -537,20 +535,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/routes/Controller/Food.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="200" column="20" selection-start-line="200" selection-start-column="20" selection-end-line="200" selection-end-column="78" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/routes/Controller/Menu.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3653">
-          <caret line="449" column="50" selection-start-line="449" selection-start-column="50" selection-end-line="449" selection-end-column="50" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/routes/Model/User.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1087">
@@ -565,17 +549,38 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/routes/Controller/Beverage.js">
+    <entry file="file://$PROJECT_DIR$/routes/Controller/Table.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="706">
-          <caret line="279" column="39" selection-start-line="279" selection-start-column="39" selection-end-line="279" selection-end-column="39" />
+        <state relative-caret-position="449">
+          <caret line="319" column="26" lean-forward="true" selection-start-line="319" selection-start-column="26" selection-end-line="319" selection-end-column="26" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/routes/Controller/Table.js">
+    <entry file="file://$PROJECT_DIR$/routes/Controller/Order.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="363" column="70" lean-forward="true" selection-start-line="363" selection-start-column="70" selection-end-line="363" selection-end-column="70" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/routes/Controller/Menu.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="353">
+          <caret line="429" column="23" selection-start-line="429" selection-start-column="23" selection-end-line="429" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/routes/Controller/Food.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="253">
+          <caret line="201" column="23" selection-start-line="201" selection-start-column="23" selection-end-line="201" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/routes/Controller/Beverage.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="529">
-          <caret line="311" column="43" lean-forward="true" selection-start-line="311" selection-start-column="43" selection-end-line="311" selection-end-column="43" />
+          <caret line="295" column="6" lean-forward="true" selection-start-line="295" selection-start-column="6" selection-end-line="295" selection-end-column="6" />
         </state>
       </provider>
     </entry>
