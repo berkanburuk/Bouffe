@@ -231,10 +231,8 @@ module.exports = function(app){
                     ||  checkUsersRole.isMatre(request.session.roleId))) {
                     response.sendFile(path.resolve('public/Pages/Food.html'));
                 }else {
-                    response.write(checkUsersRole.errorMesage(), () => {
-                        response.statusCode = 404;
-                        response.end();
-                    })
+                    response.statusCode = 401;
+                    return response.redirect('/noAuthority');
                 }
         }),
 
@@ -269,10 +267,8 @@ module.exports = function(app){
                         })
                     }
                 }else {
-                    response.write(checkUsersRole.errorMesage(), () => {
-                        response.statusCode = 404;
-                        response.end();
-                    })
+                    response.statusCode = 401;
+                    return response.redirect('/noAuthority');
                 }
 
             }),
@@ -300,10 +296,8 @@ module.exports = function(app){
                         })
                     })
                 }else {
-                    response.write(checkUsersRole.errorMesage(), () => {
-                        response.statusCode = 404;
-                        response.end();
-                    })
+                    response.statusCode = 401;
+                    return response.redirect('/noAuthority');
                 }
 
 
@@ -334,10 +328,8 @@ module.exports = function(app){
                     })
                 })
             }else {
-            response.write(checkUsersRole.errorMesage(), () => {
-                response.statusCode = 404;
-                response.end();
-            })
+            response.statusCode = 401;
+            return response.redirect('/noAuthority');
         }
 
 
@@ -366,10 +358,8 @@ module.exports = function(app){
                     });
                 })
             }else {
-                response.write(checkUsersRole.errorMesage(), () => {
-                    response.statusCode = 404;
-                    response.end();
-                })
+                response.statusCode = 401;
+                return response.redirect('/noAuthority');
             }
         })
 
@@ -397,10 +387,8 @@ module.exports = function(app){
                 });
             })
         }else {
-                response.write(checkUsersRole.errorMesage(), () => {
-                    response.statusCode = 404;
-                    response.end();
-                })
+                response.statusCode = 401;
+                return response.redirect('/noAuthority');
             }
     }),
         app.get('/api/food/getType/:name', function (request, response ) {
@@ -425,10 +413,8 @@ module.exports = function(app){
                     });
                 })
             }else {
-                response.write(checkUsersRole.errorMesage(), () => {
-                    response.statusCode = 404;
-                    response.end();
-                })
+                response.statusCode = 401;
+                return response.redirect('/noAuthority');
             }
 
         })

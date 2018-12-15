@@ -115,12 +115,9 @@ function getReservationAndTable(data){
                     ||  checkUsersRole.isCashier(request.session.roleId))) {
                     response.sendFile(path.resolve('public/Pages/MakeReservation.html'));
                 }	else {
-                    response.write(checkUsersRole.errorMesage(), () => {
-                        response.statusCode = 404;
-                        response.end();
-                    })
+                    response.statusCode = 401;
+                    return response.redirect('/noAuthority');
                 }
-
 
         }),
 
@@ -143,10 +140,8 @@ function getReservationAndTable(data){
                     })
                 }
             else {
-                response.write(checkUsersRole.errorMesage(), () => {
-                    response.statusCode = 404;
-                    response.end();
-                })
+                response.statusCode = 401;
+                return response.redirect('/noAuthority');
             }
 
         }),
@@ -169,10 +164,8 @@ function getReservationAndTable(data){
                     })
                 })
             } else {
-                response.write(checkUsersRole.errorMesage(), () => {
-                    response.statusCode = 404;
-                    response.end();
-                })
+                response.statusCode = 401;
+                return response.redirect('/noAuthority');
             }
 
         })
@@ -195,10 +188,8 @@ function getReservationAndTable(data){
                     })
                 })
             }	else {
-            response.write(checkUsersRole.errorMesage(), () => {
-                response.statusCode = 404;
-                response.end();
-            })
+            response.statusCode = 401;
+            return response.redirect('/noAuthority');
         }
 
     }),
@@ -225,10 +216,8 @@ function getReservationAndTable(data){
                         });
                     })
             }else {
-                response.write(checkUsersRole.errorMesage(), () => {
-                    response.statusCode = 404;
-                    response.end();
-                })
+                response.statusCode = 401;
+                return response.redirect('/noAuthority');
             }
 
         })

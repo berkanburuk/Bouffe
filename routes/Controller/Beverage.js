@@ -147,10 +147,8 @@ module.exports = function(app){
             ||  checkUsersRole.isChef(request.session.roleId))) {
             response.sendFile(path.resolve('public/Pages/Beverage.html'));
         }else {
-            response.write(checkUsersRole.errorMesage(), () => {
-                response.statusCode = 404;
-                response.end();
-            })
+            response.statusCode = 401;
+            return response.redirect('/noAuthority');
         }
     }),
 
@@ -177,10 +175,8 @@ module.exports = function(app){
                     })
                 })
             }else {
-                response.write(checkUsersRole.errorMesage(), () => {
-                    response.statusCode = 404;
-                    response.end();
-                })
+                response.statusCode = 401;
+                return response.redirect('/noAuthority');
             }
 
         }),
@@ -220,10 +216,8 @@ module.exports = function(app){
                 }
             }else
                 {
-                    response.write(checkUsersRole.errorMesage(), () => {
-                        response.statusCode = 404;
-                        response.end();
-                    })
+                    response.statusCode = 401;
+                    return response.redirect('/noAuthority');
                 }
 
         })
@@ -251,10 +245,8 @@ module.exports = function(app){
                 })
             })
         }else {
-            response.write(checkUsersRole.errorMesage(), () => {
-                response.statusCode = 404;
-                response.end();
-            })
+            response.statusCode = 401;
+            return response.redirect('/noAuthority');
         }
 
 
@@ -281,10 +273,8 @@ module.exports = function(app){
                     });
                 })
             }else {
-                response.write(checkUsersRole.errorMesage(), () => {
-                    response.statusCode = 404;
-                    response.end();
-                })
+                response.statusCode = 401;
+                return response.redirect('/noAuthority');
             }
         })
 
@@ -312,10 +302,8 @@ module.exports = function(app){
                 });
             })
         }else {
-            response.write(checkUsersRole.errorMesage(), () => {
-                response.statusCode = 404;
-                response.end();
-            })
+            response.statusCode = 401;
+            return response.redirect('/noAuthority');
         }
     })
 
