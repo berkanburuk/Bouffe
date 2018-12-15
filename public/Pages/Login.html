@@ -90,6 +90,10 @@
         var username = $('#username').val();
         var pw = $('#password').val();
         console.log(username);
+        if (username.trim() == ''|| pw.trim() == ''){
+            return false;
+        }
+        console.log(username);
         console.log(pw);
         $.ajax({
             url: '/api/user/login/' + username + '/' + pw,
