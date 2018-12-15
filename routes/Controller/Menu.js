@@ -112,9 +112,6 @@ function updateAMenu(data){
 function assignFoodToMenu(data){
     /*
                         data.menuName,
-                        data.cuisineRegion,
-                        data.date,
-                        data.setPrice,
                         data.foodName
      */
     return new Promise((resolve, reject) => {
@@ -210,6 +207,23 @@ function addFoodToMenu(data){
     })
 }
 
+function deleteFoodFromMenu(menuName,foodName){
+    return new Promise((resolve,reject)=>{
+        mMenuFood.destroy({
+            where: {
+                foodName: foodName,
+                menuName:menuName
+            }
+        }).then(menu=>{
+            if (menu>0)
+                resolve(foodName + ' from Menu is deleted!');
+            else
+                reject(foodName + " could not be deleted!");
+        }).catch(error =>{
+            reject(error);
+        })
+    })
+}
 
 exports.getMenusFood = function(menuName) {
     /*
@@ -489,8 +503,36 @@ module.exports = function (app) {
             })
         }
 
-    })
+    }),
 
+    app.get('/api/menu/deleteFoodFromMenu/:menuName/:foodName', function (request, response ) {
+
+        if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)||
+            checkUsersRole.isChef(request.session.roleId) ||  checkUsersRole.isChef(request.session.roleId))) {
+            let menuName = request.params.menuName;
+            let foodName = request.params.foodName;
+            deleteFoodFromMenu(menuName,foodName).then(menu => {
+                response.statusCode = 200;
+                console.log(menu);
+                response.write(menu, () => {
+                    response.end();
+                });
+            }).catch(error => {
+                response.statusCode = 404;
+                console.log(error);
+                response.write(error.toString(), () => {
+                    response.end();
+                });
+            })
+        }
+        else {
+            response.write(checkUsersRole.errorMesage(), () => {
+                response.statusCode = 404;
+                response.end();
+            })
+        }
+
+    })
 
 
 
