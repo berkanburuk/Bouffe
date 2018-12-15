@@ -397,6 +397,24 @@ module.exports = function (app) {
                 deleteMenu(data).then(menu => {
                     response.statusCode = 200;
                     console.log(menu);
+
+                    var myData = {};
+                    myData.name = data;
+                    getFoodOfMenu(myData)
+                        .then(menu => {
+                        response.statusCode = 200;
+                        console.log(menu);
+                        response.write(menu.toString(), () => {
+                            response.end();
+                        });
+                    }).catch(error => {
+                        response.statusCode = 404;
+                        console.log(error);
+                        response.write(error.toString(), () => {
+                            response.end();
+                        });
+                    })
+
                     response.write(menu.toString(), () => {
                         response.end();
                     })
