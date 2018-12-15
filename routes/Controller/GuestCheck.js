@@ -23,7 +23,7 @@ function nextGuestList(data) {
 }
 
 
-module.exports = function(app,session) {
+module.exports = function(app) {
 
         app.get('/api/guestCheck/nextGuestList', function (request, response) {
             if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
