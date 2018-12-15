@@ -76,13 +76,13 @@ function updateTable(data){
 }
 
 
-function createAMerge(data){
+function createAMerge(data) {
     data.tableId1 = parseInt(data.tableId1);
     data.tableId2 = parseInt(data.tableId2);
-    if (data.tableId1>data.tableId2){
+    if (data.tableId1 > data.tableId2) {
         var temp;
         temp = data.tableId1;
-        data.tableId1=data.tableId2;
+        data.tableId1 = data.tableId2;
         data.tableId2 = temp;
     }
     /*
@@ -92,29 +92,38 @@ function createAMerge(data){
     */
     return new Promise((resolve, reject) => {
         mTable.update(
+            {mergedWith: data.tableId2},
             {
-                mergedWith:data.tableId2,
-            }
-            ,{
                 where:
                     {
                         id: data.tableId1
                     },
-            }).then((result)=>{
-            console.log(result);
-            if(result[0]>0){
-                resolve("Table is updated successfully.");
-            }else {
-                reject("Table could not be updated!");
-            }
+            })
+            .then((result) => {
+                mTable.update(
+                    {mergedWith: -1},
+                    {
+                        where:
+                            {
+                                id: data.tableId2
+                            }
+                    }).then((result) => {
+                    if (result[0] > 0) {
+                        resolve("Table is merged successfully.");
+                    } else {
+                        reject("Table could not be updated!");
+                    }
 
-        }).catch(error =>{
+                }).catch(error => {
+                    reject(error);
+                })
+
+            }).catch(error => {
             reject(error);
         })
-
     })
-
 }
+
 
 function updateStatus(data){
 
