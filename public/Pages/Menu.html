@@ -168,6 +168,39 @@
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 <!-- End Bootstrap modal -->
+<!-- Bootstrap modal -->
+<div class="modal fade" id="modal_form_update_menu" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Update Menu</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive-sm" style="margin-top: 20px">
+                    <table id="food_data" class="table table-hover table-bordered table-striped">
+                        <thead>
+                        <tr>
+                            <th class="text-left">Menu Item Type</th>
+                            <th class="text-left">Food Name</th>
+                        </tr>
+                        </thead>
+                        <tbody id="food_data_body">
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" name="submit" value="Save"
+                           class="btn btn-primary"/>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- End Bootstrap modal -->
 </html>
 
 <script>
@@ -192,7 +225,7 @@
                         '<td>' + val.cuisineRegion + '</td>' +
                         '<td>' + val.date + '</td>' +
                         '<td>' + val.setPrice + '.00</td>' +
-                        '<td><button class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal_form_update" ><i class="fa fa-bars"></i></button>' +
+                        '<td><button class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal_form_update_menu" onclick="updateMenu(\'' + val.name + '\')" ><i class="fa fa-bars"></i></button>' +
                         '<button class="btn btn-danger btn-sm"  onclick="deleteMenu(\'' + val.name + '\')"><i class="fa fa-trash"></i></button>' +
                         '<button class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal_form_add_food_to_menu" onclick="addFoodToMenu(\'' + val.name + '\')"><i class="fa fa-plus"></i></button></td></tr>';
                 });
@@ -215,7 +248,7 @@
             200: function (x) {
                 console.log(x);
                 var jArray = JSON.parse(x.responseText);
-                var receive_body = "";
+                var receive_body = "<option value='0' disabled selected>Please choose a food";
 
                 $.each(jArray, function (index, val) {
                     receive_body += '<option value="' + val.name + '">' + val.name;
@@ -274,7 +307,7 @@
             timeout: 5000,
             statusCode: {
                 200: function (x) {
-                    $('#modal_form_add_food_to_menu').modal('hide');
+                    $('#foodNames').val(0);
                     alert(x.responseText);
                 },
                 404: function (x) {
@@ -307,6 +340,74 @@
                     alert('request failed');
                 }
             })
+        }
+    }
+
+    function updateMenu(name) {
+        $.ajax({
+            type: 'GET',
+            dataType: 'application/json',
+            url: '/api/menu/getFoodOfMenu/' + name + '/0',
+            timeout: 5000,
+            statusCode: {
+                200: function (x) {
+                    console.log(JSON.parse(x.responseText));
+                    var foods = JSON.parse(x.responseText);
+                    var receive_body = "";
+                    $.each(foods[0].food, function (index, val) {
+                        receive_body += '<tr><th scope="row">' + val.type + '</th>' +
+                            '<td>' + val.name + '</td>' +
+                            '</td></tr>';
+                    });
+                    sortTable();
+                    $('#food_data_body').html(receive_body);
+                },
+                404: function (x) {
+                    alert(x.responseText);
+                }
+            },
+            success: function (data, textStatus) {
+                alert(data);
+                console.log(data);
+            },
+            fail: function (xhr, textStatus, errorThrown) {
+                alert('request failed');
+            }
+        })
+    }
+
+    function sortTable() {
+        var table, rows, switching, i, x, y, shouldSwitch;
+        table = document.getElementById("food_data");
+        switching = true;
+        /* Make a loop that will continue until
+        no switching has been done: */
+        while (switching) {
+            // Start by saying: no switching is done:
+            switching = false;
+            rows = table.rows;
+            /* Loop through all table rows (except the
+            first, which contains table headers): */
+            for (i = 1; i < (rows.length - 1); i++) {
+                // Start by saying there should be no switching:
+                shouldSwitch = false;
+                /* Get the two elements you want to compare,
+                one from current row and one from the next: */
+                x = rows[i].getElementsByTagName("TD")[0];
+                y = rows[i + 1].getElementsByTagName("TD")[0];
+                // Check if the two rows should switch place:
+                if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                    // If so, mark as a switch and break the loop:
+                    shouldSwitch = true;
+                    break;
+                }
+            }
+            if (shouldSwitch) {
+                /* If a switch has been marked, make the switch
+                and mark that a switch has been done: */
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+            }
         }
     }
 </script>
