@@ -51,7 +51,7 @@ var beverageServer = require('./routes/Controller/Beverage')(app);
 var foodController = require('./routes/Controller/Food')(app);
 var menuController =  require('./routes/Controller/Menu')(app);
 var orderController = require('./routes/Controller/Order')(app);
-
+var errorController = require('./routes/Controller/Error')(app);
 
 app.use('/', router);
 // Turn on that server!

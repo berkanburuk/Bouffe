@@ -356,10 +356,8 @@ module.exports = function(app){
                 response.sendFile(path.resolve('public/Pages/TableManagement.html'));
             }
             else {
-                    response.write(checkUsersRole.errorMesage(), () => {
-                        response.statusCode = 404;
-                        response.end();
-                    })
+                response.statusCode = 401;
+                return response.redirect('/noAuthority');
                 }
 
         //res.end();
@@ -371,10 +369,8 @@ module.exports = function(app){
                 response.sendFile(path.resolve('public/Pages/addTable.html'));
             }
             else {
-                response.write(checkUsersRole.errorMesage(), () => {
-                    response.statusCode = 404;
-                    response.end();
-                })
+                response.statusCode = 401;
+                return response.redirect('/noAuthority');
             }
 
             //res.end();
@@ -397,10 +393,8 @@ module.exports = function(app){
                     })
                 })
             }	else {
-                response.write(checkUsersRole.errorMesage(), () => {
-                    response.statusCode = 404;
-                    response.end();
-                })
+                response.statusCode = 401;
+                return response.redirect('/noAuthority');
             }
         }),
 
@@ -409,30 +403,27 @@ module.exports = function(app){
             console.log('assignTableToUser');
 
             if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
-                ||  checkUsersRole.isCashier(request.session.roleId)) || checkUsersRole.isAdmin(request.session.roleId))
-            {
-                    var data = request.body;
-                    var id = parseInt(data.id);
-                    delete data.id;
-                    console.log(data);
+                ||  checkUsersRole.isCashier(request.session.roleId)) || checkUsersRole.isAdmin(request.session.roleId)) {
+                var data = request.body;
+                var id = parseInt(data.id);
+                delete data.id;
+                console.log(data);
 
-                    assignTableToUser(data, id).then(data => {
-                        response.write('Table Successfully Updated!', () => {
-                            response.statusCode = 200;
-                            response.end();
-                        })
-                    }).catch(error => {
-                        response.write(error.toString(), () => {
-                            response.statusCode = 404;
-                            response.end();
-                        })
+                assignTableToUser(data, id).then(data => {
+                    response.write('Table Successfully Updated!', () => {
+                        response.statusCode = 200;
+                        response.end();
                     })
-                }	else {
-                response.write(checkUsersRole.errorMesage(), () => {
-                    response.statusCode = 404;
-                    response.end();
+                }).catch(error => {
+                    response.write(error.toString(), () => {
+                        response.statusCode = 404;
+                        response.end();
+                    })
                 })
-            }
+            }	else {
+                response.statusCode = 401;
+                return response.redirect('/noAuthority');
+                }
 
         }),
 
@@ -459,10 +450,8 @@ module.exports = function(app){
                     });
                 })
         }else {
-            response.write(checkUsersRole.errorMesage(), () => {
-                response.statusCode = 404;
-                response.end();
-            })
+            response.statusCode = 401;
+            return response.redirect('/noAuthority');
         }
 
     })
@@ -489,10 +478,8 @@ module.exports = function(app){
                         });
                     })
             }else {
-                response.write(checkUsersRole.errorMesage(), () => {
-                    response.statusCode = 404;
-                    response.end();
-                })
+                response.statusCode = 401;
+                return response.redirect('/noAuthority');
             }
 
         }),
@@ -520,10 +507,8 @@ module.exports = function(app){
                         })
                     })
                 }else {
-                    response.write(checkUsersRole.errorMesage(), () => {
-                        response.statusCode = 404;
-                        response.end();
-                    })
+                    response.statusCode = 401;
+                    return response.redirect('/noAuthority');
                 }
 
 
@@ -551,10 +536,8 @@ module.exports = function(app){
             })
         }
         else {
-            response.write(checkUsersRole.errorMesage(), () => {
-                response.statusCode = 404;
-                response.end();
-            })
+            response.statusCode = 401;
+            return response.redirect('/noAuthority');
         }
 
 
@@ -582,10 +565,8 @@ module.exports = function(app){
                         })
                     })
                 }	else {
-                response.write(checkUsersRole.errorMesage(), () => {
-                    response.statusCode = 404;
-                    response.end();
-                })
+                response.statusCode = 401;
+                return response.redirect('/noAuthority');
             }
 
 
@@ -622,10 +603,8 @@ module.exports = function(app){
                         })
                     }
                 }else {
-                    response.write(checkUsersRole.errorMesage(), () => {
-                        response.statusCode = 404;
-                        response.end();
-                    })
+                    response.statusCode = 401;
+                    return response.redirect('/noAuthority');
                 }
 
             })
