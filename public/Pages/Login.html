@@ -99,18 +99,15 @@
 <script type="text/javascript">
     $('#login_form').on('submit', function (e) {
         e.preventDefault();
-        var username = $('#username').val();
-        var pw = $('#password').val();
-        console.log(username);
-        console.log(pw);
         $.ajax({
-            url: '/api/user/login/' + username + '/' + pw,
+            url: '/api/user/login/' + $('#username').val() + '/' + $('#password').val(),
             dataType: 'application/json',
             type: 'GET',
             timeout: 5000,
             encode: true,
             statusCode: {
                 200: function (x) {
+                    window.location.href = x.responseText;
                 },
                 404: function (x) {
                     alert(x.responseText);

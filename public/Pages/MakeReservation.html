@@ -26,137 +26,76 @@
 </head>
 <body>
 <div class="container box" style="margin-top: 20px">
-
-    <!--
     <div class="table-responsive-sm" style="margin-top: 20px">
-        <table id="food_data" class="table table-hover table-bordered table-striped">
-            <caption>Menu Creation</caption>
+        <table id="reservation_data" class="table table-hover table-bordered table-striped">
             <thead>
             <tr>
-                <th class="text-left">Menu Item Type</th>
-                <th class="text-left">Food Name</th>
+                <th>Full Name</th>
+                <th>Phone Number</th>
+                <th>Reservation Date</th>
+                <th>Number of Customers</th>
+                <th>Table ID</th>
             </tr>
             </thead>
-            <tbody id="food_data_body">
-            <tr>
-                <td class="text-left">1st Appetizer</td>
-                <td class="text-left"><select name="appetizers" id="apt1"></select></td>
-            </tr>
-            <tr>
-                <td class="text-left">2nd Appetizer</td>
-                <td class="text-left"><select name="appetizers" id="apt2"></select></td>
-            </tr>
-            <tr>
-                <td class="text-left">1st Main Course</td>
-                <td class="text-left"><select name="mainCourses" id="main1"></select></td>
-            </tr>
-            <tr>
-                <td class="text-left">2nd Main Course</td>
-                <td class="text-left"><select name="mainCourses" id="main2"></select></td>
-            </tr>
-            <tr>
-                <td>1st Dessert</td>
-                <td><select name="desserts" id="dess1"></select></td>
-            </tr>
-            <tr>
-                <td class="text-left">2nd Dessert</td>
-                <td class="text-left"><select name="desserts" id="dess2"></select></td>
-            </tr>
-            </tbody>
-        </table>
-    </div>*/-->
-    <div class="table-responsive-sm" style="margin-top: 20px">
-        <table id="menu_data" class="table table-hover table-bordered table-striped">
-            <thead>
-            <tr>
-                <th>Name</th>
-                <th>Cuisine</th>
-                <th>Date</th>
-                <th>Set Price</th>
-                <th>Manage</th>
-            </tr>
-            </thead>
-            <tbody id="menu_data_body">
+            <tbody id="reservation_data_body">
             </tbody>
         </table>
     </div>
-    <button class="btn btn-primary float-md-right" data-toggle="modal" data-target="#modal_form_add_menu">Create Menu</button>
+    <button class="btn btn-primary float-md-right" data-toggle="modal" data-target="#modal_form_add_reservation">Create
+        Reservation
+    </button>
 
 </div>
 </body>
 <!-- Bootstrap modal -->
-<div class="modal fade" id="modal_form_add_food_to_menu" tabindex="-1" role="dialog">
+<div class="modal fade" id="modal_form_add_reservation" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title">Add Item to Menu</h3>
+                <h3 class="modal-title">Reserve A Table</h3>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form id="add_menu_food_item">
+            <form id="add_reservation_form">
                 <div class="modal-body">
                     <div class="form-group">
-                        <label class="col-form-label col-md-3">Food</label>
+                        <label class="col-form-label col-md-3">Full Name</label>
                         <div class="col-md-11">
-                            <select name="foodNames" id="foodNames" class="form-control">
-                            </select>
-                            <span class="help-block"></span>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <input type="submit" name="submit" value="Save"
-                               class="btn btn-primary"/>
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-                    </div>
-                </div>
-            </form>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-<!-- End Bootstrap modal -->
-<!-- Bootstrap modal -->
-<div class="modal fade" id="modal_form_add_menu" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">Create New Menu</h3>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form id="add_menu_form">
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label class="col-form-label col-md-3">Name</label>
-                        <div class="col-md-11">
-                            <input name="name" id="name" placeholder="January - 1st Week Menu" class="form-control"
+                            <input name="name" id="name" placeholder="Elif Denizci" class="form-control"
                                    type="text">
                             <span class="help-block"></span>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-form-label col-md-3">Cuisine</label>
+                        <label class="col-form-label col-md-8">Phone Number</label>
                         <div class="col-md-11">
-                            <input name="cuisine" id="cuisine" placeholder="Anatolian Cuisine" class="form-control"
-                                   type="text">
-                            <span class="help-block"></span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-form-label col-md-5">Set Menu Price</label>
-                        <div class="col-md-11">
-                            <input name="setPrice" id="setPrice" placeholder="40.00" class="form-control" type="number">
+                            <input name="phone" id="phone" placeholder="50********" class="form-control"
+                                   type="number" min="0">
                             <span class="help-block"></span>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-form-label col-md-3">Date</label>
                         <div class="col-md-11">
-                            <input type="text" class="form-control" id="date">
+                            <input type="text" class="form-control" placeholder="16/03/1995" id="date">
                             <span class="help-block"></span>
                         </div>
-
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label col-md-8">How Many People</label>
+                        <div class="col-md-11">
+                            <input name="people" id="people" placeholder="4" class="form-control"
+                                   type="number">
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label col-md-8">Which Table</label>
+                        <div class="col-md-11">
+                            <select name="table" id="table" class="form-control"></select>
+                            <span class="help-block"></span>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <input type="submit" name="submit" value="Save"
@@ -170,7 +109,7 @@
 </div><!-- /.modal -->
 <!-- End Bootstrap modal -->
 <!-- Bootstrap modal -->
-<div class="modal fade" id="modal_form_update_menu" tabindex="-1" role="dialog">
+<div class="modal fade" id="modal_form_update_reservation" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -213,7 +152,7 @@
         'autoclose': true
     });
     $.ajax({
-        url: '/api/menu/getAllMenu',
+        url: '/api/reservation/getAllMenu',
         dataType: 'application/json',
         type: 'GET',
         timeout: 5000,
@@ -228,9 +167,8 @@
                         '<td>' + val.cuisineRegion + '</td>' +
                         '<td>' + val.date + '</td>' +
                         '<td>' + val.setPrice + '.00</td>' +
-                        '<td><button class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal_form_update_menu" onclick="updateMenu(\'' + val.name + '\')" ><i class="fa fa-bars"></i></button>' +
-                        '<button class="btn btn-danger btn-sm"  onclick="deleteMenu(\'' + val.name + '\')"><i class="fa fa-trash"></i></button>' +
-                        '<button class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal_form_add_food_to_menu" onclick="addFoodToMenu(\'' + val.name + '\')"><i class="fa fa-plus"></i></button></td></tr>';
+                        '<td><button class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal_form_update_reservation" onclick="updateMenu(\'' + val.name + '\')" ><i class="fa fa-bars"></i></button>' +
+                        '<button class="btn btn-danger btn-sm"  onclick="deleteMenu(\'' + val.name + '\')"><i class="fa fa-trash"></i></button></td></tr>';
                 });
                 $('#menu_data_body').html(receive_body);
                 $('#menu_data').DataTable({
@@ -268,29 +206,25 @@
     });
 
 
-    var globalMenuName;
-
-    function addFoodToMenu(menuName) {
-        globalMenuName = menuName;
-    }
-
-    $('#add_menu_form').on('submit', function (e) {
+    $('#modal_form_add_reservation').on('submit', function (e) {
         e.preventDefault();
         var data2 = {
-            name: $('#name').val().toUpperCase(),
-            cuisineRegion: $('#cuisine').val(),
-            date: $('#date').val(),
-            setPrice: $('#setPrice').val(),
+            fullName: $('#name').val().trim(),
+            phoneNumber: $('#phone').val(),
+            reservationDate: $('#date').val(),
+            numberOfCustomer: $('#people').val(),
+            tableId: $('#table').val(),
         };
+        console.log(data2);
         $.ajax({
-            url: '/api/menu/addMenu',
+            url: '/api/reservation/addReservation',
             dataType: 'application/json',
             data: data2,
             type: 'POST',
             timeout: 5000,
             statusCode: {
                 200: function (x) {
-                    $('#modal_form').modal('hide');
+                    $('#modal_form_add_reservation').modal('hide');
                     alert(x.responseText);
                     location.reload();
                 },
@@ -300,36 +234,13 @@
             }
         });
     });
-    $('#add_menu_food_item').on('submit', function (e) {
-        e.preventDefault();
-        var data2 = {
-            foodName: $('#foodNames').val(),
-            menuName: globalMenuName,
-        };
-        $.ajax({
-            url: '/api/menu/assignFoodToMenu',
-            dataType: 'application/json',
-            data: data2,
-            type: 'POST',
-            timeout: 5000,
-            statusCode: {
-                200: function (x) {
-                    $('#foodNames').val(0);
-                    alert(x.responseText);
-                },
-                404: function (x) {
-                    alert(x.responseText);
-                }
-            }
-        });
-    });
 
-    function deleteMenu(name) {
-        if (confirm("Are you sure to delete food:" + name)) {
+    function deleteReservation(name) {
+        if (confirm("Are you sure to delete reservation:" + name)) {
             $.ajax({
                 type: 'GET',
                 dataType: 'application/json',
-                url: '/api/menu/deleteMenu/' + name,
+                url: '/api/reservation/deleteReservation/' + name,
                 timeout: 5000,
                 statusCode: {
                     200: function (x) {
@@ -350,33 +261,6 @@
         }
     }
 
-    function deleteMenuItem(foodName, menuName) {
-        if (confirm("Are you sure to delete food: " + foodName + " from " + menuName)) {
-            $.ajax({
-                type: 'GET',
-                dataType: 'application/json',
-                url: '/api/menu/deleteFoodFromMenu/' + menuName + '/' + foodName,
-                timeout: 5000,
-                statusCode: {
-                    200: function (x) {
-                        //   $('#modal_form_update_menu').modal('hide');
-                        updateMenu(menuName);
-                        console.log(x);
-                    },
-                    404: function (x) {
-                        alert(x.responseText);
-                    }
-                },
-                success: function (data, textStatus) {
-                    alert(data);
-                    console.log(data);
-                },
-                fail: function (xhr, textStatus, errorThrown) {
-                    alert('request failed');
-                }
-            })
-        }
-    }
 
     function updateMenu(name) {
         $.ajax({
