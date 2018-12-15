@@ -111,7 +111,15 @@ function deleteFood(name){
 
 function updateFood(data){
     return new Promise((resolve, reject) => {
-        mFood.update(data, {
+        mFood.update(
+            {
+                name:data.newName,
+                type:data.type,
+                description : data.description,
+                available:data.available,
+                price:data.price,
+            }
+            , {
             where:
                 {
                     name: data.name
@@ -272,9 +280,11 @@ module.exports = function(app){
     app.post('/api/food/updateFood', function (request, response ) {
         console.log("Update Food");
         var data = request.body;
+        /*
         if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)
             ||  checkUsersRole.isChef(request.session.roleId)
             ||  checkUsersRole.isChef(request.session.roleId))){
+            */if (true){
                 console.log(request);
                 console.log("Will be Updated : " + data);
 

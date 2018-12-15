@@ -80,7 +80,7 @@ function deleteBeverage(id){
     return new Promise((resolve,reject)=>{
         mBeverage.destroy({
             where: {
-                id: data.id
+                id: id
             }
         }).then(beverage=>{
             if (beverage>0)
@@ -164,41 +164,41 @@ module.exports = function(app){
             console.log(request.body);
             if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)
                 ||  checkUsersRole.isChef(request.session.roleId)
-                ||  checkUsersRole.isChef(request.session.roleId))){
+                ||  checkUsersRole.isChef(request.session.roleId))) {
                 var id = parseInt(request.params.id);
                 console.log(request.params.id);
 
                 console.log(id);
-                if(!checkDataType.isNumber(id)){
+                if (!checkDataType.isNumber(id)) {
                     response.write(checkDataType.errorMesage(), () => {
                         response.statusCode = 400;
                         response.end();
 
                     })
                     return false;
+                } else {
+                    deleteBeverage(id).then(beverage => {
+                        response.statusCode = 200;
+                        console.log(beverage);
+                        response.write(beverage.toString(), () => {
+                            response.end();
+                        })
+
+                    }).catch(error => {
+                        console.log(error);
+                        response.statusCode = 404;
+                        response.write(error.toString(), () => {
+                            response.end();
+                        })
+                    })
                 }
-
-                deleteBeverage(id).then(beverage=> {
-                    response.statusCode = 200;
-                    console.log(beverage);
-                    response.write(beverage.toString(), () => {
+            }else
+                {
+                    response.write(checkUsersRole.errorMesage(), () => {
+                        response.statusCode = 404;
                         response.end();
                     })
-
-                }).catch(error => {
-                    console.log(error);
-                    response.statusCode = 404;
-                    response.write(error.toString(), () => {
-                        response.end();
-                    })
-                })
-            }else {
-                response.write(checkUsersRole.errorMesage(), () => {
-                    response.statusCode = 404;
-                    response.end();
-                })
-            }
-
+                }
 
         })
 
