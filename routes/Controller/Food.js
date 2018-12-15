@@ -129,7 +129,7 @@ function updateFood(data){
             if(food[0]>0){
                 resolve("Food is updated successfully.");
             }else {
-                reject("Food could not updated!");
+                reject("Food could not be updated!");
             }
 
         }).catch(error =>{
@@ -280,11 +280,11 @@ module.exports = function(app){
     app.post('/api/food/updateFood', function (request, response ) {
         console.log("Update Food");
         var data = request.body;
-        /*
+
         if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)
             ||  checkUsersRole.isChef(request.session.roleId)
-            ||  checkUsersRole.isChef(request.session.roleId))){
-            */if (true){
+            ||  checkUsersRole.isChef(request.session.roleId)))
+        {
                 console.log(request);
                 console.log("Will be Updated : " + data);
 
