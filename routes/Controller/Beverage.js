@@ -13,6 +13,36 @@ let checkUsersRole = require('./RoleCheck');
 let checkDataType = require('../Util/TypeCheck');
 
 
+
+exports.updateBeverage = function (data){
+    return new Promise((resolve, reject) => {
+        mBeverage.update(
+            {
+                name:data.name,
+                available:data.available,
+                price:data.price
+            }
+            , {
+                where:
+                    {
+                        id: data.id
+                    },
+            }).then((beverage)=>{
+            console.log(beverage);
+            if(beverage[0]>0){
+                resolve("Beverage is updated successfully.");
+            }else {
+                reject("Beverage could not be updated!");
+            }
+
+        }).catch(error =>{
+            reject(error);
+        })
+
+    })
+
+}
+
 exports.getABeverage = function (id){
     console.log("getABeverage");
     return new Promise((resolve, reject) => {
@@ -113,7 +143,7 @@ module.exports = function(app){
 
 
     app.get('/beverage', function (request, response) {
-        console.log('Food');
+        console.log('Beverage');
         if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)
             ||  checkUsersRole.isChef(request.session.roleId)
             ||  checkUsersRole.isChef(request.session.roleId))) {
@@ -133,8 +163,6 @@ module.exports = function(app){
             if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)
                 ||  checkUsersRole.isChef(request.session.roleId)
                 ||  checkUsersRole.isChef(request.session.roleId))){
-
-
 
                 createBeverage(data).then(beverage => {
                     response.statusCode = 200;
@@ -202,8 +230,8 @@ module.exports = function(app){
 
         })
 
-    app.post('/api/beverage/updateFood', function (request, response ) {
-        console.log("Update Food");
+    app.post('/api/beverage/updateBeverage', function (request, response ) {
+        console.log("Update Beverage");
         var data = request.body;
         if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)
             ||  checkUsersRole.isChef(request.session.roleId)
@@ -211,10 +239,10 @@ module.exports = function(app){
             console.log(request);
             console.log("Will be Updated : " + data);
 
-            updateFood(data).then(food => {
+            updateBeverage(data).then(beverage => {
                 response.statusCode = 200;
-                console.log(food);
-                response.write(food.toString(), () => {
+                console.log(beverage);
+                response.write(JSON.stringify(beverage), () => {
                     response.end();
                 })
             }).catch(error => {
@@ -235,18 +263,16 @@ module.exports = function(app){
     }),
 
 
-        app.get('/api/food/getAFood/:name', function (request, response ) {
-            console.log("Get a Food");
+        app.get('/api/beverage/getABeverage/:id', function (request, response ) {
+            console.log("Get a Beverage By Id");
             if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)
                 ||  checkUsersRole.isChef(request.session.roleId)
                 ||  checkUsersRole.isChef(request.session.roleId))){
-                var data = request.params;
-                console.log(data);
-                console.log(data.name);
-                getFood(data).then(food => {
+                var id = request.params.id;
+                getABeverage(id).then(beverage => {
                     response.statusCode = 200;
-                    console.log(food);
-                    response.write(food.toString(), () => {
+                    console.log(beverage);
+                    response.write(JSON.stringify(beverage), () => {
                         response.end();
                     });
                 }).catch(error => {
