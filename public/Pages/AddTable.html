@@ -87,7 +87,6 @@
                         <label class="col-form-label col-md-8">Assigned Waiter</label>
                         <div class="col-md-11">
                             <select name="userUsername" id="userUsername" class="form-control">
-                                <option selected value="">Please Choose a Waiter
                             </select>
                             <span class="help-block"></span>
                         </div>
@@ -147,7 +146,7 @@
                         <label class="col-form-label col-md-3">Assigned Waiter</label>
                         <div class="col-md-11">
                             <select name="umerged" id="umerged" class="form-control">
-                                <option selected value="">Please Choose a Waiter
+                                <option selected value="">Please choose table
                             </select>
                             <span class="help-block"></span>
                         </div>
@@ -156,7 +155,6 @@
                         <label class="col-form-label col-md-3">Assigned Waiter</label>
                         <div class="col-md-11">
                             <select name="uuserUsername" id="uuserUsername" class="form-control">
-                                <option selected value="">Please Choose a Waiter
                             </select>
                             <span class="help-block"></span>
                         </div>
@@ -188,7 +186,16 @@
             timeout: 5000,
             statusCode: {
                 200: function (x) {
-                    console.log(JSON.parse(x.responseText));
+                    console.log(x.responseText);
+                    var jArray = JSON.parse(x.responseText);
+                    var receive_body = "<option value='' selected>Please choose a user";
+
+                    $.each(jArray, function (index, val) {
+                        receive_body += '<option value="' + val.userUsername + '">' + val.userUsername;
+                    });
+                    $('#userUsername').html(receive_body);
+                    $('#uuserUsername').html(receive_body);
+
                 },
                 404: function (x) {
                     alert(x.responseText);
@@ -259,7 +266,7 @@
     function updateMyTable(id, structure, capacity, mergedWith, userUsername) {
         globalUpdateId = id;
         $('#uuserUsername').val(userUsername);
-        $('#uid').val(uid);
+        $('#uid').val(id);
         $('#ustructure').val(structure);
         $('#ucapacity').val(capacity);
         $('#').val(price);
