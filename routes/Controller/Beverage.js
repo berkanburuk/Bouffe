@@ -9,12 +9,8 @@ let mOrder = db.model(dbNames.order);
 let mOrderBeverage = db.model(dbNames.orderBeverage);
 
 
-let isAdmin = require('./RoleCheck').isAdmin;
-let isWaiter = require('./RoleCheck').isWaiter;
-let isBartender = require('./RoleCheck').isBartender;
-let isChef = require('./RoleCheck').isChef;
-let isMatre = require('./RoleCheck').isMatre;
-let errorMessage = require('./RoleCheck').errorMesage;
+let checkUsersRole = require('./RoleCheck');
+let checkDataType = require('../Util/TypeCheck');
 
 
 exports.getABeverage = function (id){
@@ -44,203 +40,264 @@ exports.getABeverage = function (id){
 }
 
 
-
-function createMenuAndAssignFood(data){
-
+function createBeverage(data){
+    //var data = sampleUserData();
     return new Promise((resolve, reject) => {
-        return mBeverage.findOrCreate({
+        mBeverage.findOrCreate({
             where:
                 {
-                    name: data.name
+                    id: data.id
                 },
             defaults:
                 {
                     name: data.name,
-                    cousinRegion: data.cousinRegion,
-                    date: data.date,
-                    setPrice: data.setPrice
+                    available: data.available,
+                    price: data.lastName,
                 }
-        }).then((menu) => {
-            console.log(menu[0]);
-            menu[0].addFood(data.foodName).then(menu => {
-                console.log(menu);
-                if (menu != null || menu != undefined)
-                    resolve("Food is added to Menu!");
-                else
-                    reject("Food could not be added to Menu!");
-            }).catch(error => {
-                reject(error);
-            })
-        }).catch(error => {
-            reject("Menu could not be created!" + error);
+        }).then((beverage)=>{
+            console.log("Beverage" + user[1]);
+            if (beverage[1] == false){
+                reject('This beverage is already added!');
+                return;
+            }
+            resolve("Beverage is added successfully.");
         })
-    })
+        /*.spread((user, created)=> {
+            console.log("CRRRR : " + created);
+            console.log(user.get({plain: true}));
 
+        })*/
+            .catch(error =>{
+                reject("Beverage cannot be created!\nFields are missing" + error);
+            })
+
+    })
 
 }
 
 
-function deleteMenu(data){
+function deleteBeverage(id){
     return new Promise((resolve,reject)=>{
-        mMenu.destroy({
+        mBeverage.destroy({
             where: {
-                name: data.name
+                id: id
             }
-        }).then(menu=>{
-            if (menu>0)
-                resolve('Menu is deleted');
+        }).then(beverage=>{
+            if (beverage>0)
+                resolve('Beverage is deleted');
             else
-                reject("There is no food with name of : "+data.name);
+                reject("There is no beverage with name of : "+data.name);
         }).catch(error =>{
             reject(error);
         })
     })
 }
 
-
-function addFoodToMenu(data){
+function getAllBeverage (){
     return new Promise((resolve, reject) => {
-
-        var c = mMenu.getFoods().then(c=>{
-            console.log(c);
-        }).catch(error=>{
-            console.log(error);
-        })
-
-        /*
-        mTable.findAll({
-            where: {
-                foodName: data.foodName,
-                menuName: data.menuName
-            },
-            include: [{
-                model: mUser,
-            }]
-        }).then(data=>{
-            if (data[0]!= null && data[0] != undefined){
-                resolve(data[0].get(0));
+        mBeverage.findAll({
+                //   attributes: ['foo', 'bar']
             }
-            else
-                reject("User does not have any table assigned!");
+        ).then(beverage=>{
+            resolve(JSON.stringify(beverage));
         }).catch(error => {
-            reject(error + " Cannot get all Tables Related to this ");
+            reject(error + "\nCannot get all Food");
         })
-        */
-    })
+    });
 }
 
-//Many to Many Example
-function getFoodOfMenu(data){
-    console.log(data);
-    return new Promise((resolve, reject) => {
-        mMenu.findAll({
-            where: {
-                name: data.menuName
-            },
-            include: [
-                {
-                    model:mFood,
-                    through: mMenuFood
+
+
+
+module.exports = function(app){
+
+
+    app.get('/beverage', function (request, response) {
+        console.log('Food');
+        if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)
+            ||  checkUsersRole.isChef(request.session.roleId)
+            ||  checkUsersRole.isChef(request.session.roleId))) {
+            response.sendFile(path.resolve('public/Pages/Beverage.html'));
+        }else {
+            response.write(checkUsersRole.errorMesage(), () => {
+                response.statusCode = 404;
+                response.end();
+            })
+        }
+    }),
+
+        app.post('/api/beverage/addBeverage', function (request, response ) {
+            console.log("Add Food");
+            var data = request.body;
+
+            if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)
+                ||  checkUsersRole.isChef(request.session.roleId)
+                ||  checkUsersRole.isChef(request.session.roleId))){
+
+
+
+                createBeverage(data).then(beverage => {
+                    response.statusCode = 200;
+                    console.log(beverage);
+                    response.write(JSON.stringify(beverage), () => {
+                        response.end();
+                    })
+
+                }).catch(error => {
+                    console.log(error);
+                    response.statusCode = 404;
+                    response.write(error, () => {
+                        response.end();
+                    })
+                })
+            }else {
+                response.write(checkUsersRole.errorMesage(), () => {
+                    response.statusCode = 404;
+                    response.end();
+                })
+            }
+
+        }),
+
+        app.get('/api/beverage/deleteBeverage/:id', function (request, response ) {
+            console.log("Delete Beverage");
+            console.log(request.body);
+            if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)
+                ||  checkUsersRole.isChef(request.session.roleId)
+                ||  checkUsersRole.isChef(request.session.roleId))) {
+                var id = parseInt(request.params.id);
+                console.log(request.params.id);
+
+                console.log(id);
+                if (!checkDataType.isNumber(id)) {
+                    response.write(checkDataType.errorMesage(), () => {
+                        response.statusCode = 400;
+                        response.end();
+
+                    })
+                    return false;
+                } else {
+                    deleteBeverage(id).then(beverage => {
+                        response.statusCode = 200;
+                        console.log(beverage);
+                        response.write(beverage.toString(), () => {
+                            response.end();
+                        })
+
+                    }).catch(error => {
+                        console.log(error);
+                        response.statusCode = 404;
+                        response.write(error.toString(), () => {
+                            response.end();
+                        })
+                    })
                 }
-            ]
-        }).then(data=>{
-            if (data != null && data != undefined){
-                resolve(JSON.stringify(data));
-            }
-            else
-                reject("Cannot get the Menu's Food!");
-        }).catch(error => {
-            reject(error);
+            }else
+                {
+                    response.write(checkUsersRole.errorMesage(), () => {
+                        response.statusCode = 404;
+                        response.end();
+                    })
+                }
+
         })
 
-    })
-}
+    app.post('/api/beverage/updateFood', function (request, response ) {
+        console.log("Update Food");
+        var data = request.body;
+        if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)
+            ||  checkUsersRole.isChef(request.session.roleId)
+            ||  checkUsersRole.isChef(request.session.roleId))){
+            console.log(request);
+            console.log("Will be Updated : " + data);
 
-module.exports = function (app,session) {
+            updateFood(data).then(food => {
+                response.statusCode = 200;
+                console.log(food);
+                response.write(food.toString(), () => {
+                    response.end();
+                })
+            }).catch(error => {
+                response.statusCode = 404;
+                console.log(error);
+                response.write(error.toString(), () => {
+                    response.end();
+                })
+            })
+        }else {
+            response.write(checkUsersRole.errorMesage(), () => {
+                response.statusCode = 404;
+                response.end();
+            })
+        }
 
-    app.get('/menu', function (request, response) {
-        console.log('Beverage');
-        response.sendFile(path.resolve('../../public/Pages/Menu.html'));
 
     }),
 
-        app.post('/api/menu/addMenu', function (request, response) {
-            var data = request.body;
-            console.log(data);
-            createMenuAndAssignFood(data).then(menu => {
-                response.statusCode = 200;
-                console.log(menu);
-                response.write(menu.toString(), () => {
-                    response.end();
-                });
-            }).catch(error => {
-                response.statusCode = 404;
-                console.log(error);
-                response.write(error.toString(), () => {
-                    response.end();
-                });
-            })
-        }),
-        app.get('/api/menu/deleteMenu/:name', function (request, response) {
-            console.log('Delete Menu');
-            var data = request.params;
-            deleteMenu(data).then(menu => {
-                response.statusCode = 200;
-                console.log(menu);
-                response.write(menu.toString(), () => {
-                    response.end();
-                })
 
-            }).catch(error => {
-                console.log(error);
-                response.statusCode = 404;
-                response.write(error.toString(), () => {
-                    response.end();
-                })
-            })
-
-        }),
-        app.get('/api/menu/getMenu/:name', function (request, response ) {
+        app.get('/api/food/getAFood/:name', function (request, response ) {
             console.log("Get a Food");
-
-            let data = request.params;
-            console.log(data);
-
-            getMenu(data).then(menu=> {
-                response.statusCode = 200;
-                console.log(menu);
-                response.write(menu.toString(),()=>{
+            if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)
+                ||  checkUsersRole.isChef(request.session.roleId)
+                ||  checkUsersRole.isChef(request.session.roleId))){
+                var data = request.params;
+                console.log(data);
+                console.log(data.name);
+                getFood(data).then(food => {
+                    response.statusCode = 200;
+                    console.log(food);
+                    response.write(food.toString(), () => {
+                        response.end();
+                    });
+                }).catch(error => {
+                    response.statusCode = 404;
+                    console.log(error);
+                    response.write(error.toString(), () => {
+                        response.end();
+                    });
+                })
+            }else {
+                response.write(checkUsersRole.errorMesage(), () => {
+                    response.statusCode = 404;
                     response.end();
-                });
-            }).catch(error => {
-                response.statusCode = 404;
-                console.log(error);
-                response.write(error.toString(),()=>{
-                    response.end();
-                });
-            })
-
-        }),
-
-        app.get('/api/menu/getFoodOfMenu/:menuName/:foodName', function (request, response ) {
-            console.log("getFoodOfMenu");
-
-            let data = request.params;
-            console.log(data);
-            getFoodOfMenu(data).then(menu=> {
-                response.statusCode = 200;
-                console.log(menu);
-                response.write(menu.toString(),()=>{
-                    response.end();
-                });
-            }).catch(error => {
-                response.statusCode = 404;
-                console.log(error);
-                response.write(error.toString(),()=>{
-                    response.end();
-                });
-            })
-
+                })
+            }
         })
 
+
+    app.get('/api/beverage/getAllBeverage', function (request, response ) {
+        console.log("Get all Food");
+
+        if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)
+            ||  checkUsersRole.isChef(request.session.roleId)
+            ||  checkUsersRole.isChef(request.session.roleId))){
+            var data = request.params;
+            console.log(data);
+
+            getAllBeverage().then(beverage => {
+                response.statusCode = 200;
+                console.log(beverage);
+                response.write(beverage.toString(), () => {
+                    response.end();
+                });
+            }).catch(error => {
+                response.statusCode = 404;
+                console.log(error);
+                response.write(error.toString(), () => {
+                    response.end();
+                });
+            })
+        }else {
+            response.write(checkUsersRole.errorMesage(), () => {
+                response.statusCode = 404;
+                response.end();
+            })
+        }
+    })
+
+
+
 }
+
+
+

@@ -1,64 +1,68 @@
 
 
 // Returns if a value is a string
-function isString (value) {
+exports.isString  = function (value) {
     return typeof value === 'string' || value instanceof String;
 }
 
 // Returns if a value is really a number
-function isNumber (value) {
+exports.isNumber = function (value) {
     return typeof value === 'number' && isFinite(value);
 }
 
 
 // Returns if a value is an array
-function isArray (value) {
+exports.isArray = function (value) {
     Array.isArray(value);
 }
 
 // Returns if a value is a function
-function isFunction (value) {
+exports.isFunction = function (value) {
     return typeof value === 'function';
 }
 
 
 // Returns if a value is an object
-function isObject (value) {
+exports.isObject = function (value) {
     return value && typeof value === 'object' && value.constructor === Object;
 }
 
 
 // Returns if a value is null
-function isNull (value) {
+exports.isNull = function (value) {
     return value === null;
 }
 
 // Returns if a value is undefined
-function isUndefined (value) {
+exports.isUndefined = function (value) {
     return typeof value === 'undefined';
 }
 
 // Returns if a value is a boolean
-function isBoolean (value) {
+exports.isBoolean = function (value) {
     return typeof value === 'boolean';
 }
 
 // Returns if a value is a regexp
-function isRegExp (value) {
+exports.isRegExp = function (value) {
     return value && typeof value === 'object' && value.constructor === RegExp;
 }
 
 // Returns if value is an error object
-function isError (value) {
+exports.isError = function (value) {
     return value instanceof Error && typeof value.message !== 'undefined';
 }
 
 // Returns if value is a date object
-function isDate (value) {
+exports.isDate = function(value) {
     return value instanceof Date;
 }
 
 // Returns if a Symbol
-function isSymbol (value) {
+exports.isSymbol = function (value) {
     return typeof value === 'symbol';
+}
+
+exports.errorMesage =function(){
+    return "The value entered is not valid";
 }

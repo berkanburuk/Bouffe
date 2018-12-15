@@ -35,7 +35,7 @@ function assignTableToUser(data,id){
                 if (table[0] > 0) {
                     resolve("Table is updated successfully.");
                 } else {
-                    reject("Table could not updated!");
+                    reject("Table could not be updated!");
                 }
 
             }).catch(error => {
@@ -200,7 +200,7 @@ module.exports = function(app,session){
         console.log('Table');
             if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
                 ||  checkUsersRole.isCashier(request.session.roleId)) || checkUsersRole.isAdmin(request.session.roleId)) {
-                //response.sendFile(path.resolve('../../public/Pages/Waiter.html'));
+                response.sendFile(path.resolve('public/Pages/TableManagement.html'));
             }
             else {
                     response.write(checkUsersRole.errorMesage(), () => {
@@ -306,7 +306,7 @@ module.exports = function(app,session){
             {
                     console.log("Get Tables");
                     getAllTables().then(tables => {
-                        response.write(tables.toString(), () => {
+                        response.write(JSON.stringify(tables), () => {
                             response.statusCode = 200;
                             console.log(tables);
                             response.end();
