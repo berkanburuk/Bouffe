@@ -228,6 +228,7 @@ function updateMergedTablesToDivide(id){
                     mergedWith: -2
                 }
         }).then((table) => {
+            console.log(table);
             console.log(table[0]);
             if (table[0] > 0) {
                 resolve("Table is updated successfully.");
@@ -254,9 +255,11 @@ function divideTables(id) {
             console.log(data);
 
             do {
-                mergedTable=data.mergedWith;
                 updateMergedTablesToDivide(data.id).then(()=>{
-
+                    mergedTable=data.mergedWith;
+                    data.id=data.mergedWith;
+                }).catch(error=>{
+                    reject(error);
                 })
             }while (mergedTable>0);
 
@@ -332,7 +335,11 @@ function deleteTable(id){
                 id: id
             }
         }).then(dbData=>{
-            resolve(data + ' Table is deleted');
+            if(dbData>0){
+                resolve('Table is deleted: '+ id);
+            }else{
+                reject('Table could not be deleted: '+ id);
+            }
         }).catch(error =>{
             reject(error + ' Table could not be deleted!');
         })

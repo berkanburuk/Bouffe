@@ -19,7 +19,6 @@ let mUserRoles = db.model(dbNames.userRoles);
 
 module.exports = function(app) {
 
-
     /*
         app.use('/user', function (req, res, next) {
             if (req.method !== 'GET' || req.url !== '/')
@@ -258,6 +257,7 @@ module.exports = function(app) {
         console.log("getRole "+JSON.stringify(a));
         if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
             ||  checkUsersRole.isAdmin(request.session.roleId))){
+
             response.statusCode = 200;
             var data = JSON.stringify(request.session.roleId);
             response.write(data, () => {
@@ -270,6 +270,33 @@ module.exports = function(app) {
             })
         }
     }),
+
+        app.get('/api/user/getRoleWithId/:id', function (request, response) {
+
+            if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
+                ||  checkUsersRole.isAdmin(request.session.roleId))){
+                var id = request.params.id;
+                getRoleWithId(id).then(res=> {
+                    response.statusCode = 200;
+                    console.log(res);
+                    response.write(res, () => {
+                        response.end();
+                    })
+                }).catch(error => {
+                    response.statusCode = 404;
+                    console.log(error);
+
+                    response.write(error, () => {
+                        response.end();
+                    });
+                })
+            }		else {
+                response.write(checkUsersRole.errorMesage(), () => {
+                    response.statusCode = 404;
+                    response.end();
+                })
+            }
+        }),
 
         app.get('/api/user/logout', function (request, response,next) {
             console.log("logout");
@@ -537,6 +564,23 @@ function checkValidationOfUser(username, password){
     });
 }
 
+
+function getRoleWithId(id){
+    return new Promise((resolve, reject) => {
+        mUserRoles.findAll({
+                id:id
+            }
+        ).then(result=>{
+            if (result[0]>0){
+                resolve(JSON.stringify(result[0]));
+            } else{
+                reject("Could not get the role with id:" +id);
+            }
+        }).catch(error => {
+            reject("Cannot get all Users");
+        })
+    });
+}
 
 
 function getAllUsers(){
