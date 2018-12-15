@@ -87,6 +87,26 @@ function createMenuAndAssignFood(data){
         })
 }
 
+function updateAMenu(data){
+    return new Promise((resolve, reject) => {
+        mMenu.update(data, {
+            where:
+                {
+                    name: data.name
+                }
+        }).then((menu) => {
+            console.log(menu[0]);
+            if (menu[0] > 0) {
+                resolve("Menu is updated successfully.");
+            } else {
+                reject("Menu could not be updated!");
+            }
+
+        }).catch(error => {
+            reject(error);
+        })
+    })
+}
 
 
 function assignFoodToMenu(data){
@@ -122,18 +142,13 @@ function assignFoodToMenu(data){
                 }
 
 */
-
-            var parsedJSON = JSON.parse(data);
-            console.log(parsedJSON);
-            for (var i=0;i<parsedJSON.length;i++) {
-                menu.addFood(parsedJSON.foods[i].foodName).then(menu => {
-                    console.log(menu);
-                    if (menu != null || menu != undefined)
-                        resolve("Food is added to Menu!");
-                    else
-                        reject("Food does not entered to assign to Menu!");
+            menu.addFood(data.foodName).then(menu => {
+                console.log(menu);
+                if (menu != null || menu != undefined)
+                    resolve("Food is added to Menu successfully!");
+                else
+                reject("Food could not added to menu!");
                 })
-            }
         }).catch(error => {
             reject(error);
         })
@@ -332,6 +347,31 @@ module.exports = function (app) {
             }
         }),
 
+        app.post('/api/menu/updateAMenu', function (request, response) {
+            var data = request.body;
+            console.log("assignFoodToMenu" + data);
+
+            if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)||
+                checkUsersRole.isChef(request.session.roleId) ||  checkUsersRole.isChef(request.session.roleId))) {
+                updateAMenu(data).then(menu => {
+                    response.statusCode = 200;
+                    response.write(menu.toString(), () => {
+                        response.end();
+                    });
+                }).catch(error => {
+                    response.statusCode = 404;
+                    console.log(error);
+                    response.write(error.toString(), () => {
+                        response.end();
+                    });
+                })
+            }else {
+                response.write(checkUsersRole.errorMesage(), () => {
+                    response.statusCode = 404;
+                    response.end();
+                })
+            }
+        }),
 
 
         app.get('/api/menu/deleteMenu/:name', function (request, response) {
