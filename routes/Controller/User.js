@@ -5,7 +5,7 @@ let tableNames = require('../Util/DatabaseConnection').getTableNames;
 let mUserFunc = require('../Util/DatabaseConnection').getUserModel;
 
 let checkUsersRole = require('./RoleCheck');
-
+let checkDataType = require('../Util/TypeCheck');
 
 
 
