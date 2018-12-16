@@ -191,7 +191,7 @@ function getActiveMenu() {
         })
             .then((menu) => {
                     if(menu!=undefined || menu!=null){
-                        resolve(menu);
+                        resolve(JSON.stringify(menu));
                     } else {
                         reject("There is no active menu!");
                     }
