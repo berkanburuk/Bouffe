@@ -89,6 +89,7 @@
                 x+="var activated = false;\n";
                 x+="var mergedlist={};\n";
                 x+="var y = parseInt($(this).attr('value'));\n";
+                x+="var texty=$(this).attr('name');\n";
                 x+="var getTable = $.ajax({\n";
                 x+="url: '/api/table/getATable/' + y,\n";
                 x+="type: \"GET\",\n";
@@ -132,7 +133,7 @@
                 x+="})\n";
                 x+="}\n";
                 x+="else{\n";
-                x+="case1(y);\n";
+                x+="case1(texty,y);\n";
                 x+="}\n";
                 x+="}\n";
                 x+="else{\n";
@@ -163,7 +164,7 @@
                 x+="})\n";
                 x+="}\n";
                 x+="else{\n";
-                x+="case3(y);\n";
+                x+="case3(texty,y);\n";
                 x+="}\n";
                 x+="}\n";
                 x+="},\n";
@@ -174,6 +175,7 @@
                 x+="Swal({\n";
                 x+="title: 'Are you sure?',\n";
                 x+="text: \"You won't be able to revert \" + y + \" this!\",\n";
+
                 x+="type: 'warning',\n";
                 x+="showCancelButton: true,\n";
                 x+="showCloseButton: true,\n";
@@ -253,7 +255,7 @@
                 x+="})\n";
                 x+="}\n";
 
-                x+="function case1(y) {\n";
+                x+="function case1(text,y) {\n";
                 x+="Swal({\n";
                 x+="title: 'Attention!',\n";
                 x+="text: \"Actions you performed will be permenant  on \" + y + \"  table!\",\n";
@@ -271,8 +273,9 @@
                 x+="'table',\n";
                 x+="'success',\n";
                 x+=").then(()=>{\n";
-                x+="console.log(y);\n";
-                x+="var data = text.split('-'); ";
+                x+="console.log(text);\n";
+                x+="var data = JSON.stringify(text.split('-')); ";
+                x+="console.log(data);\n";
                 x+="$.ajax({\n";
                 x+="type: 'POST',\n";
                 x+="dataType: 'application/json',\n";
@@ -403,7 +406,7 @@
                 x+="}\n";
                 x+="})\n";
                 x+="}\n";
-                x+="function case3(y) {\n";
+                x+="function case3(text,y) {\n";
                 x+="Swal({\n";
                 x+="title: 'Are you sure?',\n";
                 x+="text: \"You won't be able to revert \" + y + \" this!\",\n";
@@ -422,8 +425,9 @@
                 x+="'table',\n";
                 x+="'success',\n";
                 x+=").then(()=>{\n";
-                x+="console.log(y);\n";
-                x+="var data = text.split('-'); ";
+                x+="console.log(text);\n";
+                x+="var data = JSON.stringify(text.split('-')); ";
+                x+="console.log(data);\n";
                 x+="$.ajax({\n";
                 x+="type: 'POST',\n";
                 x+="dataType: 'application/json',\n";
