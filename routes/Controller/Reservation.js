@@ -112,7 +112,7 @@ function getEmptyTablesForReservation(){
                 resolve(JSON.stringify(dbData));
             }
             else
-                reject("Reservation is full");
+                reject("There is no reservation left!");
         }).catch(error => {
             reject(error);
         })
