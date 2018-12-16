@@ -585,7 +585,7 @@ module.exports = function(app){
     })
     app.get('/api/table/getMyTables', function (request, response) {
         console.log("getATable");
-        if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
+        if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId) || checkUsersRole.isWaiter(request.session.roleId)
             ||  checkUsersRole.isCashier(request.session.roleId)) || checkUsersRole.isAdmin(request.session.roleId))
         {
             var username = request.session.username;
@@ -612,7 +612,7 @@ module.exports = function(app){
 
         app.get('/api/table/getUsersTable/:username', function (request, response) {
             console.log("getATableBelongToAUser");
-            if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
+            if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId) || checkUsersRole.isWaiter(request.session.roleId)
                 ||  checkUsersRole.isCashier(request.session.roleId)) || checkUsersRole.isAdmin(request.session.roleId))
             {
                 var username = request.params;
@@ -640,9 +640,8 @@ module.exports = function(app){
             app.post('/api/table/updateTable', function (request, response ) {
                 var data = request.body;
 
-                if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)
-                    ||  checkUsersRole.isChef(request.session.roleId)
-                    ||  checkUsersRole.isMatre(request.session.roleId)))
+                if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId) || checkUsersRole.isWaiter(request.session.roleId)
+                    ||  checkUsersRole.isCashier(request.session.roleId)) || checkUsersRole.isAdmin(request.session.roleId))
                 {
                     console.log(request);
                     console.log("Will be Updated : " + data);
@@ -669,10 +668,8 @@ module.exports = function(app){
             }),
             app.post('/api/table/createAMerge', function (request, response ) {
                 var data = request.body;
-
-                if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)
-                    ||  checkUsersRole.isChef(request.session.roleId)
-                    ||  checkUsersRole.isMatre(request.session.roleId)))
+                if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId) || checkUsersRole.isWaiter(request.session.roleId)
+                    ||  checkUsersRole.isCashier(request.session.roleId)) || checkUsersRole.isAdmin(request.session.roleId))
                 {
                     console.log(request);
                     console.log("Will be Updated : " + data);
@@ -699,10 +696,8 @@ module.exports = function(app){
             }),
             app.post('/api/table/updateStatus', function (request, response ) {
                 var data = request.body;
-
-                if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)
-                    ||  checkUsersRole.isChef(request.session.roleId)
-                    ||  checkUsersRole.isMatre(request.session.roleId)))
+                if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId) || checkUsersRole.isWaiter(request.session.roleId)
+                    ||  checkUsersRole.isCashier(request.session.roleId)) || checkUsersRole.isAdmin(request.session.roleId))
                 {
                     console.log(request);
                     console.log("Will be Updated : " + data);
@@ -733,8 +728,9 @@ module.exports = function(app){
     app.get('/api/table/deleteTable/:id', function (request, response ) {
 
         console.log("Delete Table");
-        if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
-            ||  checkUsersRole.isAdmin(request.session.roleId))){
+        if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId) || checkUsersRole.isWaiter(request.session.roleId)
+            ||  checkUsersRole.isCashier(request.session.roleId)) || checkUsersRole.isAdmin(request.session.roleId))
+        {
             var id= request.params.id;
             deleteTable(id).then(result=> {
                 response.statusCode = 200;
@@ -761,8 +757,9 @@ module.exports = function(app){
             app.post('/api/table/divideTable', function (request, response ) {
 
                 console.log("Divide Table");
-                if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
-                    ||  checkUsersRole.isAdmin(request.session.roleId))){
+                if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId) || checkUsersRole.isWaiter(request.session.roleId)
+                    ||  checkUsersRole.isCashier(request.session.roleId)) || checkUsersRole.isAdmin(request.session.roleId))
+                {
                     var data = request.body;
                     console.log("divideTable"+data);
                     divideTables(data).then(result=> {
@@ -789,10 +786,10 @@ module.exports = function(app){
 
 
         app.get('/api/table/getAllTables', function (request, response) {
-            /*if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
+            if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId) || checkUsersRole.isWaiter(request.session.roleId)
                 ||  checkUsersRole.isCashier(request.session.roleId)) || checkUsersRole.isAdmin(request.session.roleId))
             {
-            */if(true){
+
                     console.log("Get Tables");
                     getAllTables().then(tables => {
                         response.write(JSON.stringify(tables), () => {
@@ -815,11 +812,9 @@ module.exports = function(app){
         }),
             app.post('/api/table/addTable', function (request, response ) {
                 console.log("Add Food");
-/*
-                if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)
-                    ||  checkUsersRole.isChef(request.session.roleId)
-                    ||  checkUsersRole.isMatre(request.session.roleId))) {
-                    */if(true){
+                if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId) || checkUsersRole.isWaiter(request.session.roleId)
+                    ||  checkUsersRole.isCashier(request.session.roleId)) || checkUsersRole.isAdmin(request.session.roleId))
+                {
                     var data = request.body;
                     if (!checkDataType.isObjectValuesEmpty(data)) {
                         response.statusCode = 404;
