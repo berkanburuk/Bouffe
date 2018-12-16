@@ -12,7 +12,7 @@ class MenuModel {
                     type:Sequelize.STRING
                 },
                 date: {
-                    type: Sequelize.DATE
+                    type: Sequelize.DATEONLY
                 },
                 setPrice:{
                     type:Sequelize.DOUBLE
