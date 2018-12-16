@@ -11,8 +11,9 @@ class MenuModel {
                 cuisineRegion:{
                     type:Sequelize.STRING
                 },
-                date: {
-                    type: Sequelize.DATEONLY
+                isActive:{
+                  type:Sequelize.BOOLEAN,
+                    defaultValue:false
                 },
                 setPrice:{
                     type:Sequelize.DOUBLE
