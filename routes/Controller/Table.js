@@ -330,17 +330,24 @@ function divideTables(id) {
                 id:id
             }
         }).then(data=>{
-            console.log(data);
-
+        console.log(data);
+        var x;
+        if (data.mergedWith>0){
             do {
-                updateMergedTablesToDivide(data.id).then(()=>{
-                    mergedTable=data.mergedWith;
-                    data.id=data.mergedWith;
-                }).catch(error=>{
+                updateMergedTablesToDivide(data.id).then(myData => {
+
+                    mergedTable = myData.mergedWith;
+                    data.mergedWith=myData.mergedWith;
+                    data.id = myData.id;
+
+                })
+                    .catch(error => {
                     reject(error);
                 })
-            }while (mergedTable>0);
+            }
+            while (data.mergedWith>0);
 
+        }
             resolve(data);
         }).catch(error => {
             reject(error + "\nCannot get all Tables Related to this ");
@@ -682,7 +689,33 @@ module.exports = function(app){
 
     }),
 
+            app.get('/api/table/divideTable/:id', function (request, response ) {
 
+                console.log("Divide Table");
+                if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
+                    ||  checkUsersRole.isAdmin(request.session.roleId))){
+                    var id= request.params.id;
+                    divideTables(id).then(result=> {
+                        response.statusCode = 200;
+                        console.log(result);
+                        response.write("Successful", () => {
+                            response.end();
+                        });
+                    }).catch(error => {
+                        response.statusCode = 404;
+                        console.log(error);
+                        response.write(error, () => {
+                            response.end();
+                        });
+                    })
+                }
+                else {
+                    response.statusCode = 401;
+                    return response.redirect('/noAuthority');
+                }
+
+
+            }),
 
 
         app.get('/api/table/getAllTables', function (request, response) {

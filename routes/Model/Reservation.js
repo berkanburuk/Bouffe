@@ -15,7 +15,7 @@ class ReservationModel {
                 type:Sequelize.BIGINT,
             },
             reservationDate:{
-                type:Sequelize.DATE
+                type:Sequelize.DATEONLY
             },
             numberOfCustomer:{
                 type:Sequelize.INTEGER
