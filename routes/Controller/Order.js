@@ -70,7 +70,7 @@ function createPayment(){
 
 
 
-function updatePayment(paymentId,price,quantity){
+function updatePayment(paymentId,price){
     console.log("Add Payment" + paymentId,price);
     return new Promise((resolve, reject) => {
         mPayment.findOne({
@@ -81,7 +81,7 @@ function updatePayment(paymentId,price,quantity){
         }).then((payment) => {
             console.log("Payment Payment" + payment);
 
-            var p = payment.totalPrice + (price*quantity);
+            var p = payment.totalPrice + price;
             payment.update({
                 totalPrice: p,
                 where: {
@@ -131,16 +131,16 @@ function createAnBeverageOrder(data) {
     data.note yeterli
     beverageId need
     tableId: need
-    data.quantity
+
      */
     console.log("Data: " + data);
     return new Promise((resolve, reject) => {
 
         data.tableId = parseInt(data.tableId);
         data.beverageId = parseInt(data.beverageId);
-        data.quantity = parseInt(data.quantity);
+
         console.log(data);
-        if (data.tableId == undefined || data.beverageId == undefined || data.quantity == undefined) {
+        if (data.tableId == undefined || data.beverageId == undefined) {
             //throw new Error({'hehe':'haha'});
             reject("Proper input shall be sent!");
             return;
@@ -179,7 +179,7 @@ function createAnBeverageOrder(data) {
                                     .then(bev => {
                                         console.log("Beverage Bilgileri Then");
                                         console.log("Payment Id " + paymentId + " Beverage Price: " + bev.price);
-                                        updatePayment(paymentId, bev.price,data.quantity).then(result=>{
+                                        updatePayment(paymentId, bev.price).then(result=>{
                                             console.log("Result "+ result);
                                         })
                                             .catch(error => {
@@ -253,7 +253,7 @@ function createMenuOrder(data) {
 
         data.tableId = parseInt(data.tableId);
         data.menuName = parseInt(data.beverageId);
-        data.quantity = parseInt(data.quantity);
+
         console.log(data);
         if (data.tableId == undefined || data.beverageId == undefined || data.quantity == undefined) {
             //throw new Error({'hehe':'haha'});
@@ -364,7 +364,8 @@ module.exports = function (app) {
     app.get('/order', function (request, response) {
         console.log('Order');
             if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
-                ||  checkUsersRole.isCashier(request.session.roleId))) {
+                || checkUsersRole.isAdmin(request.session.roleId) || checkUsersRole.isWaiter(request.session.roleId)))
+            {
                 response.sendFile(path.resolve('public/Pages/Order.html'));
             }
             else {
@@ -381,9 +382,9 @@ module.exports = function (app) {
 
 
         app.post('/api/order/orderBeverage', function (request, response) {
-                /*if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
-                    ||  checkUsersRole.isCashier(request.session.roleId))) {
-                    */if(true){
+            if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
+                || checkUsersRole.isAdmin(request.session.roleId) || checkUsersRole.isWaiter(request.session.roleId)))
+            {
                     var data = request.body;
                     createAnBeverageOrder(data).then(beverage => {
                         response.end(beverage.toString());
@@ -415,7 +416,8 @@ module.exports = function (app) {
     */
     app.get('/api/order/:getPaymentOfTable', function (request, response) {
         if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
-            ||  checkUsersRole.isCashier(request.session.roleId))) {
+            || checkUsersRole.isAdmin(request.session.roleId) || checkUsersRole.isWaiter(request.session.roleId)))
+        {
             var tableId = request.params.getPaymentOfTable;
 
             tableId = parseInt(tableId);
@@ -434,7 +436,8 @@ module.exports = function (app) {
     }),
         app.get('/api/order/getChefNotification', function (request, response) {
             if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
-                ||  checkUsersRole.isCashier(request.session.roleId))) {
+                || checkUsersRole.isAdmin(request.session.roleId) || checkUsersRole.isWaiter(request.session.roleId)))
+            {
                 modelOrder.getChefNotification()
                     .then(notification=> {
                     response.end(notification);

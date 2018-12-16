@@ -500,7 +500,8 @@ module.exports = function (app) {
             let data = request.params;
             console.log(data);
             if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)||
-                checkUsersRole.isChef(request.session.roleId) ||  checkUsersRole.isChef(request.session.roleId))) {
+                checkUsersRole.isChef(request.session.roleId) ||  checkUsersRole.isChef(request.session.roleId)
+             || checkUsersRole.isChef(request.session.roleId))) {
                 getMenu(data).then(menu => {
                     response.statusCode = 200;
                     console.log(menu);
@@ -532,7 +533,9 @@ module.exports = function (app) {
             console.log(data);
 
             if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)||
-                checkUsersRole.isChef(request.session.roleId) ||  checkUsersRole.isChef(request.session.roleId))) {
+                checkUsersRole.isChef(request.session.roleId) ||  checkUsersRole.isChef(request.session.roleId)
+                || checkUsersRole.isChef(request.session.roleId)))
+            {
                 getFoodOfMenu(data).then(menu => {
                     response.statusCode = 200;
                     console.log(menu);
