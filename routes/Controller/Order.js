@@ -131,6 +131,7 @@ function createAnBeverageOrder(data) {
     data.note yeterli
     beverageId need
     tableId: need
+    data.quantity
      */
     console.log("Data: " + data);
     return new Promise((resolve, reject) => {
@@ -380,8 +381,9 @@ module.exports = function (app) {
 
 
         app.post('/api/order/orderBeverage', function (request, response) {
-                if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
+                /*if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
                     ||  checkUsersRole.isCashier(request.session.roleId))) {
+                    */if(true){
                     var data = request.body;
                     createAnBeverageOrder(data).then(beverage => {
                         response.end(beverage.toString());
