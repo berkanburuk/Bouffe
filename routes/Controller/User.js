@@ -284,6 +284,7 @@ module.exports = function(app) {
                     response.write(res, () => {
                         response.end();
                     })
+                    //
                 }).catch(error => {
                     response.statusCode = 404;
                     console.log(error);
@@ -485,7 +486,7 @@ function getAUserRole(data){
 }
 */
 function getAUserRole(username){
-    console.log(data);
+
     return new Promise((resolve, reject) => {
         mUserRoles.findAll({
             where: {
