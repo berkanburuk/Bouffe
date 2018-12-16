@@ -80,7 +80,8 @@
             </tbody>
         </table>
     </div>
-    <button class="btn btn-primary float-md-right" data-toggle="modal" data-target="#modal_form_add_menu">Create Menu</button>
+    <button class="btn btn-primary float-md-right" data-toggle="modal" data-target="#modal_form_add_menu">Create Menu
+    </button>
 
 </div>
 </body>
@@ -174,29 +175,25 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title">Update Menu</h3>
+                <h3 class="modal-title">Update Menu Items</h3>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
-                <div class="table-responsive-sm" style="margin-top: 20px">
-                    <table id="food_data" class="table table-hover table-bordered table-striped">
-                        <thead>
-                        <tr>
-                            <th class="text-left">Menu Item Type</th>
-                            <th class="text-left">Food Name</th>
-                            <th class="text-left"></th>
+            <div>
+                <table id="food_data" class="table table-bordered table-striped">
+                    <thead>
+                    <tr>
+                        <th class="text-left">Menu Item Type</th>
+                        <th class="text-left">Food Name</th>
+                        <th class="text-left"></th>
 
-                        </tr>
-                        </thead>
-                        <tbody id="food_data_body">
-                        </tbody>
-                    </table>
-                </div>
+                    </tr>
+                    </thead>
+                    <tbody id="food_data_body">
+                    </tbody>
+                </table>
                 <div class="modal-footer">
-                    <input type="submit" name="submit" value="Save"
-                           class="btn btn-primary"/>
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
                 </div>
             </div>
