@@ -274,6 +274,28 @@ module.exports = function(app) {
                 return response.redirect('/user');
             }
 
+        }),
+        app.get('/api/user/getRoleByUsername/:username', function (request, response,next) {
+            if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
+                ||  checkUsersRole.isAdmin(request.session.roleId))){
+                var username = request.params.username;
+                getAUserRole(username).then(res=> {
+                    response.statusCode = 200;
+                    response.write(res, () => {
+                        response.end();
+                    })
+                }).catch(error => {
+                    response.statusCode = 404;
+                    console.log(error);
+
+                    response.write(error, () => {
+                        response.end();
+                    });
+                })
+            }		else {
+                response.statusCode = 401;
+                return response.redirect('/noAuthority');
+            }
         })
 
 }
@@ -438,12 +460,12 @@ function getAUserRole(data){
     })
 }
 */
-function getAUserRole(data){
+function getAUserRole(username){
     console.log(data);
     return new Promise((resolve, reject) => {
         mUserRoles.findAll({
             where: {
-                userUsername: data
+                userUsername: username
             }
         }).then(myData=>{
             if (myData != null && myData != undefined){
@@ -565,6 +587,7 @@ function deleteUser(username){
         })
     })
 }
+
 
 
 /*
