@@ -323,7 +323,24 @@ function getTableMinus() {
     });
 }
 
-
+function getMyTables(username) {
+    return new Promise((resolve, reject) => {
+        mTable.findAll({
+            where: {
+                userUsername:username
+            }
+        })
+            .then(data=>{
+                if (data!=undefined||data!=null)
+                    resolve(JSON.stringify(data));
+                else{
+                    reject("You do not have a table");
+                }
+            }).catch(error => {
+            reject(error + "\nCannot get all Tables Related to this ");
+        })
+    });
+}
 
 function updateMergedTablesToDivide(id){
     return new Promise((resolve, reject) => {
@@ -547,6 +564,32 @@ module.exports = function(app){
             var id = request.params.id;
 
             getATable(id).then(data => {
+                response.statusCode = 200;
+                console.log(data);
+                response.write(data, () => {
+                    response.end();
+                })
+            })
+                .catch(error => {
+                    response.statusCode = 404;
+                    console.log(error);
+                    response.write(error.toString(), () => {
+                        response.end();
+                    });
+                })
+        }else {
+            response.statusCode = 401;
+            return response.redirect('/noAuthority');
+        }
+
+    })
+    app.get('/api/table/getMyTables', function (request, response) {
+        console.log("getATable");
+        if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
+            ||  checkUsersRole.isCashier(request.session.roleId)) || checkUsersRole.isAdmin(request.session.roleId))
+        {
+            var username = request.session.username;
+            getMyTables(username).then(data => {
                 response.statusCode = 200;
                 console.log(data);
                 response.write(data, () => {
