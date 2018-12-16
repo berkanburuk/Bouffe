@@ -49,14 +49,20 @@ class OrderModel {
         //let mChair = sequelize.model('chair');
         //Order.belongsTo(mChair);
         //Payment FK
+        /*
         let mPayment = sequelize.model('payment');
         Order.belongsTo(mPayment);
-
+*/
 
         //Table FK
-        let mTable= sequelize.model('table');
         //Order.belongsTo(mTable,{targetKey:'id', onDelete: 'CASCADE'});
-        Order.belongsTo(mTable,{onDelete: 'CASCADE'});
+        //Order.belongsTo(mTable,{onDelete: 'CASCADE'});
+
+        let mTable= sequelize.model('table');
+        let mOrderTable= sequelize.define('orderTable',{});
+        Order.belongsToMany(mTable,{through: mOrderTable,targetKey:'id', onDelete: 'CASCADE'});
+
+
 
         //OrderMenu FK
         const mMenu = sequelize.define('menu', {})
