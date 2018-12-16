@@ -52,7 +52,7 @@ var foodController = require('./routes/Controller/Food')(app);
 var menuController =  require('./routes/Controller/Menu')(app);
 var orderController = require('./routes/Controller/Order')(app);
 var errorController = require('./routes/Controller/Error')(app);
-
+var paymentController = require('./routes/Controller/Payment')(app);
 
 
 app.use('/', router);

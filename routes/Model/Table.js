@@ -22,6 +22,10 @@ class TableModel {
                 //1 açık
                 //2 aktif değil
             },
+            totalPrice: {
+                type: Sequelize.DOUBLE,
+                defaultValue:0.0
+            },
 
             //Table Merge Daha Bitmedi
             mergedWith: {
@@ -35,15 +39,17 @@ class TableModel {
         let mUser = sequelize.model('user');
         Table.belongsTo(mUser,{targetKey:'username',onDelete:'CASCADE'});
 
+        let mPayment= sequelize.define('payment',{});
+        Table.hasOne(mPayment,{onDelete:'CASCADE'});
+
         /*
         let mTable= sequelize.define('table',{});
         Table.belongsTo(mTable,{foreignKey:'mergedWith',targetKey:'id',onDelete:'CASCADE'});
         */
         //
         let mOrder= sequelize.define('order',{});
-        let mOrderTable= sequelize.define('orderTable');
+        let mOrderTable= sequelize.define('orderTable',{});
         Table.belongsToMany(mOrder,{through: mOrderTable,targetKey:'id', onDelete: 'CASCADE'});
-
 
         return Table;
     }

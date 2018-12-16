@@ -8,26 +8,27 @@ class PaymentModel {
                 autoIncrement: true,
                 type: Sequelize.INTEGER
             },
-            totalPrice : {
+            cash: {
                 type:Sequelize.DOUBLE,
                 defaultValue:0.0
             },
-            paymentType:{
-                type:Sequelize.INTEGER,
-                defaultValue: 0
-                //0->Cash
-                //1->Credit Card
+            creditCard: {
+                type:Sequelize.DOUBLE,
+                defaultValue:0.0
+            },
+            ticket: {
+                type:Sequelize.DOUBLE,
+                defaultValue:0.0
+            },
+            complimentary: {
+                type:Sequelize.DOUBLE,
+                defaultValue:0.0
             }
         });
-        /*
-        Payment.sync({
-            //force:true
-        })
-            .then(() => {
-                console.log("Role Table is created!");
-            });
-            */
-        return Payment;
+        let mTable = sequelize.model('table');
+        Payment.belongsTo(mTable, {foreignKey: 'fk_Order'});
+
+
     }
     constructor(Sequelize, sequelize, payment) {
         // Check if the instance exists or is null
