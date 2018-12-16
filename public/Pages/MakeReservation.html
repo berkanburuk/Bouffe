@@ -35,6 +35,7 @@
                 <th>Reservation Date</th>
                 <th>Number of Customers</th>
                 <th>Table ID</th>
+                <th></th>
             </tr>
             </thead>
             <tbody id="reservation_data_body">
@@ -113,14 +114,14 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title">Update Menu</h3>
+                <h3 class="modal-title">Update Reservation</h3>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
                 <div class="table-responsive-sm" style="margin-top: 20px">
-                    <table id="food_data" class="table table-hover table-bordered table-striped">
+                    <table id="_data" class="table table-hover table-bordered table-striped">
                         <thead>
                         <tr>
                             <th class="text-left">Menu Item Type</th>
@@ -152,26 +153,27 @@
         'autoclose': true
     });
     $.ajax({
-        url: '/api/reservation/getAllMenu',
+        url: '/api/reservation/getAllReservation',
         dataType: 'application/json',
         type: 'GET',
         timeout: 5000,
         statusCode: {
             200: function (x) {
-                console.log(x);
+                console.log(JSON.parse(x.responseText));
                 var jArray = JSON.parse(x.responseText);
                 var receive_body = "";
 
                 $.each(jArray, function (index, val) {
-                    receive_body += '<tr><th scope="row">' + val.name + '</th>' +
-                        '<td>' + val.cuisineRegion + '</td>' +
-                        '<td>' + val.date + '</td>' +
-                        '<td>' + val.setPrice + '.00</td>' +
-                        '<td><button class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal_form_update_reservation" onclick="updateMenu(\'' + val.name + '\')" ><i class="fa fa-bars"></i></button>' +
-                        '<button class="btn btn-danger btn-sm"  onclick="deleteMenu(\'' + val.name + '\')"><i class="fa fa-trash"></i></button></td></tr>';
+                    receive_body += '<tr><th scope="row">' + val.fullName + '</th>' +
+                        '<td>' + val.phoneNumber + '</td>' +
+                        '<td>' + val.reservationDate + '</td>' +
+                        '<td>' + val.numberOfCustomer + '</td>' +
+                        '<td>' + val.tableId + '</td>' +
+                        '<td><button class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal_form_update_reservation" onclick="updateReservation(\'' + val.name + '\')" ><i class="fa fa-bars"></i></button>' +
+                        '<button class="btn btn-danger btn-sm"  onclick="deleteReservation(\'' + val.name + '\')"><i class="fa fa-trash"></i></button></td></tr>';
                 });
-                $('#menu_data_body').html(receive_body);
-                $('#menu_data').DataTable({
+                $('#reservation_data_body').html(receive_body);
+                $('#reservation_data').DataTable({
                     "columnDefs": [
                         {"className": "dt-center", "targets": "_all"}
                     ]
@@ -184,20 +186,20 @@
         }
     });
     $.ajax({
-        url: '/api/food/getAllFood',
+        url: '/api/reservation/getEmptyTablesForReservation',
         dataType: 'application/json',
         type: 'GET',
         timeout: 5000,
         statusCode: {
             200: function (x) {
-                console.log(x);
+                console.log(JSON.parse(x.responseText));
                 var jArray = JSON.parse(x.responseText);
-                var receive_body = "<option value='0' disabled selected>Please choose a food";
+                var receive_body = "<option value='0' disabled selected>Please choose a table";
 
                 $.each(jArray, function (index, val) {
-                    receive_body += '<option value="' + val.name + '">' + val.name;
+                    receive_body += '<option value="' + val.id + '">' + val.id;
                 });
-                $('#foodNames').html(receive_body);
+                $('#table').html(receive_body);
             },
             404: function (x) {
                 alert(x.responseText);
@@ -235,12 +237,12 @@
         });
     });
 
-    function deleteReservation(name) {
+    function deleteReservation(id) {
         if (confirm("Are you sure to delete reservation:" + name)) {
             $.ajax({
                 type: 'GET',
                 dataType: 'application/json',
-                url: '/api/reservation/deleteReservation/' + name,
+                url: '/api/reservation/deleteReservation/' + id,
                 timeout: 5000,
                 statusCode: {
                     200: function (x) {
@@ -261,12 +263,20 @@
         }
     }
 
-
-    function updateMenu(name) {
+    function updateReservation(id) {
+        var data2 = {
+            id: $('#id').val(),
+            fullName: $('#name').val().trim(),
+            phoneNumber: $('#phone').val(),
+            reservationDate: $('#date').val(),
+            numberOfCustomer: $('#people').val(),
+            tableId: $('#table').val(),
+        };
         $.ajax({
-            type: 'GET',
+            type: 'POST',
             dataType: 'application/json',
-            url: '/api/menu/getFoodOfMenu/' + name,
+            url: '/api/reservation/updateReservation/',
+            data: data2,
             timeout: 5000,
             statusCode: {
                 200: function (x) {

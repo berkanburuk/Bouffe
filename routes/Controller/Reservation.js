@@ -107,6 +107,7 @@ function getEmptyTablesForReservation(){
                     tableId: null
                 }
         }).then(dbData=>{
+            console.log(dbData);
             if (dbData!= null && dbData != undefined){
                 resolve(JSON.stringify(dbData));
             }
@@ -174,7 +175,7 @@ function getAllReservation(){
 
                     }).catch(error => {
                         console.log(error);
-                        response.write(error, () => {
+                        response.write(error.toString(), () => {
                             response.end();
                         })
                     })
@@ -198,7 +199,7 @@ function getAllReservation(){
                     })
                 }).catch(error => {
                     console.log(error);
-                    response.write(error, () => {
+                    response.write(error.toString(), () => {
                         response.end();
                     })
                 })
@@ -222,7 +223,7 @@ function getAllReservation(){
 
                 }).catch(error => {
                     console.log(error);
-                    response.write(error, () => {
+                    response.write(error.toString(), () => {
                         response.end();
                     })
                 })
