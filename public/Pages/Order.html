@@ -3,34 +3,177 @@
 <head>
     <meta charset="UTF-8">
     <title>Order</title>
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="../stylesheets/style.css"/>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+            integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+            crossorigin="anonymous"></script>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+            integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+            crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+
+    <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+
+
+    <script src=" https://cdnjs.cloudflare.com/ajax/libs/xls/0.7.4-a/xls.js"></script>
 </head>
 <body>
+<div class="container">
+    <input type="button" class="btn btn-primary" value="order" data-toggle="modal" data-target="#modal_form"
+           onclick="order()">
+    <br/><br/>
+    <div><p data-toggle="modal" data-target="#modal_form">Open Modal</p>
+    </div>
 
-<input type="button" value="Order" onclick="order()">
-
-
+</div>
 </body>
+
+<!-- Bootstrap modal -->
+<div class="modal fade" id="modal_form" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Order</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="add_user_form">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="col-md-11">
+                            <select name="apptizer" id="appetizer" class="form-control">
+                            </select>
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-11">
+                            <select name="mainCourse" id="mainCourse" class="form-control">
+                            </select>
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-11">
+                            <select name="dessert" id="dessert" class="form-control">
+                            </select>
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-11">
+                            <select name="beverage" id="beverage" class="form-control">
+                            </select>
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="submit" name="submit" id="submit-user" value="Save" class="btn btn-primary"/>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- End Bootstrap modal -->
+
 </html>
 
 <script>
+
     function order() {
         $.ajax({
             type: 'GET',
             dataType: 'application/json',
-            url:  'localhost:3000/api/guestCheck/nextGuestList',
+            url: 'localhost:3000/api/guestCheck/nextGuestList',
             dataType: 'application/json',
             timeout: 5000,
-            success: function(data, textStatus ){
+            success: function (data, textStatus) {
                 alert('request successful');
                 console.log(data);
             },
-            fail: function(xhr, textStatus, errorThrown){
+            fail: function (xhr, textStatus, errorThrown) {
                 alert('request failed');
             }
         })
     }
 
+    setInterval(ajaxCall, 10000); //1000 MS == 1 secs
 
 
+    $.ajax({
+        url: '/api/menu/getCurrentMenu',
+        dataType: 'application/json',
+        type: 'GET',
+        timeout: 5000,
+        statusCode: {
+            200: function (x) {
+                console.log(JSON.parse(x.responseText));
+                var jArray = JSON.parse(x.responseText);
+
+                $.each(jArray, function (index, val) {
+                    receive_body += '<option value="' + val.id + '">' + val.roleName;
+                });
+                $('#roleId').html(receive_body);
+            },
+            404: function (x) {
+                alert(x.responseText);
+            }
+        }
+    });
+
+    $.ajax({
+        type: 'GET',
+        dataType: 'application/json',
+        url: '/api/menu/getFoodOfMenu/JANUARY - 1S WEEK MENU',
+        timeout: 5000,
+        statusCode: {
+            200: function (x) {
+                console.log(JSON.parse(x.responseText));
+                var jArray = JSON.parse(x.responseText);
+                var receive_body_appetizer = "<option value='0'>Please choose an appetizer";
+                var receive_body_mainCourse = "<option value='0'>Please choose a main course";
+                var receive_body_dessert = "<option value='0'>Please choose a dessert";
+                var receive_body_beverage = "<option value='0'>Please choose a beverage";
+
+                $.each(jArray[0].food, function (index, val) {
+                    switch (val.type) {
+                        case 'appetizer':
+                            receive_body_appetizer += '<option value="' + val.id + '">' + val.name;
+                            break;
+                        case 'mainCourse':
+                            receive_body_mainCourse += '<option value="' + val.id + '">' + val.name;
+                            break;
+                        case 'dessert':
+                            receive_body_dessert += '<option value="' + val.id + '">' + val.name;
+                            break;
+                    }
+                });
+                $('#appetizer').html(receive_body_appetizer);
+                $('#mainCourse').html(receive_body_mainCourse);
+                $('#dessert').html(receive_body_dessert);
+
+            },
+            404: function (x) {
+                alert(x.responseText);
+            }
+        },
+        success: function (data, textStatus) {
+            alert(data);
+            console.log(data);
+        },
+        fail: function (xhr, textStatus, errorThrown) {
+            alert('request failed');
+        }
+    });
 </script>
