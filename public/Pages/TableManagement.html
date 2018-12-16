@@ -116,17 +116,27 @@
                 x+="console.log(\"-1-1-1-1 WE GOT 404!\");\n";
                 x+="},\n";
                 x+="200: function(respBody2){\n";
-                x+="var data = JSON.parse(respBody2);\n";
+                x+="var data = JSON.parse(JSON.parse(respBody2));\n";
                 x+="console.log(data.length);\n";
+                x+="console.log(data);\n";
+
                 x+="if(data.length===undefined)\n";
                 x+="{\n";
                 x+="mergedlist[data.id] = data.id;\n";
                 x+="}\n";
                 x+="else {\n";
+                //x+="console.log(data[i].id);\n";
+                //x+="var i = 0;\n";
+                //x+="while(data[i].id!=undefined){\n";
+                //x+="mergedlist[data[i].id] =  data[i].id;\n";
+                //x+="i+=1;\n";
+                //x+="}\n";
+
                 x+="for (var i = 0; i < data.length; i++) {\n";
                 x+="mergedlist[data[i].id] =  data[i].id;\n";
                 x+="}\n";
                 x+="}\n";
+                x+="console.log(mergedlist);\n";
                 x+="case0(mergedlist,y);\n";
                 x+="},\n";
                 x+="}\n";
@@ -148,12 +158,17 @@
                 x+="console.log(\"-1-1-1-1 WE GOT 404!\");\n";
                 x+="},\n";
                 x+="200: function(respBody2){\n";
-                x+="var data = JSON.parse(respBody2);\n";
+                x+="var data = JSON.parse(JSON.parse(respBody2));\n";
                 x+="if(data.length===undefined)\n";
                 x+="{\n";
                 x+="mergedlist[data.id] = data.id;\n";
                 x+="}\n";
                 x+="else {\n";
+                //x+="var i = 0;\n";
+                //x+="while(data[i].id!=undefined){\n";
+                //x+="mergedlist[data[i].id] =  data[i].id;\n";
+                //x+="i+=1;\n";
+                //x+="}\n";
                 x+="for (var i = 0; i < data.length; i++) {\n";
                 x+="mergedlist[data[i].id] =  data[i].id;\n";
                 x+="}\n";
