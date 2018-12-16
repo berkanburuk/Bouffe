@@ -78,7 +78,7 @@
                         <div class="col-md-11">
                             <select name="structure" id="structure" class="form-control">
                                 <option selected value="Square">Square
-                                <option value="Circle">Circle
+                                <option value="Circular">Circular
                             </select>
                             <span class="help-block"></span>
                         </div>
@@ -216,7 +216,7 @@
                         if (val.userUsername == null) receive_body += '<td>No waiter</td>';
                         else receive_body += '<td>' + val.userUsername + '</td>';
                         receive_body += '<td><button class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal_form_update" onclick="updateMyTable(\'' + val.id + '\',\'' +
-                            val.structure + '\',\'' + val.capacity  + '\',\'' + val.userUsername + '\')"><i class="fa fa-bars"></i></button>' +
+                            val.structure + '\',\'' + val.capacity + '\',\'' + val.userUsername + '\')"><i class="fa fa-bars"></i></button>' +
                             '<button class="btn btn-danger btn-sm" onclick="deleteTable(\'' + val.id + '\')"><i class="fa fa-trash"></i></button></td></tr>';
                     });
                     $('#table_data_body').html(receive_body);
@@ -320,10 +320,26 @@
                     capacity: $('#capacity').val(),
                     userUsername: $('#userUsername').val(),
                 };
-            }
 
+                $.ajax({
+                    url: '/api/table/addTable',
+                    dataType: 'application/json',
+                    data: data2,
+                    type: 'POST',
+                    timeout: 5000,
+                    statusCode: {
+                        200: function (x) {
+                            console.log(data2);
+                        },
+                        404: function (x) {
+                            alert(x.responseText);
+                        }
+                    }
+                });
+            }
+            console.log(data2);
             $.ajax({
-                url: '/api/table/addTable',
+                url: '/api/table/assignTableToUser',
                 dataType: 'application/json',
                 data: data2,
                 type: 'POST',
@@ -336,7 +352,7 @@
                          $('#quantity').val("");
                          $('#price').val("");
                          getAllFoods();*/
-                        location.reload();
+                      //  location.reload();
 
                     },
                     404: function (x) {
