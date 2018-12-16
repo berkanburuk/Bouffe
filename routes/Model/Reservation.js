@@ -23,7 +23,7 @@ class ReservationModel {
         });
 
         let mTable = sequelize.model('table');
-        Reservation.belongsTo(mTable);
+        Reservation.belongsTo(mTable,{foreignKey: {allowNull: false}});
 
         return Reservation;
     }

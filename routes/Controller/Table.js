@@ -290,10 +290,10 @@ function getTableMinus() {
             }
         })
             .then(data=>{
-            if (data[0]!=undefined||data[0]!=null)
+            if (data!=undefined||data!=null)
             resolve(JSON.stringify(data));
             else{
-                reject("There is not table as you want");
+                reject("There is no table as you want");
             }
         }).catch(error => {
             reject(error + "\nCannot get all Tables Related to this ");
