@@ -92,10 +92,9 @@ exports.run = function(Sequelize, sequelize, order) {
 //isFoodReady 0 ise şef önünde ekranda duracak
 exports.getChefNotification = function (orderId) {
     return new Promise((resolve, reject) => {
-        Order.findOne({
+        Order.findAll({
             where:
                 {
-                    id: orderId,
                     isFoodReady: 0
                 }
         }).then((order) => {
@@ -106,13 +105,16 @@ exports.getChefNotification = function (orderId) {
     })
 }
 //chef onaylıyor (1) yapıyor, Garsona Food onaylandı görünecek
-exports.chefApprovesOrder = function (orderId) {
+exports.maltreApprovesOrder = function (orderId) {
         return new Promise((resolve, reject) => {
-            Order.update({
+            Order.update(
+                {
+                    isFoodReady: 1
+                },
+                {
                 where:
                     {
                         id: orderId,
-                        isFoodReady: 1
                     }
             }).then((order)=>{
                 console.log(order);

@@ -212,7 +212,6 @@ function getAllTables(){
             ],
             }
         ).then(table=>{
-            console.log(JSON.stringify(table))
             resolve(table);
         }).catch(error => {
             reject("Cannot get all Tables");
@@ -284,6 +283,7 @@ function getTableMinus() {
         mTable.findAll({
             where: {
                 structure: 'Square',
+                status:1,
                 mergedWith:{
                     lt: 0
                 }
@@ -305,11 +305,14 @@ function getTableMinus() {
 
 function updateMergedTablesToDivide(id){
     return new Promise((resolve, reject) => {
-        mTable.update(id, {
+        mTable.update(
+                {
+                    mergedWith:-2
+                },
+                {
             where:
                 {
-                    id:id,
-                    mergedWith: -2
+                    id:id
                 }
         }).then((table) => {
             console.log(table);
@@ -329,41 +332,32 @@ function updateMergedTablesToDivide(id){
 
 function divideTables(data) {
 
-    var jsonData = JSON.parse(data);
-    for (var i = 0; i < jsonData.counters.length; i++) {
-        var counter = jsonData.counters[i];
-
-    }
-
     return new Promise((resolve, reject) => {
-        mTable.findOne({
-            where:{
-                id:data.id
-            }
-        }).then(data=>{
-        console.log(data);
+        for (var key in data) {
+            var id = data[key];
+            mTable.update({
+                    mergedWith: -2
+                },
+                {
+                    where:
+                        {
+                            id: id,
 
-        if (data.mergedWith>0){
-            do {
-                updateMergedTablesToDivide(data.id).then(myData => {
+                        }
+                }).then((table) => {
+                console.log(table);
+                console.log(table[0]);
+                if (table[0] > 0) {
+                    resolve("Table is updated successfully.");
+                } else {
+                    reject("Table could not be updated!");
+                }
 
-                    mergedTable = myData.mergedWith;
-                    data.mergedWith=myData.mergedWith;
-                    data.id = myData.id;
-
-                })
-                    .catch(error => {
-                    reject(error);
-                })
-            }
-            while (data.mergedWith>0);
-
+            }).catch(error => {
+                reject(error);
+            })
         }
-            resolve(data);
-        }).catch(error => {
-            reject(error + "\nCannot get all Tables Related to this ");
-        })
-    });
+    })
 }
 
 
@@ -408,7 +402,7 @@ function getUsersTable(data){
             //console.log("1->"+JSON.stringify(data[0].dataValues));
             if (data[0] != null && data[0] != undefined) {
                 //  if (data[0].roles.id==5) {
-                console.log(JSON.stringify(data));
+
                 resolve(JSON.stringify(data));
                 /*
                  }else{
@@ -504,7 +498,6 @@ module.exports = function(app){
                 var id = parseInt(data.id);
                 delete data.id;
                 console.log(data);
-
                 assignTableToUser(data, id).then(data => {
                     response.write('Table Successfully Updated!', () => {
                         response.statusCode = 200;
@@ -706,6 +699,7 @@ module.exports = function(app){
                 if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
                     ||  checkUsersRole.isAdmin(request.session.roleId))){
                     var data = request.body;
+                    console.log("divideTable"+data);
                     divideTables(data).then(result=> {
                         response.statusCode = 200;
                         console.log(result);
