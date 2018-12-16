@@ -14,6 +14,8 @@ let mPayment = db.model(dbNames.payment);
 let mMenuFood = db.model(dbNames.menuFood);
 let mBeverage = db.model(dbNames.beverage);
 
+let modelOrder =  require('../Model/Order');
+
 let checkUsersRole = require('./RoleCheck');
 //0 -> default Value(Just Ordered)
 //1 -> if chef notification, if waiter notification
@@ -362,7 +364,7 @@ module.exports = function (app) {
         console.log('Order');
             if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
                 ||  checkUsersRole.isCashier(request.session.roleId))) {
-                response.sendFile(path.resolve('../../public/Pages/Order.html'));
+                response.sendFile(path.resolve('public/Pages/Order.html'));
             }
             else {
                     response.write(checkUsersRole.errorMesage(), () => {
@@ -427,7 +429,25 @@ module.exports = function (app) {
                 response.end();
             })
         }
-    })
+    }),
+        app.get('/api/order/getChefNotification', function (request, response) {
+            if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
+                ||  checkUsersRole.isCashier(request.session.roleId))) {
+                modelOrder.getChefNotification()
+                    .then(notification=> {
+                    response.end(notification);
+                }).catch(error => {
+                    response.end(error.toString());
+                })
+            }
+            else {
+                response.write(checkUsersRole.errorMesage(), () => {
+                    response.statusCode = 404;
+                    response.end();
+                })
+            }
+        })
+
 
 
 }
