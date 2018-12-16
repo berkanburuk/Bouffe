@@ -61,6 +61,7 @@ function updateReservation(data){
                 where:
                     {
                         id: data.id
+
                     },
             }).then((reservation) => {
                 console.log(reservation[0]);
