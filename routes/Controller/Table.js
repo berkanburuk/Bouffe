@@ -283,16 +283,18 @@ function getTableMinus() {
     return new Promise((resolve, reject) => {
         mTable.findAll({
             where: {
-                
                 structure: 'Square',
                 mergedWith:{
-                    $lt: 0
+                    lt: 0
                 }
             }
         })
             .then(data=>{
-            console.log(data[0]);
-            resolve(data[0]);
+            if (data[0]!=undefined||data[0]!=null)
+            resolve(JSON.stringify(data));
+            else{
+                reject("There is not table as you want");
+            }
         }).catch(error => {
             reject(error + "\nCannot get all Tables Related to this ");
         })
@@ -325,17 +327,22 @@ function updateMergedTablesToDivide(id){
 
 }
 
-function divideTables(id) {
+function divideTables(data) {
+
+    var jsonData = JSON.parse(data);
+    for (var i = 0; i < jsonData.counters.length; i++) {
+        var counter = jsonData.counters[i];
+
+    }
+
     return new Promise((resolve, reject) => {
-        var flag = true;
-        var mergedTable=-5;
         mTable.findOne({
             where:{
-                id:id
+                id:data.id
             }
         }).then(data=>{
         console.log(data);
-        var x;
+
         if (data.mergedWith>0){
             do {
                 updateMergedTablesToDivide(data.id).then(myData => {
@@ -693,13 +700,13 @@ module.exports = function(app){
 
     }),
 
-            app.get('/api/table/divideTable/:id', function (request, response ) {
+            app.post('/api/table/divideTable', function (request, response ) {
 
                 console.log("Divide Table");
                 if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
                     ||  checkUsersRole.isAdmin(request.session.roleId))){
-                    var id= request.params.id;
-                    divideTables(id).then(result=> {
+                    var data = request.body;
+                    divideTables(data).then(result=> {
                         response.statusCode = 200;
                         console.log(result);
                         response.write("Successful", () => {
