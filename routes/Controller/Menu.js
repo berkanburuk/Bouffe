@@ -179,26 +179,48 @@ function assignFoodToMenu(data) {
             })
     })
 }
-
-
-function getActiveMenu() {
+function getActiveMenu(){
+    console.log();
     return new Promise((resolve, reject) => {
-        mMenu.findOne({
-            where:
+        mMenu.findAll({
+            where: {
+                isActive:true
+            },
+            include: [
                 {
-                    isActive:true
+                    model:mFood,
+                    through: mMenuFood
                 }
+            ]
+        }).then(data=>{
+            if (data != null && data != undefined){
+                resolve(JSON.stringify(data));
+            }
+            else
+                reject("Cannot get the Menu's Food!");
+        }).catch(error => {
+            reject(error);
         })
-            .then((menu) => {
-                    if(menu!=undefined || menu!=null){
-                        resolve(JSON.stringify(menu));
-                    } else {
-                        reject("There is no active menu!");
-                    }
-                })
-                    .catch(error => {
-                        reject(error);
-                    })
+
+    })
+}
+function getActiveMenu2(){
+    console.log();
+    return new Promise((resolve, reject) => {
+        mMenu.findAll({
+            where: {
+                isActive:true
+            },
+        }).then(data=>{
+            if (data != null && data != undefined){
+                console.log(data.getFoods());
+                resolve(JSON.stringify(data));
+            }
+            else
+                reject("Cannot get the Menu's Food!");
+        }).catch(error => {
+            reject(error);
+        })
 
     })
 }
@@ -594,6 +616,33 @@ module.exports = function (app) {
                 || checkUsersRole.isWaiter(request.session.roleId)))
             {
                 getActiveMenu().then(menu => {
+                    response.statusCode = 200;
+                    console.log(menu);
+                    response.write(menu, () => {
+                        response.end();
+                    });
+                }).catch(error => {
+                    response.statusCode = 404;
+                    console.log(error);
+                    response.write(error.toString(), () => {
+                        response.end();
+                    });
+                })
+            }
+            else {
+                response.write(checkUsersRole.errorMesage(), () => {
+                    response.statusCode = 404;
+                    response.end();
+                })
+            }
+
+        }),
+        app.get('/api/menu/getActiveMenu2', function (request, response ) {
+            if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)||
+                checkUsersRole.isChef(request.session.roleId) ||  checkUsersRole.isMatre(request.session.roleId)
+                || checkUsersRole.isWaiter(request.session.roleId)))
+            {
+                getActiveMenu2().then(menu => {
                     response.statusCode = 200;
                     console.log(menu);
                     response.write(menu, () => {
