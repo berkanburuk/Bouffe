@@ -277,13 +277,35 @@ function getAUserTables(username) {
     });
 }
 
+function isTableOrderable() {
+    return new Promise((resolve, reject) => {
+        mTable.findAll({
+            where: {
+                structure: 'Square',
+                status:1,
+                mergedWith:{
+                    lt: 0
+                }
+            }
+        })
+            .then(data=>{
+                if (data!=undefined||data!=null)
+                    resolve(JSON.stringify(data));
+                else{
+                    reject("There is no table as you want");
+                }
+            }).catch(error => {
+            reject(error + "\nCannot get all Tables Related to this ");
+        })
+    });
+}
+
 
 function getTableMinus() {
     return new Promise((resolve, reject) => {
         mTable.findAll({
             where: {
                 structure: 'Square',
-                status:1,
                 mergedWith:{
                     lt: 0
                 }
@@ -466,7 +488,7 @@ module.exports = function(app){
             //res.end();
         }),
         app.get('/api/table/getTableMinus', function (request, response) {
-            console.log('getTablesWithSpefic');
+            console.log('getTableMinus');
             if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
                 ||  checkUsersRole.isCashier(request.session.roleId)) || checkUsersRole.isAdmin(request.session.roleId))
             {
