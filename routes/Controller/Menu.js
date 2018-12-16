@@ -533,8 +533,8 @@ module.exports = function (app) {
             console.log(data);
 
             if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)||
-                checkUsersRole.isChef(request.session.roleId) ||  checkUsersRole.isChef(request.session.roleId)
-                || checkUsersRole.isChef(request.session.roleId)))
+                checkUsersRole.isChef(request.session.roleId) ||  checkUsersRole.isMatre(request.session.roleId)
+                || checkUsersRole.isWaiter(request.session.roleId)))
             {
                 getFoodOfMenu(data).then(menu => {
                     response.statusCode = 200;
@@ -563,7 +563,9 @@ module.exports = function (app) {
 
 
         if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)||
-            checkUsersRole.isChef(request.session.roleId) ||  checkUsersRole.isChef(request.session.roleId))) {
+            checkUsersRole.isChef(request.session.roleId) ||  checkUsersRole.isMatre(request.session.roleId)
+            || checkUsersRole.isWaiter(request.session.roleId)))
+        {
             getAllMenu().then(menu => {
                 response.statusCode = 200;
                 console.log(menu);
@@ -588,7 +590,9 @@ module.exports = function (app) {
     }),
         app.get('/api/menu/getActiveMenu', function (request, response ) {
             if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)||
-                checkUsersRole.isChef(request.session.roleId) ||  checkUsersRole.isChef(request.session.roleId))) {
+                checkUsersRole.isChef(request.session.roleId) ||  checkUsersRole.isMatre(request.session.roleId)
+                || checkUsersRole.isWaiter(request.session.roleId)))
+            {
                 getActiveMenu().then(menu => {
                     response.statusCode = 200;
                     console.log(menu);
@@ -614,7 +618,9 @@ module.exports = function (app) {
     app.get('/api/menu/deleteFoodFromMenu/:menuName/:foodName', function (request, response ) {
 
         if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)||
-            checkUsersRole.isChef(request.session.roleId) ||  checkUsersRole.isChef(request.session.roleId))) {
+            checkUsersRole.isChef(request.session.roleId) ||  checkUsersRole.isMatre(request.session.roleId)
+            || checkUsersRole.isWaiter(request.session.roleId)))
+        {
             let menuName = request.params.menuName;
             let foodName = request.params.foodName;
             deleteFoodFromMenu(menuName,foodName).then(menu => {
