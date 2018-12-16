@@ -364,7 +364,13 @@
                         'success',
                     ).then(()=>{
                         console.log(y);
-                        var data = text.split('-'); $.ajax({
+                        var data={};
+                        var send = text.split('-');
+                        for(var i=0;i<data.length; i++)
+                        {
+                            data[i]=send[i];
+                        }
+                        $.ajax({
                             type: 'POST',
                             dataType: 'application/json',
                             url: '/api/table/unmergeTable',

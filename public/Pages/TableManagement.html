@@ -274,7 +274,13 @@
                 x+="'success',\n";
                 x+=").then(()=>{\n";
                 x+="console.log(text);\n";
-                x+="var data = JSON.stringify(text.split('-')); ";
+                //x+="var data = JSON.stringify(text.split('-')); ";
+                x+="var data={};\n";
+                x+="var send = text.split('-');\n";
+                x+="for(var i=0;i<send.length; i++)\n";
+                x+="{\n";
+                x+="data[i]=send[i];\n";
+                x+="}\n";
                 x+="console.log(data);\n";
                 x+="$.ajax({\n";
                 x+="type: 'POST',\n";
@@ -426,7 +432,14 @@
                 x+="'success',\n";
                 x+=").then(()=>{\n";
                 x+="console.log(text);\n";
-                x+="var data = JSON.stringify(text.split('-')); ";
+                x+="var data={};\n";
+                x+="var send = text.split('-');\n";
+                x+="for(var i=0;i<send.length; i++)\n";
+                x+="{\n";
+                x+="data[i]=send[i];\n";
+                x+="}\n";
+
+                //x+="var data = JSON.stringify(text.split('-')); ";
                 x+="console.log(data);\n";
                 x+="$.ajax({\n";
                 x+="type: 'POST',\n";
