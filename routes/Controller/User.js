@@ -194,8 +194,8 @@ module.exports = function(app) {
                 var data = request.body;
                 updateAUser(data).then(user => {
                     response.statusCode = 200;
-                    console.log(user);
-                    response.send(user.toString());
+                    console.log(user.toString());
+                    response.send(user);
                 }).catch(error => {
                     response.statusCode = 404;
                     console.log(error);
@@ -396,7 +396,7 @@ function save(data){
         });
     })
 }
-/*
+
 function createUser22(data) {
     return sequelize.transaction(function (t) {
         return mUser.create({
@@ -406,10 +406,8 @@ function createUser22(data) {
             lastName: data.lastName,
             bilkentId: data.bilkentId,
         }, {transaction: t}).then(user=> {
-            return (user[0].addRoles(
-                {
-                data.roleId
-                ,{transaction t});
+            //return (user[0].addRoles(data.roleId),{transaction t});
+
 
             return user.setShooter({
                 firstName: 'John',
@@ -424,7 +422,7 @@ function createUser22(data) {
         // err is whatever rejected the promise chain returned to the transaction callback
     });
 }
-*/
+
 function createAUser(data){
 
     //var data = sampleUserData();
@@ -477,7 +475,8 @@ function createAUser(data){
 
 
 function updateAUser(data){
-    var data = sampleUserData();
+    console.log(data);
+
     return new Promise((resolve, reject) => {
         mUser.findOne({
             where:
@@ -485,9 +484,8 @@ function updateAUser(data){
                     username: data.username
                 }
         }).then((user)=>{
-            console.log(user[0].get(0));
-            user[0].setRoles(data.roleId);
-            user[0].setCourses(data.courseId);
+            user.setRoles(data.roleId);
+            user.setCourses(data.courseId);
             resolve("User is updated successfully.");
         })
         /*.spread((user, created)=> {
