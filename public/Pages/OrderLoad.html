@@ -26,7 +26,7 @@
         $(document).ready(function() {
 
             var ans =  $.ajax({
-                url: '/api/table/getAllTables',
+                url: '/api/table/getMyTables',
                 type: "GET",
 
                 statusCode: {
@@ -68,21 +68,21 @@
                 for (var i = 0; i < array.length ; i++) {
 
                     var txt=array[i].id+"";
-                    if(array[i].structure == "circular") {
-                        if(array[i].status==0)
+                    if(array[i].structure === "circular") {
+                        if(array[i].status===0)
                         {
-                            items += "<div id='" + "utable" + "' value='" + array[i].id + "'" +" name='"+txt+"' "+ "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/c0.png' alt=\"\"><div class=\"centered\">Table: "+txt+"</div></p></p></div>";
+                            items += "<div id='" + "unclickable" + "' value='" + array[i].id + "'" +" name='"+txt+"' "+ "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100' data-toggle=\"modal\" data-target=\"#modal_form\" ><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/c0.png' alt=\"\"><div class=\"centered\">Table: "+txt+"</div></p></p></div>";
                         }
-                        else if(array[i].status==1)
+                        else if(array[i].status===1)
                         {
-                            items += "<div id='" + "utable" + "' value='" + array[i].id + "'" +" name='"+txt+"' "+ "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/c1.png' alt=\"\"><div class=\"centered\">Table: "+txt+"</div></p></p></div>";
+                            items += "<div id='" + "clickable" + "' value='" + array[i].id + "'" +" name='"+txt+"' "+ "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100' data-toggle=\"modal\" data-target=\"#modal_form\" ><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/c1.png' alt=\"\"><div class=\"centered\">Table: "+txt+"</div></p></p></div>";
                         }
                         else
                         {
-                            items += "<div id='" + "utable" + "' value='" + array[i].id + "'" +" name='"+txt+"' "+ "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/c2.png' alt=\"\"><div class=\"centered\">Table: "+txt+"</div></p></p></div>";
+                            items += "<div id='" + "clickable" + "' value='" + array[i].id + "'" +" name='"+txt+"' "+ "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100' data-toggle=\"modal\" data-target=\"#modal_form\" ><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/c2.png' alt=\"\"><div class=\"centered\">Table: "+txt+"</div></p></p></div>";
                         }
                     }
-                    else if (jQuery.inArray(array[i].id, mergedList)==-1 && array[i].mergedWith!=-1){
+                    else if (jQuery.inArray(array[i].id, mergedList)===-1 && array[i].mergedWith!==-1){
                         var mergedOnes=i;
                         while(array[mergedOnes].mergedWith >= 0 && mergedOnes>=0 )
                         {
@@ -93,7 +93,7 @@
                             var sMO=mergedOnes;
                             //mergedOnes=jQuery.inArray( array[mergedOnes].mergedWith, array );
                             $.each(array, function (index,val) {
-                                if (val.id == array[sMO].mergedWith) {
+                                if (val.id === array[sMO].mergedWith) {
                                     mergedOnes = index;
                                     return false;
                                 }
@@ -108,17 +108,17 @@
 
 
                         }
-                        if(array[i].status==0)
+                        if(array[i].status===0)
                         {
-                            items += "<div id='" + "utable" + "' value='" + array[i].id + "'" +" name='"+txt+"' "+ "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/s0.png' alt=\"\"/><div class=\"centered\">Table: "+txt+"</div></p></div>";
+                            items += "<div id='" + "unclickable" + "' value='" + array[i].id + "'" +" name='"+txt+"' "+ "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100' data-toggle=\"modal\" data-target=\"#modal_form\" ><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/s0.png' alt=\"\"/><div class=\"centered\">Table: "+txt+"</div></p></div>";
                         }
-                        else if(array[i].status==1)
+                        else if(array[i].status===1)
                         {
-                            items += "<div id='" + "utable" + "' value='" + array[i].id + "'" +" name='"+txt+"' "+ "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/s1.png' alt=\"\"><div class=\"centered\">Table: "+txt+"</div></p></p></div>";
+                            items += "<div id='" + "clickable" + "' value='" + array[i].id + "'" +" name='"+txt+"' "+ "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100' data-toggle=\"modal\" data-target=\"#modal_form\" ><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/s1.png' alt=\"\"><div class=\"centered\">Table: "+txt+"</div></p></p></div>";
                         }
                         else
                         {
-                            items += "<div id='" + "utable" + "' value='" + array[i].id + "'" +" name='"+txt+"' "+ "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/s2.png' alt=\"\"><div class=\"centered\">Table: "+txt+"</div></p></p></div>";
+                            items += "<div id='" + "clickable" + "' value='" + array[i].id + "'" +" name='"+txt+"' "+ "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100' data-toggle=\"modal\" data-target=\"#modal_form\" ><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/s2.png' alt=\"\"><div class=\"centered\">Table: "+txt+"</div></p></p></div>";
                         }
 
 
@@ -126,17 +126,17 @@
                     else
                     {
 
-                        if(array[i].status==0)
+                        if(array[i].status===0)
                         {
-                            items += "<div id='" + "mtable" + "' value='" + array[i].id + "'" +" name='"+txt+"' "+ "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'> <img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/s0.png' alt=\"\"/><div class=\"centered\">Table: "+txt+"</div></p></p></div>";
+                            items += "<div id='" + "unclickable" + "' value='" + array[i].id + "'" +" name='"+txt+"' "+ "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100' data-toggle=\"modal\" data-target=\"#modal_form\" > <img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/s0.png' alt=\"\"/><div class=\"centered\">Table: "+txt+"</div></p></p></div>";
                         }
-                        else if(array[i].status==1)
+                        else if(array[i].status===1)
                         {
-                            items += "<div id='" + "mtable" + "' value='" + array[i].id + "'" +" name='"+txt+"' "+ "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/s1.png' alt=\"\"><div class=\"centered\">Table: "+txt+"</div></p></p></div>";
+                            items += "<div id='" + "unclikable" + "' value='" + array[i].id + "'" +" name='"+txt+"' "+ "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100' data-toggle=\"modal\" data-target=\"#modal_form\" ><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/s1.png' alt=\"\"><div class=\"centered\">Table: "+txt+"</div></p></p></div>";
                         }
                         else
                         {
-                            items += "<div id='" + "mtable" + "' value='" + array[i].id + "'" +" name='"+txt+"' "+ "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/s2.png' alt=\"\"><div class=\"centered\">Table: "+txt+"</div></p></p></div>";
+                            items += "<div id='" + "unclickable" + "' value='" + array[i].id + "'" +" name='"+txt+"' "+ "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100' data-toggle=\"modal\" data-target=\"#modal_form\" ><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/s2.png' alt=\"\"><div class=\"centered\">Table: "+txt+"</div></p></p></div>";
                         }
 
                     }
