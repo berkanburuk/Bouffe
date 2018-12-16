@@ -209,7 +209,7 @@ module.exports = function(app) {
                     response.statusCode = 404;
                     console.log(error);
 
-                    response.write(error, () => {
+                    response.write(error.toString(), () => {
                         response.end();
                     });
                 })
@@ -250,7 +250,7 @@ module.exports = function(app) {
                     response.statusCode = 404;
                     console.log(error);
 
-                    response.write(error, () => {
+                    response.write(error.toString(), () => {
                         response.end();
                     });
                 })
@@ -260,7 +260,7 @@ module.exports = function(app) {
             }
         }),
 
-        app.get('/api/user/logout', function (request, response,next) {
+        app.get('/api/user/logout', function (request, response) {
             console.log("logout");
             if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
                 ||  checkUsersRole.isAdmin(request.session.roleId))){
@@ -275,7 +275,7 @@ module.exports = function(app) {
             }
 
         }),
-        app.get('/api/user/getRoleByUsername/:username', function (request, response,next) {
+        app.get('/api/user/getRoleByUsername/:username', function (request, response) {
             if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
                 ||  checkUsersRole.isAdmin(request.session.roleId))){
                 var username = request.params.username;
@@ -288,7 +288,29 @@ module.exports = function(app) {
                     response.statusCode = 404;
                     console.log(error);
 
-                    response.write(error, () => {
+                    response.write(error.toString(), () => {
+                        response.end();
+                    });
+                })
+            }		else {
+                response.statusCode = 401;
+                return response.redirect('/noAuthority');
+            }
+        }),
+        app.get('/api/user/getAllRoles', function (request, response) {
+            if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
+                ||  checkUsersRole.isAdmin(request.session.roleId))){
+
+                getAllRoles().then(res=> {
+                    response.statusCode = 200;
+                    response.write(res, () => {
+                        response.end();
+                    })
+                }).catch(error => {
+                    response.statusCode = 404;
+                    console.log(error);
+
+                    response.write(error.toString(), () => {
                         response.end();
                     });
                 })
@@ -297,6 +319,8 @@ module.exports = function(app) {
                 return response.redirect('/noAuthority');
             }
         })
+
+
 
 }
 
@@ -551,6 +575,23 @@ function getRoleWithId(id){
                 reject("Could not get the role with id:" +id);
             }
         }).catch(error => {
+            reject("Cannot get all Users");
+        })
+    });
+}
+
+function getAllRoles(){
+    return new Promise((resolve, reject) => {
+        mUserRoles.findAll({
+
+        })
+            .then(result=>{
+                if (result[0]!=null && result[0]!=undefined){
+                    resolve(JSON.stringify(result));
+                } else{
+                    reject("Could not roles");
+                }
+            }).catch(error => {
             reject("Cannot get all Users");
         })
     });
