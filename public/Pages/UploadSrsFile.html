@@ -162,7 +162,7 @@
             timeout: 5000,
             statusCode: {
                 200: function (x) {
-
+                    console.log(x.responseText)
                 },
                 404: function (x) {
                     alert(x.responseText);
@@ -178,6 +178,7 @@
         });
 
     }
+    getUserRole('berkan');
 
     $.ajax({
         url: '/api/user/getAllUsers',
