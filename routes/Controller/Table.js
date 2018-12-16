@@ -282,11 +282,15 @@ function getAUserTables(username) {
 function getTableMinus() {
     return new Promise((resolve, reject) => {
         mTable.findAll({
-            $or: [
-                {mergedWith: -1},
-                {mergedWith: -2}
-                ]
-        }).then(data=>{
+            where: {
+                
+                structure: 'Square',
+                mergedWith:{
+                    $lt: 0
+                }
+            }
+        })
+            .then(data=>{
             console.log(data[0]);
             resolve(data[0]);
         }).catch(error => {
