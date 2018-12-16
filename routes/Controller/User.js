@@ -58,7 +58,7 @@ module.exports = function(app) {
             console.log('UploadSRSFile');
             if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
                 ||  checkUsersRole.isAdmin(request.session.roleId))){
-                response.sendFile(path.resolve('public/Pages/uploadSRSFile.html'));
+                response.sendFile(path.resolve('public/Pages/UploadSRSFile.html'));
             }else {
                 response.statusCode = 401;
                 return response.redirect('/noAuthority');
