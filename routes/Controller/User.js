@@ -7,7 +7,27 @@ let mUserFunc = require('../Util/DatabaseConnection').getUserModel;
 let checkUsersRole = require('./RoleCheck');
 let checkDataType = require('../Util/TypeCheck');
 
+/*
+let transaction;
 
+try {
+    // get transaction
+    transaction = await sequelize.transaction();
+
+    // step 1
+    await Model.destroy({where: {id}, transaction});
+
+    // step 2
+    await Model.create({}, {transaction});
+
+    // commit
+    await transaction.commit();
+
+} catch (err) {
+    // Rollback transaction if any errors were encountered
+    await transaction.rollback();
+}
+*/
 
 
 let db = sequelize();
@@ -319,6 +339,26 @@ module.exports = function(app) {
                 response.statusCode = 401;
                 return response.redirect('/noAuthority');
             }
+        }),
+        app.get('/api/user/getRoleObject', function (request, response) {
+            if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId))){
+                getRoleObject().then(res=> {
+                    response.statusCode = 200;
+                    response.write(res, () => {
+                        response.end();
+                    })
+                }).catch(error => {
+                    response.statusCode = 404;
+                    console.log(error);
+
+                    response.write(error.toString(), () => {
+                        response.end();
+                    });
+                })
+            }		else {
+                response.statusCode = 401;
+                return response.redirect('/noAuthority');
+            }
         })
 
 
@@ -356,8 +396,37 @@ function save(data){
         });
     })
 }
+/*
+function createUser22(data) {
+    return sequelize.transaction(function (t) {
+        return mUser.create({
+            username: data.username,
+            password: data.password,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            bilkentId: data.bilkentId,
+        }, {transaction: t}).then(user=> {
+            return (user[0].addRoles(
+                {
+                data.roleId
+                ,{transaction t});
 
+            return user.setShooter({
+                firstName: 'John',
+                lastName: 'Boothe'
+            }, {transaction: t});
+        });
+    }).then(function (result) {
+        // Transaction has been committed
+        // result is whatever the result of the promise chain returned to the transaction callback
+    }).catch(function (err) {
+        // Transaction has been rolled back
+        // err is whatever rejected the promise chain returned to the transaction callback
+    });
+}
+*/
 function createAUser(data){
+
     //var data = sampleUserData();
     return new Promise((resolve, reject) => {
         mUser.findOrCreate({
@@ -584,6 +653,23 @@ function getRoleWithId(id){
 function getAllRoles(){
     return new Promise((resolve, reject) => {
         mUserRoles.findAll({
+
+        })
+            .then(result=>{
+                if (result[0]!=null && result[0]!=undefined){
+                    resolve(JSON.stringify(result));
+                } else{
+                    reject("Could not roles");
+                }
+            }).catch(error => {
+            reject("Cannot get all Users");
+        })
+    });
+}
+
+function getRoleObject(){
+    return new Promise((resolve, reject) => {
+        mRole.findAll({
 
         })
             .then(result=>{
