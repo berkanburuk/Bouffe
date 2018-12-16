@@ -72,18 +72,12 @@ function createMenuAndAssignFood(data){
                 {
                     name: data.name,
                     cuisineRegion: data.cuisineRegion,
-                    date: data.date,
+                    isActive: data.isActive,
                     setPrice: data.setPrice
                 }
         }).then((menu) => {
             console.log(menu[0]);
-            /*
-            menu[0].addFood(data.foodName).then(menu => {
-                console.log(menu);
-                if (menu != null || menu != undefined)
-                    resolve("Food is added to Menu!");
-                else
-                */
+
                     resolve("Menu Created Successfully!");
             }).catch(error => {
                 reject("Menu could not be created!" + error);
@@ -97,7 +91,7 @@ function updateAMenu(data){
             {
                 name:data.newName,
                 cuisineRegion:data.cuisineRegion,
-                date : data.date,
+                isActive: data.isActive,
                 setPrice:data.setPrice,
             }
             , {
