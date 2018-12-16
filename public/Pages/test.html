@@ -242,7 +242,7 @@
                         console.log(y);
                         var data = {
                             tableId: y,
-                            status: 0,
+                            status: 1,
                         };
                         $.ajax({
                             type: 'POST',
@@ -272,7 +272,7 @@
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#18426B',
                 confirmButtonText: 'Combine',
-                cancelButtonText: 'Activate'
+                cancelButtonText: 'Deactivate'
             }).then((result) => {
                 if (result.value) {
                     Swal.mixin({
@@ -326,7 +326,7 @@
                         console.log(y);
                         var data = {
                             tableId: y,
-                            status: 1,
+                            status: 0,
                         };
                         $.ajax({
                             type: 'POST',
@@ -356,7 +356,7 @@
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#18426B',
                 confirmButtonText: 'Combine',
-                cancelButtonText: 'Activate'
+                cancelButtonText: 'Deactivate'
             }).then((result) => {
 
                 if (result.value) {
@@ -404,7 +404,7 @@
                                 console.log(y);
                                 var data = {
                                     tableId: y,
-                                    status: 1,
+                                    status: 0,
                                 };
                                 $.ajax({
                                     type: 'POST',
