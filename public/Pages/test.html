@@ -24,6 +24,7 @@
 
 <script>
 
+
     $(document).ready(function(){
         $('div#tables div#utable').click( function(e) {
 
@@ -213,10 +214,7 @@
                         'success',
                     ).then(()=>{
                         console.log(y);
-                        var data = {
-                            tableId: y,
-                        };
-                        $.ajax({
+                        var data = text.split('-'); $.ajax({
                             type: 'POST',
                             dataType: 'application/json',
                             url: '/api/table/unmergeTable',
@@ -355,75 +353,60 @@
                 showCloseButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#18426B',
-                confirmButtonText: 'Combine',
+                confirmButtonText: 'Divide',
                 cancelButtonText: 'Deactivate'
             }).then((result) => {
 
                 if (result.value) {
-                    Swal.mixin({
-                        input: 'select',
-                        inputOptions: text,
-                        confirmButtonText: 'Next &rarr;',
-                        showCancelButton: true,
-                    }).queue([
-                        {
-                            title: 'Manage Table',
-                            text: 'Select Table to combine/divide'
-                        }]).then((result, id) => {
-                        if (result.value) {
-                            Swal(
-                                'Tables are unmerged',
-                                'table',
-                                'success',
-                            ).then(() => {
-                                console.log(y);
-                                var data = {
-                                    tableId: y,
-                                };
-                                $.ajax({
-                                    type: 'POST',
-                                    dataType: 'application/json',
-                                    url: '/api/table/unmergeTable',
-                                    timeout: 5000,
-                                    data: data, statusCode: {
-                                        200: function (x) {
-                                            location.reload();
-                                        },
-                                        404: function (x) {
-                                            alert(x.responseText);
-                                        }
-                                    },
-                                })
-                            })
-                        } else if (result.dismiss === Swal.DismissReason.cancel) {
-                            Swal(
-                                'Anim',
-                                'table',
-                                'success',
-                            ).then(() => {
-                                console.log(y);
-                                var data = {
-                                    tableId: y,
-                                    status: 0,
-                                };
-                                $.ajax({
-                                    type: 'POST',
-                                    dataType: 'application/json',
-                                    url: '/api/table/updateStatus',
-                                    timeout: 5000,
-                                    data: data, statusCode: {
-                                        200: function (x) {
-                                            location.reload();
-                                        },
+                    Swal(
+                        'Tables are unmerged',
+                        'table',
+                        'success',
+                    ).then(()=>{
+                        console.log(y);
+                        var data = text.split('-'); $.ajax({
+                            type: 'POST',
+                            dataType: 'application/json',
+                            url: '/api/table/unmergeTable',
+                            timeout: 5000,
+                            data: data, statusCode: {
+                                200: function (x) {
+                                    location.reload();
+                                },
+                                404: function (x) {
+                                    alert(x.responseText);
+                                }
+                            },
+                        })
+                    })
+                }
+                else if(result.dismiss=== Swal.DismissReason.cancel)
+                {
+                    Swal(
+                        'Anim',
+                        'table',
+                        'success',
+                    ).then(()=>{
+                        console.log(y);
+                        var data = {
+                            tableId: y,
+                            status: 0,
+                        };
+                        $.ajax({
+                            type: 'POST',
+                            dataType: 'application/json',
+                            url: '/api/table/updateStatus',
+                            timeout: 5000,
+                            data: data, statusCode: {
+                                200: function (x) {
+                                    location.reload();
+                                },
 
-                                        404: function (x) {
-                                            alert(x.responseText);
-                                            alert(x.responseText);
-                                        }
-                                    },
-                                })
-                            })
-                        }
+                                404: function (x) {
+                                    alert(x.responseText);
+                                }
+                            },
+                        })
                     })
                 }
             })

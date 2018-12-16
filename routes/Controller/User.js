@@ -475,24 +475,32 @@ function createAUser(data){
 
 
 function updateAUser(data){
-    console.log(data);
-
     return new Promise((resolve, reject) => {
-        mUser.findOne({
-            where:
+        mUser.update(
                 {
-                    username: data.username
+                    password: data.password,
+                    firstName: data.firstName,
+                    lastName: data.lastName,
+                    bilkentId: data.bilkentId
                 }
-        }).then((user)=>{
-            user.setRoles(data.roleId);
-            user.setCourses(data.courseId);
+            ,{
+                where:
+                    {
+                        username: data.username
+                    },
+            }).then((user)=>{
+            user.setRoles(data.roleId).then(roles=>{
+
+            }).catch(error=>{
+                reject(error);
+            })
+            user.setCourses(data.courseId).then(courses=>{
+
+            }).catch(error=>{
+                reject(error);
+            })
             resolve("User is updated successfully.");
         })
-        /*.spread((user, created)=> {
-            console.log("CRRRR : " + created);
-            console.log(user.get({plain: true}));
-
-        })*/
             .catch(error =>{
                 reject("User Cannot Be Updated!" + error);
             })
