@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="../stylesheets/style.css"/>
-    <link rel="stylesheet" href="../stylesheets/bootstrap-datepicker.css">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
@@ -21,7 +20,6 @@
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
 
     <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
-    <script src="../JsFiles/bootstrap-datepicker.js"></script>
 
 </head>
 <body>
@@ -71,7 +69,7 @@
             <tr>
                 <th>Name</th>
                 <th>Cuisine</th>
-                <th>Date</th>
+                <th>Active</th>
                 <th>Set Price</th>
                 <th>Manage</th>
             </tr>
@@ -154,8 +152,10 @@
                     <div class="form-group">
                         <label class="col-form-label col-md-3">Date</label>
                         <div class="col-md-11">
-                            <input type="text" class="form-control" id="date">
-                            <span class="help-block"></span>
+                            <select name="isActive" id="isActive" class="btn btn-primary">
+                                <option value="false" selected> Inactive
+                                <option value="true" selected> Active
+                            </select> <span class="help-block"></span>
                         </div>
 
                     </div>
@@ -205,10 +205,6 @@
 
 <script>
 
-    $('#date').datepicker({
-        'format': 'mm/dd/yyyy',
-        'autoclose': true
-    });
     $.ajax({
         url: '/api/menu/getAllMenu',
         dataType: 'application/json',
@@ -223,7 +219,7 @@
                 $.each(jArray, function (index, val) {
                     receive_body += '<tr><th scope="row">' + val.name + '</th>' +
                         '<td>' + val.cuisineRegion + '</td>' +
-                        '<td>' + val.date + '</td>' +
+                        '<td>' + val.isActive + '</td>' +
                         '<td>' + val.setPrice + '.00</td>' +
                         '<td><button class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal_form_update_menu" onclick="updateMenu(\'' + val.name + '\')" ><i class="fa fa-bars"></i></button>' +
                         '<button class="btn btn-danger btn-sm"  onclick="deleteMenu(\'' + val.name + '\')"><i class="fa fa-trash"></i></button>' +
@@ -276,7 +272,7 @@
         var data2 = {
             name: $('#name').val().toUpperCase(),
             cuisineRegion: $('#cuisine').val(),
-            date: $('#date').val(),
+            isActive: $('#isActive').val(),
             setPrice: $('#setPrice').val(),
         };
         $.ajax({
