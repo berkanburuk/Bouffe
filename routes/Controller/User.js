@@ -488,24 +488,32 @@ function updateAUser(data){
                     {
                         username: data.username
                     },
-            }).then((user)=>{
-            user.setRoles(data.roleId).then(roles=>{
+            }).then((user)=> {
+            mUser.findOne({
+                where: {
+                    username: data.username
+                }
+            }).then(user => {
+                user.setRoles(data.roleId).then(roles => {
 
-            }).catch(error=>{
-                reject(error);
-            })
-            user.setCourses(data.courseId).then(courses=>{
+                }).catch(error => {
+                    reject(error);
+                })
+                user.setCourses(data.courseId).then(courses => {
 
-            }).catch(error=>{
-                reject(error);
+                }).catch(error => {
+                    reject(error);
+                })
+                resolve("User is updated successfully.");
             })
-            resolve("User is updated successfully.");
-        })
+                .catch(error =>{
+                    reject(error);
+                })
+            })
             .catch(error =>{
-                reject("User Cannot Be Updated!" + error);
+                reject(error);
             })
-
-    })
+        })
 
 }
 

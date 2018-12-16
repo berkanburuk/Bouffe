@@ -328,13 +328,15 @@ function updateMergedTablesToDivide(id){
 }
 
 function divideTables(data) {
-
+    var a=[];
+console.log("data[0]"+JSON.parse(data));
+/*
     var jsonData = JSON.parse(data);
     for (var i = 0; i < jsonData.counters.length; i++) {
         var counter = jsonData.counters[i];
 
     }
-
+*/
     return new Promise((resolve, reject) => {
         mTable.findOne({
             where:{
@@ -346,7 +348,6 @@ function divideTables(data) {
         if (data.mergedWith>0){
             do {
                 updateMergedTablesToDivide(data.id).then(myData => {
-
                     mergedTable = myData.mergedWith;
                     data.mergedWith=myData.mergedWith;
                     data.id = myData.id;
@@ -408,7 +409,7 @@ function getUsersTable(data){
             //console.log("1->"+JSON.stringify(data[0].dataValues));
             if (data[0] != null && data[0] != undefined) {
                 //  if (data[0].roles.id==5) {
-                console.log(JSON.stringify(data));
+
                 resolve(JSON.stringify(data));
                 /*
                  }else{
@@ -504,7 +505,6 @@ module.exports = function(app){
                 var id = parseInt(data.id);
                 delete data.id;
                 console.log(data);
-
                 assignTableToUser(data, id).then(data => {
                     response.write('Table Successfully Updated!', () => {
                         response.statusCode = 200;
@@ -706,6 +706,7 @@ module.exports = function(app){
                 if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
                     ||  checkUsersRole.isAdmin(request.session.roleId))){
                     var data = request.body;
+                    console.log("divideTable"+data);
                     divideTables(data).then(result=> {
                         response.statusCode = 200;
                         console.log(result);
