@@ -187,6 +187,29 @@ function assignFoodToMenu(data) {
 }
 
 
+function getActiveMenu() {
+    return new Promise((resolve, reject) => {
+        mMenu.findOne({
+            where:
+                {
+                    isActive:true
+                }
+        })
+            .then((menu) => {
+                    if(menu!=undefined || menu!=null){
+                        resolve(menu);
+                    } else {
+                        reject("There is no active menu!");
+                    }
+                })
+                    .catch(error => {
+                        reject(error);
+                    })
+
+    })
+}
+
+
 
 
 function deleteMenu(data){
@@ -566,7 +589,31 @@ module.exports = function (app) {
         }
 
     }),
+        app.get('/api/menu/getActiveMenu', function (request, response ) {
+            if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)||
+                checkUsersRole.isChef(request.session.roleId) ||  checkUsersRole.isChef(request.session.roleId))) {
+                getActiveMenu().then(menu => {
+                    response.statusCode = 200;
+                    console.log(menu);
+                    response.write(menu, () => {
+                        response.end();
+                    });
+                }).catch(error => {
+                    response.statusCode = 404;
+                    console.log(error);
+                    response.write(error.toString(), () => {
+                        response.end();
+                    });
+                })
+            }
+            else {
+                response.write(checkUsersRole.errorMesage(), () => {
+                    response.statusCode = 404;
+                    response.end();
+                })
+            }
 
+        }),
     app.get('/api/menu/deleteFoodFromMenu/:menuName/:foodName', function (request, response ) {
 
         if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)||
