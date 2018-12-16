@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Thumbnail Gallery - Start Bootstrap Template</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../TableFiles/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <script src="../TableFiles/vendor/jquery/jquery.min.js"></script>
+    <link href="../TableFiles/css/thumbnail-gallery.css" rel="stylesheet">
+
+
+
+
+    <script>
+        var count = 15;
+        var custom_list;
+        $(document).ready(function() {
+
+            var ans =  $.ajax({
+                url: '/api/table/getAllTables',
+                type: "GET",
+
+                statusCode: {
+                    404: function() {
+                        console.log("-1-1-1-1 WE GOT 404!");
+                    },
+                    200: function(responseBody) {
+                        console.log(responseBody);
+                        var dat=JSON.parse(responseBody);
+                        console.log(dat);
+                        console.log(responseBody);
+
+                        //role=x.length;
+                        //console.log(role);
+                        //custom_list = getMenu();
+                        //$('#tables').html(custom_list);
+                        custom_list = getMenu(dat);
+                        $('#tables').html(custom_list);
+
+                    }
+                }
+            });
+
+
+            function getMenu(array) {
+                <!-- 1) Birlesik masalar recursive kontrol edilecek -->
+                <!-- 2) ilk masaya tum masalarin adi yazilacak -->
+                <!-- 3) kalan masalara id basilmayacak -->
+                <!-- 4) Masanin on click functionu olacak oradan merge veya state i degisecek -->
+                <!-- 5)   -->
+
+
+
+                //var x="<script src='../TableFiles/vendor/jquery/jquery.min.js'>";
+
+                var items="";
+                var mergedList=[];
+
+                for (var i = 0; i < array.length ; i++) {
+
+                    var txt=array[i].id+"";
+                    if(array[i].structure == "circular") {
+                        if(array[i].status==0)
+                        {
+                            items += "<div id='" + "utable" + "' value='" + array[i].id + "'" +" name='"+txt+"' "+ "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/c0.png' alt=\"\"><div class=\"centered\">Table: "+txt+"</div></p></p></div>";
+                        }
+                        else if(array[i].status==1)
+                        {
+                            items += "<div id='" + "utable" + "' value='" + array[i].id + "'" +" name='"+txt+"' "+ "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/c1.png' alt=\"\"><div class=\"centered\">Table: "+txt+"</div></p></p></div>";
+                        }
+                        else
+                        {
+                            items += "<div id='" + "utable" + "' value='" + array[i].id + "'" +" name='"+txt+"' "+ "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/c2.png' alt=\"\"><div class=\"centered\">Table: "+txt+"</div></p></p></div>";
+                        }
+                    }
+                    else if (jQuery.inArray(array[i].id, mergedList)==-1 && array[i].mergedWith!=-1){
+                        var mergedOnes=i;
+                        while(array[mergedOnes].mergedWith >= 0 && mergedOnes>=0 )
+                        {
+
+                            txt+="-"+array[mergedOnes].mergedWith;
+                            mergedList[mergedList.length]=array[mergedOnes].mergedWith;
+                            console.log(txt);
+                            var sMO=mergedOnes;
+                            //mergedOnes=jQuery.inArray( array[mergedOnes].mergedWith, array );
+                            $.each(array, function (index,val) {
+                                if (val.id == array[sMO].mergedWith) {
+                                    mergedOnes = index;
+                                    return false;
+                                }
+                                else
+                                {
+                                    mergedOnes= -1;
+                                }
+                            });
+
+                            console.log(mergedOnes);
+                            console.log(mergedList);
+
+
+                        }
+                        if(array[i].status==0)
+                        {
+                            items += "<div id='" + "utable" + "' value='" + array[i].id + "'" +" name='"+txt+"' "+ "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/s0.png' alt=\"\"/><div class=\"centered\">Table: "+txt+"</div></p></div>";
+                        }
+                        else if(array[i].status==1)
+                        {
+                            items += "<div id='" + "utable" + "' value='" + array[i].id + "'" +" name='"+txt+"' "+ "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/s1.png' alt=\"\"><div class=\"centered\">Table: "+txt+"</div></p></p></div>";
+                        }
+                        else
+                        {
+                            items += "<div id='" + "utable" + "' value='" + array[i].id + "'" +" name='"+txt+"' "+ "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/s2.png' alt=\"\"><div class=\"centered\">Table: "+txt+"</div></p></p></div>";
+                        }
+
+
+                    }
+                    else
+                    {
+
+                        if(array[i].status==0)
+                        {
+                            items += "<div id='" + "mtable" + "' value='" + array[i].id + "'" +" name='"+txt+"' "+ "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'> <img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/s0.png' alt=\"\"/><div class=\"centered\">Table: "+txt+"</div></p></p></div>";
+                        }
+                        else if(array[i].status==1)
+                        {
+                            items += "<div id='" + "mtable" + "' value='" + array[i].id + "'" +" name='"+txt+"' "+ "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/s1.png' alt=\"\"><div class=\"centered\">Table: "+txt+"</div></p></p></div>";
+                        }
+                        else
+                        {
+                            items += "<div id='" + "mtable" + "' value='" + array[i].id + "'" +" name='"+txt+"' "+ "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/s2.png' alt=\"\"><div class=\"centered\">Table: "+txt+"</div></p></p></div>";
+                        }
+
+                    }
+                }
+
+
+
+
+                return items+"\n";
+
+            }
+        });
+    </script>
+
+    <style>
+        .centered {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+    </style>
+</head>
+
+<body>
+
+
+<!-- Navigation -->
+
+
+<!-- Page Content -->
+<div class="container">
+
+    <h1 class="my-4 text-center text-lg-center">Table Layout Management</h1>
+
+    <div id="tables" class="row text-center text-lg-left">
+
+    </div>
+
+</div>
+<!-- /.container -->
+
+<!-- Footer -->
+
+<!-- Bootstrap core JavaScript -->
+<script src="../TableFiles/vendor/jquery/jquery.min.js"></script>
+<script src="../TableFiles/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+
+</body>
+
+</html>
