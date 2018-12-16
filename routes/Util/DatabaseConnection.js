@@ -55,8 +55,8 @@ const sequelize = new Sequelize(dbConnection.database, dbConnection.username, db
     host: dbConnection.hostName,
     port:dbConnection.portNumber,
     dialect: 'postgres',
-    operatorsAliases: false,
-    //operatorsAliases: Sequelize.Op,
+    //operatorsAliases: false,
+    operatorsAliases: Sequelize.Op,
     pool: dbConnection.pool
 });
 
