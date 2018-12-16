@@ -163,7 +163,8 @@
                     <div class="form-group">
                         <label class="col-form-label col-md-3">Username</label>
                         <div class="col-md-11">
-                            <input name="username" id="uusername" placeholder="LePimentRogue User" readonly class="form-control"
+                            <input name="username" id="uusername" placeholder="LePimentRogue User" readonly
+                                   class="form-control"
                                    type="text">
                             <span class="help-block"></span>
                         </div>
@@ -305,11 +306,10 @@
             200: function (x) {
                 console.log(JSON.parse(x.responseText));
                 var jArray = JSON.parse(x.responseText);
-                var receive_body = "";
-                var receive_body = "<option value='0' disabled selected>Please choose a food";
+                var receive_body = "<option value='0' disabled>Please choose a role";
 
                 $.each(jArray, function (index, val) {
-                    receive_body += '<option value="' + val.id + '">' + val.name;
+                    receive_body += '<option value="' + val.id + '">' + val.roleName;
                 });
                 $('#roleId').html(receive_body);
                 $('#uroleId').html(receive_body);
@@ -454,6 +454,8 @@
             roleId: $('#uroleId').val(),
             courseId: $('#ucourseIdForm').val()
         };
+
+        console.log(data2);
         $.ajax({
             url: '/api/user/updateAUser',
             dataType: 'application/json',
