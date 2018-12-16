@@ -132,11 +132,11 @@
            }
        });
    */
-    var menuname = "JANUARY - 1S WEEK MENU";
+    var menuname = "menu1";
     $.ajax({
         type: 'GET',
         dataType: 'application/json',
-        url: '/api/menu/getFoodOfMenu/' + name,
+        url: '/api/menu/getActiveMenu',
         timeout: 5000,
         statusCode: {
             200: function (x) {
