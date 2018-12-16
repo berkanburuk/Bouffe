@@ -4,20 +4,323 @@
     <meta charset="UTF-8">
     <title>Upload SRS</title>
 
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="../stylesheets/style.css"/>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.debug.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+            integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+            crossorigin="anonymous"></script>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+            integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+            crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+
+    <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+
+
     <script src=" https://cdnjs.cloudflare.com/ajax/libs/xls/0.7.4-a/xls.js"></script>
 
 </head>
 <body>
-<div>
-    <input type="file" id="my_file_input"/>
-    <table id='my_file_output'></table>
+<div class="container box">
+    <div class="col-lg-11" style="margin-top: 20px">
+        <input type="file" class="btn btn-primary" id="my_file_input"/>
+        <select name="courseId" id="courseId" class="btn btn-primary">
+            <option value="246"> Restaurant Service
+            <option value="323" selected> International Cuisines
+        </select>
+    </div>
+
+    <div class="table-responsive-sm" style="margin-top: 20px">
+        <table id="my_file_output" class="table table-hover table-bordered table-striped"></table>
+        <button type="button" class="btn btn-primary" id="btnAddUser" data-toggle="modal" data-target="#modal_form">Add
+            User
+        </button>
+        <button type="button" class="btn btn-primary" id="upload" onclick="sendTable()" style="visibility: hidden">
+            Insert Students
+        </button>
+    </div>
+
+    <div id="user_data_div" class="table-responsive-sm" style="margin-top: 20px">
+        <table id="user_data" class="table table-hover table-bordered table-striped">
+            <thead>
+            <tr>
+                <th>Username</th>
+                <th>Firstname</th>
+                <th>Lastname</th>
+                <th>Bilkent ID</th>
+                <th>Manage</th>
+            </tr>
+            </thead>
+            <tbody id="user_data_body">
+            </tbody>
+        </table>
+    </div>
 </div>
 </body>
+<!-- Bootstrap modal -->
+<div class="modal fade" id="modal_form" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Add User Form</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="add_user_form">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="col-form-label col-md-3">Username</label>
+                        <div class="col-md-11">
+                            <input name="username" id="username" placeholder="LePimentRogue User" class="form-control"
+                                   type="text">
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label col-md-3">Password</label>
+                        <div class="col-md-11">
+                            <input name="password" id="password" placeholder="******"
+                                   class="form-control"
+                                   type="password">
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label col-md-3">Firstname</label>
+                        <div class="col-md-11">
+                            <input name="firstName" id="firstName" placeholder="Ali"
+                                   class="form-control"
+                                   type="text">
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label col-md-3">Lastname</label>
+                        <div class="col-md-11">
+                            <input name="lastName" id="lastName" placeholder="Ünal"
+                                   class="form-control"
+                                   type="text">
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label col-md-3">Bilkent ID</label>
+                        <div class="col-md-11">
+                            <input name="bilkentId" id="bilkentId" placeholder="12345"
+                                   class="form-control"
+                                   type="number">
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label col-md-3">Role</label>
+                        <div class="col-md-11">
+                            <select name="roleId" id="roleId" class="form-control">
+                            </select>
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label col-md-3">Course</label>
+                        <div class="col-md-11">
+                            <select name="courseId" id="courseIdForm" class="form-control">
+                                <option value="246"> Restaurant Service
+                                <option value="323" selected> International Cuisines
+                            </select>
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="submit" name="submit" id="submit-user" value="Save" class="btn btn-primary"/>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- End Bootstrap modal -->
+
+<!-- Bootstrap modal -->
+<div class="modal fade" id="modal_form_update" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Update User Form</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="update_user_form">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="col-form-label col-md-3">Username</label>
+                        <div class="col-md-11">
+                            <input name="username" id="uusername" placeholder="LePimentRogue User" readonly
+                                   class="form-control"
+                                   type="text">
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label col-md-3">Password</label>
+                        <div class="col-md-11">
+                            <input name="password" id="upassword" placeholder="12345"
+                                   class="form-control"
+                                   type="password">
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label col-md-3">Firstname</label>
+                        <div class="col-md-11">
+                            <input name="firstName" id="ufirstName" placeholder="Ali"
+                                   class="form-control"
+                                   type="text">
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label col-md-3">Lastname</label>
+                        <div class="col-md-11">
+                            <input name="lastName" id="ulastName" placeholder="Ünal"
+                                   class="form-control"
+                                   type="text">
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label col-md-3">Bilkent ID</label>
+                        <div class="col-md-11">
+                            <input name="bilkentId" id="ubilkentId" placeholder="12345"
+                                   class="form-control"
+                                   type="number">
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label col-md-3">Role</label>
+                        <div class="col-md-11">
+                            <select name="roleId" id="uroleId" class="form-control">
+                            </select>
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label col-md-3">Course</label>
+                        <div class="col-md-11">
+                            <select name="courseId" id="ucourseIdForm" class="form-control">
+                                <option value="246"> Restaurant Service
+                                <option value="323" selected> International Cuisines
+                            </select>
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="submit" name="submit" value="Save" class="btn btn-primary"/>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- End Bootstrap modal -->
 </html>
 
 <script type="text/javascript">
+    function getUserRole(username) {
+        $.ajax({
+            type: 'GET',
+            dataType: 'application/json',
+            url: '/api/user/getRoleByUsername/' + username,
+            timeout: 5000,
+            statusCode: {
+                200: function (x) {
+                    console.log(x.responseText)
+                },
+                404: function (x) {
+                    alert(x.responseText);
+                }
+            },
+            success: function (data, textStatus) {
+                alert(data);
+                console.log(data);
+            },
+            fail: function (xhr, textStatus, errorThrown) {
+                alert('request failed');
+            }
+        });
+    }
+
+    function updateUser(username, firstname, lastname, bilkentId) {
+        $('#uusername').val(username);
+        $('#ufirstName').val(firstname);
+        $('#ulastName').val(lastname);
+        $('#ubilkentId').val(bilkentId);
+    }
+
+    getUserRole('berkan');
+
+    $.ajax({
+        url: '/api/user/getAllUsers',
+        dataType: 'application/json',
+        type: 'GET',
+        timeout: 5000,
+        statusCode: {
+            200: function (x) {
+                console.log(JSON.parse(x.responseText));
+                var jArray = JSON.parse(x.responseText);
+                var receive_body = "";
+                $.each(jArray, function (index, val) {
+                    receive_body += '<tr><th scope="row">' + val.username + '</th>' +
+                        '<td>' + val.firstName + '</td>' +
+                        '<td>' + val.lastName + '</td>' +
+                        '<td>' + val.bilkentId + '</td>' +
+                        '<td><button class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal_form_update" onclick="updateUser(\'' + val.username + '\',\'' +
+                        val.firstName + '\',\'' + val.lastName + '\',\'' + val.bilkentId + '\')"><i class="fa fa-bars"></i></button>' +
+                        '<button class="btn btn-danger btn-sm" onclick="deleteUser(\'' + val.username + '\')"><i class="fa fa-trash"></i></button></td></tr>';
+                });
+                $('#user_data_body').html(receive_body);
+                $('#user_data').DataTable();
+            },
+            404: function (x) {
+                alert(x.responseText);
+            }
+        }
+    });
+
+    $.ajax({
+        url: '/api/user/getRoleObject',
+        dataType: 'application/json',
+        type: 'GET',
+        timeout: 5000,
+        statusCode: {
+            200: function (x) {
+                console.log(JSON.parse(x.responseText));
+                var jArray = JSON.parse(x.responseText);
+                var receive_body = "<option value='0' disabled>Please choose a role";
+
+                $.each(jArray, function (index, val) {
+                    receive_body += '<option value="' + val.id + '">' + val.roleName;
+                });
+                $('#roleId').html(receive_body);
+                $('#uroleId').html(receive_body);
+
+
+            },
+            404: function (x) {
+                alert(x.responseText);
+            }
+        }
+    });
     var oFileIn;
     var stuInfoArr = [];
     var totalCol = 0;
@@ -36,7 +339,6 @@
         // Create A File Reader HTML5
         var reader = new FileReader();
 
-
         // Ready The Event For When A File Gets Selected
         reader.onload = function (e) {
             var data = e.target.result;
@@ -47,25 +349,24 @@
                 // Obtain The Current Row As CSV
                 var sCSV = XLS.utils.make_csv(wb.Sheets[sheetName]);
                 var data = XLS.utils.sheet_to_json(wb.Sheets[sheetName], {header: 1});
-                console.log(data);
                 $.each(data, function (indexR, valueR) {
                     var sRow = "<tr>";
                     $.each(data[indexR], function (indexC, valueC) {
                         sRow = sRow + "<td>" + valueC + "</td>";
                         if (indexC == 6 && indexR != 0)
-                            sRow = sRow + "<td><select name='stuRole' id='stuRole" + indexR + "'><option value=5 selected> Waiter <option value='cashier'> Cashier <option value=6> Bartender <option value='waiter'> Chef </select></td>";
+                            sRow = sRow + "<td><select name='stuRole' id='stuRole" + indexR + "'><option value='5' selected> Waiter <option value='6'> Bartender </select></td>";
                         totalCol++;
                     });
 
                     var myData = {
                         'username': data[indexR][6],
-                        'password': 555,
+                        'password': data[indexR][6],
                         'firstName': data[indexR][2],
                         'lastName': data[indexR][1],
-                        'roleId': 1,
+                        'roleId': 2,
                         'bilkentId': data[indexR][3],
-                        'currentRole': 5
-                    }
+                        'courseId': $('#courseId').val(),
+                    };
 
                     stuInfoArr.push(myData);
                     sRow = sRow + "</tr>";
@@ -73,11 +374,133 @@
                 });
             });
         };
+        document.getElementById('upload').style.visibility = 'visible';
 
         // Tell JS To Start Reading The File.. You could delay this if desired
         reader.readAsBinaryString(oFile);
         console.log(stuInfoArr);
-        console.log(stuInfoArr.length);
     }
 
+    function sendTable() {
+        for (var i = 1; i < stuInfoArr.length; i++) {
+            stuInfoArr[i].roleId = $('#stuRole' + i).val();
+            $.ajax({
+                url: '/api/user/addUser',
+                dataType: 'application/json',
+                data: stuInfoArr[i],
+                type: 'POST',
+                timeout: 5000,
+                statusCode: {
+                    200: function (x) {
+                        alert(x.responseText);
+                    },
+                    404: function (x) {
+                        alert(x.responseText);
+                    }
+                }
+            });
+        }
+        location.reload();
+    }
+
+    $('[data-dismiss=modal]').on('click', function (e) {
+        var $t = $(this),
+            target = $t[0].href || $t.data("target") || $t.parents('.modal') || [];
+
+        $(target)
+            .find("input[type=text], input[type=number], textarea")
+            .val('')
+            .end()
+    });
+
+    $('#add_user_form').on('submit', function (e) {
+        e.preventDefault();
+        var data2 = {
+            username: $('#username').val(),
+            password: $('#password').val(),
+            firstName: $('#firstName').val(),
+            lastName: $('#lastName').val(),
+            bilkentId: $('#bilkentId').val(),
+            roleId: $('#roleId').val(),
+            courseId: $('#courseIdForm').val()
+        };
+        $.ajax({
+            url: '/api/user/addUser',
+            dataType: 'application/json',
+            data: data2,
+            type: 'POST',
+            timeout: 5000,
+            statusCode: {
+                200: function (x) {
+                    $('#modal_form').modal('hide');
+                    alert(x.responseText);
+                    location.reload();
+                },
+                404: function (x) {
+                    alert(x.responseText);
+                }
+            }
+        });
+    });
+
+    $('#update_user_form').on('submit', function (e) {
+        e.preventDefault();
+        var data2 = {
+            username: $('#uusername').val(),
+            password: $('#upassword').val(),
+            firstName: $('#ufirstName').val(),
+            lastName: $('#ulastName').val(),
+            bilkentId: $('#ubilkentId').val(),
+            roleId: $('#uroleId').val(),
+            courseId: $('#ucourseIdForm').val()
+        };
+
+        console.log(data2);
+        $.ajax({
+            url: '/api/user/updateAUser',
+            dataType: 'application/json',
+            data: data2,
+            type: 'POST',
+            timeout: 5000,
+            statusCode: {
+                200: function (x) {
+                    $('#modal_form').modal('hide');
+                    alert(x.responseText);
+                    location.reload();
+                },
+                404: function (x) {
+                    alert(x.responseText);
+                }
+            }
+        });
+    });
+
+
+    function deleteUser(name) {
+        if (confirm("Are you sure to delete user: " + name)) {
+            $.ajax({
+                type: 'GET',
+                dataType: 'application/json',
+                url: '/api/user/deleteUser/' + name,
+                timeout: 5000,
+                statusCode: {
+                    200: function (x) {
+                        location.reload();
+                    },
+                    404: function (x) {
+                        alert(x.responseText);
+                    }
+                },
+                success: function (data, textStatus) {
+                    alert(data);
+                    console.log(data);
+                },
+                fail: function (xhr, textStatus, errorThrown) {
+                    alert('request failed');
+                }
+            })
+        }
+    }
 </script>
+
+
