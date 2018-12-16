@@ -207,13 +207,14 @@ function getActiveMenu(){
 function getActiveMenu2(){
     console.log();
     return new Promise((resolve, reject) => {
-        mMenu.findAll({
+        mMenu.findOne({
             where: {
                 isActive:true
             },
         }).then(data=>{
             if (data != null && data != undefined){
-                console.log(data.getFoods());
+                var mydata = data.getFood()
+                console.log(JSON.stringify(mydata ));
                 resolve(JSON.stringify(data));
             }
             else
