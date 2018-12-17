@@ -8,25 +8,17 @@ class PaymentModel {
                 autoIncrement: true,
                 type: Sequelize.INTEGER
             },
-            cash: {
-                type:Sequelize.DOUBLE,
-                defaultValue:0.0
+            paymentType:{
+                type:Sequelize.INTEGER,
             },
-            creditCard: {
+            price:{
                 type:Sequelize.DOUBLE,
-                defaultValue:0.0
-            },
-            ticket: {
-                type:Sequelize.DOUBLE,
-                defaultValue:0.0
-            },
-            complimentary: {
-                type:Sequelize.DOUBLE,
-                defaultValue:0.0
+                defaultValue:0
             }
+            //cash=0, creditCard=1,ticket=2, compimentary=3
         });
         let mTable = sequelize.model('table');
-        Payment.belongsTo(mTable, {foreignKey: 'fk_Order'});
+        Payment.belongsTo(mTable, {});
 
 
     }
