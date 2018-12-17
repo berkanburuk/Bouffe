@@ -29,6 +29,17 @@ class FoodModel {
         const mMenuFood = sequelize.define('menuFood', {})
         Food.belongsToMany(mMenu,{through:mMenuFood, targetKey:'name',onDelete: 'CASCADE'});
 
+
+        //OrderFood
+        let mOrder = sequelize.model('order');
+        let mOrderFood = sequelize.model('orderFood');
+        Food.belongsToMany(mOrder,{
+            through: mOrderFood,
+            targetKey:'name',
+            onDelete: 'CASCADE'
+        });
+
+
         return Food;
     }
 
