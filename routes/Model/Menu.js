@@ -34,7 +34,7 @@ class MenuModel {
                     onDelete: 'CASCADE'
                 });
 
-
+/*
             //OrderMenu
             let mOrder = sequelize.model('order');
             let mOrderMenu = sequelize.model('orderMenu');
@@ -44,7 +44,7 @@ class MenuModel {
                 onDelete: 'CASCADE'
             });
 
-
+*/
 
 
             return Menu;

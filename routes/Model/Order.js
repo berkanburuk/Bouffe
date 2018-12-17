@@ -63,11 +63,17 @@ class OrderModel {
         Order.belongsToMany(mTable,{through: mOrderTable,targetKey:'id', onDelete: 'CASCADE'});
 
 
-
+/*
         //OrderMenu FK
         const mMenu = sequelize.define('menu', {})
         const mOrderMenu = sequelize.define('orderMenu', {})
         Order.belongsToMany(mMenu,{targetKey:'id', through: mOrderMenu});
+*/
+        //OrderFood FK
+        const mFood = sequelize.define('food', {})
+        const mOrderFood = sequelize.define('orderFood', {})
+        Order.belongsToMany(mFood,{targetKey:'id', through: mOrderFood});
+
 
         //OrderBeverage FK
         const mBeverage = sequelize.define('beverage', {})
