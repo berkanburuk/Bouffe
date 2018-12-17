@@ -28,13 +28,17 @@
 </head>
 <body>
 <div class="container box">
-    <div class="col-lg-11" style="margin-top: 20px">
-        <input type="file" id="my_file_input"/>
-        <select name="courseId" id="courseId" class="btn btn-primary">
-            <option value="246"> Restaurant Service
-            <option value="323" selected> International Cuisines
-        </select>
-    </div>
+    <form>
+        <div class="form-group" style="margin-top: 20px">
+            <input type="file" class="form-control-lg"
+                   accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                   id="my_file_input"/>
+            <select name="courseId" id="courseId" class="btn btn-primary">
+                <option value="246"> Restaurant Service
+                <option value="323" selected> International Cuisines
+            </select>
+        </div>
+    </form>
 
     <div class="table-responsive-sm" style="margin-top: 20px">
         <table id="my_file_output" class="table table-hover table-bordered table-striped"></table>
@@ -54,7 +58,6 @@
                 <th>Firstname</th>
                 <th>Lastname</th>
                 <th>Bilkent ID</th>
-                <th>Role</th>
                 <th>Manage</th>
             </tr>
             </thead>
@@ -79,7 +82,7 @@
                     <div class="form-group">
                         <label class="col-form-label col-md-3">Username</label>
                         <div class="col-md-11">
-                            <input name="username" id="username" placeholder="LePimentRogue User" class="form-control"
+                            <input name="username" id="username" class="form-control"
                                    type="text">
                             <span class="help-block"></span>
                         </div>
@@ -87,7 +90,7 @@
                     <div class="form-group">
                         <label class="col-form-label col-md-3">Password</label>
                         <div class="col-md-11">
-                            <input name="password" id="password" placeholder="******"
+                            <input name="password" id="password" autocomplete="off"
                                    class="form-control"
                                    type="password">
                             <span class="help-block"></span>
@@ -96,7 +99,7 @@
                     <div class="form-group">
                         <label class="col-form-label col-md-3">Firstname</label>
                         <div class="col-md-11">
-                            <input name="firstName" id="firstName" placeholder="Ali"
+                            <input name="firstName" id="firstName" autocomplete="off"
                                    class="form-control"
                                    type="text">
                             <span class="help-block"></span>
@@ -105,7 +108,7 @@
                     <div class="form-group">
                         <label class="col-form-label col-md-3">Lastname</label>
                         <div class="col-md-11">
-                            <input name="lastName" id="lastName" placeholder="Ünal"
+                            <input name="lastName" id="lastName" autocomplete="off"
                                    class="form-control"
                                    type="text">
                             <span class="help-block"></span>
@@ -114,7 +117,7 @@
                     <div class="form-group">
                         <label class="col-form-label col-md-3">Bilkent ID</label>
                         <div class="col-md-11">
-                            <input name="bilkentId" id="bilkentId" placeholder="*****"
+                            <input name="bilkentId" id="bilkentId" autocomplete="off"
                                    class="form-control"
                                    type="number">
                             <span class="help-block"></span>
@@ -164,7 +167,7 @@
                     <div class="form-group">
                         <label class="col-form-label col-md-3">Username</label>
                         <div class="col-md-11">
-                            <input name="username" id="uusername" placeholder="LePimentRogue User" readonly
+                            <input name="username" id="uusername" readonly
                                    class="form-control"
                                    type="text">
                             <span class="help-block"></span>
@@ -173,7 +176,7 @@
                     <div class="form-group">
                         <label class="col-form-label col-md-3">Password</label>
                         <div class="col-md-11">
-                            <input name="password" id="upassword" placeholder="*****x"
+                            <input name="password" id="upassword" autocomplete="off"
                                    class="form-control"
                                    type="password">
                             <span class="help-block"></span>
@@ -182,7 +185,7 @@
                     <div class="form-group">
                         <label class="col-form-label col-md-3">Firstname</label>
                         <div class="col-md-11">
-                            <input name="firstName" id="ufirstName" placeholder="Ali"
+                            <input name="firstName" id="ufirstName" autocomplete="off"
                                    class="form-control"
                                    type="text">
                             <span class="help-block"></span>
@@ -191,7 +194,7 @@
                     <div class="form-group">
                         <label class="col-form-label col-md-3">Lastname</label>
                         <div class="col-md-11">
-                            <input name="lastName" id="ulastName" placeholder="Ünal"
+                            <input name="lastName" id="ulastName" autocomplete="off"
                                    class="form-control"
                                    type="text">
                             <span class="help-block"></span>
@@ -200,7 +203,7 @@
                     <div class="form-group">
                         <label class="col-form-label col-md-3">Bilkent ID</label>
                         <div class="col-md-11">
-                            <input name="bilkentId" id="ubilkentId" placeholder="12345"
+                            <input name="bilkentId" id="ubilkentId"
                                    class="form-control"
                                    type="number">
                             <span class="help-block"></span>
@@ -246,7 +249,7 @@
             statusCode: {
                 200: function (x) {
                     console.log(JSON.parse(x.responseText)[0].roleId);
-                    return JSON.parse(x.responseText)[0].roleId;
+                    $('#uroleId').val(JSON.parse(x.responseText)[0].roleId);
                 },
                 404: function (x) {
                     alert(x.responseText);
@@ -266,6 +269,7 @@
         $('#ufirstName').val(firstname);
         $('#ulastName').val(lastname);
         $('#ubilkentId').val(bilkentId);
+        getUserRole(username);
     }
 
     $.ajax({
@@ -279,12 +283,10 @@
                 var jArray = JSON.parse(x.responseText);
                 var receive_body = "";
                 $.each(jArray, function (index, val) {
-                    var role = getUserRole(val.username);
                     receive_body += '<tr><th scope="row">' + val.username + '</th>' +
                         '<td>' + val.firstName + '</td>' +
                         '<td>' + val.lastName + '</td>' +
                         '<td>' + val.bilkentId + '</td>' +
-                        '<td>' + $('#roleId option:selected') + '</td>' +
                         '<td><button class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal_form_update" onclick="updateUser(\'' + val.username + '\',\'' +
                         val.firstName + '\',\'' + val.lastName + '\',\'' + val.bilkentId + '\')"><i class="fa fa-bars"></i></button>' +
                         '<button class="btn btn-danger btn-sm" onclick="deleteUser(\'' + val.username + '\')"><i class="fa fa-trash"></i></button></td></tr>';
@@ -392,6 +394,8 @@
                 statusCode: {
                     200: function (x) {
                         alert(x.responseText);
+                        location.reload();
+
                     },
                     404: function (x) {
                         alert(x.responseText);
@@ -399,7 +403,6 @@
                 }
             });
         }
-        location.reload();
     }
 
     $('[data-dismiss=modal]').on('click', function (e) {

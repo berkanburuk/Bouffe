@@ -21,7 +21,7 @@
 
     <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
 
-    <title>Title</title>
+    <title>Food Management</title>
 </head>
 <body>
 <div class="container">
@@ -61,7 +61,7 @@
                     <div class="form-group">
                         <label class="col-form-label col-md-3">Food Name</label>
                         <div class="col-md-11">
-                            <input name="name" id="name" placeholder="Food Name" class="form-control" type="text">
+                            <input name="name" id="name" class="form-control" type="text">
                             <span class="help-block"></span>
                         </div>
                     </div>
@@ -79,7 +79,7 @@
                     <div class="form-group">
                         <label class="col-form-label col-md-3">Description</label>
                         <div class="col-md-11">
-                            <input name="description" id="description" placeholder="Side meals, ingredients etc."
+                            <input name="description" id="description"
                                    class="form-control"
                                    type="text">
                             <span class="help-block"></span>
@@ -88,14 +88,14 @@
                     <div class="form-group">
                         <label class="col-form-label col-md-3">Quantity</label>
                         <div class="col-md-11">
-                            <input name="quantity" id="quantity" placeholder="15" class="form-control" min="0"
+                            <input name="quantity" id="quantity"class="form-control" min="0" max="9999"
                                    type="number">
                             <span class="help-block"></span>
                         </div>
                         <div class="form-group">
                             <label class="col-form-label col-md-3">Price</label>
                             <div class="col-md-11">
-                                <input name="price" id="price" placeholder="15.00" class="form-control" min="0"
+                                <input name="price" id="price" class="form-control" min="0" max="9999"
                                        type="number">
                                 <span class="help-block"></span>
                             </div>
@@ -128,7 +128,7 @@
                     <div class="form-group">
                         <label class="col-form-label col-md-3">Food Name</label>
                         <div class="col-md-11">
-                            <input name="uname" id="uname" placeholder="Food Name" class="form-control" type="text">
+                            <input name="uname" id="uname" class="form-control" type="text">
                             <span class="help-block"></span>
                         </div>
                     </div>
@@ -146,7 +146,7 @@
                     <div class="form-group">
                         <label class="col-form-label col-md-3">Description</label>
                         <div class="col-md-11">
-                            <input name="description" id="udescription" placeholder="Side meals, ingredients etc."
+                            <input name="description" id="udescription"
                                    class="form-control"
                                    type="text">
                             <span class="help-block"></span>
@@ -155,14 +155,14 @@
                     <div class="form-group">
                         <label class="col-form-label col-md-3">Quantity</label>
                         <div class="col-md-11">
-                            <input name="uquantity" id="uquantity" placeholder="15" class="form-control" min="0"
+                            <input name="uquantity" id="uquantity" class="form-control" min="0" max="9999"
                                    type="number">
                             <span class="help-block"></span>
                         </div>
                         <div class="form-group">
                             <label class="col-form-label col-md-3">Price</label>
                             <div class="col-md-11">
-                                <input name="uprice" id="uprice" placeholder="15.00" class="form-control" min="0"
+                                <input name="uprice" id="uprice" class="form-control" min="0" max="9999"
                                        type="number">
                                 <span class="help-block"></span>
                             </div>
@@ -317,6 +317,7 @@
                 quantity: $('#quantity').val(),
                 price: $('#price').val()
             };
+            console.log(data2);
             $.ajax({
                 url: '/api/food/addFood',
                 dataType: 'application/json',
@@ -326,13 +327,7 @@
                 statusCode: {
                     200: function (x) {
                         $('#modal_form').modal('hide');
-                        /*  $('#name').val("");
-                         $('#description').val("");
-                         $('#quantity').val("");
-                         $('#price').val("");
-                         getAllFoods();*/
                         location.reload();
-
                     },
                     404: function (x) {
                         alert(x.responseText);

@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <tittle>Remove Users Roles</tittle>
+    <tittle>Assign Users Roles</tittle>
     <link src="../JsFiles/jQuery.js">
-
     <style>
         table, th, td {
             border: 1px solid black;
@@ -14,19 +13,19 @@
 </head>
 
 <body>
-<h1 text-align="center">Remove Assigned User Roles</h1>
+<h1 text-align="center">Assign Users Roles</h1>
 <form>
 
     Student or Academic Personnel
     <br>
-    <input type="radio" id="55" name="Staff" value="student"> Student
-    <input type="radio" id="stafftype" name="Staff" value="Academic"> Academic Staff
+    <input type="radio" id="stafftype" name="Staff" value="student"> Student
+    <input type="radio" id="55" name="Staff" value="Academic"> Academic Staff
     <br>
     <br>
     <table>
         <tr>
             <th> Student or Academic Staff Bilkent ID :</th>
-            <th> Select a Role to Remove</th>
+            <th> Select a Role to Assign</th>
         </tr>
 
         <tr>
@@ -38,25 +37,18 @@
                 Role
                 <select>
                     <option value="sysAdm"> Admin
-                    <option>
                     <option value="chef"> Chef
-                    <option>
                     <option value="instructor"> Instructor
-                    <option>
                     <option value="bartender"> Bartender
-                    <option>
                     <option value="dean"> Dean of Students
-                    <option>
                     <option value="cashier"> Cashier
-                    <option>
-                    <option value="matreTTable"> Matre de Table
-                    <option>
+                    <option value="matreTable"> Matre de Table
                 </select>
             </th>
         </tr>
         <tr>
             <th>
-                Remove the Role
+                Assign the Role
             </th>
             <th>
                 <button type="button">Save</button>
@@ -67,3 +59,7 @@
 </form>
 </body>
 </html>
+<script type="text/javascript">
+    console.log("inside");
+
+</script>

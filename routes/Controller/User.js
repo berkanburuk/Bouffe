@@ -90,6 +90,20 @@ module.exports = function(app) {
                     return response.redirect('/noAuthority');
                 }
         }),
+        app.get('/pdfGenerator', function (request, response) {
+            console.log('PdfGenerator');
+            if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
+                ||  checkUsersRole.isAdmin(request.session.roleId)
+                ||  checkUsersRole.isWaiter(request.session.roleId)
+                ||  checkUsersRole.isBartender(request.session.roleId)
+                ||  checkUsersRole.isChef(request.session.roleId)))
+            {
+                response.sendFile(path.resolve('public/Pages/pdfGenerator.html'));
+            }else {
+                response.statusCode = 401;
+                return response.redirect('/noAuthority');
+            }
+        }),
         app.get('/api/user/deleteUser/:username', function (request, response ) {
 
             console.log("Delete USER");
