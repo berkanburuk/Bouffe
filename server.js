@@ -42,7 +42,7 @@ app.get('/', function (request, response)  {
 });
 
 
-var reservationServer = require('./routes/Controller/Reservation')(app,session);
+var reservationServer = require('./routes/Controller/Reservation')(app);
 console.log("reservationServer "+reservationServer);
 var userServer = require('./routes/Controller/User')(app);
 var tableServer = require('./routes/Controller/Table')(app);

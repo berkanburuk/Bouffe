@@ -15,7 +15,7 @@ let mMenuFood = db.model(dbNames.menuFood);
 let mBeverage = db.model(dbNames.beverage);
 let mTable = db.model(dbNames.table);
 let mMenu = db.model(dbNames.menu);
-
+let mFood = db.model(dbNames.menu);
 let modelOrder =  require('../Model/Order');
 
 let checkUsersRole = require('./RoleCheck');
@@ -25,43 +25,64 @@ let checkUsersRole = require('./RoleCheck');
 //4 -> reject
 
 
-
-
-function uploadTotalPaymentForMenu(foodNameArray, setMenu,orderId,tableId){
+function payOrders(mainCourse,appetizer,dessert,tableId,setMenu,orderId){
     return new Promise((resolve, reject) => {
-        var setPrice;
-        var totalPrice=0.0;
-        mMenu.findOne({
+        var totalPrice;
+        var mainCoursePrice,appetizerPrice,dessertPrice;
+        mFood.findOne({
             where: {
-                id: foodNameArray[0]
+                foodName: mainCourse
             }
-        }).then(food => {
-            totalPrice = beverage.price;
-            mTable.findOne({
+        }).then(mC => {
+            mainCoursePrice = mC.price;
+            mFood.findOne({
                 where: {
-                    id: tableId
+                    foodName: appetizer
                 }
-            }).then(table => {
-                totalPrice = table.totalPrice + beveragePrice;
-                table.update({
-                    totalPrice:totalPrice,
-                    status:2
-                }, {
+            }).then(appetizer=>{
+                appetizerPrice  = appetizer.price;
+                mFood.findOne({
                     where: {
-                        id: tableId
+                        foodName: dessert
                     }
-                }).then(result => {
-                    if (result > 0) {
-                        resolve("Beverage Order is added successfully.");
-                    } else {
-                        reject("Beverage Order could not updated!");
-                    }
-                }).catch(error => {
+                }).then(dessert=>{
+                    dessertPrice = dessert.price;
+                    mTable.findOne({
+                        where: {
+                            id: tableId
+                        }
+                    }).then(table => {
+                        if (setMenu>0){
+                            totalPrice = setMenu;
+                        }else{
+                            totalPrice = table.totalPrice + mainCoursePrice + appetizerPrice + dessertPrice;
+                        }
+                        table.update({
+                            totalPrice:totalPrice,
+                            status:2
+                        }, {
+                            where: {
+                                id: tableId
+                            }
+                        }).then(result => {
+                            if (result > 0) {
+                                resolve("Menu Order is added successfully.");
+                            } else {
+                                reject("Menu Order could not updated!");
+                            }
+                        }).catch(error => {
+                            reject(error);
+                        })
+                    }).catch(error => {
+                        reject(error);
+                    })
+                }).catch(error=>{
                     reject(error);
                 })
-            }).catch(error => {
+            }).catch(error=>{
                 reject(error);
             })
+
             resolve(beverage.price)
         }).catch(error => {
             reject(error);
@@ -72,6 +93,147 @@ function uploadTotalPaymentForMenu(foodNameArray, setMenu,orderId,tableId){
     //içecek pricesini ekle
     //available to active
     //Active = 2 to available=1
+}
+
+
+
+
+
+function uploadTotalPaymentForMenu(mainCourse,appetizer,dessert,tableId,setMenu,orderId){
+    return new Promise((resolve, reject) => {
+        var totalPrice;
+        var mainCoursePrice,appetizerPrice,dessertPrice;
+        mFood.findOne({
+            where: {
+                foodName: mainCourse
+            }
+        }).then(mC => {
+            mainCoursePrice = mC.price;
+                mFood.findOne({
+                    where: {
+                        foodName: appetizer
+                    }
+                }).then(appetizer=>{
+                    appetizerPrice  = appetizer.price;
+                    mFood.findOne({
+                        where: {
+                            foodName: dessert
+                        }
+                    }).then(dessert=>{
+                        dessertPrice = dessert.price;
+                        mTable.findOne({
+                            where: {
+                                id: tableId
+                            }
+                        }).then(table => {
+                            if (setMenu>0){
+                                totalPrice = setMenu;
+                            }else{
+                                totalPrice = table.totalPrice + mainCoursePrice + appetizerPrice + dessertPrice;
+                            }
+                            table.update({
+                                totalPrice:totalPrice,
+                                status:2
+                            }, {
+                                where: {
+                                    id: tableId
+                                }
+                            }).then(result => {
+                                if (result > 0) {
+                                    resolve("Menu Order is added successfully.");
+                                } else {
+                                    reject("Menu Order could not updated!");
+                                }
+                            }).catch(error => {
+                                reject(error);
+                            })
+                        }).catch(error => {
+                            reject(error);
+                        })
+                    }).catch(error=>{
+                        reject(error);
+                    })
+                }).catch(error=>{
+                    reject(error);
+                })
+        }).catch(error => {
+            reject(error);
+        })
+    })
+    //içecek id sinden price i al
+    //table id den totalprice'a bak,
+    //içecek pricesini ekle
+    //available to active
+    //Active = 2 to available=1
+}
+
+
+
+function createMenuOrder(data) {
+    /*
+    data.note
+    data.tableId
+    data.beverageId
+
+    mainCourse,appetizer,dessert,tableId
+
+    */
+
+    return new Promise((resolve, reject) => {
+
+        data.tableId = parseInt(data.tableId);
+
+        if (data.tableId == undefined) {
+            //throw new Error({'hehe':'haha'});
+            reject("Proper input shall be sent!");
+            return;
+        }
+
+
+
+        //table içine bak açık mı kapalı mı
+        //order oluşturuldu
+        mOrder.findOrCreate({
+            where: {
+                id: data.id
+            },
+            defaults: {
+                note: data.note
+            }
+        })
+            .then((order) => {
+                console.log("order[0]"+JSON.stringify(order[0]));
+                //------
+                //Beverage Eklendi
+                var isSetMenu=0;
+                if (data.mainCourse!='0'){
+                    order[0].addFood(data.mainCourse);
+                    isSetMenu++;
+                }
+                if (data.appetizer!='0'){
+                    order[0].addFood(data.appetizer);
+                    isSetMenu++;
+                }
+                if (data.dessert!='0'){
+                    order[0].addFood(data.dessert);
+                    isSetMenu++;
+                }
+
+                order[0].addTables(data.tableId);
+                //Table'a eklendi.
+                var setMenu=0;
+                if(isSetMenu==3){
+                    setMenu=40;
+                }
+
+                uploadTotalPaymentForMenu(mainCourse,appetizer,dessert,tableId, setMenu,order.id).then(result => {
+                    resolve(result);
+                }).catch(error => {
+                    reject(error);
+                })
+            })
+    })
+
 }
 
 

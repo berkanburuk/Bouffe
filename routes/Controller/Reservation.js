@@ -105,34 +105,59 @@ function isTableIdExists(id) {
 //Örnek
 function getEmptyTablesForReservation(date){
     return new Promise((resolve, reject) => {
-
+        var table;
         mTable.findAll({
-        attributes: ['id'],
-        }).then(tableIds=>{
+            attributes: ['id'],
+            where: {
+                status: {
+                    gt: 0
+                }
+            }
+        }).then(tableIds => {
+            table = tableIds;
             mReservation.findAll({
                 attributes: ['tableId'],
-                where:{
-                    reservationDate:date
-                }
-            }).then(reservedTables=>{
-                if (reservedTables!=null && reservedTables != undefined) {
-                    for (var i = 0; i < reservedTables.length; i++) {
-                        var flag = tableIds.find(reservedTables[i]);
-                        console.log(flag);
-                        if (tableIds.find(reservedTables[i]) == true) {
-                            reservedTables.splice(i, 1);
+                where: {
+                    reservationDate: date
+                },
+                //raw:true
+            }).then(reservedTables => {
+                 if (!reservedTables.length) {
+                     resolve(JSON.stringify(tableIds));
+                 }
+                else {
+                    var reserved = reservedTables;
+                     //var valuesArray = Object.values(reserved);
+
+                    if (table.length>0) {
+                        var i=0;
+                     var t =[];
+                        for (var i=0;i<table.length;i++){
+                             t.push(table[i].get('id'));
+                        }
+                            console.log("telllll"+t);
+                        for (var i=0;i<table.length;i++) {
+                            //if (table[i].get('id') != reserved[i].get('tableId')) {
+                            var a = reserved[i].get('tableId');
+                            if (t.indexOf(a)>0){
+                                console.log("Deleting" + i);
+                                reservedTables.splice(i, 1);
+                            }
                         }
                         resolve(JSON.stringify(reservedTables));
+                    } else {
+                        reject("Reservation is full for this date : " + date);
                     }
                 }
-                reject("Reservation is full for this date : "+date);
 
-            }).catch(error=>{
+            }).catch(error => {
                 reject(error);
             })
-        }).catch(error=>{
+        }).catch(error => {
             reject(error);
         })
+    })
+        /*
 
         mReservation.findAll({
             where:
@@ -150,6 +175,7 @@ function getEmptyTablesForReservation(date){
             reject(error);
         })
     });
+*/
 }
 
 
@@ -171,7 +197,7 @@ function getAllReservation(){
 
 }
 
-    module.exports = function(app,session) {
+    module.exports = function(app) {
 
         /*
             app.use('/user', function (req, res, next) {
