@@ -208,7 +208,7 @@
             e.preventDefault();
             var data2;
             $.ajax({
-                url: '/api/payment/getAllPaymentByTableId/'+globalClickedTableId,
+                url: '/api/payment/getAllPaymentByTableId/' + globalClickedTableId,
                 dataType: 'application/json',
                 type: 'GET',
                 timeout: 5000,
@@ -231,70 +231,6 @@
             console.log(id);
             globalClickedTableId = id;
         }
-
-
-        $('.add').click(function(){
-            $('.all').prop("checked",false);
-            var items = $("#list1 input:checked:not('.all')");
-            var n = items.length;
-            if (n > 0) {
-                items.each(function(idx,item){
-                    var choice = $(item);
-                    choice.prop("checked",false);
-                    choice.parent().appendTo("#list2");
-                });
-            }
-            else {
-                alert("Choose an item from list 1");
-            }
-        });
-
-        $('.remove').click(function(){
-            $('.all').prop("checked",false);
-            var items = $("#list2 input:checked:not('.all')");
-            items.each(function(idx,item){
-                var choice = $(item);
-                choice.prop("checked",false);
-                choice.parent().appendTo("#list1");
-            });
-        });
-
-        /* toggle all checkboxes in group */
-        $('.all').click(function(e){
-            e.stopPropagation();
-            var $this = $(this);
-            if($this.is(":checked")) {
-                $this.parents('.list-group').find("[type=checkbox]").prop("checked",true);
-            }
-            else {
-                $this.parents('.list-group').find("[type=checkbox]").prop("checked",false);
-                $this.prop("checked",false);
-            }
-        });
-
-        $('[type=checkbox]').click(function(e){
-            e.stopPropagation();
-        });
-
-        /* toggle checkbox when list group item is clicked */
-        $('.list-group a').click(function(e){
-
-            e.stopPropagation();
-
-            var $this = $(this).find("[type=checkbox]");
-            if($this.is(":checked")) {
-                $this.prop("checked",false);
-            }
-            else {
-                $this.prop("checked",true);
-            }
-
-            if ($this.hasClass("all")) {
-                $this.trigger('click');
-            }
-        });
-
-
     </script>
 
     <style>
@@ -304,15 +240,45 @@
             left: 50%;
             transform: translate(-50%, -50%);
         }
-
     </style>
 </head>
+
+<!-- Bootstrap modal -->
+<div class="modal fade" id="modal_test" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Payment</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="row">
+                <div class="col-sm-5 col-sm-offset-1">
+                    <div class="list-group" id="list1">
+                        <a class="all list-group-item active">CheckOut</a>
+                        <a class="list-group-item">Second item <input type="checkbox" class="pull-right"></a>
+                        <a class="list-group-item">Third item <input type="checkbox" class="pull-right"></a>
+                        <a class="list-group-item">More item <input type="checkbox" class="pull-right"></a>
+                        <a class="list-group-item">Another <input type="checkbox" class="pull-right"></a>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <input type="submit" name="submit" value="Pay" class="btn btn-primary"/>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- End Bootstrap modal -->
 
 <body>
 <div class="col-md-12 text-center"><h3>Pick List Example</h3></div>
 <div class="col-sm-4 col-sm-offset-1">
     <div class="list-group" id="list1">
-        <a href="#" class="list-group-item active">List 1 <input title="toggle all" type="checkbox" class="all pull-right"></a>
+        <a href="#" class="list-group-item active">List 1 <input title="toggle all" type="checkbox"
+                                                                 class="all pull-right"></a>
         <a href="#" class="list-group-item">Second item <input type="checkbox" class="pull-right"></a>
         <a href="#" class="list-group-item">Third item <input type="checkbox" class="pull-right"></a>
         <a href="#" class="list-group-item">More item <input type="checkbox" class="pull-right"></a>
@@ -320,12 +286,15 @@
     </div>
 </div>
 <div class="col-md-2 v-center">
-    <button title="Send to list 2" class="btn btn-default center-block add"><i class="glyphicon glyphicon-chevron-right"></i></button>
-    <button title="Send to list 1" class="btn btn-default center-block remove"><i class="glyphicon glyphicon-chevron-left"></i></button>
+    <button title="Send to list 2" class="btn btn-default center-block add"><i
+            class="glyphicon glyphicon-chevron-right"></i></button>
+    <button title="Send to list 1" class="btn btn-default center-block remove"><i
+            class="glyphicon glyphicon-chevron-left"></i></button>
 </div>
 <div class="col-sm-4">
     <div class="list-group" id="list2">
-        <a href="#" class="list-group-item active">List 2 <input title="toggle all" type="checkbox" class="all pull-right"></a>
+        <a href="#" class="list-group-item active">List 2 <input title="toggle all" type="checkbox"
+                                                                 class="all pull-right"></a>
         <a href="#" class="list-group-item">Alpha <input type="checkbox" class="pull-right"></a>
         <a href="#" class="list-group-item">Charlie <input type="checkbox" class="pull-right"></a>
         <a href="#" class="list-group-item">Bravo <input type="checkbox" class="pull-right"></a>

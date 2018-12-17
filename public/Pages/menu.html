@@ -207,7 +207,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title">Create New Menu</h3>
+                <h3 class="modal-title">Update Menu Info</h3>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -320,6 +320,7 @@
 
     var globalMenuName;
     var globalMenuInfoName;
+
     function addFoodToMenu(menuName) {
         globalMenuName = menuName;
     }
@@ -328,7 +329,7 @@
         $('#ucuisine').val(cuisine);
         $('#uprice').val(price);
         $('#uisActive').val(stat);
-        globalMenuName = name;
+        globalMenuInfoName = name;
     }
 
     $('#add_menu_form').on('submit', function (e) {
@@ -388,6 +389,7 @@
             cuisineRegion: $('#ucuisine').val(),
             isActive: $('#uisActive').val(),
             setPrice: $('#usetPrice').val(),
+
         };
         console.log(data2);
         $.ajax({

@@ -24,35 +24,7 @@
 
 
     <script src=" https://cdnjs.cloudflare.com/ajax/libs/xls/0.7.4-a/xls.js"></script>
-    <style>
-        .v-center {
-            min-height: 200px;
-            display: flex;
-            justify-content: center;
-            flex-flow: column wrap;
-        }
-        @media (min-width: 768px) {
-            .modal-xl {
-                width: 90%;
-                max-width:1200px;
-            }
-        }
-        .list-group-item{
-            padding: 15px;
-            margin-top: 10px;
-        }
-        input[type='checkbox'] {
-            -webkit-appearance:none;
-            width:30px;
-            height:30px;
-            background:white;
-            border-radius:5px;
-            border:2px solid #555;
-        }
-        input[type='checkbox']:checked {
-            background: #abd;
-        }
-    </style>
+
 </head>
 <body>
 <div class="container box">
@@ -109,29 +81,11 @@
             <div class="row">
                 <div class="col-sm-5 col-sm-offset-1">
                     <div class="list-group" id="list1">
-                        <a href="#" class="all list-group-item active">Not Paid<input title="toggle all" type="checkbox"
-                                                                                 class="all pull-right"></a>
-                        <a href="#" class="list-group-item">Second item <input type="checkbox" class="pull-right"></a>
-                        <a href="#" class="list-group-item">Third item <input type="checkbox" class="pull-right"></a>
-                        <a href="#" class="list-group-item">More item <input type="checkbox" class="pull-right"></a>
-                        <a href="#" class="list-group-item">Another <input type="checkbox" class="pull-right"></a>
-                    </div>
-                </div>
-                <div class="col-md-2 v-center">
-                    <button title="Send to list 2" class="add btn btn-default center-block"><i
-                            class="fa fa-chevron-right"></i></button>
-                    <br/><br/> <br/><br/>
-                    <button title="Send to list 1" class=" remove
-                    btn btn-default "><i
-                            class="fa fa-chevron-left"></i></button>
-                </div>
-                <div class="col-sm-5">
-                    <div class="list-group" id="list2">
-                        <a href="#" class="all list-group-item active">Pay <input title="toggle all" type="checkbox"
-                                                                                 class="all pull-right"></a>
-                        <a href="#" class="list-group-item">Alpha <input type="checkbox" class="pull-right"></a>
-                        <a href="#" class="list-group-item">Charlie <input type="checkbox" class="pull-right"></a>
-                        <a href="#" class="list-group-item">Bravo <input type="checkbox" class="pull-right"></a>
+                        <a class="all list-group-item active">CheckOut</a>
+                        <a class="list-group-item">Second item <input type="checkbox" class="pull-right"></a>
+                        <a class="list-group-item">Third item <input type="checkbox" class="pull-right"></a>
+                        <a class="list-group-item">More item <input type="checkbox" class="pull-right"></a>
+                        <a class="list-group-item">Another <input type="checkbox" class="pull-right"></a>
                     </div>
                 </div>
             </div>
@@ -580,64 +534,37 @@
         }
     }
 
-    $('.add').click(function () {
-        $('.all').prop("checked", false);
-        var items = $("#list1 input:checked:not('.all')");
-        var n = items.length;
-        if (n > 0) {
-            items.each(function (idx, item) {
-                var choice = $(item);
-                choice.prop("checked", false);
-                choice.parent().appendTo("#list2");
-            });
-        }
-        else {
-            alert("Choose an item from list 1");
-        }
-    });
-
-    $('.remove').click(function () {
-        $('.all').prop("checked", false);
-        var items = $("#list2 input:checked:not('.all')");
-        items.each(function (idx, item) {
-            var choice = $(item);
-            choice.prop("checked", false);
-            choice.parent().appendTo("#list1");
-        });
-    });
-
-    /* toggle all checkboxes in group */
-    $('.all').click(function (e) {
-        e.stopPropagation();
-        var $this = $(this);
-        if ($this.is(":checked")) {
-            $this.parents('.list-group').find("[type=checkbox]").prop("checked", true);
-        }
-        else {
-            $this.parents('.list-group').find("[type=checkbox]").prop("checked", false);
-            $this.prop("checked", false);
-        }
-    });
-
-    $('[type=checkbox]').click(function (e) {
-        e.stopPropagation();
-    });
-
-    /* toggle checkbox when list group item is clicked */
-    $('.list-group a').click(function (e) {
-
-        e.stopPropagation();
-
-        var $this = $(this).find("[type=checkbox]");
-        if ($this.is(":checked")) {
-            $this.prop("checked", false);
-        }
-        else {
-            $this.prop("checked", true);
-        }
-
-        if ($this.hasClass("all")) {
-            $this.trigger('click');
-        }
-    });
 </script>
+<style>
+    .v-center {
+        min-height: 200px;
+        display: flex;
+        justify-content: center;
+        flex-flow: column wrap;
+    }
+
+    @media (min-width: 768px) {
+        .modal-xl {
+            width: 90%;
+            max-width: 1200px;
+        }
+    }
+
+    .list-group-item {
+        padding: 15px;
+        margin-top: 10px;
+    }
+
+    input[type='checkbox'] {
+        -webkit-appearance: none;
+        width: 30px;
+        height: 30px;
+        background: white;
+        border-radius: 5px;
+        border: 2px solid #555;
+    }
+
+    input[type='checkbox']:checked {
+        background: #abd;
+    }
+</style>
