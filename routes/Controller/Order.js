@@ -25,6 +25,78 @@ let checkUsersRole = require('./RoleCheck');
 //4 -> reject
 
 
+function payOrders(mainCourse,appetizer,dessert,tableId,setMenu,orderId){
+    return new Promise((resolve, reject) => {
+        var totalPrice;
+        var mainCoursePrice,appetizerPrice,dessertPrice;
+        mFood.findOne({
+            where: {
+                foodName: mainCourse
+            }
+        }).then(mC => {
+            mainCoursePrice = mC.price;
+            mFood.findOne({
+                where: {
+                    foodName: appetizer
+                }
+            }).then(appetizer=>{
+                appetizerPrice  = appetizer.price;
+                mFood.findOne({
+                    where: {
+                        foodName: dessert
+                    }
+                }).then(dessert=>{
+                    dessertPrice = dessert.price;
+                    mTable.findOne({
+                        where: {
+                            id: tableId
+                        }
+                    }).then(table => {
+                        if (setMenu>0){
+                            totalPrice = setMenu;
+                        }else{
+                            totalPrice = table.totalPrice + mainCoursePrice + appetizerPrice + dessertPrice;
+                        }
+                        table.update({
+                            totalPrice:totalPrice,
+                            status:2
+                        }, {
+                            where: {
+                                id: tableId
+                            }
+                        }).then(result => {
+                            if (result > 0) {
+                                resolve("Menu Order is added successfully.");
+                            } else {
+                                reject("Menu Order could not updated!");
+                            }
+                        }).catch(error => {
+                            reject(error);
+                        })
+                    }).catch(error => {
+                        reject(error);
+                    })
+                }).catch(error=>{
+                    reject(error);
+                })
+            }).catch(error=>{
+                reject(error);
+            })
+
+            resolve(beverage.price)
+        }).catch(error => {
+            reject(error);
+        })
+    })
+    //içecek id sinden price i al
+    //table id den totalprice'a bak,
+    //içecek pricesini ekle
+    //available to active
+    //Active = 2 to available=1
+}
+
+
+
 
 
 function uploadTotalPaymentForMenu(mainCourse,appetizer,dessert,tableId,setMenu,orderId){
@@ -84,8 +156,6 @@ function uploadTotalPaymentForMenu(mainCourse,appetizer,dessert,tableId,setMenu,
                 }).catch(error=>{
                     reject(error);
                 })
-
-            resolve(beverage.price)
         }).catch(error => {
             reject(error);
         })
