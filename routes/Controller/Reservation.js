@@ -136,7 +136,7 @@ function getEmptyTablesForReservation(date){
                              t.push(table[i].get('id'));
                         }
                             console.log("telllll"+t);
-                        for (var i=0;i<table.length;i++) {
+                        for (var i=0;i<reserved.length;i++) {
                             //if (table[i].get('id') != reserved[i].get('tableId')) {
                             var a = reserved[i].get('tableId');
                             if (t.indexOf(a)>0){

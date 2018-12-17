@@ -82,8 +82,8 @@ module.exports = function(app) {
                 ||  checkUsersRole.isAdmin(request.session.roleId)
                 ||  checkUsersRole.isWaiter(request.session.roleId)
                 ||  checkUsersRole.isBartender(request.session.roleId)
-                ||  checkUsersRole.isChef(request.session.roleId)
-            )) {
+                ||  checkUsersRole.isChef(request.session.roleId)))
+            {
                     response.sendFile(path.resolve('public/Pages/Navigation.html'));
                 }else {
                     response.statusCode = 401;
