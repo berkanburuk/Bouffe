@@ -14,7 +14,7 @@ let course = require('../Model/Course');
 let payment = require('../Model/Payment');
 let reservation = require('../Model/Reservation');
 let guestCheck = require('../Model/GuestCheck');
-
+let orderFood = require('../Model/OrderFood');
 const tableNames = {
     user:"user",
     role:"role",
@@ -92,9 +92,12 @@ menu.run(Sequelize,sequelize,tableNames.menu);
 
 beverage.run(Sequelize,sequelize,tableNames.beverage);
 
+
 reservation.run(Sequelize,sequelize,tableNames.reservation);
 
 guestCheck.run(Sequelize,sequelize,tableNames.guestCheck);
+
+//orderFood.run(Sequelize,sequelize,tableNames.orderFood);
 
 sequelize.sync().then(()=>{
     role.createSimpleRoleData();

@@ -3,19 +3,15 @@ let sequelize = require('../Util/DatabaseConnection').getSequelize;
 let tableNames = require('../Util/DatabaseConnection').getTableNames;
 
 let isTableExist = require('./Table').isTableExists;
-let getMenusFood = require('./Menu').getMenusFood;
-let getAllFeaturesOfFood = require('./Food').getAllFeaturesOfFood;
-let isPaymentExists = require('./Payment').isExists;
-//let getABeverage = require('./Beverage').getABeverage;
+
 let db = sequelize();
 let dbNames = tableNames();
 let mOrder = db.model(dbNames.order);
 let mPayment = db.model(dbNames.payment);
-let mMenuFood = db.model(dbNames.menuFood);
 let mBeverage = db.model(dbNames.beverage);
 let mTable = db.model(dbNames.table);
-let mMenu = db.model(dbNames.menu);
-let mFood = db.model(dbNames.menu);
+let mFood = db.model(dbNames.food);
+let mOrderTable = db.model(dbNames.orderTable);
 let modelOrder =  require('../Model/Order');
 
 let checkUsersRole = require('./RoleCheck');
@@ -99,31 +95,39 @@ function payOrders(mainCourse,appetizer,dessert,tableId,setMenu,orderId){
 
 
 
-function uploadTotalPaymentForMenu(mainCourse,appetizer,dessert,tableId,setMenu,orderId){
+function uploadTotalPaymentForMenu(data,setMenu){
     return new Promise((resolve, reject) => {
         var totalPrice;
-        var mainCoursePrice,appetizerPrice,dessertPrice;
+        var mainCoursePrice=0,appetizerPrice=0,dessertPrice=0;
+
         mFood.findOne({
             where: {
-                foodName: mainCourse
+                name: data.mainCourse
             }
         }).then(mC => {
-            mainCoursePrice = mC.price;
+            if (mC!=undefined && mC!=null) {
+                mainCoursePrice = mC.price;
+            }
                 mFood.findOne({
                     where: {
-                        foodName: appetizer
+                        name: data.appetizer
                     }
                 }).then(appetizer=>{
-                    appetizerPrice  = appetizer.price;
+                    if (appetizer!=undefined && appetizer!=null){
+                        appetizerPrice  = appetizer.price;
+                    }
                     mFood.findOne({
                         where: {
-                            foodName: dessert
+                            name: data.dessert
                         }
+
                     }).then(dessert=>{
-                        dessertPrice = dessert.price;
+                        if (dessert!=undefined && dessert!=null) {
+                            dessertPrice = dessert.price;
+                        }
                         mTable.findOne({
                             where: {
-                                id: tableId
+                                id: data.tableId
                             }
                         }).then(table => {
                             if (setMenu>0){
@@ -136,13 +140,13 @@ function uploadTotalPaymentForMenu(mainCourse,appetizer,dessert,tableId,setMenu,
                                 status:2
                             }, {
                                 where: {
-                                    id: tableId
+                                    id: data.tableId
                                 }
                             }).then(result => {
-                                if (result > 0) {
-                                    resolve("Menu Order is added successfully.");
+                                if (result != null && result!=undefined) {
+                                    resolve("Food Order is added successfully.");
                                 } else {
-                                    reject("Menu Order could not updated!");
+                                    reject("Food Order could not updated!");
                                 }
                             }).catch(error => {
                                 reject(error);
@@ -181,8 +185,8 @@ function createMenuOrder(data) {
 
     return new Promise((resolve, reject) => {
 
-        data.tableId = parseInt(data.tableId);
-
+        //data.tableId = parseInt(data.tableId);
+            console.log("DATAAAAAA"+data);
         if (data.tableId == undefined) {
             //throw new Error({'hehe':'haha'});
             reject("Proper input shall be sent!");
@@ -200,19 +204,43 @@ function createMenuOrder(data) {
         })
             .then((order) => {
                 console.log("order[0]"+JSON.stringify(order[0]));
+                console.log("ORDERSSSSS->"+order);
+
+                console.log(data);
+
                 //------
-                //Beverage Eklendi
+                //Food Eklendi
                 var isSetMenu=0;
-                if (data.mainCourse!='0' || data.mainCourse!=undefined ){
-                    order[0].addFood(data.mainCourse);
+
+                if (data.mainCourse!=0 && data.mainCourse!=undefined ){
+
+                    var x ="INSERT INTO \"orderFoods\" (\"foodName\", \"orderId\",\"createdAt\",\"updatedAt\") " +
+                        "VALUES ("+"'"+data.mainCourse+"',"+ order[0].id+",'10.10.2010','10.10.2010')";
+                    console.log(x);
+                    db.query(x, {
+                    });
+                    console.log(data.mainCourse);
+                    //order[0].addFood(data.mainCourse);
                     isSetMenu++;
                 }
-                if (data.appetizer!='0'|| data.mainCourse!=undefined){
-                    order[0].addFood(data.appetizer);
+                if (data.appetizer!=0&& data.mainCourse!=undefined){
+                    //order[0].addFood(data.appetizer);
+                    var x ="INSERT INTO \"orderFoods\" (\"foodName\", \"orderId\",\"createdAt\",\"updatedAt\") " +
+                        "VALUES ("+"'"+data.appetizer+"',"+ order[0].id+",'10.10.2010','10.10.2010')";
+                    console.log(x);
+                    db.query(x, {
+                    });
+                    console.log(data.appetizer);
                     isSetMenu++;
                 }
-                if (data.dessert!='0'|| data.mainCourse!=undefined){
-                    order[0].addFood(data.dessert);
+                if (data.dessert!=0&& data.mainCourse!=undefined){
+                    //order[0].addFood(data.dessert);
+                    var x ="INSERT INTO \"orderFoods\" (\"foodName\", \"orderId\",\"createdAt\",\"updatedAt\") " +
+                        "VALUES ("+"'"+data.dessert+"',"+ order[0].id+",'10.10.2010','10.10.2010')";
+                    console.log(x);
+                    db.query(x, {
+                    });
+                    console.log(data.dessert);
                     isSetMenu++;
                 }
 
@@ -222,11 +250,12 @@ function createMenuOrder(data) {
                 if(isSetMenu==3){
                     setMenu=40;
                 }
+                console.log(isSetMenu)
 
-                uploadTotalPaymentForMenu(data.mainCourse,data.appetizer,data.dessert,tableId, setMenu,order.id).then(result => {
+                uploadTotalPaymentForMenu(data, setMenu).then(result => {
                     resolve(result);
                 }).catch(error => {
-                    reject(error);
+                    reject("======uploadTotalPaymentForMenu====Error"+error);
                 })
             })
     })
@@ -234,8 +263,33 @@ function createMenuOrder(data) {
 }
 
 
+//isFoodReady 0 ise şef önünde ekranda duracak
+function getChefNotification (username) {
+    return new Promise((resolve, reject) => {
+        mOrder.findAll({
+            where:
+                {
+                    isFoodReady: 0
+                },
+            include: [
+                {
+                    model:mTable,
+                    through: mOrderTable,
+                    where:{
+                        userUsername:username
+                    }
+                },
 
-function uploadTotalPaymentForBeverage(beverageId, orderId,tableId){
+            ]
+        }).then((order) => {
+            resolve(JSON.stringify(order));
+        }).catch(error=>{
+            reject(error);
+        })
+    })
+}
+
+function uploadTotalPaymentForBeverage(beverageId, orderId,tableId,quantity){
     return new Promise((resolve, reject) => {
         var beveragePrice;
         var totalPrice=0.0;
@@ -250,7 +304,7 @@ function uploadTotalPaymentForBeverage(beverageId, orderId,tableId){
                     id: tableId
                 }
             }).then(table => {
-                totalPrice = table.totalPrice + beveragePrice;
+                totalPrice = table.totalPrice + (beveragePrice*quantity);
                 table.update({
                     totalPrice:totalPrice,
                     status:2
@@ -289,6 +343,7 @@ function createAnBeverageOrder(data) {
     data.note
     data.tableId
     data.beverageId
+    data.quantity
     */
     console.log("Data: " + data);
     return new Promise((resolve, reject) => {
@@ -321,7 +376,7 @@ function createAnBeverageOrder(data) {
                 //Table'a eklendi.
 
 
-                uploadTotalPaymentForBeverage(data.beverageId, order.id, data.tableId).then(result => {
+                uploadTotalPaymentForBeverage(data.beverageId, order.id, data.tableId,data.quantity).then(result => {
                     resolve(result);
                 }).catch(error => {
                     reject(error);
@@ -331,6 +386,27 @@ function createAnBeverageOrder(data) {
 
 }
 
+
+function decrementPayment(tableId,priceToDecrement) {
+    return new Promise((resolve, reject) => {
+        mTable.findAll({
+            where: {
+                id: tableId,
+            },
+            include: [{
+                model:mOrder
+            }]
+        }).then(result => {
+            console.log(JSON.stringify(result));
+            result[0].totalPrice
+            resolve(JSON.stringify(result));
+        })
+            .catch(error => {
+                reject(error);
+            })
+    })
+
+}
 
 
 function getPaymentOfTable(tableId) {
@@ -408,8 +484,8 @@ module.exports = function (app) {
             {
                 var data = request.body;
                 console.log("orderFood"+data);
-                createMenuOrder(data).then(menu=> {
-                    response.end(menu.toString());
+                createMenuOrder(data).then(food=> {
+                    response.end(food.toString());
                 }).catch(error => {
                     response.end(error.toString());
                 })
@@ -460,7 +536,7 @@ module.exports = function (app) {
             if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
                 || checkUsersRole.isAdmin(request.session.roleId) || checkUsersRole.isWaiter(request.session.roleId)))
             {
-                modelOrder.getChefNotification()
+                getChefNotification(request.session.username)
                     .then(notification=> {
                     response.end(notification);
                 }).catch(error => {
@@ -473,7 +549,27 @@ module.exports = function (app) {
                     response.end();
                 })
             }
+        }),
+        app.post('/api/order/decrementToPayment', function (request, response) {
+            if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
+                || checkUsersRole.isAdmin(request.session.roleId) || checkUsersRole.isWaiter(request.session.roleId)))
+            {
+                var data = request.body;
+                decrementPayment(data.tableId,data.price)
+                    .then(notification=> {
+                        response.end(notification);
+                    }).catch(error => {
+                    response.end(error.toString());
+                })
+            }
+            else {
+                response.write(checkUsersRole.errorMesage(), () => {
+                    response.statusCode = 404;
+                    response.end();
+                })
+            }
         })
+
 
 
 
