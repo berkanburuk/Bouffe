@@ -284,30 +284,80 @@
 
         $('#modal_form').on('submit', function (e) {
             e.preventDefault();
-            var data2 = {
-                beverageId: $('#beverage').val(),
-                mainCourse: $('#mainCourse').val(),
-                appetizer: $('#appetizer').val(),
-                dessert: $('#dessert').val(),
-                tableId: globalClickedTableId
-            };
-            $.ajax({
-                url: '/api/order/orderBeverage',
-                dataType: 'application/json',
-                data: data2,
-                type: 'POST',
-                timeout: 5000,
-                statusCode: {
-                    200: function (x) {
-                        $('#modal_form').modal('hide');
-                        alert(x.responseText);
-                        location.reload();
-                    },
-                    404: function (x) {
-                        alert(x.responseText);
-                    }
+            var data2;
+            if ($('#beverage').val() == 0) {
+                if ($('#appetizer').val() != 0 && $('#mainCourse').val() != 0 && $('#dessert').val() != 0) {
+                    data2 = {
+                        mainCourse: $('#mainCourse').val(),
+                        appetizer: $('#appetizer').val(),
+                        dessert: $('#dessert').val(),
+                        isSetMenu: true,
+                        tableId: globalClickedTableId
+                    };
+                } else {
+                    data2 = {
+                        mainCourse: $('#mainCourse').val(),
+                        appetizer: $('#appetizer').val(),
+                        dessert: $('#dessert').val(),
+                        isSetMenu: false,
+                        tableId: globalClickedTableId
+                    };
                 }
-            });
+                $.ajax({
+                    url: '/api/order/orderFood',
+                    dataType: 'application/json',
+                    data: data2,
+                    type: 'POST',
+                    timeout: 5000,
+                    statusCode: {
+                        200: function (x) {
+                            $('#modal_form').modal('hide');
+                            alert(x.responseText);
+                            location.reload();
+                        },
+                        404: function (x) {
+                            alert(x.responseText);
+                        }
+                    }
+                });
+            } else {
+                if ($('#appetizer').val() != 0 && $('#mainCourse').val() != 0 && $('#dessert').val() != 0) {
+                    data2 = {
+                        beverageId: $('#beverage').val(),
+                        mainCourse: $('#mainCourse').val(),
+                        appetizer: $('#appetizer').val(),
+                        dessert: $('#dessert').val(),
+                        isSetMenu: true,
+                        tableId: globalClickedTableId
+                    };
+                } else {
+                    data2 = {
+                        beverageId: $('#beverage').val(),
+                        mainCourse: $('#mainCourse').val(),
+                        appetizer: $('#appetizer').val(),
+                        dessert: $('#dessert').val(),
+                        isSetMenu: false,
+                        tableId: globalClickedTableId
+                    };
+                }
+                $.ajax({
+                    url: '/api/order/orderBeverage',
+                    dataType: 'application/json',
+                    data: data2,
+                    type: 'POST',
+                    timeout: 5000,
+                    statusCode: {
+                        200: function (x) {
+                            $('#modal_form').modal('hide');
+                            alert(x.responseText);
+                            location.reload();
+                        },
+                        404: function (x) {
+                            alert(x.responseText);
+                        }
+                    }
+                });
+            }
         });
 
         var globalClickedTableId;
