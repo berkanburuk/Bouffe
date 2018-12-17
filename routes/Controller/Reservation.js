@@ -295,13 +295,13 @@ function getAllReservation(){
             }
 
         }),
-        app.get('/api/reservation/getNotReservedTable/:date', function (request, response) {
+        app.post('/api/reservation/getNotReservedTable', function (request, response) {
             console.log("getReservationAndTable");
 
             if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
                 ||  checkUsersRole.isCashier(request.session.roleId))) {
-                let date = request.params.date;
-                getEmptyTablesForReservation(date).then(data => {
+                var data = request.body;
+                getEmptyTablesForReservation(data.date).then(data => {
                     response.statusCode = 200;
                     response.write(data, () => {
                         response.end();

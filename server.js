@@ -21,7 +21,7 @@ let sessionOptions = {
     },*/
     secret: "keyboard",
     cookie: {
-        maxAge:777777777
+        maxAge:36000
         //expires: 3600
     },
     saveUninitialized: true,
