@@ -287,7 +287,7 @@ function isTableOrderable() {
             where: {
                 structure: 'Square',
                 mergedWith:{
-                    lt: 0
+                    lt: -1
                 }
             }
         })

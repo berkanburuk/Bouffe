@@ -387,7 +387,7 @@ function createAnBeverageOrder(data) {
 }
 
 
-function decrementPayment(tableId,priceToDecrement) {
+function partialPayment(tableId,priceToDecrement) {
     return new Promise((resolve, reject) => {
         mTable.findAll({
             where: {
@@ -550,12 +550,12 @@ module.exports = function (app) {
                 })
             }
         }),
-        app.post('/api/order/decrementToPayment', function (request, response) {
+        app.post('/api/order/partialPayment', function (request, response) {
             if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
                 || checkUsersRole.isAdmin(request.session.roleId) || checkUsersRole.isWaiter(request.session.roleId)))
             {
                 var data = request.body;
-                decrementPayment(data.tableId,data.price)
+                partialPayment(data.tableId,data.price)
                     .then(notification=> {
                         response.end(notification);
                     }).catch(error => {
