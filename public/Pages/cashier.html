@@ -203,89 +203,26 @@
 
             }
         });
+
         $('#modal_form').on('submit', function (e) {
             e.preventDefault();
             var data2;
-            console.log($('#beverage').val());
-            console.log( $('#appetizer').val());
-            console.log($('#mainCourse').val());
-            console.log($('#dessert').val());
-
-            if ($('#beverage').val()=== '0') {
-                if ($('#appetizer').val() !== '0' && $('#mainCourse').val() != '0' && $('#dessert').val() != '0') {
-                    data2 = {
-                        mainCourse: $('#mainCourse').val(),
-                        appetizer: $('#appetizer').val(),
-                        dessert: $('#dessert').val(),
-                        isSetMenu: true,
-                        tableId: globalClickedTableId,
-                    };
-                } else {
-                    data2 = {
-                        mainCourse: $('#mainCourse').val(),
-                        appetizer: $('#appetizer').val(),
-                        dessert: $('#dessert').val(),
-                        isSetMenu: false,
-                        tableId: globalClickedTableId,
-                    };
-                }
-                console.log(data2);
-                $.ajax({
-                    url: '/api/order/orderFood',
-                    dataType: 'application/json',
-                    data: data2,
-                    type: 'POST',
-                    timeout: 5000,
-                    statusCode: {
-                        200: function (x) {
-                            $('#modal_form').modal('hide');
-                            alert(x.responseText);
-                            location.reload();
-                        },
-                        404: function (x) {
-                            alert(x.responseText);
-                        }
+            $.ajax({
+                url: '/api/payment/getAllPaymentByTableId/'+globalClickedTableId,
+                dataType: 'application/json',
+                type: 'GET',
+                timeout: 5000,
+                statusCode: {
+                    200: function (x) {
+                        $('#modal_form').modal('hide');
+                        alert(x.responseText);
+                        location.reload();
+                    },
+                    404: function (x) {
+                        alert(x.responseText);
                     }
-                });
-            } else {
-                if ($('#appetizer').val() != 0 && $('#mainCourse').val() != 0 && $('#dessert').val() != 0) {
-                    data2 = {
-                        beverageId: $('#beverage').val(),
-                        mainCourse: $('#mainCourse').val(),
-                        appetizer: $('#appetizer').val(),
-                        dessert: $('#dessert').val(),
-                        isSetMenu: true,
-                        tableId: globalClickedTableId,
-                    };
-                } else {
-                    data2 = {
-                        beverageId: $('#beverage').val(),
-                        mainCourse: $('#mainCourse').val(),
-                        appetizer: $('#appetizer').val(),
-                        dessert: $('#dessert').val(),
-                        isSetMenu: false,
-                        tableId: globalClickedTableId,
-                    };
                 }
-                console.log(data2);
-                $.ajax({
-                    url: '/api/order/orderBeverage',
-                    dataType: 'application/json',
-                    data: data2,
-                    type: 'POST',
-                    timeout: 5000,
-                    statusCode: {
-                        200: function (x) {
-                            $('#modal_form').modal('hide');
-                            alert(x.responseText);
-                            location.reload();
-                        },
-                        404: function (x) {
-                            alert(x.responseText);
-                        }
-                    }
-                });
-            }
+            });
         });
 
         var globalClickedTableId;
@@ -294,6 +231,70 @@
             console.log(id);
             globalClickedTableId = id;
         }
+
+
+        $('.add').click(function(){
+            $('.all').prop("checked",false);
+            var items = $("#list1 input:checked:not('.all')");
+            var n = items.length;
+            if (n > 0) {
+                items.each(function(idx,item){
+                    var choice = $(item);
+                    choice.prop("checked",false);
+                    choice.parent().appendTo("#list2");
+                });
+            }
+            else {
+                alert("Choose an item from list 1");
+            }
+        });
+
+        $('.remove').click(function(){
+            $('.all').prop("checked",false);
+            var items = $("#list2 input:checked:not('.all')");
+            items.each(function(idx,item){
+                var choice = $(item);
+                choice.prop("checked",false);
+                choice.parent().appendTo("#list1");
+            });
+        });
+
+        /* toggle all checkboxes in group */
+        $('.all').click(function(e){
+            e.stopPropagation();
+            var $this = $(this);
+            if($this.is(":checked")) {
+                $this.parents('.list-group').find("[type=checkbox]").prop("checked",true);
+            }
+            else {
+                $this.parents('.list-group').find("[type=checkbox]").prop("checked",false);
+                $this.prop("checked",false);
+            }
+        });
+
+        $('[type=checkbox]').click(function(e){
+            e.stopPropagation();
+        });
+
+        /* toggle checkbox when list group item is clicked */
+        $('.list-group a').click(function(e){
+
+            e.stopPropagation();
+
+            var $this = $(this).find("[type=checkbox]");
+            if($this.is(":checked")) {
+                $this.prop("checked",false);
+            }
+            else {
+                $this.prop("checked",true);
+            }
+
+            if ($this.hasClass("all")) {
+                $this.trigger('click');
+            }
+        });
+
+
     </script>
 
     <style>
@@ -308,8 +309,28 @@
 </head>
 
 <body>
-
-
+<div class="col-md-12 text-center"><h3>Pick List Example</h3></div>
+<div class="col-sm-4 col-sm-offset-1">
+    <div class="list-group" id="list1">
+        <a href="#" class="list-group-item active">List 1 <input title="toggle all" type="checkbox" class="all pull-right"></a>
+        <a href="#" class="list-group-item">Second item <input type="checkbox" class="pull-right"></a>
+        <a href="#" class="list-group-item">Third item <input type="checkbox" class="pull-right"></a>
+        <a href="#" class="list-group-item">More item <input type="checkbox" class="pull-right"></a>
+        <a href="#" class="list-group-item">Another <input type="checkbox" class="pull-right"></a>
+    </div>
+</div>
+<div class="col-md-2 v-center">
+    <button title="Send to list 2" class="btn btn-default center-block add"><i class="glyphicon glyphicon-chevron-right"></i></button>
+    <button title="Send to list 1" class="btn btn-default center-block remove"><i class="glyphicon glyphicon-chevron-left"></i></button>
+</div>
+<div class="col-sm-4">
+    <div class="list-group" id="list2">
+        <a href="#" class="list-group-item active">List 2 <input title="toggle all" type="checkbox" class="all pull-right"></a>
+        <a href="#" class="list-group-item">Alpha <input type="checkbox" class="pull-right"></a>
+        <a href="#" class="list-group-item">Charlie <input type="checkbox" class="pull-right"></a>
+        <a href="#" class="list-group-item">Bravo <input type="checkbox" class="pull-right"></a>
+    </div>
+</div>
 <!-- Navigation -->
 
 <!-- Page Content -->

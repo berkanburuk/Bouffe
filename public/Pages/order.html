@@ -286,11 +286,11 @@
             e.preventDefault();
             var data2;
             console.log($('#beverage').val());
-            console.log( $('#appetizer').val());
+            console.log($('#appetizer').val());
             console.log($('#mainCourse').val());
             console.log($('#dessert').val());
 
-            if ($('#beverage').val()=== '0') {
+            if ($('#beverage').val() === '0') {
                 if ($('#appetizer').val() !== '0' && $('#mainCourse').val() != '0' && $('#dessert').val() != '0') {
                     data2 = {
                         mainCourse: $('#mainCourse').val(),
@@ -373,6 +373,25 @@
             console.log(id);
             globalClickedTableId = id;
         }
+
+        setInterval(function () {
+            $.ajax({
+                url: '/api/order/getChefNotification',
+                dataType: 'application/json',
+                type: 'GET',
+                timeout: 5000,
+                statusCode: {
+                    200: function (x) {
+                        if(x.responseText)
+                        console.log(x.responseText);
+                       // location.reload();
+                    },
+                    404: function (x) {
+                        console.log(x.responseText);
+                    }
+                }
+            });
+        }, 5000);
     </script>
 
     <style>

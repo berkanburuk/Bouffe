@@ -307,36 +307,31 @@
         $('#add_table_form').on('submit', function (e) {
             e.preventDefault();
             var data2;
-            if ($('#userUsername').val() == "") {
-                data2 = {
-                    id: $('#id').val(),
-                    structure: $('#structure').val(),
-                    capacity: $('#capacity').val(),
-                };
-            } else {
-                data2 = {
-                    id: $('#id').val(),
-                    structure: $('#structure').val(),
-                    capacity: $('#capacity').val(),
-                    userUsername: $('#userUsername').val(),
-                };
 
-                $.ajax({
-                    url: '/api/table/addTable',
-                    dataType: 'application/json',
-                    data: data2,
-                    type: 'POST',
-                    timeout: 5000,
-                    statusCode: {
-                        200: function (x) {
-                            console.log(data2);
-                        },
-                        404: function (x) {
-                            alert(x.responseText);
-                        }
+            data2 = {
+                id: $('#id').val(),
+                structure: $('#structure').val(),
+                capacity: $('#capacity').val(),
+                userUsername: $('#userUsername').val(),
+            };
+
+            $.ajax({
+                url: '/api/table/addTable',
+                dataType: 'application/json',
+                data: data2,
+                type: 'POST',
+                timeout: 5000,
+                statusCode: {
+                    200: function (x) {
+                        $('#add_table_form').modal('hide');
+                        console.log(data2);
+                        location.reload();
+                    },
+                    404: function (x) {
+                        alert(x.responseText);
                     }
-                });
-            }
+                }
+            });
             console.log(data2);
             $.ajax({
                 url: '/api/table/assignTableToUser',
@@ -352,7 +347,7 @@
                          $('#quantity').val("");
                          $('#price').val("");
                          getAllFoods();*/
-                      //  location.reload();
+                        //  location.reload();
 
                     },
                     404: function (x) {
