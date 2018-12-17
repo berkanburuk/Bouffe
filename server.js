@@ -21,7 +21,7 @@ let sessionOptions = {
     },*/
     secret: "keyboard",
     cookie: {
-        maxAge:777777777
+        maxAge:999999999999
         //expires: 3600
     },
     saveUninitialized: true,
@@ -42,7 +42,7 @@ app.get('/', function (request, response)  {
 });
 
 
-var reservationServer = require('./routes/Controller/Reservation')(app,session);
+var reservationServer = require('./routes/Controller/Reservation')(app);
 console.log("reservationServer "+reservationServer);
 var userServer = require('./routes/Controller/User')(app);
 var tableServer = require('./routes/Controller/Table')(app);
@@ -52,7 +52,7 @@ var foodController = require('./routes/Controller/Food')(app);
 var menuController =  require('./routes/Controller/Menu')(app);
 var orderController = require('./routes/Controller/Order')(app);
 var errorController = require('./routes/Controller/Error')(app);
-
+var paymentController = require('./routes/Controller/Payment')(app);
 
 
 app.use('/', router);

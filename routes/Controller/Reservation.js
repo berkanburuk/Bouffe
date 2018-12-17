@@ -98,10 +98,67 @@ function getReservationAndTable(data){
     });
 
 }
+function isTableIdExists(id) {
+
+}
 
 //Örnek
-function getEmptyTablesForReservation(){
+function getEmptyTablesForReservation(date){
     return new Promise((resolve, reject) => {
+        var table;
+        mTable.findAll({
+            attributes: ['id'],
+            where: {
+                status: {
+                    gt: 0
+                }
+            }
+        }).then(tableIds => {
+            table = tableIds;
+            mReservation.findAll({
+                attributes: ['tableId'],
+                where: {
+                    reservationDate: date
+                },
+                //raw:true
+            }).then(reservedTables => {
+                 if (!reservedTables.length) {
+                     resolve(JSON.stringify(tableIds));
+                 }
+                else {
+                    var reserved = reservedTables;
+                     //var valuesArray = Object.values(reserved);
+
+                    if (table.length>0) {
+                        var i=0;
+                     var t =[];
+                        for (var i=0;i<table.length;i++){
+                             t.push(table[i].get('id'));
+                        }
+                            console.log("telllll"+t);
+                        for (var i=0;i<table.length;i++) {
+                            //if (table[i].get('id') != reserved[i].get('tableId')) {
+                            var a = reserved[i].get('tableId');
+                            if (t.indexOf(a)>0){
+                                console.log("Deleting" + i);
+                                reservedTables.splice(i, 1);
+                            }
+                        }
+                        resolve(JSON.stringify(reservedTables));
+                    } else {
+                        reject("Reservation is full for this date : " + date);
+                    }
+                }
+
+            }).catch(error => {
+                reject(error);
+            })
+        }).catch(error => {
+            reject(error);
+        })
+    })
+        /*
+
         mReservation.findAll({
             where:
                 {
@@ -118,6 +175,7 @@ function getEmptyTablesForReservation(){
             reject(error);
         })
     });
+*/
 }
 
 
@@ -127,7 +185,7 @@ function getAllReservation(){
         mReservation.findAll({
 
         }).then(dbData=>{
-            if (dbData[0]!= null && dbData[0] != undefined){
+            if (dbData!= null && dbData!= undefined){
                 resolve(JSON.stringify(dbData));
             }
             else
@@ -139,7 +197,7 @@ function getAllReservation(){
 
 }
 
-    module.exports = function(app,session) {
+    module.exports = function(app) {
 
         /*
             app.use('/user', function (req, res, next) {
@@ -263,13 +321,13 @@ function getAllReservation(){
             }
 
         }),
-        app.get('/api/reservation/getEmptyTablesForReservation', function (request, response) {
+        app.post('/api/reservation/getNotReservedTable', function (request, response) {
             console.log("getReservationAndTable");
 
             if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
                 ||  checkUsersRole.isCashier(request.session.roleId))) {
-
-                getEmptyTablesForReservation().then(data => {
+                var data = request.body;
+                getEmptyTablesForReservation(data.date).then(data => {
                     response.statusCode = 200;
                     response.write(data, () => {
                         response.end();
