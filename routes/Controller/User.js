@@ -79,7 +79,11 @@ module.exports = function(app) {
         app.get('/navigation', function (request, response) {
             console.log('Navigation');
             if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
-                ||  checkUsersRole.isAdmin(request.session.roleId))) {
+                ||  checkUsersRole.isAdmin(request.session.roleId)
+                ||  checkUsersRole.isWaiter(request.session.roleId)
+                ||  checkUsersRole.isBartender(request.session.roleId)
+                ||  checkUsersRole.isChef(request.session.roleId)
+            )) {
                     response.sendFile(path.resolve('public/Pages/Navigation.html'));
                 }else {
                     response.statusCode = 401;
