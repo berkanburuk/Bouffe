@@ -22,6 +22,7 @@
 
     <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
     <script src="../JsFiles/bootstrap-datepicker.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/3.1.62/jquery.inputmask.bundle.js"></script>
 
 </head>
 <body>
@@ -71,7 +72,7 @@
                     <div class="form-group">
                         <label class="col-form-label col-md-8">Phone Number</label>
                         <div class="col-md-11">
-                            <input name="phone" id="phone" placeholder="50********" class="form-control"
+                            <input name="phone" id="phone" class="form-control"
                                    type="number" min="0">
                             <span class="help-block"></span>
                         </div>
@@ -79,7 +80,7 @@
                     <div class="form-group">
                         <label class="col-form-label col-md-3">Date</label>
                         <div class="col-md-11">
-                            <input type="text" class="form-control" placeholder="16/03/1995" autocomplete="off"
+                            <input type="text" class="form-control"  autocomplete="off"
                                    id="date">
                             <span class="help-block"></span>
                         </div>
@@ -87,7 +88,7 @@
                     <div class="form-group">
                         <label class="col-form-label col-md-8">How Many People</label>
                         <div class="col-md-11">
-                            <input name="people" id="people" placeholder="4" class="form-control"
+                            <input name="people" id="people"  class="form-control"
                                    type="number">
                             <span class="help-block"></span>
                         </div>
@@ -95,7 +96,7 @@
                     <div class="form-group" id="tableDiv" style="visibility: hidden">
                         <label class="col-form-label col-md-8">Which Table</label>
                         <div class="col-md-11">
-                            <select name="table" id="table" class="form-control" ></select>
+                            <select name="table" id="table" class="form-control"></select>
                             <span class="help-block"></span>
                         </div>
                     </div>
@@ -153,6 +154,16 @@
         'format': 'mm/dd/yyyy',
         'autoclose': true
     });
+
+    $(window).load(function () {
+        var phones = [{"mask": "(###) ###-####"}];
+        $('#phone').inputmask({
+            mask: phones,
+            greedy: false,
+            definitions: {'#': {validator: "[0-9]", cardinality: 1}}
+        });
+    });
+
     $.ajax({
         url: '/api/reservation/getAllReservation',
         dataType: 'application/json',
@@ -240,7 +251,7 @@
                 200: function (x) {
                     $('#modal_form_add_reservation').modal('hide');
                     console.log(x.responseText);
-                   // location.reload();
+                    // location.reload();
                 },
                 404: function (x) {
                     alert(x.responseText);
