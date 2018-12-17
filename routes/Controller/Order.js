@@ -14,6 +14,7 @@ let mPayment = db.model(dbNames.payment);
 let mMenuFood = db.model(dbNames.menuFood);
 let mBeverage = db.model(dbNames.beverage);
 let mTable = db.model(dbNames.table);
+let mMenu = db.model(dbNames.menu);
 
 let modelOrder =  require('../Model/Order');
 
@@ -25,7 +26,57 @@ let checkUsersRole = require('./RoleCheck');
 
 
 
-function uploadTotalPayment(beverageId, orderId,tableId){
+
+function uploadTotalPaymentForMenu(foodNameArray, setMenu,orderId,tableId){
+    return new Promise((resolve, reject) => {
+        var setPrice;
+        var totalPrice=0.0;
+        mMenu.findOne({
+            where: {
+                id: foodNameArray[0]
+            }
+        }).then(food => {
+            totalPrice = beverage.price;
+            mTable.findOne({
+                where: {
+                    id: tableId
+                }
+            }).then(table => {
+                totalPrice = table.totalPrice + beveragePrice;
+                table.update({
+                    totalPrice:totalPrice,
+                    status:2
+                }, {
+                    where: {
+                        id: tableId
+                    }
+                }).then(result => {
+                    if (result > 0) {
+                        resolve("Beverage Order is added successfully.");
+                    } else {
+                        reject("Beverage Order could not updated!");
+                    }
+                }).catch(error => {
+                    reject(error);
+                })
+            }).catch(error => {
+                reject(error);
+            })
+            resolve(beverage.price)
+        }).catch(error => {
+            reject(error);
+        })
+    })
+    //içecek id sinden price i al
+    //table id den totalprice'a bak,
+    //içecek pricesini ekle
+    //available to active
+    //Active = 2 to available=1
+}
+
+
+
+function uploadTotalPaymentForBeverage(beverageId, orderId,tableId){
     return new Promise((resolve, reject) => {
         var beveragePrice;
         var totalPrice=0.0;
@@ -72,6 +123,8 @@ function uploadTotalPayment(beverageId, orderId,tableId){
     //Active = 2 to available=1
 }
 
+
+
 function createAnBeverageOrder(data) {
     /*
     data.note
@@ -109,7 +162,7 @@ function createAnBeverageOrder(data) {
                 //Table'a eklendi.
 
 
-                uploadTotalPayment(data.beverageId, order.id, data.tableId).then(result => {
+                uploadTotalPaymentForBeverage(data.beverageId, order.id, data.tableId).then(result => {
                     resolve(result);
                 }).catch(error => {
                     reject(error);
