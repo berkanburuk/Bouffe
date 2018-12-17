@@ -53,11 +53,11 @@ class OrderModel {
         let mPayment = sequelize.model('payment');
         Order.belongsTo(mPayment);
 */
-
+    /*
         //Table FK
-        //Order.belongsTo(mTable,{targetKey:'id', onDelete: 'CASCADE'});
-        //Order.belongsTo(mTable,{onDelete: 'CASCADE'});
-
+        Order.belongsTo(mTable,{targetKey:'id', onDelete: 'CASCADE'});
+        Order.belongsTo(mTable,{onDelete: 'CASCADE'});
+    */
         let mTable= sequelize.model('table');
         let mOrderTable= sequelize.define('orderTable',{});
         Order.belongsToMany(mTable,{through: mOrderTable,targetKey:'id', onDelete: 'CASCADE'});
@@ -72,7 +72,7 @@ class OrderModel {
         //OrderFood FK
         const mFood = sequelize.define('food', {})
         const mOrderFood = sequelize.define('orderFood', {})
-        Order.belongsToMany(mFood,{targetKey:'id', through: mOrderFood});
+        Order.belongsToMany(mFood,{through: mOrderFood,targetKey:'id',onDelete: 'CASCADE'});
 
 
         //OrderBeverage FK
