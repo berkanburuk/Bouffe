@@ -15,7 +15,7 @@ let mMenuFood = db.model(dbNames.menuFood);
 let mBeverage = db.model(dbNames.beverage);
 let mTable = db.model(dbNames.table);
 let mMenu = db.model(dbNames.menu);
-
+let mFood = db.model(dbNames.menu);
 let modelOrder =  require('../Model/Order');
 
 let checkUsersRole = require('./RoleCheck');
@@ -31,12 +31,12 @@ function uploadTotalPaymentForMenu(foodNameArray, setMenu,orderId,tableId){
     return new Promise((resolve, reject) => {
         var setPrice;
         var totalPrice=0.0;
-        mMenu.findOne({
+        mFood.findOne({
             where: {
                 id: foodNameArray[0]
             }
         }).then(food => {
-            totalPrice = beverage.price;
+            totalPrice = food.price;
             mTable.findOne({
                 where: {
                     id: tableId
@@ -72,6 +72,55 @@ function uploadTotalPaymentForMenu(foodNameArray, setMenu,orderId,tableId){
     //içecek pricesini ekle
     //available to active
     //Active = 2 to available=1
+}
+
+
+
+function createMenuOrder(foodNameArray) {
+    /*
+    data.note
+    data.tableId
+    data.beverageId
+    */
+
+    return new Promise((resolve, reject) => {
+
+        data.tableId = parseInt(data.tableId);
+        data.beverageId = parseInt(data.beverageId);
+
+        console.log(data);
+        if (data.tableId == undefined || data.beverageId == undefined) {
+            //throw new Error({'hehe':'haha'});
+            reject("Proper input shall be sent!");
+            return;
+        }
+        //table içine bak açık mı kapalı mı
+        //order oluşturuldu
+        mOrder.findOrCreate({
+            where: {
+                id: data.id
+            },
+            defaults: {
+                note: data.note
+            }
+        })
+            .then((order) => {
+                console.log("order[0]"+JSON.stringify(order[0]));
+                //------
+                //Beverage Eklendi
+                order[0].addBeverages(data.beverageId);
+                order[0].addTables(data.tableId);
+                //Table'a eklendi.
+
+
+                uploadTotalPaymentForBeverage(data.beverageId, order.id, data.tableId).then(result => {
+                    resolve(result);
+                }).catch(error => {
+                    reject(error);
+                })
+            })
+    })
+
 }
 
 
