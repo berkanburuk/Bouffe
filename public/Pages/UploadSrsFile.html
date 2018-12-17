@@ -414,7 +414,7 @@
     $('#add_user_form').on('submit', function (e) {
         e.preventDefault();
         var data2 = {
-            username: $('#username').val(),
+            username: $('#username').val().toLowerCase(),
             password: $('#password').val(),
             firstName: $('#firstName').val(),
             lastName: $('#lastName').val(),
