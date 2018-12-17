@@ -407,6 +407,7 @@ module.exports = function (app) {
                 || checkUsersRole.isAdmin(request.session.roleId) || checkUsersRole.isWaiter(request.session.roleId)))
             {
                 var data = request.body;
+                console.log("orderFood"+data);
                 createMenuOrder(data).then(menu=> {
                     response.end(menu.toString());
                 }).catch(error => {
