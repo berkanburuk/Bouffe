@@ -12,6 +12,8 @@ let mBeverage = db.model(dbNames.beverage);
 let mTable = db.model(dbNames.table);
 let mFood = db.model(dbNames.food);
 let mOrderTable = db.model(dbNames.orderTable);
+let mMenu = db.model(dbNames.menu);
+
 let modelOrder =  require('../Model/Order');
 
 let checkUsersRole = require('./RoleCheck');
@@ -95,7 +97,7 @@ function payOrders(mainCourse,appetizer,dessert,tableId,setMenu,orderId){
 
 
 
-function uploadTotalPaymentForMenu(data,setMenu){
+function uploadTotalPaymentForMenu(data,flag){
     return new Promise((resolve, reject) => {
         var totalPrice;
         var mainCoursePrice=0,appetizerPrice=0,dessertPrice=0;
@@ -130,8 +132,22 @@ function uploadTotalPaymentForMenu(data,setMenu){
                                 id: data.tableId
                             }
                         }).then(table => {
-                            if (setMenu>0){
-                                totalPrice = setMenu;
+                            if (flag==true){
+                                mMenu.findOne({
+                                    attributes: ['setPrice'],
+                                    where:{
+                                        isActive:true
+                                    }
+                                }).then(menu=>{
+                                    console.log("BURASIIIIIIIII"+menu)
+                                    var x = menu;
+                                    for (var key in menu){
+                                        totalPrice = x[key];
+                                    }
+
+                                }).catch(error=>{
+                                    reject(error);
+                                })
                             }else{
                                 totalPrice = table.totalPrice + mainCoursePrice + appetizerPrice + dessertPrice;
                             }
@@ -246,13 +262,13 @@ function createMenuOrder(data) {
 
                 order[0].addTables(data.tableId);
                 //Table'a eklendi.
-                var setMenu=0;
+                var flag=false;
                 if(isSetMenu==3){
-                    setMenu=40;
+                    flag=true
                 }
                 console.log(isSetMenu)
 
-                uploadTotalPaymentForMenu(data, setMenu).then(result => {
+                uploadTotalPaymentForMenu(data,flag).then(result => {
                     resolve(result);
                 }).catch(error => {
                     reject("======uploadTotalPaymentForMenu====Error"+error);
@@ -387,7 +403,7 @@ function createAnBeverageOrder(data) {
 }
 
 
-function decrementPayment(tableId,priceToDecrement) {
+function partialPayment(tableId,priceToDecrement) {
     return new Promise((resolve, reject) => {
         mTable.findAll({
             where: {
@@ -533,8 +549,7 @@ module.exports = function (app) {
         }
     }),
         app.get('/api/order/getChefNotification', function (request, response) {
-            if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
-                || checkUsersRole.isAdmin(request.session.roleId) || checkUsersRole.isWaiter(request.session.roleId)))
+            if (request.session != undefined  && (checkUsersRole.isChef(request.session.roleId)))
             {
                 getChefNotification(request.session.username)
                     .then(notification=> {
@@ -550,12 +565,12 @@ module.exports = function (app) {
                 })
             }
         }),
-        app.post('/api/order/decrementToPayment', function (request, response) {
+        app.post('/api/order/partialPayment', function (request, response) {
             if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
                 || checkUsersRole.isAdmin(request.session.roleId) || checkUsersRole.isWaiter(request.session.roleId)))
             {
                 var data = request.body;
-                decrementPayment(data.tableId,data.price)
+                partialPayment(data.tableId,data.price)
                     .then(notification=> {
                         response.end(notification);
                     }).catch(error => {
