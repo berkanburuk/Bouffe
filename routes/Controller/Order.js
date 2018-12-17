@@ -188,9 +188,6 @@ function createMenuOrder(data) {
             reject("Proper input shall be sent!");
             return;
         }
-
-
-
         //table içine bak açık mı kapalı mı
         //order oluşturuldu
         mOrder.findOrCreate({
@@ -206,15 +203,15 @@ function createMenuOrder(data) {
                 //------
                 //Beverage Eklendi
                 var isSetMenu=0;
-                if (data.mainCourse!='0'){
+                if (data.mainCourse!='0' || data.mainCourse!=undefined ){
                     order[0].addFood(data.mainCourse);
                     isSetMenu++;
                 }
-                if (data.appetizer!='0'){
+                if (data.appetizer!='0'|| data.mainCourse!=undefined){
                     order[0].addFood(data.appetizer);
                     isSetMenu++;
                 }
-                if (data.dessert!='0'){
+                if (data.dessert!='0'|| data.mainCourse!=undefined){
                     order[0].addFood(data.dessert);
                     isSetMenu++;
                 }
@@ -226,7 +223,7 @@ function createMenuOrder(data) {
                     setMenu=40;
                 }
 
-                uploadTotalPaymentForMenu(mainCourse,appetizer,dessert,tableId, setMenu,order.id).then(result => {
+                uploadTotalPaymentForMenu(data.mainCourse,data.appetizer,data.dessert,tableId, setMenu,order.id).then(result => {
                     resolve(result);
                 }).catch(error => {
                     reject(error);
