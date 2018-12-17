@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.debug.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js"></script>
+    <script>
+        WebFont.load({
+            google: {
+                families: ["Lato:100,300,400,700,900","Karla:regular","Cookie:regular"]
+            }
+        });
+    </script>
+    <style>
+
+        .crazyFrog {
+            background: linear-gradient(rgba(255,255,255,.65), rgba(255,255,255,.65)),url('https://images.deezer.com/images/artist/01eb92fc47bb8fb09adea9f763bb1c50/842x595.jpg') no-repeat;
+            margin-left: auto;
+            margin-right: auto;
+            height: 842px;
+            width: 595px;
+
+
+        }
+        .revimg {
+            transform: rotateY(180);
+            width: 50px;
+            height: 50px;}
+    </style>
+
+
+
+
+</head>
+<body>
+<div id="someHtml" crossOrigin="Anonymous" class="crazyFrog">
+    <p style="height: 40px;"></p>
+    <p align="center" style="height: 10px;"><img crossOrigin="Anonymous" class="revimg" src="https://image.flaticon.com/icons/svg/205/205049.svg"></p>
+    <p align="center" style="font-family: Cookie; font-size: 32pt; color: #6F0000;">Le Piment Rouge</p>
+    <p align="center" style="height: 40px;font-family: Cookie; font-size: 24pt;">American Menu</p>
+    <p align="center" style="color: #6F0000;height: 0px;font-family: Cookie; font-size: 20pt;">Appetizers</p>
+    <p align="center" style="color: #6F0000;font-size: 12pt;height: 0px">_____________________________________________________</p>
+    <p align="center" style="height: 0px;font-family: Cookie; font-size: 20pt;">Appetizers</p>
+    <p align="center" style="height: 30px;font-family: Cookie; font-size: 20pt;">Appetizers</p>
+    <p align="center" style="color: #6F0000;height: 0px;font-family: Cookie; font-size: 20pt;">Main Courses</p>
+    <p align="center" style="color: #6F0000;font-size: 12pt;height: 0px">_____________________________________________________</p>
+
+    <p align="center" style="height: 0px;font-family: Cookie; font-size: 20pt;">Main Courses</p>
+    <p align="center" style="height: 30px;font-family: Cookie; font-size: 20pt;">Main Courses</p>
+    <p align="center" style="color: #6F0000;height: 0px;font-family: Cookie; font-size: 20pt;">Deserts</p>
+    <p align="center" style="color: #6F0000;font-size: 12pt;height: 0px">_____________________________________________________</p>
+    <p align="center" style="height: 0px;font-family: Cookie; font-size: 20pt;">Deserts</p>
+    <p align="center" style="height: 30px;font-family: Cookie; font-size: 20pt;">Deserts</p>
+    <p align="center" style="color: #6F0000;font-size: 12pt;height: 10px">_____________________________________________________</p>
+    <table align="center">
+        <tr>
+            <td>
+                <p  style="height: 30px;font-family: Cookie; font-size: 12pt;">Chef De Cuisine: Elif Demirci</p>
+            </td>
+            <td>
+                <p  style="height: 30px;font-family: Cookie; font-size: 12pt;">Maltre de Table: Ali Unal</p>
+            </td>
+        <tr>
+    </table>
+    <table align="center">
+        <tr>
+            <td>
+                <p  style="height: 30px;font-family: Cookie; font-size: 12pt;">SET MENU PRICE 35.00 TL</p>
+            </td>
+            <td>
+                <p  style="height: 30px;font-family: Cookie; font-size: 12pt;">DATE</p>
+            </td>
+            <td>
+                <p  style="height: 30px;font-family: Cookie; font-size: 12pt;">For Reservations</p>
+            </td>
+        <tr>
+    </table>
+
+</div>
+
+<button id="savePDFbutton" onclick="savePDF()">
+    save pdf
+</button>
+</body>
+</html>
+<script>
+    var testDivElement = document.getElementById('someHtml');
+
+    function savePDF() {
+        var imgData;
+        html2canvas($("#someHtml"), {
+            useCORS: true,
+            onrendered: function (canvas) {
+                imgData = canvas.toDataURL(
+                    'image/png');
+                var doc = new jsPDF('p', 'pt', 'a4');
+                var width = doc.internal.pageSize.Width;
+                var height = doc.internal.pageSize.Height;
+                doc.addImage(imgData, 'PNG', 75, 100,width,height);
+                doc.save('sample-file.pdf');
+                //setTimeout(function () { window.open(imgData) }, 1000);
+            }
+        });
+    }
+
+
+</script>
