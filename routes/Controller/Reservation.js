@@ -98,10 +98,42 @@ function getReservationAndTable(data){
     });
 
 }
+function isTableIdExists(id) {
+
+}
 
 //Örnek
-function getEmptyTablesForReservation(){
+function getEmptyTablesForReservation(date){
     return new Promise((resolve, reject) => {
+
+        mTable.findAll({
+        attributes: ['id'],
+        }).then(tableIds=>{
+            mReservation.findAll({
+                attributes: ['tableId'],
+                where:{
+                    reservationDate:date
+                }
+            }).then(reservedTables=>{
+                if (reservedTables!=null && reservedTables != undefined) {
+                    for (var i = 0; i < reservedTables.length; i++) {
+                        var flag = tableIds.find(reservedTables[i]);
+                        console.log(flag);
+                        if (tableIds.find(reservedTables[i]) == true) {
+                            reservedTables.splice(i, 1);
+                        }
+                        resolve(JSON.stringify(reservedTables));
+                    }
+                }
+                reject("Reservation is full for this date : "+date);
+
+            }).catch(error=>{
+                reject(error);
+            })
+        }).catch(error=>{
+            reject(error);
+        })
+
         mReservation.findAll({
             where:
                 {
@@ -127,7 +159,7 @@ function getAllReservation(){
         mReservation.findAll({
 
         }).then(dbData=>{
-            if (dbData[0]!= null && dbData[0] != undefined){
+            if (dbData!= null && dbData!= undefined){
                 resolve(JSON.stringify(dbData));
             }
             else
@@ -263,13 +295,13 @@ function getAllReservation(){
             }
 
         }),
-        app.get('/api/reservation/getEmptyTablesForReservation', function (request, response) {
+        app.get('/api/reservation/getNotReservedTable/:date', function (request, response) {
             console.log("getReservationAndTable");
 
             if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
                 ||  checkUsersRole.isCashier(request.session.roleId))) {
-
-                getEmptyTablesForReservation().then(data => {
+                let date = request.params.date;
+                getEmptyTablesForReservation(date).then(data => {
                     response.statusCode = 200;
                     response.write(data, () => {
                         response.end();

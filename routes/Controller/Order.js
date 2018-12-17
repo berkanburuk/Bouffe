@@ -13,6 +13,7 @@ let mOrder = db.model(dbNames.order);
 let mPayment = db.model(dbNames.payment);
 let mMenuFood = db.model(dbNames.menuFood);
 let mBeverage = db.model(dbNames.beverage);
+let mTable = db.model(dbNames.table);
 
 let modelOrder =  require('../Model/Order');
 
@@ -24,115 +25,59 @@ let checkUsersRole = require('./RoleCheck');
 
 
 
-getABeverage = function (id){
-    console.log("getABeverage " + id);
+function uploadTotalPayment(beverageId, orderId,tableId){
     return new Promise((resolve, reject) => {
+        var beveragePrice;
+        var totalPrice=0.0;
         mBeverage.findOne({
-            where:{
-                id:id
+            where: {
+                id: beverageId
             }
-        })
-            .then(dbData=>{
-                console.log("Beverage Data " + dbData);
-                if (dbData!= null && dbData != undefined){
-                    resolve(dbData);
+        }).then(beverage => {
+            beveragePrice = beverage.price;
+            mTable.findOne({
+                where: {
+                    id: tableId
                 }
-                else{
-                    reject("There is no beverage with this name: " + data.name);
-                }
+            }).then(table => {
+                totalPrice = table.totalPrice + beveragePrice;
+                table.update({
+                    totalPrice:totalPrice,
+                    status:2
+                }, {
+                    where: {
+                        id: tableId
+                    }
+                }).then(result => {
+                    if (result > 0) {
+                        resolve("Beverage Order is added successfully.");
+                    } else {
+                        reject("Beverage Order could not updated!");
+                    }
+                }).catch(error => {
+                    reject(error);
+                })
             }).catch(error => {
-            reject(error);
-        })
-            .catch(error=>{
                 reject(error);
             })
-
-    })
-}
-
-
-
-function createPayment(){
-    return new Promise((resolve, reject) => {
-        mPayment.create({
-
-        })
-            .then((payment)=>{
-            console.log("Payment Create inside "+ payment);
-            resolve(payment);
-        })
-            .catch(error =>{
-                reject("Payment could not be created!" + error);
-            })
-    })
-}
-
-
-
-
-function updatePayment(paymentId,price){
-    console.log("Add Payment" + paymentId,price);
-    return new Promise((resolve, reject) => {
-        mPayment.findOne({
-            where:
-                {
-                    id: paymentId
-                }
-        }).then((payment) => {
-            console.log("Payment Payment" + payment);
-
-            var p = payment.totalPrice + price;
-            payment.update({
-                totalPrice: p,
-                where: {
-                    id: paymentId
-                }
-            }).then(payment => {
-                resolve("Payment is updated successfully.")
-            }).catch(error => {
-                reject("Payment Cannot Be Updated!" + error);
-            })
-
+            resolve(beverage.price)
         }).catch(error => {
             reject(error);
         })
-    }).catch(error => {
-        reject("Payment Cannot Be Updated!" + error);
     })
+    //içecek id sinden price i al
+    //table id den totalprice'a bak,
+    //içecek pricesini ekle
+    //available to active
+    //Active = 2 to available=1
 }
-
-
-
-function updateOrdersPayment(order,paymentId,tableId) {
-    return new Promise((resolve, reject) => {
-        order.update({
-            paymentId: paymentId,
-            tableId: tableId,
-            where: {
-                id: order.id
-            }
-        }).then(result => {
-            resolve(true);
-            /*if (result > 0) {
-                resolve(true)
-            } else {
-                reject(false);
-            }*/
-        })
-            .catch(error => {
-                reject(error);
-            })
-    })
-}
-
 
 function createAnBeverageOrder(data) {
     /*
-    data.note yeterli
-    beverageId need
-    tableId: need
-
-     */
+    data.note
+    data.tableId
+    data.beverageId
+    */
     console.log("Data: " + data);
     return new Promise((resolve, reject) => {
 
@@ -147,72 +92,34 @@ function createAnBeverageOrder(data) {
         }
         //table içine bak açık mı kapalı mı
         //order oluşturuldu
-            mOrder.findOrCreate({
-                where:{
-                    id:data.id
-                },
-                defaults:{
-                    note:data.note
-                }
-            })
-            .then((order) => {
-                console.log(order[0]);
-            //------
-            //Beverage Eklendi
-            order[0].addBeverages(data.beverageId);
-            //------
-            //PaymentId alındı veya oluşturuldu
-                var paymentId;
-                if (order[0].paymentId==null||order[0].paymentId==undefined) {
-                    console.log("if block");
-                    createPayment().then(payment => {
-                        console.log("Payment Created!");
-                        paymentId  = payment.id;
-                        //var table = isTableExist(data.tableId);
-                        console.log("TableId: " + data.tableId + " paymentId:" + paymentId);
-                        updateOrdersPayment(order[0], paymentId, data.tableId)
-                            .then(value => {
-                                console.log("TableId and PaymentId is added to order!");
-                                console.log("Beverage Bilgileri");
-                                //Beverage Bilgileri
-                                getABeverage(data.beverageId)
-                                    .then(bev => {
-                                        console.log("Beverage Bilgileri Then");
-                                        console.log("Payment Id " + paymentId + " Beverage Price: " + bev.price);
-                                        updatePayment(paymentId, bev.price).then(result=>{
-                                            console.log("Result "+ result);
-                                        })
-                                            .catch(error => {
-                                                reject(error);
-                                            })
-                                    }).catch(error => {
-                                    console.log("Beverage Bilgileri catch");
-                                    reject(error);
-                                })
-                            })
-                            .catch(error => {
-                                reject(error);
-                            })
-                        })
-                        .catch(error => {
-                            reject(error);
-                        })
-                    }
-            }).catch(error=>{
-                reject(error);
-            })
-
-
-
-
-            resolve("Beverage ordered successfully.");
-
-        }).catch(error => {
-            reject("Beverage could not be ordered!" + error);
+        mOrder.findOrCreate({
+            where: {
+                id: data.id
+            },
+            defaults: {
+                note: data.note
+            }
         })
+            .then((order) => {
+                console.log("order[0]"+JSON.stringify(order[0]));
+                //------
+                //Beverage Eklendi
+                order[0].addBeverages(data.beverageId);
+                order[0].addTables(data.tableId);
+                //Table'a eklendi.
 
+
+                uploadTotalPayment(data.beverageId, order.id, data.tableId).then(result => {
+                    resolve(result);
+                }).catch(error => {
+                    reject(error);
+                })
+            })
+    })
 
 }
+
+
 
 function getPaymentOfTable(tableId) {
     return new Promise((resolve, reject) => {
@@ -239,122 +146,6 @@ function getPaymentOfTable(tableId) {
             })
     })
 
-}
-
-
-function createMenuOrder(data) {
-    /*
-    data.note yeterli
-    beverageId need
-    tableId: need
-     */
-    console.log("Data: " + data);
-    return new Promise((resolve, reject) => {
-
-        data.tableId = parseInt(data.tableId);
-        data.menuName = parseInt(data.beverageId);
-
-        console.log(data);
-        if (data.tableId == undefined || data.beverageId == undefined || data.quantity == undefined) {
-            //throw new Error({'hehe':'haha'});
-            reject("Proper input shall be sent!");
-            return;
-        }
-        //table içine bak açık mı kapalı mı
-        //order oluşturuldu
-        mOrder.findOrCreate({
-            where:{
-                id:data.id
-            },
-            defaults:{
-                note:data.note
-            }
-        })
-            .then((order) => {
-                console.log(order[0]);
-                //------
-                //Beverage Eklendi
-                order[0].addBeverages(data.beverageId);
-                //------
-                //PaymentId alındı veya oluşturuldu
-                var paymentId;
-                if (order[0].paymentId==null||order[0].paymentId==undefined) {
-                    console.log("if block");
-                    createPayment().then(payment => {
-                        console.log("Payment Created!");
-                        paymentId  = payment.id;
-                        //var table = isTableExist(data.tableId);
-                        console.log("TableId: " + data.tableId + " paymentId:" + paymentId);
-                        updateOrdersPayment(order[0], paymentId, data.tableId)
-                            .then(value => {
-                                console.log("TableId and PaymentId is added to order!");
-                                console.log("Beverage Bilgileri");
-                                //Beverage Bilgileri
-                                getABeverage(data.beverageId)
-                                    .then(bev => {
-                                        console.log("Beverage Bilgileri Then");
-                                        console.log("Payment Id " + paymentId + " Beverage Price: " + bev.price);
-                                        updatePayment(paymentId, bev.price,data.quantity).then(result=>{
-                                            console.log("Result "+ result);
-                                        })
-                                            .catch(error => {
-                                                reject(error);
-                                            })
-                                    }).catch(error => {
-                                    console.log("Beverage Bilgileri catch");
-                                    reject(error);
-                                })
-                            })
-                            .catch(error => {
-                                reject(error);
-                            })
-                    })
-                        .catch(error => {
-                            reject(error);
-                        })
-                }
-            }).catch(error=>{
-            reject(error);
-        })
-
-
-
-
-        resolve("Beverage ordered successfully.");
-
-    }).catch(error => {
-        reject("Beverage could not be ordered!" + error);
-    })
-
-
-}
-
-
-
-
-function createAnMenuOrder(data){
-
-    return new Promise((resolve, reject) => {
-        mOrder.findOrCreate({
-            where:
-                {
-                    id: data.id
-                },
-            defaults:
-                {
-                    date: data.date,
-                    note: data.note,
-                }
-        }).then((order)=>{
-            console.log(order[0].get(0));
-            order[0].addBeverages(data.menuName);
-            resolve("Menu ordered successfully.");
-        })
-            .catch(error =>{
-                reject("Menu could not be ordered!" + error);
-            })
-
-    })
 }
 
 
