@@ -405,6 +405,24 @@ module.exports = function (app) {
                     })
                 }
         }),
+        app.post('/api/order/orderFood', function (request, response) {
+            if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
+                || checkUsersRole.isAdmin(request.session.roleId) || checkUsersRole.isWaiter(request.session.roleId)))
+            {
+                var data = request.body;
+                createMenuOrder(data).then(menu=> {
+                    response.end(menu.toString());
+                }).catch(error => {
+                    response.end(error.toString());
+                })
+            }
+            else {
+                response.write(checkUsersRole.errorMesage(), () => {
+                    response.statusCode = 404;
+                    response.end();
+                })
+            }
+        }),
 
 /*
         app.get('/api/order/:getNotification', function (request, response) {
