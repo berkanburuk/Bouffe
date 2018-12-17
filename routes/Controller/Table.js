@@ -8,9 +8,15 @@ let dbNames = tableNames();
 let mTable = db.model(dbNames.table);
 let mUser = db.model(dbNames.user);
 let mRole = db.model(dbNames.role);
+let mOrder= db.model(dbNames.order);
 
 let checkUsersRole = require('./RoleCheck');
 let checkDataType = require('../Util/TypeCheck');
+
+
+
+
+
 
 function createATable(data){
     return new Promise((resolve, reject) => {
@@ -41,7 +47,6 @@ function createATable(data){
     })
 
 }
-
 
 function updateTable(data){
     return new Promise((resolve, reject) => {
@@ -74,7 +79,6 @@ function updateTable(data){
     })
 
 }
-
 
 function createAMerge(data) {
     data.tableId1 = parseInt(data.tableId1);
@@ -124,7 +128,6 @@ function createAMerge(data) {
     })
 }
 
-
 function updateStatus(data){
 
     return new Promise((resolve, reject) => {
@@ -154,50 +157,94 @@ function updateStatus(data){
 }
 
 
-function assignTableToUser(data,id){
-        return new Promise((resolve, reject) => {
-            mTable.update(data, {
-                where:
-                    {
-                        'id': id
-                    }
-            }).then((table) => {
-                console.log(table[0]);
-                if (table[0] > 0) {
-                    resolve("Table is updated successfully.");
-                } else {
-                    reject("Table could not be updated!");
+function shiftOrderedTable(userUsername,oldTableId,newTableId) {
+    //newTableId status 1 ise yap -> Order al, update et,
+    return new Promise((resolve, reject) => {
+        mTable.findOne({
+            where:{
+                id:newTableId
+            }
+        }).then(newTable=> {
+                if(newTable.id==1){
+                    //
+                }else{
+                    reject("Table cannot be shifted to a table which has an orders!");
                 }
-
-            }).catch(error => {
+        })
+            .catch(error=>{
                 reject(error);
             })
         })
-
 }
 
-function createAndAssignTableToUser(data){
+function assignWaiterToTable(userUsername,oldTableId,newTableId) {
     return new Promise((resolve, reject) => {
-        mTable.findOrCreate({
-            where:
-                {
-                    username: data.username
-                }
-        }).then((table)=>{
-            console.log(table[0]);
-
-            resolve("Table is created successfully.");
+        mTable.update(
+            {
+                userUsername: userUsername
+            },
+            {
+                where:
+                    {
+                        tableId: newTableId,
+                        status: 1
+                    }
+            }).then((table) => {
+            if (table > 0) {
+                resolve("User is assigned to Table");
+            } else {
+                reject("User could not be assigned to Table!");
+            }
+        }).catch(error => {
+            reject("Valid parameters shall be sent!\n" + error);
         })
-        /*.spread((user, created)=> {
-            console.log("CRRRR : " + created);
-            console.log(user.get({plain: true}));
-
-        })*/
-            .catch(error =>{
-                reject("Table could not be created!" + error);
-            })
-
     })
+}
+
+function releaseTableFromUser(userUsername,tableId) {
+    return new Promise((resolve, reject) => {
+        mTable.update(
+            {
+                userUsername: userUsername
+            },
+            {
+                where:
+                    {
+                        tableId: tableId,
+                        status: 1
+                    }
+            }).then((table) => {
+            if (table > 0) {
+                resolve("User is not responsible from this table "+tableId+" anymore");
+            } else {
+                reject("This table has orders, you cannot release a waiter from this table "+tableId);
+            }
+        }).catch(error => {
+            reject("Valid parameters shall be sent!\n" + error);
+        })
+    })
+}
+
+
+function shiftManagement(userUsername,oldTableId,newTableId){
+            //newTableId statusü 1 olmalı kesinlikle
+        return new Promise((resolve, reject) => {
+            mTable.findOne({
+            where:{
+                id:oldTableId
+            }
+
+        }).then(oldTable=>{
+            if (oldTable.status==1){
+                shiftNotOrderedTable(userUsername,oldTableId,newTableId);
+            }else if(oldTable.status==2){
+                shiftOrderedTable(userUsername,oldTableId,newTableId);
+            }
+                resolve("Table is shifted");
+        }).catch(error=>{
+            reject(error);
+            })
+        })
 
 }
 
@@ -233,75 +280,8 @@ exports.isTableExists = function(id){
         })
     });
 }
-exports.isTableOpen = function(id){
-    return new Promise((resolve, reject) => {
-
-        mTable.findOne({
-                id:id
-            }
-        ).then(table=>{
-            //resolve(table[0].id);
-            resolve(true);
-        }).catch(error => {
-            reject(false);
-        })
-    });
-}
-
-/*
-User.findAll({
-    include: [{
-        model: Project,
-        through: {
-            attributes: ['createdAt', 'startedAt', 'finishedAt'],
-            where: {completed: true}
-        }
-    }]
-});
-*/
-function getAUserTables(username) {
-    return new Promise((resolve, reject) => {
-        mUser.findAll({
-            where:{
-                username:username
-            },
-            include: [{
-                model: mTable,
-            }]
-        }).then(data=>{
-            console.log(data[0].get(0));
-            resolve(data[0].get(0));
-        }).catch(error => {
-            reject(error + "\nCannot get all Tables Related to this ");
-        })
-    });
-}
 
 function isTableOrderable() {
-    return new Promise((resolve, reject) => {
-        mTable.findAll({
-            where: {
-                structure: 'Square',
-                status:1,
-                mergedWith:{
-                    lt: 0
-                }
-            }
-        })
-            .then(data=>{
-                if (data!=undefined||data!=null)
-                    resolve(JSON.stringify(data));
-                else{
-                    reject("There is no table as you want");
-                }
-            }).catch(error => {
-            reject(error + "\nCannot get all Tables Related to this ");
-        })
-    });
-}
-
-
-function getTableMinus() {
     return new Promise((resolve, reject) => {
         mTable.findAll({
             where: {
@@ -342,33 +322,6 @@ function getMyTables(username) {
     });
 }
 
-function updateMergedTablesToDivide(id){
-    return new Promise((resolve, reject) => {
-        mTable.update(
-                {
-                    mergedWith:-2
-                },
-                {
-            where:
-                {
-                    id:id
-                }
-        }).then((table) => {
-            console.log(table);
-            console.log(table[0]);
-            if (table[0] > 0) {
-                resolve("Table is updated successfully.");
-            } else {
-                reject("Table could not be updated!");
-            }
-
-        }).catch(error => {
-            reject(error);
-        })
-    })
-
-}
-
 function divideTables(data) {
 
     return new Promise((resolve, reject) => {
@@ -380,8 +333,7 @@ function divideTables(data) {
                 {
                     where:
                         {
-                            id: id,
-
+                            id: id
                         }
                 }).then((table) => {
                 console.log(table);
@@ -398,7 +350,6 @@ function divideTables(data) {
         }
     })
 }
-
 
 function getATable(id) {
     return new Promise((resolve, reject) => {
@@ -417,9 +368,6 @@ function getATable(id) {
         })
     });
 }
-
-
-
 
 function getUsersTable(data){
     return new Promise((resolve, reject) => {
@@ -476,6 +424,10 @@ function deleteTable(id){
 }
 
 
+
+
+
+
 module.exports = function(app){
 
     app.get('/table', function (request, response) {
@@ -510,7 +462,7 @@ module.exports = function(app){
                 ||  checkUsersRole.isCashier(request.session.roleId)) || checkUsersRole.isAdmin(request.session.roleId))
             {
 
-                getTableMinus().then(data => {
+                isTableOrderable().then(data => {
                     response.write(JSON.stringify(data), () => {
                         response.statusCode = 200;
                         response.end();

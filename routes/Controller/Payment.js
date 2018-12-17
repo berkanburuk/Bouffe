@@ -38,31 +38,6 @@ function getAllPaymentByTableId(id){
 }
 
 
-exports.isExists = function(id) {
-    return new Promise((resolve, reject) => {
-        mPayment.findOne({
-            where:
-                {
-                    id: id
-                }
-        })
-        .then(dbData=>{
-                if (dbData!= null && dbData != undefined){
-                    resolve(true);
-                }
-                else{
-                    reject("There is no payment with this id: " + id);
-                }
-        })
-            .catch(error =>{
-                reject(false);
-            })
-
-    })
-}
-
-
-
 module.exports = function (app) {
 
 

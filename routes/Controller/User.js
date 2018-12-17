@@ -58,7 +58,7 @@ module.exports = function(app) {
             console.log('UploadSRSFile');
             if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
                 ||  checkUsersRole.isAdmin(request.session.roleId))){
-                response.sendFile(path.resolve('public/Pages/UploadSRSFile.html'));
+                response.sendFile(path.resolve('public/Pages/uploadSRSFile.html'));
             }else {
                 response.statusCode = 401;
                 return response.redirect('/noAuthority');
@@ -382,22 +382,7 @@ module.exports = function(app) {
 
 
 
-
-
-
-
-function save(data){
-    return new Promise((resolve,reject)=>{
-        mUser.create(data).then(user=> {
-            console.log(user.get(0))
-            resolve(user.get(0));
-        }).catch(error => {
-            reject('Cannot create the user!');
-        });
-    })
-}
-
-function createUser22(data) {
+function createUserTransaction(data) {
     return sequelize.transaction(function (t) {
         return mUser.create({
             username: data.username,
@@ -425,7 +410,6 @@ function createUser22(data) {
 
 function createAUser(data){
 
-    //var data = sampleUserData();
     return new Promise((resolve, reject) => {
         mUser.findOrCreate({
             where:
@@ -472,8 +456,6 @@ function createAUser(data){
 
 }
 
-
-
 function updateAUser(data){
     return new Promise((resolve, reject) => {
         mUser.update(
@@ -517,7 +499,6 @@ function updateAUser(data){
 
 }
 
-
 function setARole(data){
     return new Promise((resolve,reject)=>{
         mUser.findByPk(data.username)
@@ -547,7 +528,7 @@ function getAUserRole(data){
     return new Promise((resolve, reject) => {
         mUser.findAll({
             where: {
-                username: data
+                username: data.username
             },
             include: [
                 {
@@ -587,29 +568,6 @@ function getAUserRole(username){
 
     })
 }
-
-function getPeopleWithSpecificRole(id){
-    //5 Waiter
-    console.log(id);
-    return new Promise((resolve, reject) => {
-        mUserRoles.findAll({
-            where: {
-                roleId:id
-            }
-        }).then(myData=>{
-            if (myData != null && myData != undefined){
-                resolve(JSON.stringify(myData));
-            }
-            else
-                reject("Cannot get the role Id!");
-        }).catch(error => {
-            reject(error);
-        })
-
-    })
-}
-
-
 
 function checkValidationOfUser(username, password){
     return new Promise((resolve, reject) => {
@@ -670,7 +628,7 @@ function getAllRoles(){
 
         })
             .then(result=>{
-                if (result[0]!=null && result[0]!=undefined){
+                if (result!=null && result!=undefined){
                     resolve(JSON.stringify(result));
                 } else{
                     reject("Could not roles");
@@ -799,17 +757,15 @@ function manyToMany() {
         })
 }
 
-*/
-function sampleUserData(){
-    var data = {
-        username:'happy',
-        password: '4123',
-        firstName: 'ali',
-        lastName: 'veli',
-        bilkentId: 1234,
-        roleId:1,
-        courseId:246
-    }
-    return data;
 
-}
+User.findAll({
+    include: [{
+        model: Project,
+        through: {
+            attributes: ['createdAt', 'startedAt', 'finishedAt'],
+            where: {completed: true}
+        }
+    }]
+});
+
+*/

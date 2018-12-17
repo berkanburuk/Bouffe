@@ -18,9 +18,9 @@ class TableModel {
             status: {
                 type: Sequelize.INTEGER,
                 defaultValue:0
-                //0 kapalı
-                //1 açık
-                //2 aktif değil
+                //0 kırk
+                //1 kullanıma uygun
+                //2 order var
             },
             totalPrice: {
                 type: Sequelize.DOUBLE,
