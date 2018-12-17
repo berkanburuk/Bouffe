@@ -11,6 +11,7 @@ let mPayment = db.model(dbNames.payment);
 let mBeverage = db.model(dbNames.beverage);
 let mTable = db.model(dbNames.table);
 let mFood = db.model(dbNames.food);
+let mOrderTable = db.model(dbNames.orderTable);
 let modelOrder =  require('../Model/Order');
 
 let checkUsersRole = require('./RoleCheck');
@@ -262,6 +263,31 @@ function createMenuOrder(data) {
 }
 
 
+//isFoodReady 0 ise şef önünde ekranda duracak
+function getChefNotification (username) {
+    return new Promise((resolve, reject) => {
+        mOrder.findAll({
+            where:
+                {
+                    isFoodReady: 0
+                },
+            include: [
+                {
+                    model:mTable,
+                    through: mOrderTable,
+                    where:{
+                        userUsername:username
+                    }
+                },
+
+            ]
+        }).then((order) => {
+            resolve(JSON.stringify(order));
+        }).catch(error=>{
+            reject(error);
+        })
+    })
+}
 
 function uploadTotalPaymentForBeverage(beverageId, orderId,tableId,quantity){
     return new Promise((resolve, reject) => {
@@ -510,7 +536,7 @@ module.exports = function (app) {
             if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
                 || checkUsersRole.isAdmin(request.session.roleId) || checkUsersRole.isWaiter(request.session.roleId)))
             {
-                modelOrder.getChefNotification()
+                getChefNotification(request.session.username)
                     .then(notification=> {
                     response.end(notification);
                 }).catch(error => {

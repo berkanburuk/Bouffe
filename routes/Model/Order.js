@@ -101,21 +101,6 @@ exports.run = function(Sequelize, sequelize, order) {
     console.log("Order : " + f);
 }
 
-//isFoodReady 0 ise şef önünde ekranda duracak
-exports.getChefNotification = function (orderId) {
-    return new Promise((resolve, reject) => {
-        Order.findAll({
-            where:
-                {
-                    isFoodReady: 0
-                }
-        }).then((order) => {
-            resolve(JSON.stringify(order));
-        }).catch(error=>{
-            reject(error);
-        })
-    })
-}
 //chef onaylıyor (1) yapıyor, Garsona Food onaylandı görünecek
 exports.maltreApprovesOrder = function (orderId) {
         return new Promise((resolve, reject) => {
