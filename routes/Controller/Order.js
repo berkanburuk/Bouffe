@@ -97,69 +97,64 @@ function payOrders(mainCourse,appetizer,dessert,tableId,setMenu,orderId){
 
 
 
-function uploadTotalPaymentForMenu(data,flag){
+function uploadTotalPaymentForMenu(data,flag) {
     return new Promise((resolve, reject) => {
-        var totalPrice;
-        var mainCoursePrice=0,appetizerPrice=0,dessertPrice=0;
+        var myTotalPrice = 0;
+        var mainCoursePrice = 0, appetizerPrice = 0, dessertPrice = 0;
 
         mFood.findOne({
             where: {
                 name: data.mainCourse
             }
         }).then(mC => {
-            if (mC!=undefined && mC!=null) {
+            if (mC != undefined && mC != null) {
                 mainCoursePrice = mC.price;
             }
+            mFood.findOne({
+                where: {
+                    name: data.appetizer
+                }
+            }).then(appetizer => {
+                if (appetizer != undefined && appetizer != null) {
+                    appetizerPrice = appetizer.price;
+                }
                 mFood.findOne({
                     where: {
-                        name: data.appetizer
+                        name: data.dessert
                     }
-                }).then(appetizer=>{
-                    if (appetizer!=undefined && appetizer!=null){
-                        appetizerPrice  = appetizer.price;
+
+                }).then(dessert => {
+                    if (dessert != undefined && dessert != null) {
+                        dessertPrice = dessert.price;
                     }
-                    mFood.findOne({
+                    mTable.findOne({
                         where: {
-                            name: data.dessert
+                            id: data.tableId
                         }
-
-                    }).then(dessert=>{
-                        if (dessert!=undefined && dessert!=null) {
-                            dessertPrice = dessert.price;
-                        }
-                        mTable.findOne({
+                    }).then(table => {
+                        mMenu.findOne({
+                            attributes: ['setPrice'],
                             where: {
-                                id: data.tableId
+                                isActive: true
                             }
-                        }).then(table => {
-                            if (flag==true){
-                                mMenu.findOne({
-                                    attributes: ['setPrice'],
-                                    where:{
-                                        isActive:true
-                                    }
-                                }).then(menu=>{
-                                    console.log("BURASIIIIIIIII"+menu)
-                                    var x = menu;
-                                    for (var key in menu){
-                                        totalPrice = x[key];
-                                    }
-
-                                }).catch(error=>{
-                                    reject(error);
-                                })
-                            }else{
-                                totalPrice = table.totalPrice + mainCoursePrice + appetizerPrice + dessertPrice;
+                        }).then(menu => {
+                            if (flag == true) {
+                                var d = menu.toJSON();
+                                myTotalPrice = table.totalPrice + d['setPrice'];
+                            }
+                            else {
+                                myTotalPrice = table.totalPrice + mainCoursePrice + appetizerPrice + dessertPrice;
                             }
                             table.update({
-                                totalPrice:totalPrice,
-                                status:2
+                                totalPrice: myTotalPrice,
+                                status: 2
                             }, {
                                 where: {
                                     id: data.tableId
                                 }
                             }).then(result => {
-                                if (result != null && result!=undefined) {
+                                console.log(JSON.stringify(result));
+                                if (result != null && result != undefined) {
                                     resolve("Food Order is added successfully.");
                                 } else {
                                     reject("Food Order could not updated!");
@@ -170,21 +165,22 @@ function uploadTotalPaymentForMenu(data,flag){
                         }).catch(error => {
                             reject(error);
                         })
-                    }).catch(error=>{
+                    }).catch(error => {
                         reject(error);
                     })
-                }).catch(error=>{
+                }).catch(error => {
                     reject(error);
                 })
-        }).catch(error => {
-            reject(error);
+            }).catch(error => {
+                reject(error);
+            })
         })
+        //içecek id sinden price i al
+        //table id den totalprice'a bak,
+        //içecek pricesini ekle
+        //available to active
+        //Active = 2 to available=1
     })
-    //içecek id sinden price i al
-    //table id den totalprice'a bak,
-    //içecek pricesini ekle
-    //available to active
-    //Active = 2 to available=1
 }
 
 
