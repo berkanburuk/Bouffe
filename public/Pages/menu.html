@@ -200,6 +200,64 @@
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 <!-- End Bootstrap modal -->
+
+
+<!-- Bootstrap modal -->
+<div class="modal fade" id="modal_form_update_menu_info" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Update Menu Info</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="update_info_menu_form">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="col-form-label col-md-3">Name</label>
+                        <div class="col-md-11">
+                            <input name="name" id="uname" placeholder="January - 1st Week Menu" class="form-control"
+                                   type="text">
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label col-md-3">Cuisine</label>
+                        <div class="col-md-11">
+                            <input name="cuisine" id="ucuisine" placeholder="Anatolian Cuisine" class="form-control"
+                                   type="text">
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label col-md-5">Set Menu Price</label>
+                        <div class="col-md-11">
+                            <input name="setPrice" id="usetPrice" placeholder="40.00" class="form-control"
+                                   type="number">
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-11">
+                            <select name="isActive" id="uisActive" class="btn    btn-primary">
+                                <option value="false" selected> Inactive
+                                <option value="true"> Active
+                            </select> <span class="help-block"></span>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <input type="submit" name="submit" value="Save"
+                               class="btn btn-primary"/>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- End Bootstrap modal -->
 </html>
 
 <script>
@@ -211,7 +269,7 @@
         timeout: 5000,
         statusCode: {
             200: function (x) {
-                console.log(x);
+                console.log(JSON.parse(x.responseText));
                 var jArray = JSON.parse(x.responseText);
                 var receive_body = "";
 
@@ -220,9 +278,10 @@
                         '<td>' + val.cuisineRegion + '</td>' +
                         '<td>' + val.isActive + '</td>' +
                         '<td>' + val.setPrice + '.00</td>' +
-                        '<td><button class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal_form_update_menu" onclick="updateMenu(\'' + val.name + '\')" ><i class="fa fa-bars"></i></button>' +
+                        '<td><button class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal_form_update_menu" onclick="updateMenu(\'' + val.name + '\')" ><i class="fa fa-info"></i></button>' +
                         '<button class="btn btn-danger btn-sm"  onclick="deleteMenu(\'' + val.name + '\')"><i class="fa fa-trash"></i></button>' +
-                        '<button class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal_form_add_food_to_menu" onclick="addFoodToMenu(\'' + val.name + '\')"><i class="fa fa-plus"></i></button></td></tr>';
+                        '<button class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal_form_add_food_to_menu" onclick="addFoodToMenu(\'' + val.name + '\')"><i class="fa fa-plus"></i></button>' +
+                        '<button class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal_form_update_menu_info" onclick="updateMenuInfo(\'' + val.name + '\',\'' + val.cuisineRegion + '\',\'' + val.setPrice + '\',\'' + val.isActive+ '\')"><i class="fa fa-bars"></i></button></td></tr>';
                 });
                 $('#menu_data_body').html(receive_body);
                 $('#menu_data').DataTable({
@@ -244,7 +303,6 @@
         timeout: 5000,
         statusCode: {
             200: function (x) {
-                console.log(x);
                 var jArray = JSON.parse(x.responseText);
                 var receive_body = "<option value='0' disabled selected>Please choose a food";
 
@@ -261,9 +319,17 @@
 
 
     var globalMenuName;
+    var globalMenuInfoName;
 
     function addFoodToMenu(menuName) {
         globalMenuName = menuName;
+    }
+    function updateMenuInfo(name, cuisine, price, stat) {
+        $('#uname').val(name);
+        $('#ucuisine').val(cuisine);
+        $('#uprice').val(price);
+        $('#uisActive').val(stat);
+        globalMenuInfoName = name;
     }
 
     $('#add_menu_form').on('submit', function (e) {
@@ -315,7 +381,35 @@
             }
         });
     });
+    $('#update_info_menu_form').on('submit', function (e) {
+        e.preventDefault();
+        var data2 = {
+            name: globalMenuInfoName,
+            newName: $('#uname').val().toUpperCase(),
+            cuisineRegion: $('#ucuisine').val(),
+            isActive: $('#uisActive').val(),
+            setPrice: $('#usetPrice').val(),
 
+        };
+        console.log(data2);
+        $.ajax({
+            url: '/api/menu/updateAMenu',
+            dataType: 'application/json',
+            data: data2,
+            type: 'POST',
+            timeout: 5000,
+            statusCode: {
+                200: function (x) {
+                    $('#modal_form').modal('hide');
+                    alert(x.responseText);
+                  //  location.reload();
+                },
+                404: function (x) {
+                    alert(x.responseText);
+                }
+            }
+        });
+    });
     function deleteMenu(name) {
         if (confirm("Are you sure to delete food:" + name)) {
             $.ajax({
