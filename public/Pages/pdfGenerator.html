@@ -85,7 +85,7 @@
     function getMenu(dat) {
     var menuBody="";
     var length=-1;
-    if(dat.food===undefined)
+    if(dat===undefined || dat.food===undefined || dat.food.length===undefined)
     {
         length=dat.food.length;
         console.log("CIKTIM");
