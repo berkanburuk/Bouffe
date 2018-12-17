@@ -239,8 +239,8 @@
             statusCode: {
                 200: function (x) {
                     $('#modal_form_add_reservation').modal('hide');
-                    alert(x.responseText);
-                    location.reload();
+                    console.log(x.responseText);
+                   // location.reload();
                 },
                 404: function (x) {
                     alert(x.responseText);
