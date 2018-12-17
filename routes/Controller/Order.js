@@ -399,19 +399,43 @@ function createAnBeverageOrder(data) {
 }
 
 
-function partialPayment(tableId,priceToDecrement) {
+function partialPayment(tableId,price,paymentType ) {
     return new Promise((resolve, reject) => {
-        mTable.findAll({
+        mTable.findOne({
             where: {
                 id: tableId,
             },
             include: [{
-                model:mOrder
+                model:mPayment
             }]
-        }).then(result => {
-            console.log(JSON.stringify(result));
-            result[0].totalPrice
-            resolve(JSON.stringify(result));
+        }).then(tablePayment=> {
+            console.log(JSON.stringify(tablePayment));
+            if (price > tablePayment.totalPrice ){
+                reject('The money which is taken cannot be higher than total price!');
+            }else{
+                mPayment.create({price,paymentType,tableId}).then(myData=>{
+
+                }).catch(error=>{
+                    reject(error);
+                })
+                var total=tablePayment.totalPrice;
+                    total-= price;
+                    var currentStatus=2;
+                    if (total==0){
+                        currentStatus=1;
+                    }
+                mTable.update(
+                    {
+                    totalPrice: total,
+                        status:currentStatus
+                },
+                    {
+                        where:{
+                            id:tableId
+                        }
+                })
+            }
+            resolve(JSON.stringify(tablePayment));
         })
             .catch(error => {
                 reject(error);
@@ -563,10 +587,12 @@ module.exports = function (app) {
         }),
         app.post('/api/order/partialPayment', function (request, response) {
             if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
-                || checkUsersRole.isAdmin(request.session.roleId) || checkUsersRole.isWaiter(request.session.roleId)))
+                || checkUsersRole.isAdmin(request.session.roleId) || checkUsersRole.isWaiter(request.session.roleId)
+                || checkUsersRole.isChef(request.session.roleId)
+            ))
             {
                 var data = request.body;
-                partialPayment(data.tableId,data.price)
+                partialPayment(data.tableId,data.price,data.paymentType)
                     .then(notification=> {
                         response.end(notification);
                     }).catch(error => {
