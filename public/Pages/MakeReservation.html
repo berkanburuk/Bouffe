@@ -191,11 +191,10 @@
         data2 = {
             date: $('#date').val(),
         };
-        document.getElementById('tableDiv').style.visibility = 'visible';
         $.ajax({
-            url: '/api/reservation/getNotReservedTable',
+            url: 'api/table/getAllTables',
             dataType: 'application/json',
-            type: 'POST',
+            type: 'GET',
             timeout: 5000,
             data: data2,
             statusCode: {
@@ -203,8 +202,14 @@
                     console.log(JSON.parse(x.responseText));
                     var jArray = JSON.parse(x.responseText);
 
+                    var receive_body = "<option value='0' disabled>Please choose a table";
+                    $.each(jArray, function (index, val) {
+                        receive_body += '<option value="' + val.id + '">' + val.id;
+                    });
+                    $('#table').html(receive_body);
+                    document.getElementById('tableDiv').style.visibility = 'visible';
 
-                    alert(x.responseText);
+                    //  alert(x.responseText);
 
                 },
                 404: function (x) {
@@ -234,8 +239,8 @@
             statusCode: {
                 200: function (x) {
                     $('#modal_form_add_reservation').modal('hide');
-                    alert(x.responseText);
-                    location.reload();
+                    console.log(x.responseText);
+                   // location.reload();
                 },
                 404: function (x) {
                     alert(x.responseText);

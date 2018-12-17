@@ -220,13 +220,13 @@
                     $.each(jArray[0].food, function (index, val) {
                         switch (val.type) {
                             case 'appetizer':
-                                receive_body_appetizer += '<option value="' + val.id + '">' + val.name;
+                                receive_body_appetizer += '<option value="' + val.name + '">' + val.name;
                                 break;
                             case 'mainCourse':
-                                receive_body_mainCourse += '<option value="' + val.id + '">' + val.name;
+                                receive_body_mainCourse += '<option value="' + val.name + '">' + val.name;
                                 break;
                             case 'dessert':
-                                receive_body_dessert += '<option value="' + val.id + '">' + val.name;
+                                receive_body_dessert += '<option value="' + val.name + '">' + val.name;
                                 break;
                         }
                     });
@@ -284,30 +284,87 @@
 
         $('#modal_form').on('submit', function (e) {
             e.preventDefault();
-            var data2 = {
-                beverageId: $('#beverage').val(),
-                mainCourse: $('#mainCourse').val(),
-                appetizer: $('#appetizer').val(),
-                dessert: $('#dessert').val(),
-                tableId: globalClickedTableId
-            };
-            $.ajax({
-                url: '/api/order/orderBeverage',
-                dataType: 'application/json',
-                data: data2,
-                type: 'POST',
-                timeout: 5000,
-                statusCode: {
-                    200: function (x) {
-                        $('#modal_form').modal('hide');
-                        alert(x.responseText);
-                        location.reload();
-                    },
-                    404: function (x) {
-                        alert(x.responseText);
-                    }
+            var data2;
+            console.log($('#beverage').val());
+            console.log( $('#appetizer').val());
+            console.log($('#mainCourse').val());
+            console.log($('#dessert').val());
+
+            if ($('#beverage').val()=== '0') {
+                if ($('#appetizer').val() !== '0' && $('#mainCourse').val() != '0' && $('#dessert').val() != '0') {
+                    data2 = {
+                        mainCourse: $('#mainCourse').val(),
+                        appetizer: $('#appetizer').val(),
+                        dessert: $('#dessert').val(),
+                        isSetMenu: true,
+                        tableId: globalClickedTableId,
+                    };
+                } else {
+                    data2 = {
+                        mainCourse: $('#mainCourse').val(),
+                        appetizer: $('#appetizer').val(),
+                        dessert: $('#dessert').val(),
+                        isSetMenu: false,
+                        tableId: globalClickedTableId,
+                    };
                 }
-            });
+                console.log(data2);
+                $.ajax({
+                    url: '/api/order/orderFood',
+                    dataType: 'application/json',
+                    data: data2,
+                    type: 'POST',
+                    timeout: 5000,
+                    statusCode: {
+                        200: function (x) {
+                            $('#modal_form').modal('hide');
+                            alert(x.responseText);
+                            location.reload();
+                        },
+                        404: function (x) {
+                            alert(x.responseText);
+                        }
+                    }
+                });
+            } else {
+                if ($('#appetizer').val() != 0 && $('#mainCourse').val() != 0 && $('#dessert').val() != 0) {
+                    data2 = {
+                        beverageId: $('#beverage').val(),
+                        mainCourse: $('#mainCourse').val(),
+                        appetizer: $('#appetizer').val(),
+                        dessert: $('#dessert').val(),
+                        isSetMenu: true,
+                        tableId: globalClickedTableId,
+                    };
+                } else {
+                    data2 = {
+                        beverageId: $('#beverage').val(),
+                        mainCourse: $('#mainCourse').val(),
+                        appetizer: $('#appetizer').val(),
+                        dessert: $('#dessert').val(),
+                        isSetMenu: false,
+                        tableId: globalClickedTableId,
+                    };
+                }
+                console.log(data2);
+                $.ajax({
+                    url: '/api/order/orderBeverage',
+                    dataType: 'application/json',
+                    data: data2,
+                    type: 'POST',
+                    timeout: 5000,
+                    statusCode: {
+                        200: function (x) {
+                            $('#modal_form').modal('hide');
+                            alert(x.responseText);
+                            location.reload();
+                        },
+                        404: function (x) {
+                            alert(x.responseText);
+                        }
+                    }
+                });
+            }
         });
 
         var globalClickedTableId;
