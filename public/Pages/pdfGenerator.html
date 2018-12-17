@@ -13,11 +13,16 @@
                 families: ["Lato:100,300,400,700,900","Karla:regular","Cookie:regular"]
             }
         });
+        //background: linear-gradient(rgba(255,255,255,.65), rgba(255,255,255,.65)),url('../TableFiles/tableImages/pepper.png') no-repeat;
+        //            height: 842px;
+        //            width: 595px;
     </script>
     <style>
 
+
         .crazyFrog {
-            background: linear-gradient(rgba(255,255,255,.65), rgba(255,255,255,.65)),url('https://images.deezer.com/images/artist/01eb92fc47bb8fb09adea9f763bb1c50/842x595.jpg') no-repeat;
+            background: linear-gradient(rgba(255,255,255,.85), rgba(255,255,255,.85)),url('../TableFiles/tableImages/pepper.jpg') no-repeat ;
+            background-position: center;
             margin-left: auto;
             margin-right: auto;
             height: 842px;
@@ -26,7 +31,7 @@
 
         }
         .revimg {
-            transform: rotateY(180);
+            transform: rotateY(180deg);
             width: 50px;
             height: 50px;}
     </style>
@@ -36,56 +41,128 @@
 
 </head>
 <body>
+<div>
 <div id="someHtml" crossOrigin="Anonymous" class="crazyFrog">
-    <p style="height: 40px;"></p>
-    <p align="center" style="height: 10px;"><img crossOrigin="Anonymous" class="revimg" src="https://image.flaticon.com/icons/svg/205/205049.svg"></p>
-    <p align="center" style="font-family: Cookie; font-size: 32pt; color: #6F0000;">Le Piment Rouge</p>
-    <p align="center" style="height: 40px;font-family: Cookie; font-size: 24pt;">American Menu</p>
-    <p align="center" style="color: #6F0000;height: 0px;font-family: Cookie; font-size: 20pt;">Appetizers</p>
-    <p align="center" style="color: #6F0000;font-size: 12pt;height: 0px">_____________________________________________________</p>
-    <p align="center" style="height: 0px;font-family: Cookie; font-size: 20pt;">Appetizers</p>
-    <p align="center" style="height: 30px;font-family: Cookie; font-size: 20pt;">Appetizers</p>
-    <p align="center" style="color: #6F0000;height: 0px;font-family: Cookie; font-size: 20pt;">Main Courses</p>
-    <p align="center" style="color: #6F0000;font-size: 12pt;height: 0px">_____________________________________________________</p>
 
-    <p align="center" style="height: 0px;font-family: Cookie; font-size: 20pt;">Main Courses</p>
-    <p align="center" style="height: 30px;font-family: Cookie; font-size: 20pt;">Main Courses</p>
-    <p align="center" style="color: #6F0000;height: 0px;font-family: Cookie; font-size: 20pt;">Deserts</p>
-    <p align="center" style="color: #6F0000;font-size: 12pt;height: 0px">_____________________________________________________</p>
-    <p align="center" style="height: 0px;font-family: Cookie; font-size: 20pt;">Deserts</p>
-    <p align="center" style="height: 30px;font-family: Cookie; font-size: 20pt;">Deserts</p>
-    <p align="center" style="color: #6F0000;font-size: 12pt;height: 10px">_____________________________________________________</p>
-    <table align="center">
-        <tr>
-            <td>
-                <p  style="height: 30px;font-family: Cookie; font-size: 12pt;">Chef De Cuisine: Elif Demirci</p>
-            </td>
-            <td>
-                <p  style="height: 30px;font-family: Cookie; font-size: 12pt;">Maltre de Table: Ali Unal</p>
-            </td>
-        <tr>
-    </table>
-    <table align="center">
-        <tr>
-            <td>
-                <p  style="height: 30px;font-family: Cookie; font-size: 12pt;">SET MENU PRICE 35.00 TL</p>
-            </td>
-            <td>
-                <p  style="height: 30px;font-family: Cookie; font-size: 12pt;">DATE</p>
-            </td>
-            <td>
-                <p  style="height: 30px;font-family: Cookie; font-size: 12pt;">For Reservations</p>
-            </td>
-        <tr>
-    </table>
 
 </div>
-
+</div>
 <button id="savePDFbutton" onclick="savePDF()">
     save pdf
 </button>
 </body>
 </html>
+
+<script>
+    var count = 15;
+    var custom_list;
+    $(document).ready(function() {
+
+        var ans = $.ajax({
+            url: '/api/menu/getActiveMenu',
+            type: "GET",
+
+            statusCode: {
+                404: function () {
+                    console.log("-1-1-1-1 WE GOT 404!");
+                },
+                200: function (responseBody) {
+                    console.log(responseBody);
+                    var dat = JSON.parse(responseBody);
+                    console.log(dat[0]);
+
+                    //role=x.length;
+                    //console.log(role);
+                    //custom_list = getMenu();
+                    //$('#tables').html(custom_list);
+                    custom_list = getMenu(dat[0]);
+                    $('#someHtml').html(custom_list);
+
+                }
+            }
+        });
+    });
+    function getMenu(dat) {
+    var menuBody="";
+    var length=-1;
+    if(dat.food===undefined)
+    {
+        length=dat.food.length;
+        console.log("CIKTIM");
+        return menuBody;
+
+    }
+    menuBody+="<p style='height: 40px;'></p>";
+    menuBody+="<p align='center' style='height: 10px;'><img class='revimg' src='../TableFiles/tableImages/pepper.png'></p>";
+    menuBody+="<p align=\"center\" style=\"font-family: Cookie; font-size: 32pt; color: #6F0000;\">Le Piment Rouge</p>";
+    menuBody+="<p align=\"center\" style=\"height: 40px;font-family: Cookie; font-size: 24pt;\">"+dat.cuisineRegion+"</p>";
+    menuBody+="<p align=\"center\" style=\"color: #6F0000;height: 0px;font-family: Cookie; font-size: 20pt;\">Appetizers</p>";
+    menuBody+="<p align=\"center\" style=\"color: #6F0000;font-size: 12pt;height: 0px\">_____________________________________________________</p>";
+
+    for(var i=0; i<dat.food.length; i++)
+    {
+      if(dat.food[i].type==="appetizer")
+      {
+          console.log(dat.food[i]);
+          menuBody+="<p align=\"center\" style=\"height: 0px;font-family: Cookie; font-size: 20pt;\">"+dat.food[i].name+" ("+dat.food[i].price+"TL)"+"</p>";
+          menuBody+="<p align=\"center\" style=\"height: 0px;font-family: Cookie; font-size: 14pt;\">"+dat.food[i].description+"</p>";
+
+      }
+    }
+    menuBody+="<p align=\"center\" style=\"color: #6F0000;height: 0px;font-family: Cookie; font-size: 20pt;\">Main Courses</p>";
+    menuBody+="<p align=\"center\" style=\"color: #6F0000;font-size: 12pt;height: 0px\">_____________________________________________________</p>";
+    for(var k=0; k<dat.food.length; k++)
+        {
+            if(dat.food[k].type==="mainCourse")
+            {
+                menuBody+="<p align=\"center\" style=\"height: 0px;font-family: Cookie; font-size: 20pt;\">"+dat.food[k].name+" ("+dat.food[k].price+"TL)"+"</p>";
+                menuBody+="<p align=\"center\" style=\"height: 0px;font-family: Cookie; font-size: 14pt;\">"+dat.food[k].description+"</p>";
+
+            }
+        }
+    menuBody+="<p align=\"center\" style=\"color: #6F0000;height: 0px;font-family: Cookie; font-size: 20pt;\">Desserts</p>";
+    menuBody+="<p align=\"center\" style=\"color: #6F0000;font-size: 12pt;height: 0px\">_____________________________________________________</p>";
+    for(var l=0; l<dat.food.length; l++)
+        {
+            if(dat.food[l].type==="dessert")
+            {
+                menuBody+="<p align=\"center\" style=\"height: 0px;font-family: Cookie; font-size: 20pt;\">"+dat.food[l].name+" ("+dat.food[l].price+"TL)"+"</p>";
+                menuBody+="<p align=\"center\" style=\"height: 0px;font-family: Cookie; font-size: 14pt;\">"+dat.food[l].description+"</p>";
+
+            }
+        }
+    menuBody+="<p align=\"center\" style=\"color: #6F0000;font-size: 12pt;height: 0px\">_____________________________________________________</p>";
+    menuBody+="<table align=\"center\" style=\"width:100%;\">";
+    menuBody+="<tr>";
+    menuBody+="<td align=\"center\">";
+    menuBody+="<p  style=\"height: 30px;font-family: Cookie; font-size: 12pt;\">Chef De Cuisine: Elif Demirci</p>";
+    menuBody+="</td>";
+    menuBody+="<td>";
+    menuBody+="</td>";
+    menuBody+="<td align=\"center\">";
+    menuBody+="<p  style=\"height: 30px;font-family: Cookie; font-size: 12pt;\">Maltre de Table: Ali Unal</p>";
+    menuBody+="</td>";
+    menuBody+="</tr>";
+    menuBody+="</table>";
+    menuBody+="<table align=\"center\" style=\"width:100%;\">";
+    menuBody+="<tr>";
+    menuBody+="<td align=\"center\">";
+    menuBody+="<p  style=\"height: 30px;font-family: Cookie; font-size: 12pt;\">SET MENU PRICE "+ dat.setPrice +" TL</p>";
+    menuBody+="</td>";
+    menuBody+="<td align=\"center\">";
+    menuBody+="<p  style=\"height: 30px;font-family: Cookie; font-size: 12pt;\">December 17-20,2018</p>";
+    menuBody+="</td>";
+    menuBody+="<td align=\"center\">";
+    menuBody+="<p  style=\"height: 30px;font-family: Cookie; font-size: 12pt;\">For Reservations 290-50-29</p>";
+    menuBody+="</td>";
+    menuBody+="</tr>";
+    menuBody+="</table>";
+    console.log("Load Etmem Lazim");
+    return menuBody;
+
+    }
+
+</script>
 <script>
     var testDivElement = document.getElementById('someHtml');
 
@@ -94,13 +171,20 @@
         html2canvas($("#someHtml"), {
             useCORS: true,
             onrendered: function (canvas) {
-                imgData = canvas.toDataURL(
-                    'image/png');
-                var doc = new jsPDF('p', 'pt', 'a4');
-                var width = doc.internal.pageSize.Width;
-                var height = doc.internal.pageSize.Height;
-                doc.addImage(imgData, 'PNG', 75, 100,width,height);
-                doc.save('sample-file.pdf');
+
+
+                var width = canvas.width;
+                var height = canvas.height;
+                var millimeters = {};
+                millimeters.width = Math.floor(width * 0.264583);
+                millimeters.height = Math.floor(height * 0.264583);
+                var imgData = canvas.toDataURL('image/png');
+                var doc = new jsPDF('p', 'mm', 'a4');
+                doc.deletePage(1);
+                doc.addPage(millimeters.width, millimeters.height);
+                doc.addImage(imgData, 'PNG', 0, 0);
+                //doc.addImage(imgData, 'PNG', 75, 80,width,height);
+                doc.save('activeMenu.pdf');
                 //setTimeout(function () { window.open(imgData) }, 1000);
             }
         });
