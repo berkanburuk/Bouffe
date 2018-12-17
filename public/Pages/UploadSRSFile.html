@@ -29,7 +29,7 @@
 <body>
 <div class="container box">
     <div class="col-lg-11" style="margin-top: 20px">
-        <input type="file" class="btn btn-primary" id="my_file_input"/>
+        <input type="file" id="my_file_input"/>
         <select name="courseId" id="courseId" class="btn btn-primary">
             <option value="246"> Restaurant Service
             <option value="323" selected> International Cuisines
@@ -54,6 +54,7 @@
                 <th>Firstname</th>
                 <th>Lastname</th>
                 <th>Bilkent ID</th>
+                <th>Role</th>
                 <th>Manage</th>
             </tr>
             </thead>
@@ -244,14 +245,14 @@
             timeout: 5000,
             statusCode: {
                 200: function (x) {
-                    console.log(x.responseText)
+                    console.log(JSON.parse(x.responseText)[0].roleId);
+                    return JSON.parse(x.responseText)[0].roleId;
                 },
                 404: function (x) {
                     alert(x.responseText);
                 }
             },
             success: function (data, textStatus) {
-                alert(data);
                 console.log(data);
             },
             fail: function (xhr, textStatus, errorThrown) {
@@ -267,8 +268,6 @@
         $('#ubilkentId').val(bilkentId);
     }
 
-    getUserRole('berkan');
-
     $.ajax({
         url: '/api/user/getAllUsers',
         dataType: 'application/json',
@@ -280,10 +279,12 @@
                 var jArray = JSON.parse(x.responseText);
                 var receive_body = "";
                 $.each(jArray, function (index, val) {
+                    var role = getUserRole(val.username);
                     receive_body += '<tr><th scope="row">' + val.username + '</th>' +
                         '<td>' + val.firstName + '</td>' +
                         '<td>' + val.lastName + '</td>' +
                         '<td>' + val.bilkentId + '</td>' +
+                        '<td>' + $('#roleId option:selected') + '</td>' +
                         '<td><button class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal_form_update" onclick="updateUser(\'' + val.username + '\',\'' +
                         val.firstName + '\',\'' + val.lastName + '\',\'' + val.bilkentId + '\')"><i class="fa fa-bars"></i></button>' +
                         '<button class="btn btn-danger btn-sm" onclick="deleteUser(\'' + val.username + '\')"><i class="fa fa-trash"></i></button></td></tr>';
