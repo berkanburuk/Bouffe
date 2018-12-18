@@ -107,7 +107,9 @@ function updateQuantityOfAFood(food) {
                 }
 
                 }).then(updated=>{
-
+                    if (updated>0){
+                      console.log("quantity updated");
+                    }
             }).catch(error=>{
                 reject(error);
             })
@@ -142,6 +144,7 @@ function uploadTotalPaymentForMenu(data,flag) {
             }).then(appetizer => {
                 if (appetizer != undefined && appetizer != null) {
                     appetizerPrice = appetizer.price;
+                    updateQuantityOfAFood(appetizer);
                 }
                 mFood.findOne({
                     where: {
@@ -151,6 +154,7 @@ function uploadTotalPaymentForMenu(data,flag) {
                 }).then(dessert => {
                     if (dessert != undefined && dessert != null) {
                         dessertPrice = dessert.price;
+                        updateQuantityOfAFood(dessert);
                     }
                     mTable.findOne({
                         where: {
