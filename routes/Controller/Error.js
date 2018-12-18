@@ -4,7 +4,7 @@ module.exports = function(app){
 
     app.get('/noAuthority', function (request, response) {
         console.log('Error');
-            response.sendFile(path.resolve('public/Pages/Authority.html'));
+            response.sendFile(path.resolve('public/Pages/authority.html'));
     })
 
 /*

@@ -379,7 +379,10 @@ html { height: 100%;}
           if (role == 1) {
               custom_list += '<li id="srsFileUpload" value="/userManagement"><p>User Management</p></li>';
           }
-          if (role == 4) {
+          if (role == 3 || role == 4) {
+              custom_list += '<li id="beverageManagement" value="/beverageManagement"><p>Beverage Management</p></li>';
+          }
+          if (role == 3 || role == 4) {
               custom_list += '<li id="manageFood" value="/foodManagement"><p>Food Management</p></li>';
           }
           if (role == 4) {
@@ -389,17 +392,33 @@ html { height: 100%;}
               custom_list += '<li id="manageReservation" value="/reservationManagement"><p>Reservation Management</p></li>';
           }
           if (role == 5) {
-              custom_list += '<li id="order" value="/order"><p>Order</p></li>';
+              custom_list += '<li id="order" value="/order"><p>Order Panel</p></li>';
           }
           if (role == 3) {
               custom_list += '<li id="viewOrders" value="/viewFoodOrder"><p>View Orders</p></li>';
           }
-          if (role == 6) {
-              custom_list += '<li id="viewOrders" value="/viewBeverageOrder"><p>View Orders</p></li>';
+          if (role == 3) {
+              custom_list += '<li id="chefManagement" value="/chefManagement"><p>Chef Panel</p></li>';
           }
           if (role == 2) {
-              custom_list += '<li id="managePayment" value="/payment"><p>Payment</p></li>';
+              custom_list += '<li id="payment" value="/payment"><p>Payment Panel</p></li>';
           }
+          if (role == 2 || role==5) {
+              custom_list += '<li id="reservationManagement" value="/reservationManagement"><p>Reservation Panel</p></li>';
+          }
+          if (role == 2 || role==5 || role ==1) {
+              custom_list += '<li id="tableLayoutManagement" value="/tableLayoutManagement"><p>Table Layout Management</p></li>';
+          }
+          if (role == 2 || role==5 || role ==1) {
+              custom_list += '<li id="tableManagement" value="/tableManagement"><p>Table Management</p></li>';
+          }
+          if (role == 2 || role==5 || role ==1) {
+              custom_list += '<li id="pdfGenerator" value="/pdfGenerator"><p>Print Menu</p></li>';
+          }
+          if (role == 6) {
+              custom_list += '<li id="bartenderManagement" value="/bartenderManagement"><p>Bartender Panel</p></li>';
+          }
+
           custom_list += '<li id="logOut" value="/api/user/logout"><p>Log Out</p></li>';
 
           return custom_list + x;
