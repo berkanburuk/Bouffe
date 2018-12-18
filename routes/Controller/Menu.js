@@ -72,7 +72,7 @@ function createMenuAndAssignFood(data){
                 {
                     name: data.name,
                     cuisineRegion: data.cuisineRegion,
-                    isActive: data.isActive,
+                    isActive: false,
                     setPrice: data.setPrice
                 }
         }).then((menu) => {
@@ -87,6 +87,17 @@ function createMenuAndAssignFood(data){
 
 function updateAMenu(data){
     return new Promise((resolve, reject) => {
+        mFood.findOne(
+            {
+            where:{
+                isActive:true
+            }
+        }).then(mFood=>{
+
+            if (mFood.isActive==true){
+                reject("There is already one active menu!");
+                return;
+            }
         mFood.update(
             {
                 name:data.newName,
@@ -108,6 +119,9 @@ function updateAMenu(data){
             }
 
         }).catch(error =>{
+            reject(error);
+        })
+        }).catch(error=>{
             reject(error);
         })
 
