@@ -8,6 +8,15 @@
     <!-- Custom styles for this template -->
     <script src="../TableFiles/vendor/jquery/jquery.min.js"></script>
     <link href="../TableFiles/css/thumbnail-gallery.css" rel="stylesheet">
+    <style>
+        .centered {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+    </style>
 </head>
 <body>
 
@@ -17,7 +26,7 @@
 <!-- Page Content -->
 <div class="container">
 
-    <h1 class="my-4 text-center text-lg-center">Table Layout Management</h1>
+    <h1 class="my-4 text-center text-lg-center">Chef Order Management</h1>
 
     <div id="bodyHere" class="row text-center text-lg-left">
 
@@ -40,7 +49,7 @@
     $(document).ready(function() {
 
         var ans = $.ajax({
-            url: '/api/order/getChefNotification',
+            url: '/api/order/getChefNotificationWithName',
             type: "GET",
 
             statusCode: {
@@ -48,7 +57,6 @@
                     console.log("-1-1-1-1 WE GOT 404!");
                 },
                 200: function (responseBody) {
-                    console.log(responseBody);
                     var dat = JSON.parse(responseBody);
                     console.log(dat);
 
@@ -71,7 +79,7 @@
 
         var length = -1;
         if (dat === undefined || dat.length === undefined) {
-            length = dat.food.length;
+            length = dat.length;
             console.log("CIKTIM");
             return tableData;
         }
@@ -100,9 +108,9 @@
         x+="e.preventDefault();\n";
         x+="var y = parseInt($(this).attr('value'));\n";
         x+="var texty=$(this).attr('name');\n";
-        x+="case(texty,y);";
-        x+="};\n";
-        x+="function case(text,y) {\n";
+        x+="case1(texty,y);";
+        x+="});\n";
+        x+="function case1(text,y) {\n";
         x+="Swal({\n";
         x+="title: 'Attention!',\n";
         x+="text: \"You are going to confirm that the order \"+text+\" with \" + y + \" id is ready  !\",";
@@ -116,7 +124,7 @@
         x+="$.ajax({\n";
         x+="type: 'GET',\n";
         x+="dataType: 'application/json',\n";
-        x+="url: '/api/order/chefApprovesFoodReady'+y,\n";
+        x+="url: '/api/order/chefApprovesFoodReady/'+y,\n";
         x+="timeout: 10000,\n";
         x+="statusCode: {\n";
         x+="200: function (x) {\n";
@@ -129,6 +137,7 @@
         x+="})\n";
         x+="})\n";
         x+="}\n";
+        x+="});\n";
         /*
 
         */
@@ -136,10 +145,10 @@
         x+="/script>\n";
         for(var i=0; i<dat.length; i++)
         {
-            tableData += "<div id='" + "order" + "' value='" + dat[i].id + "'" +" name='"+dat[i].name+"' "+ "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/s2.png' alt=\"\"><div class=\"centered\">"+dat[i].id+" is refers Food: "+dat[i].name+"</div></p></p></div>";
+            tableData += "<div id='" + "order" + "' value='" + dat[i].orderId + "'" +" name='"+dat[i].foodName+"' "+ "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/s2.png' alt=\"\"><div class=\"centered\">"+dat[i].orderId+" is refers Food: "+dat[i].foodName+"</div></p></p></div>";
 
         }
-        return tableData;
+        return x+tableData;
 
 
     }
