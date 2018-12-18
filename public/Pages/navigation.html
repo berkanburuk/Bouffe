@@ -369,7 +369,7 @@ html { height: 100%;}
           x+=">"
           x+="\$(document).ready(function(){";
           x+="\$('ul#opList li').click( function() {";
-          x+="\$(location).attr('href', \"Wellcome to the Bouffe Restourant Automation System\");";
+          x+="\$(location).attr('href', \$(this.attr('value'));";
           x+="console.log(\$(this).attr('value')+ ' Fuck sake');";
           x+="});});";
           x+="<";
