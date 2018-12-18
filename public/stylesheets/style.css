@@ -49,8 +49,8 @@ td{
     vertical-align: center;
 }
 body{
-    line-height: 0.2;
-}
+    line-height: 0.2;background: rgb(197,176,227);
+    background: radial-gradient(circle, rgba(197,176,227,0.3984944319524685) 0%, rgba(222,120,182,0.49653364763874297) 88%);}
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {

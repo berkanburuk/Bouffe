@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Upload SRS</title>
+    <title>User Management</title>
 
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.css">
@@ -28,14 +28,16 @@
 </head>
 <body>
 <div class="container box">
+    <h1 class="my-4 text-center text-lg-center">User Management</h1>
+
     <form>
         <div class="form-group" style="margin-top: 20px">
             <input type="file" class="form-control-lg"
                    accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
                    id="my_file_input"/>
             <select name="courseId" id="courseId" class="btn btn-primary">
-                <option value="246"> Restaurant Service
-                <option value="323" selected> International Cuisines
+                <option value="246" selected> Restaurant Service
+                <option value="323"> International Cuisines
             </select>
         </div>
     </form>
@@ -356,7 +358,7 @@
                     $.each(data[indexR], function (indexC, valueC) {
                         sRow = sRow + "<td>" + valueC + "</td>";
                         if (indexC == 6 && indexR != 0)
-                            sRow = sRow + "<td><select name='stuRole' id='stuRole" + indexR + "'><option value='5' selected> Waiter <option value='6'> Bartender </select></td>";
+                            sRow = sRow + "<td><select name='stuRole' class='form-control' id='stuRole" + indexR + "'><option value='5' selected> Waiter <option value='6'> Bartender </select></td>";
                         totalCol++;
                     });
 
