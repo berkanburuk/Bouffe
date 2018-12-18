@@ -1,459 +1,506 @@
 <!DOCTYPE html>
 <!-- saved from url=(0036)https://s.bootsnipp.com/iframe/Qb83E -->
-<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="../stylesheets/style.css"/>
 
     <meta name="robots" content="noindex, nofollow">
 
     <title>Sidebar Navigation </title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="../navigationFiles/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
     <style type="text/css">
-    body {
-    position: relative;
-    overflow-x: hidden;
-}
-body,
-html { height: 100%;}
-.nav .open > a,
-.nav .open > a:hover,
-.nav .open > a:focus {background-color: transparent;}
+        body {
+            position: relative;
+            overflow-x: hidden;
+        }
 
-/*-------------------------------*/
-/*           Wrappers            */
-/*-------------------------------*/
+        body,
+        html {
+            height: 100%;
+            background: linear-gradient(rgba(255, 255, 255, .35), rgba(255, 255, 255, .35)), url("../BackgroundImage/bg.jpg") no-repeat center;;
+        }
 
-#wrapper {
-    padding-left: 0;
-    -webkit-transition: all 0.5s ease;
-    -moz-transition: all 0.5s ease;
-    -o-transition: all 0.5s ease;
-    transition: all 0.5s ease;
-}
+        .nav .open > a,
+        .nav .open > a:hover,
+        .nav .open > a:focus {
+            background-color: transparent;
+        }
 
-#wrapper.toggled {
-    padding-left: 220px;
-}
+        /*-------------------------------*/
+        /*           Wrappers            */
+        /*-------------------------------*/
 
-#sidebar-wrapper {
-    z-index: 1000;
-    left: 220px;
-    width: 0;
-    height: 100%;
-    margin-left: -220px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    background: #1a1a1a;
-    -webkit-transition: all 0.5s ease;
-    -moz-transition: all 0.5s ease;
-    -o-transition: all 0.5s ease;
-    transition: all 0.5s ease;
-}
+        #wrapper {
+            padding-left: 0;
+            -webkit-transition: all 0.5s ease;
+            -moz-transition: all 0.5s ease;
+            -o-transition: all 0.5s ease;
+            transition: all 0.5s ease;
+        }
 
-#sidebar-wrapper::-webkit-scrollbar {
-  display: none;
-}
+        #wrapper.toggled {
+            padding-left: 220px;
+        }
 
-#wrapper.toggled #sidebar-wrapper {
-    width: 220px;
-}
+        #sidebar-wrapper {
+            z-index: 1000;
+            left: 220px;
+            width: 0;
+            height: 100%;
+            margin-left: -220px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            background: #1a1a1a;
+            -webkit-transition: all 0.5s ease;
+            -moz-transition: all 0.5s ease;
+            -o-transition: all 0.5s ease;
+            transition: all 0.5s ease;
+        }
 
-#page-content-wrapper {
-    width: 100%;
-    padding-top: 70px;
-}
+        #sidebar-wrapper::-webkit-scrollbar {
+            display: none;
+        }
 
-#wrapper.toggled #page-content-wrapper {
-    position: absolute;
-    margin-right: -220px;
-}
+        #wrapper.toggled #sidebar-wrapper {
+            width: 220px;
+        }
 
-/*-------------------------------*/
-/*     Sidebar nav styles        */
-/*-------------------------------*/
+        #page-content-wrapper {
+            width: 100%;
+            padding-top: 70px;
+        }
 
-.sidebar-nav {
-    position: absolute;
-    top: 0;
-    width: 220px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-}
+        #wrapper.toggled #page-content-wrapper {
+            position: absolute;
+            margin-right: -220px;
+        }
 
-.sidebar-nav li {
-    position: relative;
-    line-height: 20px;
-    display: inline-block;
-    width: 100%;
-}
+        /*-------------------------------*/
+        /*     Sidebar nav styles        */
+        /*-------------------------------*/
 
-.sidebar-nav li:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: -1;
-    height: 100%;
-    width: 3px;
-    background-color: #1c1c1c;
-    -webkit-transition: width .2s ease-in;
-      -moz-transition:  width .2s ease-in;
-       -ms-transition:  width .2s ease-in;
+        .sidebar-nav {
+            position: absolute;
+            top: 0;
+            width: 220px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .sidebar-nav li {
+            position: relative;
+            line-height: 20px;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .sidebar-nav li:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            height: 100%;
+            width: 3px;
+            background-color: #1c1c1c;
+            -webkit-transition: width .2s ease-in;
+            -moz-transition: width .2s ease-in;
+            -ms-transition: width .2s ease-in;
             transition: width .2s ease-in;
 
-}
-.sidebar-nav li:first-child a {
-    color: #fff;
-    background-color: #1a1a1a;
-}
-.sidebar-nav li:nth-child(2):before {
-    background-color: #ec1b5a;
-}
-.sidebar-nav li:nth-child(3):before {
-    background-color: #79aefe;
-}
-.sidebar-nav li:nth-child(4):before {
-    background-color: #314190;
-}
-.sidebar-nav li:nth-child(5):before {
-    background-color: #279636;
-}
-.sidebar-nav li:nth-child(6):before {
-    background-color: #7d5d81;
-}
-.sidebar-nav li:nth-child(7):before {
-    background-color: #ead24c;
-}
-.sidebar-nav li:nth-child(8):before {
-    background-color: #2d2366;
-}
-.sidebar-nav li:nth-child(9):before {
-    background-color: #35acdf;
-}
-.sidebar-nav li:nth-child(10):before {
-    background-color: #ec1b5a;
-}
-.sidebar-nav li:nth-child(11):before {
-    background-color: #79aefe;
-}
-.sidebar-nav li:nth-child(12):before {
-    background-color: #314190;
-}
-.sidebar-nav li:nth-child(13):before {
-    background-color: #279636;
-}
-.sidebar-nav li:nth-child(14):before {
-    background-color: #ead24c;
-}
-.sidebar-nav li:nth-child(15):before {
-    background-color: #2d2366;
-}
-.sidebar-nav li:hover:before,
-.sidebar-nav li.open:hover:before {
-    width: 100%;
-    -webkit-transition: width .2s ease-in;
-      -moz-transition:  width .2s ease-in;
-       -ms-transition:  width .2s ease-in;
+        }
+
+        .sidebar-nav li:first-child a {
+            color: #fff;
+            background-color: #1a1a1a;
+        }
+
+        .sidebar-nav li:nth-child(2):before {
+            background-color: #ec1b5a;
+        }
+
+        .sidebar-nav li:nth-child(3):before {
+            background-color: #79aefe;
+        }
+
+        .sidebar-nav li:nth-child(4):before {
+            background-color: #314190;
+        }
+
+        .sidebar-nav li:nth-child(5):before {
+            background-color: #279636;
+        }
+
+        .sidebar-nav li:nth-child(6):before {
+            background-color: #7d5d81;
+        }
+
+        .sidebar-nav li:nth-child(7):before {
+            background-color: #ead24c;
+        }
+
+        .sidebar-nav li:nth-child(8):before {
+            background-color: #2d2366;
+        }
+
+        .sidebar-nav li:nth-child(9):before {
+            background-color: #35acdf;
+        }
+
+        .sidebar-nav li:nth-child(10):before {
+            background-color: #ec1b5a;
+        }
+
+        .sidebar-nav li:nth-child(11):before {
+            background-color: #79aefe;
+        }
+
+        .sidebar-nav li:nth-child(12):before {
+            background-color: #314190;
+        }
+
+        .sidebar-nav li:nth-child(13):before {
+            background-color: #279636;
+        }
+
+        .sidebar-nav li:nth-child(14):before {
+            background-color: #ead24c;
+        }
+
+        .sidebar-nav li:nth-child(15):before {
+            background-color: #2d2366;
+        }
+
+        .sidebar-nav li:hover:before,
+        .sidebar-nav li.open:hover:before {
+            width: 100%;
+            -webkit-transition: width .2s ease-in;
+            -moz-transition: width .2s ease-in;
+            -ms-transition: width .2s ease-in;
             transition: width .2s ease-in;
 
-}
+        }
 
-.sidebar-nav li p {
-    display: block;
-    color: #ddd;
-    text-decoration: none;
-    padding: 10px 15px 10px 30px;
-}
+        .sidebar-nav li p {
+            display: block;
+            color: #ddd;
+            text-decoration: none;
+            padding: 10px 15px 10px 30px;
+        }
 
-.sidebar-nav li p:hover,
-.sidebar-nav li p:active,
-.sidebar-nav li p:focus,
-.sidebar-nav li.open p:hover,
-.sidebar-nav li.open p:active,
-.sidebar-nav li.open p:focus{
-    color: #fff;
-    text-decoration: none;
-    background-color: transparent;
-}
+        .sidebar-nav li p:hover,
+        .sidebar-nav li p:active,
+        .sidebar-nav li p:focus,
+        .sidebar-nav li.open p:hover,
+        .sidebar-nav li.open p:active,
+        .sidebar-nav li.open p:focus {
+            color: #fff;
+            text-decoration: none;
+            background-color: transparent;
+        }
 
-.sidebar-nav > .sidebar-brand {
-    height: 65px;
-    font-size: 16px;
-    line-height: 44px;
-}
-.sidebar-nav .dropdown-menu {
-    position: relative;
-    width: 100%;
-    padding: 0;
-    margin: 0;
-    border-radius: 0;
-    border: none;
-    background-color: #222;
-    box-shadow: none;
-}
+        .sidebar-nav > .sidebar-brand {
+            height: 65px;
+            font-size: 16px;
+            line-height: 44px;
+        }
 
-/*-------------------------------*/
-/*       Hamburger-Cross         */
-/*-------------------------------*/
+        .sidebar-nav .dropdown-menu {
+            position: relative;
+            width: 100%;
+            padding: 0;
+            margin: 0;
+            border-radius: 0;
+            border: none;
+            background-color: #222;
+            box-shadow: none;
+        }
 
-.hamburger {
-  position: fixed;
-  top: 20px;
-  z-index: 999;
-  display: block;
-  width: 32px;
-  height: 32px;
-  margin-left: 15px;
-  background: transparent;
-  border: none;
-}
-.hamburger:hover,
-.hamburger:focus,
-.hamburger:active {
-  outline: none;
-}
-.hamburger.is-closed:before {
-  content: '';
-  display: block;
-  width: 100px;
-  font-size: 14px;
-  color: #fff;
-  line-height: 32px;
-  text-align: center;
-  opacity: 0;
-  -webkit-transform: translate3d(0,0,0);
-  -webkit-transition: all .35s ease-in-out;
-}
-.hamburger.is-closed:hover:before {
-  opacity: 1;
-  display: block;
-  -webkit-transform: translate3d(-100px,0,0);
-  -webkit-transition: all .35s ease-in-out;
-}
+        /*-------------------------------*/
+        /*       Hamburger-Cross         */
+        /*-------------------------------*/
 
-.hamburger.is-closed .hamb-top,
-.hamburger.is-closed .hamb-middle,
-.hamburger.is-closed .hamb-bottom,
-.hamburger.is-open .hamb-top,
-.hamburger.is-open .hamb-middle,
-.hamburger.is-open .hamb-bottom {
-  position: absolute;
-  left: 0;
-  height: 4px;
-  width: 100%;
-}
-.hamburger.is-closed .hamb-top,
-.hamburger.is-closed .hamb-middle,
-.hamburger.is-closed .hamb-bottom {
-  background-color: #1a1a1a;
-}
-.hamburger.is-closed .hamb-top {
-  top: 5px;
-  -webkit-transition: all .35s ease-in-out;
-}
-.hamburger.is-closed .hamb-middle {
-  top: 50%;
-  margin-top: -2px;
-}
-.hamburger.is-closed .hamb-bottom {
-  bottom: 5px;
-  -webkit-transition: all .35s ease-in-out;
-}
+        .hamburger {
+            position: fixed;
+            top: 20px;
+            z-index: 999;
+            display: block;
+            width: 32px;
+            height: 32px;
+            margin-left: 15px;
+            background: transparent;
+            border: none;
+        }
 
-.hamburger.is-closed:hover .hamb-top {
-  top: 0;
-  -webkit-transition: all .35s ease-in-out;
-}
-.hamburger.is-closed:hover .hamb-bottom {
-  bottom: 0;
-  -webkit-transition: all .35s ease-in-out;
-}
-.hamburger.is-open .hamb-top,
-.hamburger.is-open .hamb-middle,
-.hamburger.is-open .hamb-bottom {
-  background-color: #1a1a1a;
-}
-.hamburger.is-open .hamb-top,
-.hamburger.is-open .hamb-bottom {
-  top: 50%;
-  margin-top: -2px;
-}
-.hamburger.is-open .hamb-top {
-  -webkit-transform: rotate(45deg);
-  -webkit-transition: -webkit-transform .2s cubic-bezier(.73,1,.28,.08);
-}
-.hamburger.is-open .hamb-middle { display: none; }
-.hamburger.is-open .hamb-bottom {
-  -webkit-transform: rotate(-45deg);
-  -webkit-transition: -webkit-transform .2s cubic-bezier(.73,1,.28,.08);
-}
-.hamburger.is-open:before {
-  content: '';
-  display: block;
-  width: 100px;
-  font-size: 14px;
-  color: #fff;
-  line-height: 32px;
-  text-align: center;
-  opacity: 0;
-  -webkit-transform: translate3d(0,0,0);
-  -webkit-transition: all .35s ease-in-out;
-}
-.hamburger.is-open:hover:before {
-  opacity: 1;
-  display: block;
-  -webkit-transform: translate3d(-100px,0,0);
-  -webkit-transition: all .35s ease-in-out;
-}
+        .hamburger:hover,
+        .hamburger:focus,
+        .hamburger:active {
+            outline: none;
+        }
 
-/*-------------------------------*/
-/*            Overlay            */
-/*-------------------------------*/
+        .hamburger.is-closed:before {
+            content: '';
+            display: block;
+            width: 100px;
+            font-size: 14px;
+            color: #fff;
+            line-height: 32px;
+            text-align: center;
+            opacity: 0;
+            -webkit-transform: translate3d(0, 0, 0);
+            -webkit-transition: all .35s ease-in-out;
+        }
 
-.overlay {
-    position: fixed;
-    display: none;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(250,250,250,.8);
-    z-index: 1;
-}    </style>
+        .hamburger.is-closed:hover:before {
+            opacity: 1;
+            display: block;
+            -webkit-transform: translate3d(-100px, 0, 0);
+            -webkit-transition: all .35s ease-in-out;
+        }
+
+        .hamburger.is-closed .hamb-top,
+        .hamburger.is-closed .hamb-middle,
+        .hamburger.is-closed .hamb-bottom,
+        .hamburger.is-open .hamb-top,
+        .hamburger.is-open .hamb-middle,
+        .hamburger.is-open .hamb-bottom {
+            position: absolute;
+            left: 0;
+            height: 4px;
+            width: 100%;
+        }
+
+        .hamburger.is-closed .hamb-top,
+        .hamburger.is-closed .hamb-middle,
+        .hamburger.is-closed .hamb-bottom {
+            background-color: #1a1a1a;
+        }
+
+        .hamburger.is-closed .hamb-top {
+            top: 5px;
+            -webkit-transition: all .35s ease-in-out;
+        }
+
+        .hamburger.is-closed .hamb-middle {
+            top: 50%;
+            margin-top: -2px;
+        }
+
+        .hamburger.is-closed .hamb-bottom {
+            bottom: 5px;
+            -webkit-transition: all .35s ease-in-out;
+        }
+
+        .hamburger.is-closed:hover .hamb-top {
+            top: 0;
+            -webkit-transition: all .35s ease-in-out;
+        }
+
+        .hamburger.is-closed:hover .hamb-bottom {
+            bottom: 0;
+            -webkit-transition: all .35s ease-in-out;
+        }
+
+        .hamburger.is-open .hamb-top,
+        .hamburger.is-open .hamb-middle,
+        .hamburger.is-open .hamb-bottom {
+            background-color: #1a1a1a;
+        }
+
+        .hamburger.is-open .hamb-top,
+        .hamburger.is-open .hamb-bottom {
+            top: 50%;
+            margin-top: -2px;
+        }
+
+        .hamburger.is-open .hamb-top {
+            -webkit-transform: rotate(45deg);
+            -webkit-transition: -webkit-transform .2s cubic-bezier(.73, 1, .28, .08);
+        }
+
+        .hamburger.is-open .hamb-middle {
+            display: none;
+        }
+
+        .hamburger.is-open .hamb-bottom {
+            -webkit-transform: rotate(-45deg);
+            -webkit-transition: -webkit-transform .2s cubic-bezier(.73, 1, .28, .08);
+        }
+
+        .hamburger.is-open:before {
+            content: '';
+            display: block;
+            width: 100px;
+            font-size: 14px;
+            color: #fff;
+            line-height: 32px;
+            text-align: center;
+            opacity: 0;
+            -webkit-transform: translate3d(0, 0, 0);
+            -webkit-transition: all .35s ease-in-out;
+        }
+
+        .hamburger.is-open:hover:before {
+            opacity: 1;
+            display: block;
+            -webkit-transform: translate3d(-100px, 0, 0);
+            -webkit-transition: all .35s ease-in-out;
+        }
+
+        /*-------------------------------*/
+        /*            Overlay            */
+        /*-------------------------------*/
+
+        .overlay {
+            position: fixed;
+            display: none;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(250, 250, 250, .8);
+            z-index: 1;
+        }    </style>
     <script src="../navigationFiles/jquery-1.11.1.min.js"></script>
     <script src="../navigationFiles/bootstrap.min.js"></script>
     <script type="text/javascript">
-        window.alert = function(){};
+        window.alert = function () {
+        };
         var defaultCSS = document.getElementById('bootstrap-css');
-        function changeCSS(css){
-            if(css) $('head > link').filter(':first').replaceWith('<link rel="stylesheet" href="'+ css +'" type="text/css" />');
+
+        function changeCSS(css) {
+            if (css) $('head > link').filter(':first').replaceWith('<link rel="stylesheet" href="' + css + '" type="text/css" />');
             else $('head > link').filter(':first').replaceWith(defaultCSS);
         }
-        $( document ).ready(function() {
-          var iframe_height = parseInt($('html').height());
-          //window.parent.postMessage( iframe_height, 'Bouffe');
+
+        $(document).ready(function () {
+            var iframe_height = parseInt($('html').height());
+            //window.parent.postMessage( iframe_height, 'Bouffe');
         });
     </script>
-    <script >
+    <script>
         var role = -5;
         var custom_list;
-        $(document).ready(function() {
+        $(document).ready(function () {
 
-        var ans =  $.ajax({
-            url: '/api/user/getRole',
-            type: "GET",
+            var ans = $.ajax({
+                url: '/api/user/getRole',
+                type: "GET",
 
-            statusCode: {
-                404: function() {
-                    console.log("-1-1-1-1 WE GOT 404!");
-                },
-                200: function(x) {
-                    console.log(x);
-                    role=x;
-                    console.log(role);
-                    custom_list = getMenu();
-                    $('#opList').html(custom_list);
-                    $('#user').html('<h1>' + role + '</h1>');
+                statusCode: {
+                    404: function () {
+                        console.log("-1-1-1-1 WE GOT 404!");
+                    },
+                    200: function (x) {
+                        console.log(x);
+                        role = x;
+                        console.log(role);
+                        custom_list = getMenu();
+                        $('#opList').html(custom_list);
+                      //  $('#user').html('<h1>' + role + '</h1>');
 
+                    }
                 }
+            });
+
+            function getMenu() {
+                var x = "<script src='../navigationFiles/jquery-1.11.1.min.js'>";
+                x += "<";
+                x += "/script>";
+                x += "<script";
+                x += ">"
+                x += "\$(document).ready(function(){";
+                x += "\$('ul#opList li').click( function() {";
+                x += "\$(location).attr('href', \$(this).attr('value'));";
+                // x+="console.log(\$(this).attr('value')+ ' Fuck sake');";
+                x += "});});";
+                x += "<";
+                x += "/script>";
+                custom_list = '<li class="sidebar-brand"><p>Bouffe Control Panel</p></li>';
+
+                if (role == 1) {
+                    custom_list += '<li id="srsFileUpload" value="/userManagement"><p>User Management</p></li>';
+                }
+                if (role == 3 || role == 4) {
+                    custom_list += '<li id="beverageManagement" value="/beverageManagement"><p>Beverage Management</p></li>';
+                }
+                if (role == 3 || role == 4) {
+                    custom_list += '<li id="manageFood" value="/foodManagement"><p>Food Management</p></li>';
+                }
+                if (role == 4) {
+                    custom_list += '<li id="manageMenu" value="/menuManagement"><p>Menu Management</p></li>';
+                }
+                if (role == 4) {
+                    custom_list += '<li id="manageReservation" value="/reservationManagement"><p>Reservation Management</p></li>';
+                }
+                if (role == 5) {
+                    custom_list += '<li id="order" value="/order"><p>Order Panel</p></li>';
+                }
+                if (role == 3) {
+                    custom_list += '<li id="viewOrders" value="/viewFoodOrder"><p>View Orders</p></li>';
+                }
+                if (role == 3) {
+                    custom_list += '<li id="chefManagement" value="/chefManagement"><p>Chef Panel</p></li>';
+                }
+                if (role == 2) {
+                    custom_list += '<li id="payment" value="/payment"><p>Payment Panel</p></li>';
+                }
+                if (role == 2 || role == 5) {
+                    custom_list += '<li id="reservationManagement" value="/reservationManagement"><p>Reservation Panel</p></li>';
+                }
+                if (role == 2 || role == 5 || role == 1) {
+                    custom_list += '<li id="tableLayoutManagement" value="/tableLayoutManagement"><p>Table Layout Management</p></li>';
+                }
+                if (role == 2 || role == 5 || role == 1) {
+                    custom_list += '<li id="tableManagement" value="/tableManagement"><p>Table Management</p></li>';
+                }
+                if (role == 2 || role == 5 || role == 1) {
+                    custom_list += '<li id="pdfGenerator" value="/pdfGenerator"><p>Print Menu</p></li>';
+                }
+                if (role == 6) {
+                    custom_list += '<li id="bartenderManagement" value="/bartenderManagement"><p>Bartender Panel</p></li>';
+                }
+
+                custom_list += '<li id="logOut" value="/api/user/logout"><p>Log Out</p></li>';
+
+                return custom_list + x;
+
             }
         });
-
-      function getMenu() {
-          var x="<script src='../navigationFiles/jquery-1.11.1.min.js'>";
-          x+="<";
-          x+="/script>";
-          x+="<script";
-          x+=">"
-          x+="\$(document).ready(function(){";
-          x+="\$('ul#opList li').click( function() {";
-          x+="\$(location).attr('href', \$(this).attr('value'));";
-          x+="console.log(\$(this).attr('value')+ ' Fuck sake');";
-          x+="});});";
-          x+="<";
-          x+="/script>";
-          custom_list = '<li class="sidebar-brand"><p>Bouffe Control Panel</p></li>';
-
-          if (role == 1) {
-              custom_list += '<li id="srsFileUpload" value="/userManagement"><p>User Management</p></li>';
-          }
-          if (role == 3 || role == 4) {
-              custom_list += '<li id="beverageManagement" value="/beverageManagement"><p>Beverage Management</p></li>';
-          }
-          if (role == 3 || role == 4) {
-              custom_list += '<li id="manageFood" value="/foodManagement"><p>Food Management</p></li>';
-          }
-          if (role == 4) {
-              custom_list += '<li id="manageMenu" value="/menuManagement"><p>Menu Management</p></li>';
-          }
-          if (role == 4) {
-              custom_list += '<li id="manageReservation" value="/reservationManagement"><p>Reservation Management</p></li>';
-          }
-          if (role == 5) {
-              custom_list += '<li id="order" value="/order"><p>Order Panel</p></li>';
-          }
-          if (role == 3) {
-              custom_list += '<li id="viewOrders" value="/viewFoodOrder"><p>View Orders</p></li>';
-          }
-          if (role == 3) {
-              custom_list += '<li id="chefManagement" value="/chefManagement"><p>Chef Panel</p></li>';
-          }
-          if (role == 2) {
-              custom_list += '<li id="payment" value="/payment"><p>Payment Panel</p></li>';
-          }
-          if (role == 2 || role==5) {
-              custom_list += '<li id="reservationManagement" value="/reservationManagement"><p>Reservation Panel</p></li>';
-          }
-          if (role == 2 || role==5 || role ==1) {
-              custom_list += '<li id="tableLayoutManagement" value="/tableLayoutManagement"><p>Table Layout Management</p></li>';
-          }
-          if (role == 2 || role==5 || role ==1) {
-              custom_list += '<li id="tableManagement" value="/tableManagement"><p>Table Management</p></li>';
-          }
-          if (role == 2 || role==5 || role ==1) {
-              custom_list += '<li id="pdfGenerator" value="/pdfGenerator"><p>Print Menu</p></li>';
-          }
-          if (role == 6) {
-              custom_list += '<li id="bartenderManagement" value="/bartenderManagement"><p>Bartender Panel</p></li>';
-          }
-
-          custom_list += '<li id="logOut" value="/api/user/logout"><p>Log Out</p></li>';
-
-          return custom_list + x;
-
-      }
-  });
     </script>
 </head>
 <body>
-        <div id="wrapper" class="">
-        <div class="overlay" style="display: none;"></div>
+<div id="wrapper" class="">
+    <div class="overlay" style="display: none;"></div>
 
-        <!-- Sidebar -->
+    <!-- Sidebar -->
 
-        <nav class="navbar navbar-inverse navbar-fixed-top" id="sidebar-wrapper" role="navigation">
-            <ul id="opList" class="nav sidebar-nav">
+    <nav class="navbar navbar-inverse navbar-fixed-top" id="sidebar-wrapper" role="navigation">
+        <ul id="opList" class="nav sidebar-nav">
 
-            </ul>
+        </ul>
 
 
-        </nav>
-        <!-- /#sidebar-wrapper -->
+    </nav>
+    <!-- /#sidebar-wrapper -->
 
-        <!-- Page Content -->
-        <div id="page-content-wrapper">
-            <button type="button" class="hamburger is-closed" data-toggle="offcanvas">
-                <span class="hamb-top"></span>
-    			<span class="hamb-middle"></span>
-				<span class="hamb-bottom"></span>
-            </button>
-            <!-- Bu div Update Edilecek -->
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
+        <button type="button" class="hamburger is-closed" data-toggle="offcanvas">
+            <span class="hamb-top"></span>
+            <span class="hamb-middle"></span>
+            <span class="hamb-bottom"></span>
+        </button>
+        <!-- Bu div Update Edilecek -->
 
-            <div class="container">
-                <div class="row">
-                    <div id="user" class="col-lg-8 col-lg-offset-2">
+        <div class="container">
+            <div class="row">
+                <div id="user" class="col-lg-8 col-lg-offset-2">
 
                 </div>
             </div>
@@ -461,40 +508,40 @@ html { height: 100%;}
         <!-- /#page-content-wrapper -->
 
     </div>
-    <!-- /#wrapper -->	<script type="text/javascript">
-	$(document).ready(function () {
-  var trigger = $('.hamburger'),
-      overlay = $('.overlay'),
-     isClosed = false;
+    <!-- /#wrapper -->
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var trigger = $('.hamburger'),
+                overlay = $('.overlay'),
+                isClosed = false;
 
-    trigger.click(function () {
-      hamburger_cross();
-    });
+            trigger.click(function () {
+                hamburger_cross();
+            });
 
-    function hamburger_cross() {
+            function hamburger_cross() {
 
-      if (isClosed == true) {
-        overlay.hide();
-        trigger.removeClass('is-open');
-        trigger.addClass('is-closed');
-        isClosed = false;
-      } else {
-        overlay.show();
-        trigger.removeClass('is-closed');
-        trigger.addClass('is-open');
-        isClosed = true;
-      }
-    }
+                if (isClosed == true) {
+                    overlay.hide();
+                    trigger.removeClass('is-open');
+                    trigger.addClass('is-closed');
+                    isClosed = false;
+                } else {
+                    overlay.show();
+                    trigger.removeClass('is-closed');
+                    trigger.addClass('is-open');
+                    isClosed = true;
+                }
+            }
 
-  $('[data-toggle="offcanvas"]').click(function () {
-        $('#wrapper').toggleClass('toggled');
-  });
-
-
+            $('[data-toggle="offcanvas"]').click(function () {
+                $('#wrapper').toggleClass('toggled');
+            });
 
 
-  });
-</script>
+        });
+    </script>
 
-        </div>
-</body></html>
+</div>
+</body>
+</html>
