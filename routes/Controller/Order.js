@@ -93,7 +93,31 @@ function payOrders(mainCourse,appetizer,dessert,tableId,setMenu,orderId){
     //Active = 2 to available=1
 }
 
+function updateQuantityOfAFood(food) {
+    return new Promise((resolve, reject) => {
+        var q=food.quantity;
+        if (q>0){
+            q--;
+            food.update({
+                quantity:q
+            },
+                {
+                where:{
+                    name:food.name
+                }
 
+                }).then(updated=>{
+
+            }).catch(error=>{
+                reject(error);
+            })
+        }else{
+            reject(food.name + " is not available right now!");
+        }
+
+
+    })
+}
 
 
 
@@ -109,6 +133,7 @@ function uploadTotalPaymentForMenu(data,flag) {
         }).then(mC => {
             if (mC != undefined && mC != null) {
                 mainCoursePrice = mC.price;
+                updateQuantityOfAFood(mC);
             }
             mFood.findOne({
                 where: {
@@ -157,7 +182,7 @@ function uploadTotalPaymentForMenu(data,flag) {
                                 if (result != null && result != undefined) {
                                     resolve("Food Order is added successfully.");
                                 } else {
-                                    reject("Food Order could not updated!");
+                                    reject("Food Order could not be given!");
                                 }
                             }).catch(error => {
                                 reject(error);
@@ -267,7 +292,7 @@ function createMenuOrder(data) {
                 uploadTotalPaymentForMenu(data,flag).then(result => {
                     resolve(result);
                 }).catch(error => {
-                    reject("======uploadTotalPaymentForMenu====Error"+error);
+                    reject("Food Order could not be given!\n"+error);
                 })
             })
     })
@@ -399,61 +424,16 @@ function createAnBeverageOrder(data) {
 }
 
 
-function partialPayment(tableId,price,paymentType ) {
+/*
+function getPaymentOfTable(tableId) {
     return new Promise((resolve, reject) => {
         mTable.findOne({
             where: {
                 id: tableId,
             },
             include: [{
-                model:mPayment
-            }]
-        }).then(tablePayment=> {
-            console.log(JSON.stringify(tablePayment));
-            if (price > tablePayment.totalPrice ){
-                reject('The money which is taken cannot be higher than total price!');
-            }else{
-                mPayment.create({price,paymentType,tableId}).then(myData=>{
-
-                }).catch(error=>{
-                    reject(error);
-                })
-                var total=tablePayment.totalPrice;
-                    total-= price;
-                    var currentStatus=2;
-                    if (total==0){
-                        currentStatus=1;
-                    }
-                mTable.update(
-                    {
-                    totalPrice: total,
-                        status:currentStatus
-                },
-                    {
-                        where:{
-                            id:tableId
-                        }
-                })
-            }
-            resolve(JSON.stringify(tablePayment));
-        })
-            .catch(error => {
-                reject(error);
-            })
-    })
-
-}
-
-
-function getPaymentOfTable(tableId) {
-    return new Promise((resolve, reject) => {
-        mOrder.findAll({
-            where: {
-                tableId: tableId,
-                orderOpen:true
-            },
-            include: [{
-                model: mPayment,
+                model: mOrder,
+                through:mOrderTable
             }]
         }).then(result => {
             console.log(result[0].dataValues.totalPrice);
@@ -471,7 +451,7 @@ function getPaymentOfTable(tableId) {
     })
 
 }
-
+*/
 
 
 module.exports = function (app) {
@@ -548,7 +528,7 @@ module.exports = function (app) {
 
     }),
     */
-    app.get('/api/order/:getPaymentOfTable', function (request, response) {
+    app.get('/api/order/getPaymentOfTable', function (request, response) {
         if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
             || checkUsersRole.isAdmin(request.session.roleId) || checkUsersRole.isWaiter(request.session.roleId)))
         {
@@ -568,6 +548,7 @@ module.exports = function (app) {
             })
         }
     }),
+
         app.get('/api/order/getChefNotification', function (request, response) {
             if (request.session != undefined  && (checkUsersRole.isChef(request.session.roleId)))
             {
@@ -584,28 +565,8 @@ module.exports = function (app) {
                     response.end();
                 })
             }
-        }),
-        app.post('/api/order/partialPayment', function (request, response) {
-            if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
-                || checkUsersRole.isAdmin(request.session.roleId) || checkUsersRole.isWaiter(request.session.roleId)
-                || checkUsersRole.isChef(request.session.roleId)
-            ))
-            {
-                var data = request.body;
-                partialPayment(data.tableId,data.price,data.paymentType)
-                    .then(notification=> {
-                        response.end(notification);
-                    }).catch(error => {
-                    response.end(error.toString());
-                })
-            }
-            else {
-                response.write(checkUsersRole.errorMesage(), () => {
-                    response.statusCode = 404;
-                    response.end();
-                })
-            }
         })
+
 
 
 
