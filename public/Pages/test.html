@@ -386,3 +386,47 @@
     });
 
 </script>
+
+<script>
+
+
+    $(document).ready(function() {
+        $('div#bodyHere div#order').click(function (e) {
+
+            e.preventDefault();
+            var y = parseInt($(this).attr('value'));
+            var texty = $(this).attr('name');
+            case1(texty, y);
+        });
+
+        function case1(text, y) {
+            Swal({
+                title: 'Attention!',
+                text: "You are going to confirm that the order " + text + " with " + y + " id is ready  !",
+                type: 'information',
+                showCloseButton: true,
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Ready',
+            }).then((result) => {
+                console.log(y);
+                console.log(y);
+                $.ajax({
+                    type: 'GET',
+                    dataType: 'application/json',
+                    url: '/api/order/chefApprovesFoodReady' + y,
+                    timeout: 10000,
+                    statusCode: {
+                        200: function (x) {
+                            location.reload();
+                        },
+                        404: function (x) {
+                            alert(x.responseText);
+                        }
+                    },
+                })
+            })
+        }
+    });
+
+
+</script>>

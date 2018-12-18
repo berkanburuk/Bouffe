@@ -71,7 +71,8 @@ function createAFood(data){
                     type: data.type,
                     description: data.description,
                     available: data.available,
-                    price: data.price
+                    price: data.price,
+                    quantity:data.quantity
                 }
         }).then((food)=>{
             if (food[1] == false){

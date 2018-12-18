@@ -31,7 +31,7 @@ function createATable(data){
                     capacity: data.capacity,
                     status: data.status,
                     mergedWith: data.mergedWith,
-                    userUsername:data.username
+                    userUsername:data.userUsername
                 }
         }).then((food)=>{
             if (food[1] == false){
