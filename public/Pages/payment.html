@@ -39,6 +39,55 @@
 
     <script src=" https://cdnjs.cloudflare.com/ajax/libs/xls/0.7.4-a/xls.js"></script>
 
+    <!-- Bootstrap modal -->
+    <div class="modal fade" id="modal_form" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Payment</h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="col-form-label col-md-3">Total Price</label>
+                            <div class="col-md-11">
+                                <input name="totalPrice" id="totalPrice" disabled autocomplete="off"
+                                       class="form-control">
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-form-label col-md-3">Payment</label>
+                            <div class="col-md-11">
+                                <input name="payment" id="payment" autocomplete="off" type="number" min="0.0"
+                                       class="form-control">
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-form-label col-md-3">Payment Type</label>
+                            <div class="col-md-11">
+                                <select name="paymentType" id="paymentType" class="form-control">
+                                    <option value="0"> Cash
+                                    <option value="1" selected> Credit Card
+                                    <option value="3">Complimentary
+                                </select>
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <input type="submit" name="submit" value="Pay" class="btn btn-primary"/>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </form>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    <!-- End Bootstrap modal -->
 
     <script>
         var count = 15;
@@ -95,7 +144,7 @@
                             items += "<div id='" + "unclickable" + "' value='" + array[i].id + "'" + " name='" + txt + "' " + "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100' data-toggle=\"modal\" data-target=\"#modal_form\" ><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/c1.png' alt=\"\"><div class=\"centered\">Table: " + txt + "</div></p></p></div>";
                         }
                         else {
-                            items += "<div id='" + "clickable" + "' value='" + array[i].id + "'" + " name='" + txt + "' " + "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100' data-toggle=\"modal\" data-target=\"#modal_form\" ><img class='img-fluid img-thumbnail'  onclick='onClickChange(\" + array[i].id + \")'style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/c2.png' alt=\"\"><div class=\"centered\">Table: " + txt + "</div></p></p></div>";
+                            items += "<div id='" + "clickable" + "' value='" + array[i].id + "'" + " name='" + txt + "' " + "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100' data-toggle=\"modal\" data-target=\"#modal_form\" ><img class='img-fluid img-thumbnail'  onclick='onClickChange(" + array[i].id + ")'style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/c2.png' alt=\"\"><div class=\"centered\">Table: " + txt + "</div></p></p></div>";
                         }
                     }
                     else if (jQuery.inArray(array[i].id, mergedList) === -1 && array[i].mergedWith !== -1) {
@@ -129,7 +178,7 @@
                             items += "<div id='" + "unclickable" + "' value='" + array[i].id + "'" + " name='" + txt + "' " + "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100' data-toggle=\"modal\" data-target=\"#modal_form\" ><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/s1.png' alt=\"\"><div class=\"centered\">Table: " + txt + "</div></p></p></div>";
                         }
                         else {
-                            items += "<div id='" + "clickable" + "' value='" + array[i].id + "'" + " name='" + txt + "' " + "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100' data-toggle=\"modal\" data-target=\"#modal_form\" ><img class='img-fluid img-thumbnail'  onclick='onClickChange(\" + array[i].id + \")'style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/s2.png' alt=\"\"><div class=\"centered\">Table: " + txt + "</div></p></p></div>";
+                            items += "<div id='" + "clickable" + "' value='" + array[i].id + "'" + " name='" + txt + "' " + "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100' data-toggle=\"modal\" data-target=\"#modal_form\" ><img class='img-fluid img-thumbnail'  onclick='onClickChange(" + array[i].id + ")'style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/s2.png' alt=\"\"><div class=\"centered\">Table: " + txt + "</div></p></p></div>";
                         }
 
 
@@ -159,8 +208,9 @@
 
         function onClickChange(id) {
             globalClickedId = id;
+            console.log(id);
             $.ajax({
-                url: '/api/payment/getAllPaymentByTableId/'+id,
+                url: '/api/payment/getRemaningPayment/' + id,
                 dataType: 'application/json',
                 type: 'GET',
                 timeout: 5000,
@@ -168,7 +218,7 @@
                     200: function (x) {
                         $('#modal_form').modal('hide');
                         console.log(JSON.parse(x.responseText));
-                        //location.reload();
+                        $('#totalPrice').val(JSON.parse(x.responseText).totalPrice)
                     },
                     404: function (x) {
                         alert(x.responseText);
@@ -176,6 +226,8 @@
                 }
             });
         }
+
+
     </script>
 
     <style>
@@ -191,27 +243,6 @@
 
 <body>
 
-<!-- Bootstrap modal -->
-<div class="modal fade" id="modal_form" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">Payment</h3>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-
-                <div class="modal-footer">
-                    <input type="submit" name="submit" value="Order" class="btn btn-primary"/>
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-                </div>
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-<!-- End Bootstrap modal -->
 
 <!-- Navigation -->
 
@@ -233,7 +264,34 @@
 <!-- Bootstrap core JavaScript -->
 <script src="../TableFiles/vendor/jquery/jquery.min.js"></script>
 <script src="../TableFiles/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
+<script>
+    $('#modal_form').on('submit', function (e) {
+        e.preventDefault();
+        var data2 = {
+            tableId: globalClickedId,
+            price: $('#payment').val(),
+            paymentType: $('#paymentType').val(),
+        };
+        console.log(data2);
+        $.ajax({
+            url: '/api/payment/partialPayment',
+            dataType: 'application/json',
+            data: data2,
+            type: 'POST',
+            timeout: 5000,
+            statusCode: {
+                200: function (x) {
+                    $('#modal_form').modal('hide');
+                    alert(x.responseText);
+                    location.reload();
+                },
+                404: function (x) {
+                    alert(x.responseText);
+                }
+            }
+        });
+    });
+</script>
 
 </body>
 
