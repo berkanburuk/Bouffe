@@ -35,9 +35,9 @@ app.use(session(sessionOptions));
 //Starting Page of The Web Application
 app.get('/', function (request, response)  {
     if (request.session.roleId == undefined){
-        response.sendFile(path.resolve('public/Pages/Login.html'));
+        response.sendFile(path.resolve('public/Pages/login.html'));
     }else{
-        response.sendFile(path.resolve('public/Pages/Navigation.html'));
+        response.sendFile(path.resolve('public/Pages/navigation.html'));
     }
 });
 

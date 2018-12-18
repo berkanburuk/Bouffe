@@ -210,11 +210,11 @@ function getAllReservation(){
                 // ...
             });
         */
-        app.get('/reservation', function (request, response) {
+        app.get('/reservationManagement', function (request, response) {
             console.log('Reservation Controller');
                 if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
                     ||  checkUsersRole.isCashier(request.session.roleId))) {
-                    response.sendFile(path.resolve('public/Pages/MakeReservation.html'));
+                    response.sendFile(path.resolve('public/Pages/makeReservation.html'));
                 }	else {
                     response.statusCode = 401;
                     return response.redirect('/noAuthority');

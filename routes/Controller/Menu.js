@@ -369,12 +369,11 @@ function getAllMenu(){
 }
 module.exports = function (app) {
 
-    app.get('/menu', function (request, response) {
+    app.get('/menuManagement', function (request, response) {
         if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)
-            ||  checkUsersRole.isChef(request.session.roleId)
-            ||  checkUsersRole.isChef(request.session.roleId))) {
+            ||  checkUsersRole.isMatre(request.session.roleId))) {
             console.log('Menu');
-            response.sendFile(path.resolve('public/Pages/Menu.html'));
+            response.sendFile(path.resolve('public/Pages/menu.html'));
         }else {
             response.write(checkUsersRole.errorMesage(), () => {
                 response.statusCode = 404;
