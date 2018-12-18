@@ -56,12 +56,26 @@
                             <div class="col-md-11">
                                 <select name="appetizer" id="appetizer" class="form-control">
                                 </select>
+                                <select name="quantity" id="aquantity" class="form-control">
+                                    <option value="1" selected>1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                </select>
                                 <span class="help-block"></span>
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="col-md-11">
                                 <select name="mainCourse" id="mainCourse" class="form-control">
+                                </select>
+                                <select name="quantity" id="mquantity" class="form-control">
+                                    <option value="1" selected>1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
                                 </select>
                                 <span class="help-block"></span>
                             </div>
@@ -70,12 +84,27 @@
                             <div class="col-md-11">
                                 <select name="dessert" id="dessert" class="form-control">
                                 </select>
+                                <select name="quantity" id="dquantity" class="form-control">
+                                    <option value="1" selected>1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                </select>
                                 <span class="help-block"></span>
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="col-md-11">
                                 <select name="beverage" id="beverage" class="form-control">
+                                </select>
+
+                                <select name="quantity" id="bquantity" class="form-control">
+                                    <option value="1" selected>1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
                                 </select>
                                 <span class="help-block"></span>
                             </div>
@@ -282,14 +311,8 @@
             }
         });
 
-        $('#modal_form').on('submit', function (e) {
-            e.preventDefault();
+        function sendOrder() {
             var data2;
-            console.log($('#beverage').val());
-            console.log($('#appetizer').val());
-            console.log($('#mainCourse').val());
-            console.log($('#dessert').val());
-
             if ($('#beverage').val() === '0') {
                 if ($('#appetizer').val() !== '0' && $('#mainCourse').val() != '0' && $('#dessert').val() != '0') {
                     data2 = {
@@ -319,7 +342,8 @@
                         200: function (x) {
                             $('#modal_form').modal('hide');
                             alert(x.responseText);
-                            location.reload();
+                            compareQuantity();
+                          //  location.reload();
                         },
                         404: function (x) {
                             alert(x.responseText);
@@ -357,7 +381,8 @@
                         200: function (x) {
                             $('#modal_form').modal('hide');
                             alert(x.responseText);
-                            location.reload();
+                            compareQuantity();
+                           // location.reload();
                         },
                         404: function (x) {
                             alert(x.responseText);
@@ -365,6 +390,11 @@
                     }
                 });
             }
+        }
+
+        $('#modal_form').on('submit', function (e) {
+            e.preventDefault();
+            sendOrder();
         });
 
         var globalClickedTableId;
@@ -374,24 +404,87 @@
             globalClickedTableId = id;
         }
 
-        setInterval(function () {
-            $.ajax({
-                url: '/api/order/getChefNotification',
-                dataType: 'application/json',
-                type: 'GET',
-                timeout: 5000,
-                statusCode: {
-                    200: function (x) {
-                        if(x.responseText)
-                        console.log(x.responseText);
-                       // location.reload();
-                    },
-                    404: function (x) {
-                        console.log(x.responseText);
-                    }
-                }
-            });
-        }, 1000);
+        function compareQuantity() {
+            console.log(aquan);
+            console.log(mquan);
+            console.log(dquan);
+            console.log(bquan);
+        }
+
+        $('#aquantity').hide().on('change', function (e) {
+            var optionSelected = $("option:selected", this);
+            aquan= this.value;
+        });
+        $('#mquantity').hide().on('change', function (e) {
+            var optionSelected = $("option:selected", this);
+            mquan= this.value;
+        });
+        $('#dquantity').hide().on('change', function (e) {
+            var optionSelected = $("option:selected", this);
+            dquan= this.value;
+        });
+        $('#bquantity').hide().on('change', function (e) {
+            var optionSelected = $("option:selected", this);
+            bquan= this.value;
+        });
+
+
+        var aquan, mquan, dquan, bquan;
+        $('#appetizer').on('change', function (e) {
+            var optionSelected = $("option:selected", this);
+            var valueSelected = this.value;
+            if (valueSelected !== "0") {
+                $('#aquantity').show();
+            } else {
+                $('#aquantity').hide();
+            }
+        });
+        $('#mainCourse').on('change', function () {
+            var optionSelected = $("option:selected", this);
+            var valueSelected = this.value;
+            if (valueSelected !== "0") {
+                $('#mquantity').show();
+            } else {
+                $('#mquantity').hide();
+            }
+        });
+        $('#dessert').on('change', function () {
+            var optionSelected = $("option:selected", this);
+            var valueSelected = this.value;
+            if (valueSelected !== "0") {
+                $('#dquantity').show();
+            } else {
+                $('#dquantity').hide();
+            }
+        });
+        $('#beverage').on('change', function () {
+            var optionSelected = $("option:selected", this);
+            var valueSelected = this.value;
+            if (valueSelected !== "0") {
+                $('#bquantity').show();
+            } else {
+                $('#bquantity').hide();
+            }
+        });
+
+        /*  setInterval(function () {
+              $.ajax({
+                  url: '/api/order/getChefNotification',
+                  dataType: 'application/json',
+                  type: 'GET',
+                  timeout: 5000,
+                  statusCode: {
+                      200: function (x) {
+                          if(x.responseText)
+                          console.log(x.responseText);
+                         // location.reload();
+                      },
+                      404: function (x) {
+                          console.log(x.responseText);
+                      }
+                  }
+              });
+          }, 1000);*/
     </script>
 
     <style>
@@ -401,6 +494,8 @@
             left: 50%;
             transform: translate(-50%, -50%);
         }
+
+        no
 
     </style>
 </head>
