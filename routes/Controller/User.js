@@ -79,11 +79,11 @@ module.exports = function(app) {
                     return response.redirect('/noAuthority');
                 }
         }),
-        app.get('/cashier', function (request, response) {
+        app.get('/payment', function (request, response) {
             console.log('Navigation');
             if (request.session != undefined  && (checkUsersRole.isCashier(request.session.roleId)))
             {
-                response.sendFile(path.resolve('public/Pages/navigation.html'));
+                response.sendFile(path.resolve('public/Pages/payment.html'));
             }else {
                 response.statusCode = 401;
                 return response.redirect('/noAuthority');
