@@ -1,5 +1,4 @@
 let path = require('path');
-const bcrypt = require('bcrypt');
 
 let sequelize = require('../Util/DatabaseConnection').getSequelize;
 let tableNames = require('../Util/DatabaseConnection').getTableNames;
@@ -10,20 +9,15 @@ let checkDataType = require('../Util/TypeCheck');
 
 /*
 let transaction;
-
 try {
     // get transaction
     transaction = await sequelize.transaction();
-
     // step 1
     await Model.destroy({where: {id}, transaction});
-
     // step 2
     await Model.create({}, {transaction});
-
     // commit
     await transaction.commit();
-
 } catch (err) {
     // Rollback transaction if any errors were encountered
     await transaction.rollback();
@@ -53,7 +47,7 @@ module.exports = function(app) {
     */
     app.get('/user', function (request, response) {
         console.log('User Controller');
-        response.sendFile(path.resolve('public/Pages/login.html'));
+        response.sendFile(path.resolve('public/Pages/Login.html'));
     }),
         app.get('/userManagement', function (request, response) {
             console.log('UploadSRSFile');
@@ -87,19 +81,19 @@ module.exports = function(app) {
                 ||  checkUsersRole.isBartender(request.session.roleId)
                 ||  checkUsersRole.isChef(request.session.roleId)))
             {
-                    response.sendFile(path.resolve('public/Pages/navigation.html'));
-                }else {
-                    response.statusCode = 401;
-                    return response.redirect('/noAuthority');
-                }
+                response.sendFile(path.resolve('public/Pages/navigation.html'));
+            }else {
+                response.statusCode = 401;
+                return response.redirect('/noAuthority');
+            }
         }),
 
         app.get('/pdfGenerator', function (request, response) {
             console.log('PdfGenerator');
             if (request.session != undefined  &&
                 (checkUsersRole.isMatre(request.session.roleId)
-                ||  checkUsersRole.isAdmin(request.session.roleId)
-                ||  checkUsersRole.isCashier(request.session.roleId)))
+                    ||  checkUsersRole.isAdmin(request.session.roleId)
+                    ||  checkUsersRole.isCashier(request.session.roleId)))
             {
                 response.sendFile(path.resolve('public/Pages/pdfGenerator.html'));
             }else {
@@ -151,47 +145,47 @@ module.exports = function(app) {
         //checkUser
         app.get('/api/user/login/:username/:password', function (request, response) {
 
-                    console.log(request.params);
-                    var data = {}
-                    data.username = request.params.username;
-                    data.password = request.params.password;
+            console.log(request.params);
+            var data = {}
+            data.username = request.params.username;
+            data.password = request.params.password;
 
-                    console.log(request.body);
-                    checkValidationOfUser(data.username,data.username).then(user => {
-                        console.log(data);
+            //var data = request.body;
+            console.log(request.body);
+            checkValidationOfUser(data.username, data.password).then(user => {
+                console.log(data);
 
-                        getAUserRole(data.username).then(role => {
-                            response.statusCode = 200;
-                            var myRole = JSON.parse(role);
-                            request.session.username = data.username;
-                            request.session.roleId = myRole[0].roleId;
+                getAUserRole(data.username).then(role => {
+                    response.statusCode = 200;
+                    var myRole = JSON.parse(role);
+                    request.session.username = data.username;
+                    request.session.roleId = myRole[0].roleId;
 
-                            console.log("Session: " + request.session.username + request.session.roleId);
+                    console.log("Session: " + request.session.username + request.session.roleId);
 
-                            return response.redirect('/navigation');
+                    return response.redirect('/navigation');
 
 
-                        }).catch(error => {
-                            response.statusCode = 404;
-                            console.log(error);
-                            response.write("This user does not have an roleId", () => {
-                                response.end();
-                            });
-                        })
-                    }).catch(error => {
-                        response.statusCode = 404;
-                        console.log(error);
-                        response.write(error.toString(), () => {
-                            response.end();
-                        });
-                    })
+                }).catch(error => {
+                    response.statusCode = 404;
+                    console.log(error);
+                    response.write("This user does not have an roleId", () => {
+                        response.end();
+                    });
+                })
+            }).catch(error => {
+                response.statusCode = 404;
+                console.log(error);
+                response.write(error.toString(), () => {
+                    response.end();
+                });
+            })
         }),
 
         app.post('/api/user/addUser', function (request, response) {
             console.log("Create A User");
             var data = request.body;
             console.log(data);
-
             if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
                 ||  checkUsersRole.isAdmin(request.session.roleId))){
                 data.roleId = parseInt(data.roleId, 10);
@@ -289,7 +283,7 @@ module.exports = function(app) {
     }),
 
         app.get('/api/user/getRoleWithId/:id', function (request, response) {
-                console.log("getRoleWithId");
+            console.log("getRoleWithId");
             if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
                 ||  checkUsersRole.isAdmin(request.session.roleId))){
                 var id = request.params.id;
@@ -406,9 +400,6 @@ module.exports = function(app) {
   })
       next();
 })
-
-
-
 */
 
 
@@ -443,12 +434,6 @@ function createUserTransaction(data) {
 function createAUser(data){
 
     return new Promise((resolve, reject) => {
-        var salt = bcrypt.genSaltSync(10);
-        var hash = bcrypt.hashSync(data.username, salt);
-
-
-
-
         mUser.findOrCreate({
             where:
                 {
@@ -456,14 +441,12 @@ function createAUser(data){
                 },
             defaults:
                 {
-                    password: hash,
+                    password: data.password,
                     firstName: data.firstName,
                     lastName: data.lastName,
                     bilkentId: data.bilkentId
                 }
         }).then((user)=>{
-
-
             console.log("User" + user[1]);
             if (user[1] == false){
                 reject('This user is already added!');
@@ -486,7 +469,6 @@ function createAUser(data){
         /*.spread((user, created)=> {
             console.log("CRRRR : " + created);
             console.log(user.get({plain: true}));
-
         })*/
             .catch(error =>{
                 reject("User cannot be created!" + error);
@@ -499,12 +481,12 @@ function createAUser(data){
 function updateAUser(data){
     return new Promise((resolve, reject) => {
         mUser.update(
-                {
-                    password: data.password,
-                    firstName: data.firstName,
-                    lastName: data.lastName,
-                    bilkentId: data.bilkentId
-                }
+            {
+                password: data.password,
+                firstName: data.firstName,
+                lastName: data.lastName,
+                bilkentId: data.bilkentId
+            }
             ,{
                 where:
                     {
@@ -531,11 +513,11 @@ function updateAUser(data){
                 .catch(error =>{
                     reject(error);
                 })
-            })
+        })
             .catch(error =>{
                 reject(error);
             })
-        })
+    })
 
 }
 
@@ -585,7 +567,6 @@ function getAUserRole(data){
         }).catch(error => {
             reject(error);
         })
-
     })
 }
 */
@@ -619,52 +600,27 @@ function checkValidationOfUser(username, password){
             if (user == null || user ==undefined){
                 reject("There is no user with this username " + username);
             }
-
-                mUser.findOne({
-                    where: {
-                        username: username,
-                    }
-                }).then(user => {
-
-                    bcrypt.compareSync(password, user.password); // true
-                    bcrypt.compare(password, user.password, function(err, result) {
-                        console.log(result);
-                        if (result){
-
-                            resolve(user);
-                        }
-                        if (err) { throw (err); }
-
-                    });
-
-                }).catch(error=>{
-                    reject(error);
-                })
-            /*
-                mUser.findOne({
-                    where: {
-                        username: username,
-                        password: password
-                    }
-                }).then(user => {
-                    console.log("User" + user);
-                    if (user != null && user != undefined) {
-                        user = JSON.stringify(user);
-                        //console.log(user);
-                        resolve(user);
-                    } else {
-                        reject("Username or Password is wrong!");
-                    }
-                }).catch(error => {
-                    reject(error);
-                })
-                */
+            mUser.findOne({
+                where:{
+                    username: username,
+                    password : password
+                }
+            }).then(user=>{
+                if (user != null && user != undefined ){
+                    user = JSON.stringify(user);
+                    //console.log(user);
+                    resolve(user);
+                }else{
+                    reject("Username or Password is wrong!");
+                }
+            }).catch(error => {
+                reject(error);
             })
         }).catch(error=>{
             reject(error);
         })
 
-
+    });
 }
 
 
@@ -674,14 +630,14 @@ function getRoleWithId(id){
             where: {
                 roleId: id,
             }
-            })
-        .then(result=>{
-            if (result[0]!=null && result[0]!=undefined){
-                resolve(JSON.stringify(result));
-            } else{
-                reject("Could not get the role with id:" +id);
-            }
-        }).catch(error => {
+        })
+            .then(result=>{
+                if (result[0]!=null && result[0]!=undefined){
+                    resolve(JSON.stringify(result));
+                } else{
+                    reject("Could not get the role with id:" +id);
+                }
+            }).catch(error => {
             reject("Cannot get all Users");
         })
     });
@@ -821,11 +777,8 @@ function manyToMany() {
                   type: "Father"
                 }
               }
-
         })
 }
-
-
 User.findAll({
     include: [{
         model: Project,
@@ -835,5 +788,4 @@ User.findAll({
         }
     }]
 });
-
 */
