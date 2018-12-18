@@ -56,47 +56,45 @@ module.exports = function(app) {
     }),
         app.get('/uploadSRSFile', function (request, response) {
             console.log('UploadSRSFile');
-            if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
-                ||  checkUsersRole.isAdmin(request.session.roleId))){
+            if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId))){
                 response.sendFile(path.resolve('public/Pages/uploadSRSFile.html'));
             }else {
                 response.statusCode = 401;
                 return response.redirect('/noAuthority');
             }
         }),
-        app.get('/signup', function (request, response) {
-            console.log('Signup Controller');
-            if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
-                    ||  checkUsersRole.isAdmin(request.session.roleId))) {
-                    response.sendFile(path.resolve('public/Pages/AddUserManually.html'));
-                }else {
-                response.statusCode = 401;
-                return response.redirect('/noAuthority');
-            }
 
-            //response.render(path.resolve('../../public/Pages/index.html'));
-        }),
         app.get('/navigation', function (request, response) {
             console.log('Navigation');
-            if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
+            if (request.session != undefined  && (
+                checkUsersRole.isMatre(request.session.roleId)
                 ||  checkUsersRole.isAdmin(request.session.roleId)
                 ||  checkUsersRole.isWaiter(request.session.roleId)
                 ||  checkUsersRole.isBartender(request.session.roleId)
                 ||  checkUsersRole.isChef(request.session.roleId)))
             {
-                    response.sendFile(path.resolve('public/Pages/Navigation.html'));
+                    response.sendFile(path.resolve('public/Pages/navigation.html'));
                 }else {
                     response.statusCode = 401;
                     return response.redirect('/noAuthority');
                 }
         }),
+        app.get('/payment', function (request, response) {
+            console.log('Navigation');
+            if (request.session != undefined  && (checkUsersRole.isCashier(request.session.roleId)))
+            {
+                response.sendFile(path.resolve('public/Pages/payment.html'));
+            }else {
+                response.statusCode = 401;
+                return response.redirect('/noAuthority');
+            }
+        }),
         app.get('/pdfGenerator', function (request, response) {
             console.log('PdfGenerator');
-            if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
+            if (request.session != undefined  &&
+                (checkUsersRole.isMatre(request.session.roleId)
                 ||  checkUsersRole.isAdmin(request.session.roleId)
-                ||  checkUsersRole.isWaiter(request.session.roleId)
-                ||  checkUsersRole.isBartender(request.session.roleId)
-                ||  checkUsersRole.isChef(request.session.roleId)))
+                ||  checkUsersRole.isCashier(request.session.roleId)))
             {
                 response.sendFile(path.resolve('public/Pages/pdfGenerator.html'));
             }else {
@@ -107,12 +105,12 @@ module.exports = function(app) {
         app.get('/api/user/deleteUser/:username', function (request, response ) {
 
             console.log("Delete USER");
-            if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
-                ||  checkUsersRole.isAdmin(request.session.roleId))){
+            if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId))){
 
                 var username = request.params.username;
 
-                deleteUser(username).then(user => {
+                deleteUser(request.session.username,username).then(user => {
+
                     response.statusCode = 200;
                     console.log(user);
                     response.write("Successful", () => {
@@ -692,8 +690,11 @@ function getAllUsers(){
     });
 }
 
-function deleteUser(username){
+function deleteUser(userWhoMadeRequest,username){
     return new Promise((resolve,reject)=>{
+        if (userWhoMadeRequest == username){
+            reject("User cannot delete him/herself");
+        }
         mUser.destroy({
             where: {
                 'username': username
