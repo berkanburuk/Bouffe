@@ -430,11 +430,11 @@ function deleteTable(id){
 
 module.exports = function(app){
 
-    app.get('/table', function (request, response) {
+    app.get('/tableLayoutManagement', function (request, response) {
         console.log('Table');
             if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
                 ||  checkUsersRole.isCashier(request.session.roleId)) || checkUsersRole.isAdmin(request.session.roleId)) {
-                response.sendFile(path.resolve('public/Pages/TableManagement.html'));
+                response.sendFile(path.resolve('public/Pages/tableManagement.html'));
             }
             else {
                 response.statusCode = 401;
@@ -443,7 +443,7 @@ module.exports = function(app){
 
         //res.end();
     }),
-        app.get('/tableCreation', function (request, response) {
+        app.get('/tableManagement', function (request, response) {
             console.log('tableCreation');
             if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
                 ||  checkUsersRole.isCashier(request.session.roleId)) || checkUsersRole.isAdmin(request.session.roleId)) {
