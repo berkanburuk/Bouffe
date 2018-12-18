@@ -458,12 +458,16 @@ exports.getWaiterFoodApproved = function (orderId) {
 
 //chef onaylıyor (2) Yemek hazır. Garson
 chefApprovesFoodReady = function (orderId) {
+    console.log('chefApprovesFoodReady ');
     return new Promise((resolve, reject) => {
-        mOrder.update({
+        mOrder.update(
+            {
+                isFoodReady: 2
+            },
+            {
             where:
                 {
                     id: orderId,
-                    isFoodReady: 2
                 }
         }).then((order)=>{
             console.log(order);
@@ -818,7 +822,7 @@ module.exports = function (app) {
             if (request.session != undefined  && (checkUsersRole.isChef(request.session.roleId)))
             {
                 //request.session.username
-                chefApprovesFoodReady(data.params.orderId)
+                chefApprovesFoodReady(request.params.orderId)
                     .then(notification=> {
                         response.end(notification);
                     }).catch(error => {
