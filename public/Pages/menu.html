@@ -327,7 +327,7 @@
     function updateMenuInfo(name, cuisine, price, stat) {
         $('#uname').val(name);
         $('#ucuisine').val(cuisine);
-        $('#uprice').val(price);
+        $('#usetPrice').val(price);
         $('#uisActive').val(stat);
         globalMenuInfoName = name;
     }
@@ -401,8 +401,8 @@
             statusCode: {
                 200: function (x) {
                     $('#modal_form').modal('hide');
-                    alert(x.responseText);
-                  //  location.reload();
+                    //alert(x.responseText);
+                    location.reload();
                 },
                 404: function (x) {
                     alert(x.responseText);
