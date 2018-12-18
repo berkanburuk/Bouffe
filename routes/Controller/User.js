@@ -106,6 +106,17 @@ module.exports = function(app) {
                 return response.redirect('/noAuthority');
             }
         }),
+        app.get('/bartenderManagement', function (request, response) {
+            console.log('BartenderManagement');
+            if (request.session != undefined  &&
+                (checkUsersRole.isBartender(request.session.roleId)))
+            {
+                response.sendFile(path.resolve('public/Pages/bartender.html'));
+            }else {
+                response.statusCode = 401;
+                return response.redirect('/noAuthority');
+            }
+        }),
         app.get('/api/user/deleteUser/:username', function (request, response ) {
 
             console.log("Delete USER");
