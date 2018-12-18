@@ -87,14 +87,14 @@ function createMenuAndAssignFood(data){
 
 function updateAMenu(data){
     return new Promise((resolve, reject) => {
-        mFood.findOne(
+        mMenu.findOne(
             {
             where:{
                 isActive:true
             }
-        }).then(mFood=>{
+        }).then(mMenuss=>{
 
-            if (mFood.isActive==true){
+            if (mMenuss.isActive==true){
                 reject("There is already one active menu!");
                 return;
             }
