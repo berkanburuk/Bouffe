@@ -311,7 +311,8 @@
             }
         });
 
-        function sendOrder() {
+        $('#modal_form').on('submit', function (e) {
+            e.preventDefault();
             var data2;
             if ($('#beverage').val() === '0') {
                 if ($('#appetizer').val() !== '0' && $('#mainCourse').val() != '0' && $('#dessert').val() != '0') {
@@ -319,6 +320,7 @@
                         mainCourse: $('#mainCourse').val(),
                         appetizer: $('#appetizer').val(),
                         dessert: $('#dessert').val(),
+                        quantity: 1,
                         isSetMenu: true,
                         tableId: globalClickedTableId,
                     };
@@ -327,6 +329,7 @@
                         mainCourse: $('#mainCourse').val(),
                         appetizer: $('#appetizer').val(),
                         dessert: $('#dessert').val(),
+                        quantity: 1,
                         isSetMenu: false,
                         tableId: globalClickedTableId,
                     };
@@ -343,7 +346,7 @@
                             $('#modal_form').modal('hide');
                             alert(x.responseText);
                             compareQuantity();
-                          //  location.reload();
+                            //  location.reload();
                         },
                         404: function (x) {
                             alert(x.responseText);
@@ -357,6 +360,7 @@
                         mainCourse: $('#mainCourse').val(),
                         appetizer: $('#appetizer').val(),
                         dessert: $('#dessert').val(),
+                        quantity: 1,
                         isSetMenu: true,
                         tableId: globalClickedTableId,
                     };
@@ -366,6 +370,7 @@
                         mainCourse: $('#mainCourse').val(),
                         appetizer: $('#appetizer').val(),
                         dessert: $('#dessert').val(),
+                        quantity: 1,
                         isSetMenu: false,
                         tableId: globalClickedTableId,
                     };
@@ -381,21 +386,14 @@
                         200: function (x) {
                             $('#modal_form').modal('hide');
                             alert(x.responseText);
-                            compareQuantity();
-                           // location.reload();
+                            // location.reload();
                         },
                         404: function (x) {
                             alert(x.responseText);
                         }
                     }
                 });
-            }
-        }
-
-        $('#modal_form').on('submit', function (e) {
-            e.preventDefault();
-            sendOrder();
-        });
+            }        });
 
         var globalClickedTableId;
 
@@ -404,37 +402,34 @@
             globalClickedTableId = id;
         }
 
-        function compareQuantity() {
-            console.log(aquan);
-            console.log(mquan);
-            console.log(dquan);
-            console.log(bquan);
-        }
+
 
         $('#aquantity').hide().on('change', function (e) {
             var optionSelected = $("option:selected", this);
-            aquan= this.value;
+            aquan = this.value;
         });
         $('#mquantity').hide().on('change', function (e) {
             var optionSelected = $("option:selected", this);
-            mquan= this.value;
+            mquan = this.value;
         });
         $('#dquantity').hide().on('change', function (e) {
             var optionSelected = $("option:selected", this);
-            dquan= this.value;
+            dquan = this.value;
         });
         $('#bquantity').hide().on('change', function (e) {
             var optionSelected = $("option:selected", this);
-            bquan= this.value;
+            bquan = this.value;
         });
 
 
-        var aquan, mquan, dquan, bquan;
+        var aquan = 0, mquan = 0, dquan = 0, bquan = 0;
         $('#appetizer').on('change', function (e) {
             var optionSelected = $("option:selected", this);
             var valueSelected = this.value;
             if (valueSelected !== "0") {
                 $('#aquantity').show();
+                aquan = 1;
+
             } else {
                 $('#aquantity').hide();
             }
@@ -444,6 +439,7 @@
             var valueSelected = this.value;
             if (valueSelected !== "0") {
                 $('#mquantity').show();
+                mquan = 1;
             } else {
                 $('#mquantity').hide();
             }
@@ -453,6 +449,7 @@
             var valueSelected = this.value;
             if (valueSelected !== "0") {
                 $('#dquantity').show();
+                dquan = 1;
             } else {
                 $('#dquantity').hide();
             }
@@ -462,6 +459,7 @@
             var valueSelected = this.value;
             if (valueSelected !== "0") {
                 $('#bquantity').show();
+                bquan = 1;
             } else {
                 $('#bquantity').hide();
             }
