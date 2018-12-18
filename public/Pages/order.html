@@ -345,7 +345,6 @@
                         200: function (x) {
                             $('#modal_form').modal('hide');
                             alert(x.responseText);
-                            compareQuantity();
                             //  location.reload();
                         },
                         404: function (x) {
@@ -360,7 +359,7 @@
                         mainCourse: $('#mainCourse').val(),
                         appetizer: $('#appetizer').val(),
                         dessert: $('#dessert').val(),
-                        quantity: 1,
+                        quantity: bquan,
                         isSetMenu: true,
                         tableId: globalClickedTableId,
                     };
@@ -370,7 +369,7 @@
                         mainCourse: $('#mainCourse').val(),
                         appetizer: $('#appetizer').val(),
                         dessert: $('#dessert').val(),
-                        quantity: 1,
+                        quantity: bquan,
                         isSetMenu: false,
                         tableId: globalClickedTableId,
                     };
@@ -386,7 +385,7 @@
                         200: function (x) {
                             $('#modal_form').modal('hide');
                             alert(x.responseText);
-                            // location.reload();
+                             location.reload();
                         },
                         404: function (x) {
                             alert(x.responseText);
@@ -422,7 +421,8 @@
         });
 
 
-        var aquan = 0, mquan = 0, dquan = 0, bquan = 0;
+        var bquan=0;
+   /*     var aquan = 0, mquan = 0, dquan = 0, bquan = 0; //For quantity purposes
         $('#appetizer').on('change', function (e) {
             var optionSelected = $("option:selected", this);
             var valueSelected = this.value;
@@ -453,7 +453,7 @@
             } else {
                 $('#dquantity').hide();
             }
-        });
+        });*/ //For quantity purposer
         $('#beverage').on('change', function () {
             var optionSelected = $("option:selected", this);
             var valueSelected = this.value;
