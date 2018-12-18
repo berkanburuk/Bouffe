@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chef</title>
+    <link href="../TableFiles/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <script src="../TableFiles/vendor/jquery/jquery.min.js"></script>
+    <link href="../TableFiles/css/thumbnail-gallery.css" rel="stylesheet">
+    <style>
+        .centered {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+    </style>
+</head>
+<body>
+
+<!-- Navigation -->
+
+
+<!-- Page Content -->
+<div class="container">
+
+    <h1 class="my-4 text-center text-lg-center">Chef Order Management</h1>
+
+    <div id="bodyHere" class="row text-center text-lg-left">
+
+    </div>
+
+</div>
+<!-- /.container -->
+
+<!-- Footer -->
+
+<!-- Bootstrap core JavaScript -->
+<script src="../TableFiles/vendor/jquery/jquery.min.js"></script>
+<script src="../TableFiles/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+<script>
+    var count = 15;
+    var custom_list;
+    $(document).ready(function() {
+
+        var ans = $.ajax({
+            //1
+            url: '/api/order/getChefNotificationForBartender',
+            type: "GET",
+
+            statusCode: {
+                404: function () {
+                    console.log("-1-1-1-1 WE GOT 404!");
+                },
+                200: function (responseBody) {
+                    var dat = JSON.parse(responseBody);
+                    console.log(dat);
+
+                    //role=x.length;
+                    //console.log(role);
+                    //custom_list = getMenu();
+                    //$('#tables').html(custom_list);
+                    custom_list = getMenu(dat);
+                    $('#bodyHere').html(custom_list);
+
+                }
+            }
+        });
+    });
+    function getMenu(dat) {
+
+        var tableTop = "</table>";
+        var tableData="";
+        var tableEnd="</table>";
+
+        var length = -1;
+        if (dat === undefined || dat.length === undefined) {
+            length = dat.length;
+            console.log("CIKTIM");
+            return tableData;
+        }
+        var x="<script src='https://cdn.jsdelivr.net/npm/sweetalert2@7.32.2/dist/sweetalert2.all.min.js'>";
+        x+="<";
+        x+="/script>\n";
+        x+="<script";
+        x+=">\n"
+        x+="\$(document).ready(function(){\n";
+
+        //x+="var mylist = $('#main');";
+        //x+="var listitems = mylist.children('div').get();";
+        //listitems.sort(function(a, b) {
+        //    var compA = $(a).attr('id').toUpperCase();
+        //    var compB = $(b).attr('id').toUpperCase();
+        //    return (compA < compB) ? -1 : (compA > compB) ? 1 : 0;
+        //})
+        //$.each(listitems, function(idx, itm) {
+        //    mylist.append(itm);
+        //});​
+
+
+        x+="\$('div#bodyHere div#order').click( function(e) {\n";
+        //x+="\$(location).attr('href', \$(this).attr('value'));";
+        x+="\n";
+        x+="e.preventDefault();\n";
+        x+="var y = parseInt($(this).attr('value'));\n";
+        x+="var texty=$(this).attr('name');\n";
+        x+="case1(texty,y);";
+        x+="});\n";
+        x+="function case1(text,y) {\n";
+        x+="Swal({\n";
+        x+="title: 'Attention!',\n";
+        x+="text: \"You are going to confirm that the order \"+text+\" with \" + y + \" id is ready  !\",";
+        x+="type: 'information',\n";
+        x+="showCloseButton: true,\n";
+        x+="confirmButtonColor: '#3085d6',\n";
+        x+="confirmButtonText: 'Ready',\n";
+        x+=" }).then((result) => {\n";
+        x+="console.log(y);\n";
+        x+="console.log(y);\n";
+        x+="$.ajax({\n";
+        x+="type: 'GET',\n";
+        x+="dataType: 'application/json',\n";
+        //2
+        x+="url: '/api/order/bartenderApprovesBeverageReady/'+y,\n";
+        x+="timeout: 10000,\n";
+        x+="statusCode: {\n";
+        x+="200: function (x) {\n";
+        x+="location.reload();\n";
+        x+="},\n";
+        x+="404: function (x) {\n";
+        x+="alert(x.responseText);\n";
+        x+="}\n";
+        x+="},\n";
+        x+="})\n";
+        x+="})\n";
+        x+="}\n";
+        x+="});\n";
+        /*
+
+        */
+        x+="<";
+        x+="/script>\n";
+        for(var i=0; i<dat.length; i++)
+        {
+            //3
+            tableData += "<div id='" + "order" + "' value='" + dat[i].orderId + "'" +" name='"+dat[i].foodName+"' "+ "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/s2.png' alt=\"\"><div class=\"centered\">"+dat[i].orderId+" is refers Food: "+dat[i].foodName+"</div></p></p></div>";
+
+        }
+        return x+tableData;
+
+
+    }
+</script>
