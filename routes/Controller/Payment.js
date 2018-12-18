@@ -73,7 +73,8 @@ function partialPayment(tableId,price,paymentType ) {
 
                     mOrder.update(
                         {
-                            orderOpen: false
+                            orderOpen: false,
+                            isPaid:true
                         },
                         {
                             include: [
