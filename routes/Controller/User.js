@@ -63,6 +63,19 @@ module.exports = function(app) {
                 return response.redirect('/noAuthority');
             }
         }),
+        app.get('/user', function (request, response) {
+            console.log('User Controller');
+            response.sendFile(path.resolve('public/Pages/Login.html'));
+        }),
+        app.get('/chefManagement', function (request, response) {
+            console.log('chef');
+            if (request.session != undefined  && (checkUsersRole.isChef(request.session.roleId))){
+                response.sendFile(path.resolve('public/Pages/chef.html'));
+            }else {
+                response.statusCode = 401;
+                return response.redirect('/noAuthority');
+            }
+        }),
 
         app.get('/navigation', function (request, response) {
             console.log('Navigation');
