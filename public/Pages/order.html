@@ -345,7 +345,7 @@
                         200: function (x) {
                             $('#modal_form').modal('hide');
                             alert(x.responseText);
-                            //  location.reload();
+                              location.reload();
                         },
                         404: function (x) {
                             alert(x.responseText);
@@ -384,8 +384,8 @@
                     statusCode: {
                         200: function (x) {
                             $('#modal_form').modal('hide');
-                            alert(x.responseText);
-                             location.reload();
+                            alert("Beverage order is added successfully");
+                            location.reload();
                         },
                         404: function (x) {
                             alert(x.responseText);
