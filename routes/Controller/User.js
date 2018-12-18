@@ -47,7 +47,7 @@ module.exports = function(app) {
     */
     app.get('/user', function (request, response) {
         console.log('User Controller');
-        response.sendFile(path.resolve('public/Pages/Login.html'));
+        response.sendFile(path.resolve('public/Pages/login.html'));
     }),
         app.get('/userManagement', function (request, response) {
             console.log('UploadSRSFile');
@@ -60,7 +60,7 @@ module.exports = function(app) {
         }),
         app.get('/user', function (request, response) {
             console.log('User Controller');
-            response.sendFile(path.resolve('public/Pages/Login.html'));
+            response.sendFile(path.resolve('public/Pages/login.html'));
         }),
         app.get('/chefManagement', function (request, response) {
             console.log('chef');
@@ -269,7 +269,7 @@ module.exports = function(app) {
         var a = request.session;
         console.log("getRole "+JSON.stringify(a));
         if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
-            ||  checkUsersRole.isAdmin(request.session.roleId))){
+            ||  checkUsersRole.isAdmin(request.session.roleId)||  checkUsersRole.isCashier(request.session.roleId)||  checkUsersRole.isChef(request.session.roleId)||  checkUsersRole.isBartender(request.session.roleId)||  checkUsersRole.isWaiter(request.session.roleId))){
 
             response.statusCode = 200;
             var data = JSON.stringify(request.session.roleId);
