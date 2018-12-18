@@ -224,12 +224,12 @@ function getFoodByType(type){
 module.exports = function(app){
 
 
-        app.get('/food', function (request, response) {
+        app.get('/foodManagement', function (request, response) {
             console.log('Food');
                 if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)
                     ||  checkUsersRole.isChef(request.session.roleId)
                     ||  checkUsersRole.isMatre(request.session.roleId))) {
-                    response.sendFile(path.resolve('public/Pages/Food.html'));
+                    response.sendFile(path.resolve('public/Pages/food.html'));
                 }else {
                     response.statusCode = 401;
                     return response.redirect('/noAuthority');

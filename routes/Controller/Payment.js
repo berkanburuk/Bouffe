@@ -101,10 +101,20 @@ function getRemaningPayment(tableId) {
 }
 
 module.exports = function (app) {
-
+    app.get('/payment', function (request, response) {
+        console.log('Navigation');
+        if (request.session != undefined  && (checkUsersRole.isCashier(request.session.roleId)))
+        {
+            response.sendFile(path.resolve('public/Pages/payment.html'));
+        }else {
+            response.statusCode = 401;
+            return response.redirect('/noAuthority');
+        }
+    }),
             app.get('/api/payment/getRemaningPayment/:id', function (request, response) {
-                if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
-                    || checkUsersRole.isAdmin(request.session.roleId) || checkUsersRole.isWaiter(request.session.roleId)))
+                if (request.session != undefined  && (
+                    checkUsersRole.isAdmin(request.session.roleId) || checkUsersRole.isWaiter(request.session.roleId)
+                    || checkUsersRole.isCashier(request.session.roleId)))
                 {
                     var tableId = request.params.id;
                     tableId = parseInt(tableId);
@@ -123,8 +133,9 @@ module.exports = function (app) {
             }),
             app.get('/api/payment/getAllPaymentByTableId/:id', function (request, response) {
                 console.log("getAllPaymentByTableId");
-                if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
-                    || checkUsersRole.isAdmin(request.session.roleId) || checkUsersRole.isWaiter(request.session.roleId)))
+                if (request.session != undefined  && (
+                    checkUsersRole.isAdmin(request.session.roleId) || checkUsersRole.isWaiter(request.session.roleId)
+                    || checkUsersRole.isCashier(request.session.roleId)))
                 {
 
                     var id = request.params.id;
@@ -142,11 +153,11 @@ module.exports = function (app) {
                     })
                 }
             }),
+
             app.post('/api/payment/partialPayment', function (request, response) {
-                if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
-                    || checkUsersRole.isAdmin(request.session.roleId) || checkUsersRole.isWaiter(request.session.roleId)
-                    || checkUsersRole.isChef(request.session.roleId)
-                ))
+                if (request.session != undefined  && (
+                    checkUsersRole.isAdmin(request.session.roleId) || checkUsersRole.isWaiter(request.session.roleId)
+                    || checkUsersRole.isCashier(request.session.roleId)))
                 {
                     var data = request.body;
                     partialPayment(data.tableId,data.price,data.paymentType)

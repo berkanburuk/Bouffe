@@ -95,6 +95,7 @@ function payOrders(mainCourse,appetizer,dessert,tableId,setMenu,orderId){
 
 function updateQuantityOfAFood(food) {
     return new Promise((resolve, reject) => {
+
         var q=food.quantity;
         if (q>0){
             q--;
@@ -113,7 +114,8 @@ function updateQuantityOfAFood(food) {
             }).catch(error=>{
                 reject(error);
             })
-        }else{
+        }
+        else{
             reject(food.name + " is not available right now!");
         }
 
@@ -135,7 +137,11 @@ function uploadTotalPaymentForMenu(data,flag) {
         }).then(mC => {
             if (mC != undefined && mC != null) {
                 mainCoursePrice = mC.price;
-                updateQuantityOfAFood(mC);
+                updateQuantityOfAFood(mC).then(t=>{
+
+                }).catch(error=>{
+                    reject(error);
+                });
             }
             mFood.findOne({
                 where: {
@@ -144,7 +150,11 @@ function uploadTotalPaymentForMenu(data,flag) {
             }).then(appetizer => {
                 if (appetizer != undefined && appetizer != null) {
                     appetizerPrice = appetizer.price;
-                    updateQuantityOfAFood(appetizer);
+                    updateQuantityOfAFood(appetizer).then(t=>{
+
+                    }).catch(error=>{
+                        reject(error);
+                    });
                 }
                 mFood.findOne({
                     where: {
@@ -154,7 +164,11 @@ function uploadTotalPaymentForMenu(data,flag) {
                 }).then(dessert => {
                     if (dessert != undefined && dessert != null) {
                         dessertPrice = dessert.price;
-                        updateQuantityOfAFood(dessert);
+                        updateQuantityOfAFood(dessert).then(t=>{
+
+                        }).catch(error=>{
+                            reject(error);
+                        });
                     }
                     mTable.findOne({
                         where: {
@@ -305,23 +319,23 @@ function createMenuOrder(data) {
 
 
 //isFoodReady 0 ise şef önünde ekranda duracak
-function getChefNotification (username) {
+function getChefNotification () {
     return new Promise((resolve, reject) => {
         mOrder.findAll({
             where:
                 {
-                    isFoodReady: 0
-                },
+                    isFoodReady: 0,
+                }/*
             include: [
                 {
                     model:mTable,
                     through: mOrderTable,
                     where:{
-                        userUsername:username
+                        status:2
                     }
                 },
-
             ]
+            */
         }).then((order) => {
             resolve(JSON.stringify(order));
         }).catch(error=>{
@@ -329,6 +343,149 @@ function getChefNotification (username) {
         })
     })
 }
+
+
+//chef onaylıyor (1) yapıyor, Garsona Food onaylandı görünecek
+exports.maltreApprovesOrder = function (orderId) {
+    return new Promise((resolve, reject) => {
+        Order.update(
+            {
+                isFoodReady: 1
+            },
+            {
+                where:
+                    {
+                        id: orderId,
+                    }
+            }).then((order)=>{
+            console.log(order);
+            if (order>0)
+                resolve("Chef approved.");
+            else
+                reject('Chef did not approve!');
+        })
+            .catch(error =>{
+                reject(error);
+            })
+    })
+}
+
+
+//Garson get Food Onaylandı
+exports.getWaiterFoodApproved = function (orderId) {
+    return new Promise((resolve, reject) => {
+        mOrder.findOne({
+            where:
+                {
+                    id: orderId,
+                    isFoodReady: 1
+                }
+        }).then((order) => {
+            resolve(JSON.stringify(order));
+        }).catch(error=>{
+            reject(error);
+        })
+    })
+}
+
+//chef onaylıyor (2) Yemek hazır. Garson
+exports.chefApprovesFoodReady = function (orderId) {
+    return new Promise((resolve, reject) => {
+        Order.update({
+            where:
+                {
+                    id: orderId,
+                    isFoodReady: 2
+                }
+        }).then((order)=>{
+            console.log(order);
+            if (order>0)
+                resolve("Chef approved.");
+            else
+                reject('Chef did not approve!');
+        })
+            .catch(error =>{
+                reject(error);
+            })
+    })
+}
+
+//Waiter Food Ready mesajını alıyor.
+exports.getWaiterNotificationApprovedFood = function(orderId){
+    return new Promise((resolve, reject) => {
+        Order.findOne({
+            where:
+                {
+                    id: orderId,
+                    isFoodReady: 2
+                }
+        }).then((order) => {
+            resolve(JSON.stringify(order));
+        }).catch(error=>{
+            reject(error);
+        })
+    })
+}
+
+
+
+//Waiter 3'e setleyip, yemek teslim edildi. Successfull
+exports.waiterCloseOrder = function (orderId) {
+    return new Promise((resolve, reject) => {
+        Order.update({
+            where:
+                {
+                    id: orderId,
+                    isFoodReady: 3
+                }
+        }).then((order)=>{
+            console.log(order);
+            if (order>0)
+                resolve("Chef approved.");
+            else
+                reject('Chef did not approve!');
+        })
+            .catch(error =>{
+                reject(error);
+            })
+    })
+}
+
+
+exports.getWaiterFoodDone = function(orderId){
+    return new Promise((resolve, reject) => {
+        Order.findOne({
+            where:
+                {
+                    id: orderId,
+                    isFoodReady: 3
+                }
+        }).then((order) => {
+            resolve(JSON.stringify(order));
+        }).catch(error=>{
+            reject(error);
+        })
+    })
+}
+
+exports.getFoodRejected = function(orderId){
+    return new Promise((resolve, reject) => {
+        Order.findOne({
+            where:
+                {
+                    id: orderId,
+                    isFoodReady: 4
+                }
+        }).then((order) => {
+            resolve(JSON.stringify(order));
+        }).catch(error=>{
+            reject(error);
+        })
+    })
+}
+
+
+
 
 function uploadTotalPaymentForBeverage(beverageId, orderId,tableId,quantity){
     return new Promise((resolve, reject) => {
@@ -556,7 +713,8 @@ module.exports = function (app) {
         app.get('/api/order/getChefNotification', function (request, response) {
             if (request.session != undefined  && (checkUsersRole.isChef(request.session.roleId)))
             {
-                getChefNotification(request.session.username)
+                //request.session.username
+                getChefNotification()
                     .then(notification=> {
                     response.end(notification);
                 }).catch(error => {

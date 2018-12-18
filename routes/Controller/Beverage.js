@@ -140,11 +140,11 @@ function getAllBeverage (){
 module.exports = function(app){
 
 
-    app.get('/beverage', function (request, response) {
+    app.get('/beverageManagement', function (request, response) {
         console.log('Beverage');
         if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)
-            ||  checkUsersRole.isChef(request.session.roleId)
-            ||  checkUsersRole.isWaiter(request.session.roleId))){
+            ||  checkUsersRole.isMatre(request.session.roleId)
+            ||  checkUsersRole.isChef(request.session.roleId))){
             response.sendFile(path.resolve('public/Pages/Beverage.html'));
         }else {
             response.statusCode = 401;
@@ -157,8 +157,8 @@ module.exports = function(app){
             var data = request.body;
 
             if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)
-                ||  checkUsersRole.isChef(request.session.roleId)
-                ||  checkUsersRole.isWaiter(request.session.roleId))){
+                ||  checkUsersRole.isMatre(request.session.roleId)
+                ||  checkUsersRole.isChef(request.session.roleId))){
 
                 createBeverage(data).then(beverage => {
                     response.statusCode = 200;
@@ -185,8 +185,8 @@ module.exports = function(app){
             console.log("Delete Beverage");
             console.log(request.body);
             if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)
-                ||  checkUsersRole.isChef(request.session.roleId)
-                ||  checkUsersRole.isWaiter(request.session.roleId))){
+                ||  checkUsersRole.isMatre(request.session.roleId)
+                ||  checkUsersRole.isChef(request.session.roleId))){
                 var id = parseInt(request.params.id);
                 console.log(request.params.id);
 
@@ -226,8 +226,8 @@ module.exports = function(app){
         console.log("Update Beverage");
         var data = request.body;
         if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)
-            ||  checkUsersRole.isChef(request.session.roleId)
-            ||  checkUsersRole.isWaiter(request.session.roleId))){
+            ||  checkUsersRole.isMatre(request.session.roleId)
+            ||  checkUsersRole.isChef(request.session.roleId))){
             console.log(request);
             console.log("Will be Updated : " + data);
 
@@ -256,8 +256,8 @@ module.exports = function(app){
         app.get('/api/beverage/getABeverage/:id', function (request, response ) {
             console.log("Get a Beverage By Id");
             if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)
-                ||  checkUsersRole.isChef(request.session.roleId)
-                ||  checkUsersRole.isWaiter(request.session.roleId))){
+                ||  checkUsersRole.isMatre(request.session.roleId)
+                ||  checkUsersRole.isChef(request.session.roleId))){
                 var id = request.params.id;
                 getABeverage(id).then(beverage => {
                     response.statusCode = 200;

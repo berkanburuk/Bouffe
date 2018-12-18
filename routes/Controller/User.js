@@ -54,7 +54,7 @@ module.exports = function(app) {
         console.log('User Controller');
         response.sendFile(path.resolve('public/Pages/Login.html'));
     }),
-        app.get('/uploadSRSFile', function (request, response) {
+        app.get('/userManagement', function (request, response) {
             console.log('UploadSRSFile');
             if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId))){
                 response.sendFile(path.resolve('public/Pages/uploadSRSFile.html'));
@@ -64,7 +64,7 @@ module.exports = function(app) {
             }
         }),
 
-        app.get('/navigation', function (request, response) {
+        app.get('/index', function (request, response) {
             console.log('Navigation');
             if (request.session != undefined  && (
                 checkUsersRole.isMatre(request.session.roleId)
@@ -79,16 +79,7 @@ module.exports = function(app) {
                     return response.redirect('/noAuthority');
                 }
         }),
-        app.get('/payment', function (request, response) {
-            console.log('Navigation');
-            if (request.session != undefined  && (checkUsersRole.isCashier(request.session.roleId)))
-            {
-                response.sendFile(path.resolve('public/Pages/payment.html'));
-            }else {
-                response.statusCode = 401;
-                return response.redirect('/noAuthority');
-            }
-        }),
+
         app.get('/pdfGenerator', function (request, response) {
             console.log('PdfGenerator');
             if (request.session != undefined  &&
