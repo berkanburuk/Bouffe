@@ -579,7 +579,7 @@ function uploadTotalPaymentForBeverage(beverageId, orderId,tableId,quantity){
                         id: tableId
                     }
                 }).then(result => {
-                    if (result > 0) {
+                    if (result != null && result != undefined) {
                         resolve("Beverage Order is added successfully.");
                     } else {
                         reject("Beverage Order could not updated!");
@@ -687,10 +687,10 @@ module.exports = function (app) {
 
     app.get('/order', function (request, response) {
         console.log('Order');
-            if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
-                || checkUsersRole.isAdmin(request.session.roleId) || checkUsersRole.isWaiter(request.session.roleId)))
+            if (request.session != undefined  && (
+                 checkUsersRole.isWaiter(request.session.roleId)))
             {
-                response.sendFile(path.resolve('public/Pages/Order.html'));
+                response.sendFile(path.resolve('public/Pages/order.html'));
             }
             else {
                     response.write(checkUsersRole.errorMesage(), () => {
@@ -814,11 +814,11 @@ module.exports = function (app) {
                 })
             }
         }),
-        app.get('/api/order/chefApprovesFoodReady', function (request, response) {
+        app.get('/api/order/chefApprovesFoodReady/:orderId', function (request, response) {
             if (request.session != undefined  && (checkUsersRole.isChef(request.session.roleId)))
             {
                 //request.session.username
-                chefApprovesFoodReady()
+                chefApprovesFoodReady(data.params.orderId)
                     .then(notification=> {
                         response.end(notification);
                     }).catch(error => {
