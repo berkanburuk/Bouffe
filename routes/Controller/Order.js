@@ -413,6 +413,56 @@ function getChefNotificationWithFoodName () {
     })
 }
 
+
+//isFoodReady 0 ise şef önünde ekranda duracak
+function getChefNotificationForBartender () {
+    return new Promise((resolve, reject) => {
+        mOrder.findAll({
+            where:
+                {
+                    isBeverageReady: 0,
+                },
+            include: [
+                {
+                    model:mBeverage,
+                    through: mOrderBeverage,
+                }
+            ]
+        }).then((order) => {
+            resolve(JSON.stringify(order));
+        }).catch(error=>{
+            reject(error);
+        })
+    })
+}
+
+
+//chef onaylıyor (2) Yemek hazır. Garson
+function bartenderApprovesBeverageReady(orderId) {
+    console.log('chefApprovesFoodReady ');
+    return new Promise((resolve, reject) => {
+        mOrder.update(
+            {
+                isFoodReady: 1
+            },
+            {
+                where:
+                    {
+                        id: orderId,
+                    }
+            }).then((order)=>{
+            console.log(order);
+            if (order>0)
+                resolve("Chef approved.");
+            else
+                reject('Chef did not approve!');
+        })
+            .catch(error =>{
+                reject(error);
+            })
+    })
+}
+
 //chef onaylıyor (1) yapıyor, Garsona Food onaylandı görünecek
 exports.maltreApprovesOrder = function (orderId) {
     return new Promise((resolve, reject) => {
@@ -837,6 +887,79 @@ module.exports = function (app) {
             }
         })
 
+    app.get('/api/order/getChefNotificationWithFoodName/:orderId', function (request, response) {
+        if (request.session != undefined  && (checkUsersRole.isChef(request.session.roleId)))
+        {
+            //request.session.username
+            getChefNotificationWithFoodName(request.params.orderId)
+                .then(notification=> {
+                    response.end(notification);
+                }).catch(error => {
+                response.end(error.toString());
+            })
+        }
+        else {
+            response.write(checkUsersRole.errorMesage(), () => {
+                response.statusCode = 404;
+                response.end();
+            })
+        }
+    }),
+
+        app.get('/api/order/getChefNotificationWithFoodName/:orderId', function (request, response) {
+            if (request.session != undefined  && (checkUsersRole.isChef(request.session.roleId)))
+            {
+                //request.session.username
+                getChefNotificationWithFoodName(request.params.orderId)
+                    .then(notification=> {
+                        response.end(notification);
+                    }).catch(error => {
+                    response.end(error.toString());
+                })
+            }
+            else {
+                response.write(checkUsersRole.errorMesage(), () => {
+                    response.statusCode = 404;
+                    response.end();
+                })
+            }
+        }),
+        app.get('/api/order/getChefNotificationForBartender', function (request, response) {
+            if (request.session != undefined  && (checkUsersRole.isBartender(request.session.roleId)))
+            {
+                //request.session.username
+                getChefNotificationForBartender()
+                    .then(notification=> {
+                        response.end(notification);
+                    }).catch(error => {
+                    response.end(error.toString());
+                })
+            }
+            else {
+                response.write(checkUsersRole.errorMesage(), () => {
+                    response.statusCode = 404;
+                    response.end();
+                })
+            }
+        }),
+        app.get('/api/order/bartenderApprovesBeverageReady/:orderId', function (request, response) {
+            if (request.session != undefined  && (checkUsersRole.isBartender(request.session.roleId)))
+            {
+                //request.session.username
+                bartenderApprovesBeverageReady(request.params.orderId)
+                    .then(notification=> {
+                        response.end(notification);
+                    }).catch(error => {
+                    response.end(error.toString());
+                })
+            }
+            else {
+                response.write(checkUsersRole.errorMesage(), () => {
+                    response.statusCode = 404;
+                    response.end();
+                })
+            }
+        })
 
 
 
