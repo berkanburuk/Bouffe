@@ -64,7 +64,7 @@ module.exports = function(app) {
             }
         }),
 
-        app.get('/index', function (request, response) {
+        app.get('/navigation', function (request, response) {
             console.log('Navigation');
             if (request.session != undefined  && (
                 checkUsersRole.isMatre(request.session.roleId)
@@ -144,7 +144,7 @@ module.exports = function(app) {
 
                             console.log("Session: " + request.session.username + request.session.roleId);
 
-                            return response.redirect('/index');
+                            return response.redirect('/navigation');
 
 
                         }).catch(error => {
@@ -177,7 +177,7 @@ module.exports = function(app) {
                     response.statusCode = 200;
                     console.log(user);
 
-                    response.write("Successful", () => {
+                    response.write("User is added successfully", () => {
                         response.end();
                     });
                 }).catch(error => {
