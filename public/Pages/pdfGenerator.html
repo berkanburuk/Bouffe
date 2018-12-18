@@ -92,10 +92,10 @@
         return menuBody;
 
     }
-    menuBody+="<p style='height: 40px;'></p>";
-    menuBody+="<p align='center' style='height: 10px;'><img class='revimg' src='../TableFiles/tableImages/pepper.png'></p>";
-    menuBody+="<p align=\"center\" style=\"font-family: Cookie; font-size: 32pt; color: #6F0000;\">Le Piment Rouge</p>";
-    menuBody+="<p align=\"center\" style=\"height: 40px;font-family: Cookie; font-size: 24pt;\">"+dat.cuisineRegion+"</p>";
+    menuBody+="<p style='height: 10px;'></p>";
+    menuBody+="<p align='center' style='height: 5px;'><img class='revimg' src='../TableFiles/tableImages/pepper.png'></p>";
+    menuBody+="<p align=\"center\" style=\"font-family: Cookie; font-size: 28pt; color: #6F0000;\">Le Piment Rouge</p>";
+    menuBody+="<p align=\"center\" style=\"height: 20px;font-family: Cookie; font-size: 21pt;\">"+dat.cuisineRegion+"</p>";
     menuBody+="<p align=\"center\" style=\"color: #6F0000;height: 0px;font-family: Cookie; font-size: 20pt;\">Appetizers</p>";
     menuBody+="<p align=\"center\" style=\"color: #6F0000;font-size: 12pt;height: 0px\">_____________________________________________________</p>";
 
@@ -104,30 +104,30 @@
       if(dat.food[i].type==="appetizer")
       {
           console.log(dat.food[i]);
-          menuBody+="<p align=\"center\" style=\"height: 0px;font-family: Cookie; font-size: 20pt;\">"+dat.food[i].name+" ("+dat.food[i].price+"TL)"+"</p>";
-          menuBody+="<p align=\"center\" style=\"height: 0px;font-family: Cookie; font-size: 14pt;\">"+dat.food[i].description+"</p>";
+          menuBody+="<p align=\"center\" style=\"height: 0px;font-family: Cookie; font-size: 18pt;\">"+dat.food[i].name+" ("+dat.food[i].price+"TL)"+"</p>";
+          menuBody+="<p align=\"center\" style=\"height: 0px;font-family: Cookie; font-size: 13pt;\">"+dat.food[i].description+"</p>";
 
       }
     }
-    menuBody+="<p align=\"center\" style=\"color: #6F0000;height: 0px;font-family: Cookie; font-size: 20pt;\">Main Courses</p>";
+    menuBody+="<p align=\"center\" style=\"color: #6F0000;height: 0px;font-family: Cookie; font-size: 18pt;\">Main Courses</p>";
     menuBody+="<p align=\"center\" style=\"color: #6F0000;font-size: 12pt;height: 0px\">_____________________________________________________</p>";
     for(var k=0; k<dat.food.length; k++)
         {
             if(dat.food[k].type==="mainCourse")
             {
-                menuBody+="<p align=\"center\" style=\"height: 0px;font-family: Cookie; font-size: 20pt;\">"+dat.food[k].name+" ("+dat.food[k].price+"TL)"+"</p>";
-                menuBody+="<p align=\"center\" style=\"height: 0px;font-family: Cookie; font-size: 14pt;\">"+dat.food[k].description+"</p>";
+                menuBody+="<p align=\"center\" style=\"height: 0px;font-family: Cookie; font-size: 18pt;\">"+dat.food[k].name+" ("+dat.food[k].price+"TL)"+"</p>";
+                menuBody+="<p align=\"center\" style=\"height: 0px;font-family: Cookie; font-size: 13pt;\">"+dat.food[k].description+"</p>";
 
             }
         }
-    menuBody+="<p align=\"center\" style=\"color: #6F0000;height: 0px;font-family: Cookie; font-size: 20pt;\">Desserts</p>";
+    menuBody+="<p align=\"center\" style=\"color: #6F0000;height: 0px;font-family: Cookie; font-size: 18pt;\">Desserts</p>";
     menuBody+="<p align=\"center\" style=\"color: #6F0000;font-size: 12pt;height: 0px\">_____________________________________________________</p>";
     for(var l=0; l<dat.food.length; l++)
         {
             if(dat.food[l].type==="dessert")
             {
-                menuBody+="<p align=\"center\" style=\"height: 0px;font-family: Cookie; font-size: 20pt;\">"+dat.food[l].name+" ("+dat.food[l].price+"TL)"+"</p>";
-                menuBody+="<p align=\"center\" style=\"height: 0px;font-family: Cookie; font-size: 14pt;\">"+dat.food[l].description+"</p>";
+                menuBody+="<p align=\"center\" style=\"height: 0px;font-family: Cookie; font-size: 18pt;\">"+dat.food[l].name+" ("+dat.food[l].price+"TL)"+"</p>";
+                menuBody+="<p align=\"center\" style=\"height: 0px;font-family: Cookie; font-size: 13pt;\">"+dat.food[l].description+"</p>";
 
             }
         }
