@@ -1,4 +1,5 @@
 let path = require('path');
+const bcrypt = require('bcrypt');
 
 let sequelize = require('../Util/DatabaseConnection').getSequelize;
 let tableNames = require('../Util/DatabaseConnection').getTableNames;
@@ -52,7 +53,7 @@ module.exports = function(app) {
     */
     app.get('/user', function (request, response) {
         console.log('User Controller');
-        response.sendFile(path.resolve('public/Pages/Login.html'));
+        response.sendFile(path.resolve('public/Pages/login.html'));
     }),
         app.get('/userManagement', function (request, response) {
             console.log('UploadSRSFile');
@@ -155,9 +156,8 @@ module.exports = function(app) {
                     data.username = request.params.username;
                     data.password = request.params.password;
 
-                    //var data = request.body;
                     console.log(request.body);
-                    checkValidationOfUser(data.username, data.password).then(user => {
+                    checkValidationOfUser(data.username,data.username).then(user => {
                         console.log(data);
 
                         getAUserRole(data.username).then(role => {
@@ -191,6 +191,7 @@ module.exports = function(app) {
             console.log("Create A User");
             var data = request.body;
             console.log(data);
+
             if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
                 ||  checkUsersRole.isAdmin(request.session.roleId))){
                 data.roleId = parseInt(data.roleId, 10);
@@ -442,6 +443,12 @@ function createUserTransaction(data) {
 function createAUser(data){
 
     return new Promise((resolve, reject) => {
+        var salt = bcrypt.genSaltSync(10);
+        var hash = bcrypt.hashSync(data.username, salt);
+
+
+
+
         mUser.findOrCreate({
             where:
                 {
@@ -449,12 +456,14 @@ function createAUser(data){
                 },
             defaults:
                 {
-                    password: data.password,
+                    password: hash,
                     firstName: data.firstName,
                     lastName: data.lastName,
                     bilkentId: data.bilkentId
                 }
         }).then((user)=>{
+
+
             console.log("User" + user[1]);
             if (user[1] == false){
                 reject('This user is already added!');
@@ -610,27 +619,52 @@ function checkValidationOfUser(username, password){
             if (user == null || user ==undefined){
                 reject("There is no user with this username " + username);
             }
-            mUser.findOne({
-                where:{
-                    username: username,
-                    password : password
-                }
-            }).then(user=>{
-                if (user != null && user != undefined ){
-                    user = JSON.stringify(user);
-                    //console.log(user);
-                    resolve(user);
-                }else{
-                    reject("Username or Password is wrong!");
-                }
-            }).catch(error => {
-                reject(error);
+
+                mUser.findOne({
+                    where: {
+                        username: username,
+                    }
+                }).then(user => {
+
+                    bcrypt.compareSync(password, user.password); // true
+                    bcrypt.compare(password, user.password, function(err, result) {
+                        console.log(result);
+                        if (result){
+
+                            resolve(user);
+                        }
+                        if (err) { throw (err); }
+
+                    });
+
+                }).catch(error=>{
+                    reject(error);
+                })
+            /*
+                mUser.findOne({
+                    where: {
+                        username: username,
+                        password: password
+                    }
+                }).then(user => {
+                    console.log("User" + user);
+                    if (user != null && user != undefined) {
+                        user = JSON.stringify(user);
+                        //console.log(user);
+                        resolve(user);
+                    } else {
+                        reject("Username or Password is wrong!");
+                    }
+                }).catch(error => {
+                    reject(error);
+                })
+                */
             })
         }).catch(error=>{
             reject(error);
         })
 
-    });
+
 }
 
 
