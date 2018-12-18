@@ -25,6 +25,8 @@
 </head>
 <body>
 <div class="container">
+    <h1 class="my-4 text-center text-lg-center">Food Management</h1>
+
     <div class="table-responsive-sm" style="margin-top: 20px">
         <table id="food_data" class="table table-hover table-bordered table-striped">
             <thead>
@@ -270,7 +272,7 @@
         e.preventDefault();
         var data2 = {
             name: globalUpdateName,
-            newName: $('#uname').val().trim(),
+            newName: $('#uname').val().trim().toUpperCase(),
             type: $('#utype').val(),
             description: $('#udescription').val().trim(),
             quantity: $('#uquantity').val(),
@@ -311,7 +313,7 @@
         $('#add_food_form').on('submit', function (e) {
             e.preventDefault();
             var data2 = {
-                name: $('#name').val().toUpperCase(),
+                name: $('#name').val().toUpperCase().trim(),
                 type: $('#type').val(),
                 description: $('#description').val(),
                 quantity: $('#quantity').val(),
