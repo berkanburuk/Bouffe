@@ -195,30 +195,24 @@
                 }
             })
         }
-        function case1(y) {
+        function case1(text,y) {
             Swal({
                 title: 'Attention!',
-                text: "Actions you performed will be permenant  on " + y + "  table!",
-                type: 'warning',
-                showCancelButton: true,
+                text: "You are going to confirm that the order "+text+" with " + y + " id is ready  !",
+                type: 'information',
                 showCloseButton: true,
                 confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#18426B',
-                confirmButtonText: 'Divide',
-                cancelButtonText: 'Activate'
+
+                confirmButtonText: 'Ready',
+
             }).then((result) => {
-                if (result.value) {
-                    Swal(
-                        'Tables are unmerged',
-                        'table',
-                        'success',
-                    ).then(()=>{
+
                         console.log(y);
                         var data = text.split('-'); $.ajax({
-                            type: 'POST',
+                            type: 'GET',
                             dataType: 'application/json',
-                            url: '/api/table/unmergeTable',
-                            timeout: 5000,
+                            url: '/api/order/chefApprovesFoodReady'+y,
+                            timeout: 10000,
                             data: data, statusCode: {
                                 200: function (x) {
                                     location.reload();
@@ -229,36 +223,8 @@
                             },
                         })
                     })
-                }
-                else if(result.dismiss=== Swal.DismissReason.cancel)
-                {
-                    Swal(
-                        'Anim',
-                        'table',
-                        'success',
-                    ).then(()=>{
-                        console.log(y);
-                        var data = {
-                            tableId: y,
-                            status: 1,
-                        };
-                        $.ajax({
-                            type: 'POST',
-                            dataType: 'application/json',
-                            url: '/api/table/updateStatus',
-                            timeout: 5000,
-                            data: data, statusCode: {
-                                200: function (x) {
-                                    location.reload();
-                                },
-                                404: function (x) {
-                                    alert(x.responseText);
-                                }
-                            },
-                        })
-                    })
-                }
-            })
+
+
         }
         function case2(text,y) {
             Swal({

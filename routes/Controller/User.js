@@ -63,8 +63,21 @@ module.exports = function(app) {
                 return response.redirect('/noAuthority');
             }
         }),
+        app.get('/user', function (request, response) {
+            console.log('User Controller');
+            response.sendFile(path.resolve('public/Pages/Login.html'));
+        }),
+        app.get('/chefManagement', function (request, response) {
+            console.log('chef');
+            if (request.session != undefined  && (checkUsersRole.isChef(request.session.roleId))){
+                response.sendFile(path.resolve('public/Pages/chef.html'));
+            }else {
+                response.statusCode = 401;
+                return response.redirect('/noAuthority');
+            }
+        }),
 
-        app.get('/index', function (request, response) {
+        app.get('/navigation', function (request, response) {
             console.log('Navigation');
             if (request.session != undefined  && (
                 checkUsersRole.isMatre(request.session.roleId)
@@ -144,7 +157,7 @@ module.exports = function(app) {
 
                             console.log("Session: " + request.session.username + request.session.roleId);
 
-                            return response.redirect('/index');
+                            return response.redirect('/navigation');
 
 
                         }).catch(error => {
@@ -177,7 +190,7 @@ module.exports = function(app) {
                     response.statusCode = 200;
                     console.log(user);
 
-                    response.write("Successful", () => {
+                    response.write("User is added successfully", () => {
                         response.end();
                     });
                 }).catch(error => {

@@ -375,35 +375,21 @@ html { height: 100%;}
           x+="<";
           x+="/script>";
           custom_list = '<li class="sidebar-brand"><p>Bouffe Control Panel</p></li>';
+
           if (role == 1) {
-              custom_list += '<li id="userManagement" value="/signup"><p>User Management</p></li>';
-          }
-          if (role == 1) {
-              custom_list += '<li id="srsFileUpload" value="/uploadSRSFile"><p>Course Information Update</p></li>';
-          }
-          if (role == 1) {
-              custom_list += '<li id="roleManagement" value="/manageRole"><p>Role Management</p></li>';
-          }
-          if (role == 1) {
-              custom_list += '<li id="orderHistory" value="/orderHistory"><p>Order History</p></li>';
-          }
-          if (role == 1) {
-              custom_list += '<li id="showLogs" value="/viewLogs"><p>Show Logs</p></li>';
+              custom_list += '<li id="srsFileUpload" value="/userManagement"><p>User Management</p></li>';
           }
           if (role == 4) {
-              custom_list += '<li id="manageReservation" value="/manageReservation"><p>Manage Reservation</p></li>';
+              custom_list += '<li id="manageFood" value="/foodManagement"><p>Food Management</p></li>';
           }
           if (role == 4) {
-              custom_list += '<li id="manageFood" value="/manageFood"><p>Manage Food</p></li>';
+              custom_list += '<li id="manageMenu" value="/menuManagement"><p>Menu Management</p></li>';
           }
           if (role == 4) {
-              custom_list += '<li id="manageMenu" value="/manageMenu"><p>Manage Menu</p></li>';
-          }
-          if (role == 4) {
-              custom_list += '<li id="manageCheckout" value="/manageCheckout"><p>Manage Checkout</p></li>';
+              custom_list += '<li id="manageReservation" value="/reservationManagement"><p>Reservation Management</p></li>';
           }
           if (role == 5) {
-              custom_list += '<li id="manageOrder" value="/manageOrder"><p>Manage Order</p></li>';
+              custom_list += '<li id="order" value="/order"><p>Order</p></li>';
           }
           if (role == 3) {
               custom_list += '<li id="viewOrders" value="/viewFoodOrder"><p>View Orders</p></li>';
@@ -412,7 +398,7 @@ html { height: 100%;}
               custom_list += '<li id="viewOrders" value="/viewBeverageOrder"><p>View Orders</p></li>';
           }
           if (role == 2) {
-              custom_list += '<li id="managePayment" value="/managePayment"><p>Manage Payment</p></li>';
+              custom_list += '<li id="managePayment" value="/payment"><p>Payment</p></li>';
           }
           custom_list += '<li id="logOut" value="/api/user/logout"><p>Log Out</p></li>';
 

@@ -457,9 +457,9 @@ exports.getWaiterFoodApproved = function (orderId) {
 }
 
 //chef onaylıyor (2) Yemek hazır. Garson
-exports.chefApprovesFoodReady = function (orderId) {
+chefApprovesFoodReady = function (orderId) {
     return new Promise((resolve, reject) => {
-        Order.update({
+        mOrder.update({
             where:
                 {
                     id: orderId,
@@ -801,6 +801,24 @@ module.exports = function (app) {
             {
                 //request.session.username
                 getAllOpenOrders()
+                    .then(notification=> {
+                        response.end(notification);
+                    }).catch(error => {
+                    response.end(error.toString());
+                })
+            }
+            else {
+                response.write(checkUsersRole.errorMesage(), () => {
+                    response.statusCode = 404;
+                    response.end();
+                })
+            }
+        }),
+        app.get('/api/order/chefApprovesFoodReady', function (request, response) {
+            if (request.session != undefined  && (checkUsersRole.isChef(request.session.roleId)))
+            {
+                //request.session.username
+                chefApprovesFoodReady()
                     .then(notification=> {
                         response.end(notification);
                     }).catch(error => {
