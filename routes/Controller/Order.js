@@ -359,7 +359,7 @@ function getAllOpenOrders () {
         })
     })
 }
-
+/*
 //isFoodReady 0 ise şef önünde ekranda duracak
 function getChefNotification () {
     return new Promise((resolve, reject) => {
@@ -384,7 +384,34 @@ function getChefNotification () {
         })
     })
 }
+*/
 
+//isFoodReady 0 ise şef önünde ekranda duracak
+function getChefNotificationWithFoodName () {
+    return new Promise((resolve, reject) => {
+        mOrder.findAll({
+            where:
+                {
+                    isFoodReady: 0,
+                },
+            include: [
+                {
+                    model:mFood,
+                    through: mOrderFood,
+                    where:{
+                        foodName:{
+                            any:'%'
+                        }
+                    }
+                }
+            ]
+        }).then((order) => {
+            resolve(JSON.stringify(order));
+        }).catch(error=>{
+            reject(error);
+        })
+    })
+}
 
 //chef onaylıyor (1) yapıyor, Garsona Food onaylandı görünecek
 exports.maltreApprovesOrder = function (orderId) {
@@ -751,11 +778,11 @@ module.exports = function (app) {
         }
     }),
 
-        app.get('/api/order/getChefNotification', function (request, response) {
+        app.get('/api/order/getChefNotificationWithName', function (request, response) {
         if (request.session != undefined  && (checkUsersRole.isChef(request.session.roleId)))
         {
             //request.session.username
-            getChefNotification()
+            getChefNotificationWithName()
                 .then(notification=> {
                     response.end(notification);
                 }).catch(error => {
