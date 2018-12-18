@@ -145,7 +145,7 @@ module.exports = function(app){
         if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)
             ||  checkUsersRole.isMatre(request.session.roleId)
             ||  checkUsersRole.isChef(request.session.roleId))){
-            response.sendFile(path.resolve('public/Pages/Beverage.html'));
+            response.sendFile(path.resolve('public/Pages/beverage.html'));
         }else {
             response.statusCode = 401;
             return response.redirect('/noAuthority');

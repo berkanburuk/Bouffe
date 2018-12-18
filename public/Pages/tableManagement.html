@@ -222,6 +222,11 @@
                 x+="tableId1: parseInt(result.value[0]),\n";
                 x+="tableId2: y,\n";
                 x+="};\n";
+                x+="console.log(data[\"tableId1\"]);\n";
+                x+="if(data[\"tableId1\"]===data[\"tableId2\"]){\n";
+                x+="data[\"tableId1\"]= -2;\n";
+                x+="data[\"tableId2\"]= -2;\n";
+                x+="}\n"
                 x+="$.ajax({\n";
                 x+="type: 'POST',\n";
                 x+="dataType: 'application/json',\n";
@@ -379,6 +384,10 @@
                 x+="tableId1: parseInt(result.value[0]),\n";
                 x+="tableId2: y,\n";
                 x+="};\n";
+                x+="if(data[\"tableId1\"]===data[\"tableId2\"]){\n";
+                x+="data[\"tableId1\"]= -2;\n";
+                x+="data[\"tableId2\"]= -2;\n";
+                x+="}\n"
                 x+="console.log(data);\n";
                 x+="$.ajax({\n";
                 x+="type: 'POST',\n";
