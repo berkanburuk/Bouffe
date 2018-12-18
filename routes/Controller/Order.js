@@ -13,6 +13,9 @@ let mTable = db.model(dbNames.table);
 let mFood = db.model(dbNames.food);
 let mOrderTable = db.model(dbNames.orderTable);
 let mMenu = db.model(dbNames.menu);
+let mOrderFood = db.model(dbNames.orderFood);
+let mOrderBeverage =db.model(dbNames.orderBeverage);
+
 
 let modelOrder =  require('../Model/Order');
 
@@ -317,6 +320,45 @@ function createMenuOrder(data) {
 
 }
 
+//isFoodReady 0 ise şef önünde ekranda duracak
+function getChefNotificationWithName () {
+    return new Promise((resolve, reject) => {
+        mOrderFood.findAll({
+
+        }).then((order) => {
+            resolve(JSON.stringify(order));
+        }).catch(error=>{
+            reject(error);
+        })
+    })
+}
+
+
+//isFoodReady 0 ise şef önünde ekranda duracak
+function getAllOpenOrders () {
+    return new Promise((resolve, reject) => {
+        mOrder.findAll({
+            where:
+                {
+                    orderOpen:true
+                },
+            include: [
+                {
+                    model:mFood,
+                    through: mOrderFood,
+                },
+                {
+                    model:mBeverage,
+                    through: mOrderBeverage
+                },
+            ]
+        }).then((order) => {
+            resolve(JSON.stringify(order));
+        }).catch(error=>{
+            reject(error);
+        })
+    })
+}
 
 //isFoodReady 0 ise şef önünde ekranda duracak
 function getChefNotification () {
@@ -325,7 +367,7 @@ function getChefNotification () {
             where:
                 {
                     isFoodReady: 0,
-                }/*
+                },
             include: [
                 {
                     model:mTable,
@@ -335,7 +377,6 @@ function getChefNotification () {
                     }
                 },
             ]
-            */
         }).then((order) => {
             resolve(JSON.stringify(order));
         }).catch(error=>{
@@ -711,13 +752,31 @@ module.exports = function (app) {
     }),
 
         app.get('/api/order/getChefNotification', function (request, response) {
+        if (request.session != undefined  && (checkUsersRole.isChef(request.session.roleId)))
+        {
+            //request.session.username
+            getChefNotification()
+                .then(notification=> {
+                    response.end(notification);
+                }).catch(error => {
+                response.end(error.toString());
+            })
+        }
+        else {
+            response.write(checkUsersRole.errorMesage(), () => {
+                response.statusCode = 404;
+                response.end();
+            })
+        }
+    }),
+        app.get('/api/order/getAllOpenOrders', function (request, response) {
             if (request.session != undefined  && (checkUsersRole.isChef(request.session.roleId)))
             {
                 //request.session.username
-                getChefNotification()
+                getAllOpenOrders()
                     .then(notification=> {
-                    response.end(notification);
-                }).catch(error => {
+                        response.end(notification);
+                    }).catch(error => {
                     response.end(error.toString());
                 })
             }
@@ -728,6 +787,8 @@ module.exports = function (app) {
                 })
             }
         })
+
+
 
 
 

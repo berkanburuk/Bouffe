@@ -8,7 +8,8 @@ let db = sequelize();
 let dbNames = tableNames();
 let mPayment = db.model(dbNames.payment);
 let mTable = db.model(dbNames.table);
-
+let mOrder = db.model(dbNames.order);
+let mOrderTable = db.model(dbNames.orderTable);
 let checkUsersRole = require('./RoleCheck');
 
 
@@ -68,7 +69,29 @@ function partialPayment(tableId,price,paymentType ) {
                         where:{
                             id:tableId
                         }
+                    }).then(table=> {
+
+                    mOrder.update(
+                        {
+                            orderOpen: false
+                        },
+                        {
+                            include: [
+                                {
+                                    model: mTable,
+                                    through: mOrderTable,
+                                    where: {
+                                        id: tableId
+                                    }
+                                }
+                            ]
+
+                        }).then(table => {
+
+                    }).catch(error => {
                     })
+                }).catch(error => {
+                })
             }
             resolve(JSON.stringify(total + " TL left"));
         })

@@ -144,7 +144,7 @@ module.exports = function(app) {
 
                             console.log("Session: " + request.session.username + request.session.roleId);
 
-                            return response.redirect('/navigation');
+                            return response.redirect('/index');
 
 
                         }).catch(error => {
