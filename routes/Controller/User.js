@@ -47,7 +47,7 @@ module.exports = function(app) {
     */
     app.get('/user', function (request, response) {
         console.log('User Controller');
-        response.sendFile(path.resolve('public/Pages/Login.html'));
+        response.sendFile(path.resolve('public/Pages/login.html'));
     }),
         app.get('/userManagement', function (request, response) {
             console.log('UploadSRSFile');
@@ -60,7 +60,7 @@ module.exports = function(app) {
         }),
         app.get('/user', function (request, response) {
             console.log('User Controller');
-            response.sendFile(path.resolve('public/Pages/Login.html'));
+            response.sendFile(path.resolve('public/Pages/login.html'));
         }),
         app.get('/chefManagement', function (request, response) {
             console.log('chef');
