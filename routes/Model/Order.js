@@ -33,12 +33,12 @@ class OrderModel {
             },isBeverageReady:{
                 type:Sequelize.INTEGER,
                 defaultValue: 0
-                //0 -> default Value(Just Ordered)-> bartender önüne düşecek -> 1 e update
-                //1 ->Bartender Ok dicek-> 2 ye update
-                //2 ->Waiter önüne düşecek -> 3 e update
-                //3 -> done
-                //4 -> BArtender reject edecek->
-                //5 -> Waiter reject mesajı gidecek
+                //0 -> default Value(Just Ordered)-> bartender önüne düşecek ->
+                //1 ->Bartender Approved -> Bartender updates 2
+                //2 ->Ready -> Waiter updates 3
+                //3 -> Waiter finish execution
+                //4 -> BArtender reject edecek - Waiter reject mesajı gidecek -> yapıldı Price düşüyor.
+
             },
             orderOpen: {
                 type:Sequelize.BOOLEAN,
@@ -71,8 +71,8 @@ class OrderModel {
 */
         //OrderFood FK
         const mFood = sequelize.define('food', {})
-        //const mOrderFood = sequelize.define('orderFood', {})
-        let mOrderFood  = sequelize.model("orderFood");
+        const mOrderFood = sequelize.define('orderFood', {})
+        //let mOrderFood  = sequelize.model("orderFood");
         Order.belongsToMany(mFood,
             {
                 through: mOrderFood,

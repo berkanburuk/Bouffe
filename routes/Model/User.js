@@ -26,7 +26,8 @@ class UserModel {
                 defaultValue: Sequelize.NOW
             },
             bilkentId: {
-                type:Sequelize.INTEGER
+                type:Sequelize.INTEGER,
+                unique: true
             }
         });
         //let dbNames = tableNames();
