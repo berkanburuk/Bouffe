@@ -306,6 +306,10 @@ function isTableOrderable() {
 function getMyTables(username) {
     return new Promise((resolve, reject) => {
         mTable.findAll({
+            order: [
+                ['id', 'ASC'],
+                //['name', 'ASC'],
+            ],
             where: {
                 userUsername:username
             }
