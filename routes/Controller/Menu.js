@@ -87,7 +87,19 @@ function createMenuAndAssignFood(data) {
 
 function updateAMenu(data) {
     return new Promise((resolve, reject) => {
-
+        console.log(data.isActive)
+        if (data.isActive == 'true') {
+            mMenu.update({
+                isActive: false
+            },
+                {
+                    where:{
+                        isActive:true
+                    }
+                }
+            )
+                .then((val) => {
+                    console.log("valvalval" + val)
                     mMenu.update(
                         {
                             name: data.newName,
@@ -101,7 +113,6 @@ function updateAMenu(data) {
                                     name: data.name
                                 },
                         }).then((menu) => {
-                        console.log(menu);
                         if (menu[0] > 0) {
                             resolve("Menu is updated successfully.");
                         } else {
@@ -111,21 +122,47 @@ function updateAMenu(data) {
                     }).catch(error => {
                         reject(error);
                     })
+                }).catch(error => {
+                reject(error);
+            })
+        }else{
+            mMenu.update(
+                {
+                    name: data.newName,
+                    cuisineRegion: data.cuisineRegion,
+                    isActive: data.isActive,
+                    setPrice: data.setPrice,
+                }
+                , {
+                    where:
+                        {
+                            name: data.name
+                        },
+                }).then((menu) => {
+                if (menu[0] > 0) {
+                    resolve("Menu is updated successfully.");
+                } else {
+                    reject("Menu could not be updated!");
+                }
+
+            }).catch(error => {
+                reject(error);
+            })
+        }
     })
 
 }
 
 
-function isExistsOnMenu(data) {
+function isExistsOnMenu(menuId,foodId) {
     /*
     Get All Food Of Menu
      */
-    console.log(data);
     return new Promise((resolve, reject) => {
         mMenuFood.findOne({
             where: {
-                menuName: data.menuName,
-                foodName: data.foodName
+                menuId: menuId,
+                foodId: foodId
             }
         }).then(data => {
             if (data != null && data != undefined) {
@@ -152,26 +189,35 @@ function assignFoodToMenu(data) {
                 }
         })
             .then((menu) => {
-                console.log("data.foods" + data.foods)
+                mFood.findOne({
+                    where:
+                        {
+                            name: data.foodName
+                        }
+                }).then(food=>{
+                    console.log("Menu:"+menu+"\n"+"Food:"+food)
+                    isExistsOnMenu(menu.id,food.id).then(exists => {
+                        if (!exists) {
+                            menu.addFood(food.id)
+                                .then(food => {
+                                    console.log(food);
+                                    resolve("Food is added to Menu successfully!");
+                                })
+                                .catch(error => {
+                                    reject("Food could not be added to Menu!");
+                                })
 
-                isExistsOnMenu(data).then(food => {
-                    console.log(food);
-                    if (!food) {
-                        menu.addFood(data.foodName)
-                            .then(food => {
-                                console.log(food);
-                                resolve("Food is added to Menu successfully!");
-                            })
-                            .catch(error => {
-                                reject("Food could not be added to Menu!");
-                            })
-                    } else {
-                        reject("Food already exists in Menu!");
-                    }
-                })
-                    .catch(error => {
-                        reject(error);
+                        } else {
+                            reject("Food already exists in Menu!");
+                        }
                     })
+                        .catch(error => {
+                            reject(error);
+                        })
+                }).catch(error => {
+                    reject(error);
+                })
+
             })
             .catch(error => {
                 reject(error);
@@ -437,10 +483,10 @@ module.exports = function (app) {
 
         app.post('/api/menu/updateAMenu', function (request, response) {
             var data = request.body;
-            console.log("updateAMenu" + data);
+            console.log("updateAMenu");
 
             if (request.session != undefined && (checkUsersRole.isAdmin(request.session.roleId) ||
-                checkUsersRole.isChef(request.session.roleId) || checkUsersRole.isChef(request.session.roleId))) {
+                checkUsersRole.isChef(request.session.roleId) || checkUsersRole.isMatre(request.session.roleId))) {
 
                 if (!checkDataType.isString(data.name)) {
                     response.write(checkDataType.errorMesage(), () => {
@@ -451,7 +497,7 @@ module.exports = function (app) {
                     return false;
                 }
                 else {
-
+                console.log("Menu which will be updated = "+JSON.stringify(data))
                     updateAMenu(data).then(menu => {
                         response.statusCode = 200;
                         response.write(menu.toString(), () => {

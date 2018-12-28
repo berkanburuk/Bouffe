@@ -71,8 +71,8 @@ class OrderModel {
 */
         //OrderFood FK
         const mFood = sequelize.define('food', {})
-        //const mOrderFood = sequelize.define('orderFood', {})
-        let mOrderFood  = sequelize.model("orderFood");
+        const mOrderFood = sequelize.define('orderFood', {})
+        //let mOrderFood  = sequelize.model("orderFood");
         Order.belongsToMany(mFood,
             {
                 through: mOrderFood,

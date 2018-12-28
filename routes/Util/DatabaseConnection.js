@@ -85,7 +85,7 @@ table.run(Sequelize,sequelize,tableNames.table);
 //7.
 payment.run(Sequelize,sequelize,tableNames.payment);
 
-orderFood.run(Sequelize,sequelize,tableNames.orderFood);
+//orderFood.run(Sequelize,sequelize,tableNames.orderFood);
 
 //11.
 order.run(Sequelize,sequelize,tableNames.order);
