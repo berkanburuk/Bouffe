@@ -320,8 +320,8 @@ function createMenuOrder(data) {
 
 }
 
-//isFoodReady 0 ise şef önünde ekranda duracak
-function getChefNotificationWithName () {
+//isFoodReady 0 ise matre önünde ekranda duracak
+function getMatreNotificationWithName () {
     return new Promise((resolve, reject) => {
         mOrderFood.findAll({
 
@@ -333,6 +333,61 @@ function getChefNotificationWithName () {
     })
 }
 
+//chef onaylıyor (2) Yemek hazır. Garson
+function bartenderApprovesBeverageReady(orderId) {
+    console.log('chefApprovesFoodReady ');
+    return new Promise((resolve, reject) => {
+        mOrder.update(
+            {
+                isFoodReady: 1
+            },
+            {
+                where:
+                    {
+                        id: orderId,
+                    }
+            }).then((order)=>{
+            console.log(order);
+            if (order>0)
+                resolve("Chef approved.");
+            else
+                reject('Chef did not approve!');
+        })
+            .catch(error =>{
+                reject(error);
+            })
+    })
+}
+
+
+//isFoodReady 0 ise matre önünde ekranda duracak
+function getMatreNotification () {
+    return new Promise((resolve, reject) => {
+        mOrder.findAll({
+            where:
+                {
+                    orderOpen:true,
+                    isFoodReady:0
+                },
+            include: [
+                {
+                    model:mFood,
+                    through: mOrderFood,
+                },
+                /*
+                {
+                    model:mBeverage,
+                    through: mOrderBeverage
+                }
+                */
+            ]
+        }).then((order) => {
+            resolve(JSON.stringify(order));
+        }).catch(error=>{
+            reject(error);
+        })
+    })
+}
 
 //isFoodReady 0 ise şef önünde ekranda duracak
 function getAllOpenOrders () {
@@ -833,7 +888,7 @@ module.exports = function (app) {
             })
         }
     }),
-
+/*
         app.get('/api/order/getChefNotificationWithName', function (request, response) {
         if (request.session != undefined  && (checkUsersRole.isChef(request.session.roleId)))
         {
@@ -852,6 +907,7 @@ module.exports = function (app) {
             })
         }
     }),
+    */
         app.get('/api/order/getAllOpenOrders', function (request, response) {
             if (request.session != undefined  && (checkUsersRole.isChef(request.session.roleId)))
             {
@@ -949,6 +1005,23 @@ module.exports = function (app) {
             {
                 //request.session.username
                 bartenderApprovesBeverageReady(request.params.orderId)
+                    .then(notification=> {
+                        response.end(notification);
+                    }).catch(error => {
+                    response.end(error.toString());
+                })
+            }
+            else {
+                response.write(checkUsersRole.errorMesage(), () => {
+                    response.statusCode = 404;
+                    response.end();
+                })
+            }
+        }),
+        app.get('/api/order/getMatreNotification', function (request, response) {
+            if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId) || checkUsersRole.isAdmin(request.session.roleId)))
+            {
+                getMatreNotification()
                     .then(notification=> {
                         response.end(notification);
                     }).catch(error => {
