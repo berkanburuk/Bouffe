@@ -29,7 +29,7 @@
         <table id="table_data" class="table table-hover table-bordered table-striped">
             <thead>
             <tr>
-                <th>Table ID</th>
+                <th>Table NO</th>
                 <th>Structure</th>
                 <th>Capacity</th>
                 <th>Status</th>
@@ -60,9 +60,9 @@
             <form id="add_table_form">
                 <div class="modal-body">
                     <div class="form-group">
-                        <label class="col-form-label col-md-3">Table Id</label>
+                        <label class="col-form-label col-md-3">Table No</label>
                         <div class="col-md-11">
-                            <input name="id" id="id" placeholder="Table Id" class="form-control" type="text">
+                            <input name="id" id="id" placeholder="Table No" class="form-control" type="text">
                             <span class="help-block"></span>
                         </div>
                     </div>
@@ -117,9 +117,9 @@
             <form id="update_table_form">
                 <div class="modal-body">
                     <div class="form-group">
-                        <label class="col-form-label col-md-3">Table ID</label>
+                        <label class="col-form-label col-md-3">Table No</label>
                         <div class="col-md-11">
-                            <input name="uid" id="uid" placeholder="Table Id" class="form-control" type="text">
+                            <input name="uid" id="uid" placeholder="Table No" class="form-control" type="text">
                             <span class="help-block"></span>
                         </div>
                     </div>
@@ -333,7 +333,7 @@
                 }
             });
             console.log(data2);
-            $.ajax({
+           /* $.ajax({
                 url: '/api/table/assignTableToUser',
                 dataType: 'application/json',
                 data: data2,
@@ -346,7 +346,7 @@
                          $('#description').val("");
                          $('#quantity').val("");
                          $('#price').val("");
-                         getAllFoods();*/
+                         getAllFoods();
                         //  location.reload();
 
                     },
@@ -354,7 +354,7 @@
                         alert(x.responseText);
                     }
                 }
-            });
+            });*/
         });
     });
 
