@@ -480,10 +480,8 @@ function getNotificationForBartender (userUsername) {
                         {
                             model:mBeverage,
                             through: mOrderBeverage,
-                        }
-                    ],
-                include:
-                    [
+                        },
+
                         {
                             model: mTable,
                             through: mOrderTable
