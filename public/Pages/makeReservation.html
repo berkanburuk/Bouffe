@@ -157,14 +157,14 @@
         'autoclose': true
     });
 
-    $(window).load(function () {
+   /* $(window).load(function () {
         var phones = [{"mask": "(###) ###-####"}];
         $('#phone').inputmask({
             mask: phones,
             greedy: false,
             definitions: {'#': {validator: "[0-9]", cardinality: 1}}
         });
-    });
+    });*/
 
     $.ajax({
         url: '/api/reservation/getAllReservation',
@@ -253,7 +253,7 @@
                 200: function (x) {
                     $('#modal_form_add_reservation').modal('hide');
                     console.log(x.responseText);
-                    // location.reload();
+                     location.reload();
                 },
                 404: function (x) {
                     alert(x.responseText);
