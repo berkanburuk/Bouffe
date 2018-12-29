@@ -708,6 +708,29 @@ function getRejectedFoods(userUsername) {
     })
 }
 
+//5 -> rejectedFoodsAreSeen-> Approve
+function rejectedFoodsAreSeen(orderId) {
+    return new Promise((resolve, reject) => {
+        mOrder.update(
+            {
+                isFoodReady:5
+            },
+            {
+                where:
+                    {
+                        id: orderId,
+                    }
+            }).then((order) => {
+            if (order > 0)
+                resolve("Menu is served!")
+            else
+                reject('Menu could not served!');
+        }).catch(error => {
+            reject(error);
+        })
+    })
+}
+
 //FOOD NOTIFICATIONS
 
 //isFoodReady 0 ise şef önünde ekranda duracak
@@ -895,6 +918,33 @@ function getRejectedBeverages(userUsername) {
             reject(error);
         })
 
+    })
+}
+
+
+//Rejected beverages Are Seen -> 5
+function rejectedBeveragesAreSeen(orderId) {
+    /*
+    data.orderId
+     */
+    return new Promise((resolve, reject) => {
+        mOrder.update(
+            {
+                isBeverageReady: 5
+            },
+            {
+                where:
+                    {
+                        id: orderId,
+                    }
+            }).then((order) => {
+            if (order > 0)
+                resolve("Beverage is served!")
+            else
+                reject('Beverage could not be served functionally!');
+        }).catch(error => {
+            reject(error);
+        })
     })
 }
 
@@ -1298,7 +1348,36 @@ module.exports = function (app) {
                 })
             }
         }),
-
+        app.post('/api/order/rejectedBeveragesAreSeen', function (request, response) {
+            if (request.session != undefined && (checkUsersRole.isWaiter(request.session.roleId))) {
+                rejectedBeveragesAreSeen(request.body.orderId).then(result => {
+                    response.end(result.toString());
+                }).catch(error => {
+                    response.end(error.toString());
+                })
+            }
+            else {
+                response.write(checkUsersRole.errorMesage(), () => {
+                    response.statusCode = 404;
+                    response.end();
+                })
+            }
+        }),
+        app.post('/api/order/rejectedFoodsAreSeen', function (request, response) {
+            if (request.session != undefined && (checkUsersRole.isWaiter(request.session.roleId))) {
+                rejectedFoodsAreSeen(request.body.orderId).then(result => {
+                    response.end(result.toString());
+                }).catch(error => {
+                    response.end(error.toString());
+                })
+            }
+            else {
+                response.write(checkUsersRole.errorMesage(), () => {
+                    response.statusCode = 404;
+                    response.end();
+                })
+            }
+        }),
         app.get('/api/order/getReadyFoods', function (request, response) {
             if (request.session != undefined && (checkUsersRole.isWaiter(request.session.roleId) || checkUsersRole.isAdmin(request.session.roleId))) {
 
