@@ -26,7 +26,7 @@ class OrderModel {
                 defaultValue: -1
                 //-1 -> Food Order'ı verilmedi
                 //0 -> default Value(Just Ordered) -> Şefin önüne onaylanması için düşecek
-                //1 -> Chef OK dedi.
+                //1 -> Chef OK dedi. update 2
                 //2 -> Chef yemek hazır dedi. waiter önüne düşecek.
                 //3 -> Waiter onaylayacak. Bitecek
                 //4 -> Şef reject edecek->
