@@ -201,9 +201,10 @@
         e.preventDefault();
         var data2 = {
             id: globalUpdateId,
-            newName: $('#uname').val().trim(),
+            name: $('#uname').val().trim(),
             price: $('#uprice').val()
         };
+        console.log(data2);
         $.ajax({
             url: '/api/beverage/updateBeverage',
             dataType: 'application/json',
