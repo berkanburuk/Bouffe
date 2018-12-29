@@ -230,6 +230,75 @@ function uploadTotalPaymentForMenu(data,flag) {
 }
 
 
+function reduceMenuPayment(data) {
+    /*
+    orderId
+    price
+     */
+    console.log(data);
+    return new Promise((resolve, reject) => {
+        var isSet = 0;
+        var price = 0;
+        for (var i=0;i<data.price.length;i++){
+                if (data.price[i]>0){
+                    isSet++;
+                    price += data.price[i];
+                }
+        }
+        if (isSet == 3){
+            mMenu.findOne({
+                attributes: ['setPrice'],
+                where: {
+                    isActive: true
+                }
+            }).then(menu => {
+                var d = menu.toJSON();
+                if (menu != undefined && menu != null) {
+                    price = d['setPrice'];
+                }
+
+                mOrder.findAll({
+                    where: {
+                        id:data.orderId
+                    },
+                    include: [
+                        {
+                            model:mTable,
+                            through: mOrderTable,
+                        }
+                    ]
+                }).then(ordersWithTable=>{
+                    console.log(ordersWithTable)
+
+
+                    mTable.update({
+                        totalPrice: myTotalPrice,
+                        status: 4
+                    }, {
+                        where: {
+                            id: data.tableId
+                        }
+                    }).then(result => {
+                        console.log(JSON.stringify(result));
+                        if (result != null && result != undefined) {
+                            resolve("Food Order is added successfully.");
+                        } else {
+                            reject("Food Order could not be given!");
+                        }
+                    }).catch(error => {
+                        reject(error);
+                    })
+
+
+                })
+            }).catch(error=>{
+                reject(error);
+            })
+        }
+    })
+}
+
+
 
 function createMenuOrder(data) {
     /*
@@ -258,7 +327,7 @@ function createMenuOrder(data) {
             },
             defaults: {
                 note: data.note,
-                isFoodReady:0
+                isFoodReady:1
             }
         })
             .then((order) => {
@@ -331,8 +400,8 @@ function createMenuOrder(data) {
 
 }
 
-//isFoodReady 0 ise matre önünde ekranda duracak
-function getMatreNotificationWithName () {
+//isFoodReady 1 ise matre önünde ekranda duracak
+function rejectOrder() {
     return new Promise((resolve, reject) => {
         mOrderFood.findAll({
 
@@ -352,7 +421,7 @@ function getMatreNotification () {
             where:
                 {
                     orderOpen:true,
-                    isFoodReady:0
+                    isFoodReady:1
                 },
             include: [
                 {
@@ -480,10 +549,8 @@ function getNotificationForBartender (userUsername) {
                         {
                             model:mBeverage,
                             through: mOrderBeverage,
-                        }
-                    ],
-                include:
-                    [
+                        },
+
                         {
                             model: mTable,
                             through: mOrderTable
@@ -965,7 +1032,25 @@ module.exports = function (app) {
 
     }),
 
+        app.get('/matreNotification', function (request, response) {
+            console.log('Order');
+            if (request.session != undefined  && (
+                checkUsersRole.isMatre(request.session.roleId)
+            ||checkUsersRole.isAdmin(request.session.roleId)
+            ))
+            {
+                response.sendFile(path.resolve('public/Pages/matreNotification.html'));
+            }
+            else {
+                response.write(checkUsersRole.errorMesage(), () => {
+                    response.statusCode = 404;
+                    response.end();
+                })
+            }
 
+            //res.end();
+
+        }),
 
         app.post('/api/order/orderBeverage', function (request, response) {
             if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
@@ -1187,9 +1272,24 @@ module.exports = function (app) {
             }
         })
 
-
-
-
+    app.post('/api/order/reduceMenuPayment', function (request, response) {
+        if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
+            || checkUsersRole.isAdmin(request.session.roleId) || checkUsersRole.isWaiter(request.session.roleId)))
+        {
+            var data = request.body;
+            reduceMenuPayment(data).then(beverage => {
+                response.end(beverage.toString());
+            }).catch(error => {
+                response.end(error.toString());
+            })
+        }
+        else {
+            response.write(checkUsersRole.errorMesage(), () => {
+                response.statusCode = 404;
+                response.end();
+            })
+        }
+    })
 
 
 }
