@@ -18,7 +18,7 @@ class TableModel {
             status: {
                 type: Sequelize.INTEGER,
                 defaultValue:0
-                //0 kırk
+                //0 kırık
                 //1 kullanıma uygun
                 //2 order var
             },
