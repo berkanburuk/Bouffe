@@ -1230,7 +1230,7 @@ module.exports = function (app) {
                 })
             }
         }),
-        app.get('/api/order/waiterServedBeverage', function (request, response) {
+        app.post('/api/order/waiterServedBeverage', function (request, response) {
             if (request.session != undefined && (checkUsersRole.isWaiter(request.session.roleId) || checkUsersRole.isAdmin(request.session.roleId))) {
                 waiterServedBeverage(request.body.orderId)
                     .then(notification => {
