@@ -481,19 +481,33 @@ function getUsersTable(data){
 
 function deleteTable(id){
     return new Promise((resolve,reject)=>{
-        mTable.destroy({
-            where: {
-                id: id
+        mTable.findOne({
+            where:{
+                id:id,
+                mergedWith:-2
             }
-        }).then(dbData=>{
-            if(dbData>0){
-                resolve('Table is deleted: '+ id);
+        }).then(table=>{
+            if (table != null || table != undefined) {
+                mTable.destroy({
+                    where: {
+                        id: id
+                    }
+                }).then(dbData => {
+                    if (dbData > 0) {
+                        resolve('Table is deleted: ' + id);
+                    } else {
+                        reject('Table could not be deleted: ' + id);
+                    }
+                }).catch(error => {
+                    reject(error + ' Table could not be deleted!');
+                })
             }else{
-                reject('Table could not be deleted: '+ id);
+                reject("Table is merged with another table. Therefore this table cannot be deleted!")
             }
-        }).catch(error =>{
-            reject(error + ' Table could not be deleted!');
+        }).catch(error=>{
+            reject(error);
         })
+
     })
 }
 

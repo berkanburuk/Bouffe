@@ -233,18 +233,28 @@ function uploadTotalPaymentForMenu(data,flag) {
 function reduceMenuPayment(data) {
     /*
     orderId
-    price
+    price1,
+    price2,
+    price3
      */
+    console.log(data)
     console.log(data);
     return new Promise((resolve, reject) => {
         var isSet = 0;
         var price = 0;
-        for (var i=0;i<data.price.length;i++){
-                if (data.price[i]>0){
+                if (data.price1>0){
                     isSet++;
-                    price += data.price[i];
+                    price += data.price1;
                 }
+        if (data.price2>0){
+            isSet++;
+            price += data.price2;
         }
+        if (data.price3>0){
+            isSet++;
+            price += data.price3;
+        }
+
         if (isSet == 3){
             mMenu.findOne({
                 attributes: ['setPrice'],
@@ -268,7 +278,7 @@ function reduceMenuPayment(data) {
                         }
                     ]
                 }).then(ordersWithTable=>{
-                    console.log(ordersWithTable)
+                    console.log("price:"+price+"\n"+ordersWithTable)
 
 
                     mTable.update({
@@ -607,10 +617,11 @@ function bartenderApproveOrRejectBeverage(orderId,beverageId,tableId,accepted) {
 
 }
 
-//Bartender will call this api. Get Ordered Beverage But not approved or rejected yet
-function getApprovedBeverages (userUsername) {
+//Waiter gets ready beverages
+function getReadyBeverages (userUsername) {
     return new Promise((resolve, reject) => {
         mOrder.findAll({
+            attributes:[],
             where:
                 {
                     orderOpen:true,
@@ -622,12 +633,12 @@ function getApprovedBeverages (userUsername) {
                         model:mBeverage,
                         through: mOrderBeverage,
                     },
-                ],
-            include:
-                [
                     {
                         model:mTable,
                         through: mOrderTable,
+                        where:{
+                          userUsername:userUsername
+                        }
                     }
                 ]
         }).then((order) => {
@@ -1270,7 +1281,26 @@ module.exports = function (app) {
                     response.end();
                 })
             }
-        })
+        }),
+        app.get('/api/order/getReadyBeverages', function (request, response) {
+            if (request.session != undefined  && (checkUsersRole.isWaiter(request.session.roleId) || checkUsersRole.isAdmin(request.session.roleId)))
+            {
+                getReadyBeverages(request.session.username)
+                    .then(notification=> {
+                        response.end(notification);
+                    }).catch(error => {
+                    response.end(error.toString());
+                })
+            }
+            else {
+                response.write(checkUsersRole.errorMesage(), () => {
+                    response.statusCode = 404;
+                    response.end();
+                })
+            }
+        }),
+
+
 
     app.post('/api/order/reduceMenuPayment', function (request, response) {
         if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
