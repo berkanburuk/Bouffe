@@ -38,6 +38,7 @@ function getAllPaymentByTableId(id){
 
 function partialPayment(tableId,price,paymentType ) {
     return new Promise((resolve, reject) => {
+        price = parseFloat(price);
         mTable.findOne({
             where: {
                 id: tableId,
