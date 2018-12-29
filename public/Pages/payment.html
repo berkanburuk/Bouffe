@@ -54,7 +54,8 @@
                         <div class="form-group">
                             <label class="col-form-label col-md-3">Total Price</label>
                             <div class="col-md-11">
-                                <input name="totalPrice" id="totalPrice" disabled autocomplete="off"
+                                <input name="totalPrice" id="totalPrice" disabled autocomplete="off" type="number"
+                                       min="0.0" step=.01"
                                        class="form-control">
                                 <span class="help-block"></span>
                             </div>
@@ -62,7 +63,7 @@
                         <div class="form-group">
                             <label class="col-form-label col-md-3">Payment</label>
                             <div class="col-md-11">
-                                <input name="payment" id="payment" autocomplete="off" type="number" min="0.0"
+                                <input name="payment" id="payment" autocomplete="off" type="number" min="0.0" step=".01"
                                        class="form-control">
                                 <span class="help-block"></span>
                             </div>
@@ -282,6 +283,7 @@
             statusCode: {
                 200: function (x) {
                     $('#modal_form').modal('hide');
+                   // console.log(x.responseText);
                     alert(x.responseText);
                     location.reload();
                 },

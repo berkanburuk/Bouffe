@@ -46,7 +46,7 @@
 <script>
     var count = 15;
     var custom_list;
-    $(document).ready(function() {
+    $(document).ready(function () {
 
         var ans = $.ajax({
             //1
@@ -72,11 +72,12 @@
             }
         });
     });
+
     function getMenu(dat) {
 
         var tableTop = "</table>";
-        var tableData="";
-        var tableEnd="</table>";
+        var tableData = "";
+        var tableEnd = "</table>";
 
         var length = -1;
         if (dat === undefined || dat.length === undefined) {
@@ -84,12 +85,12 @@
             console.log("CIKTIM");
             return tableData;
         }
-        var x="<script src='https://cdn.jsdelivr.net/npm/sweetalert2@7.32.2/dist/sweetalert2.all.min.js'>";
-        x+="<";
-        x+="/script>\n";
-        x+="<script";
-        x+=">\n"
-        x+="\$(document).ready(function(){\n";
+        var x = "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@7.32.2/dist/sweetalert2.all.min.js'>";
+        x += "<";
+        x += "/script>\n";
+        x += "<script";
+        x += ">\n"
+        x += "\$(document).ready(function(){\n";
 
         //x+="var mylist = $('#main');";
         //x+="var listitems = mylist.children('div').get();";
@@ -102,60 +103,95 @@
         //    mylist.append(itm);
         //});​
 
-
-        x+="\$('div#bodyHere div#order').click( function(e) {\n";
+        x += "var beverageId, tableId, y;"
+        x += "\$('div#bodyHere div#order').click( function(e) {\n";
         //x+="\$(location).attr('href', \$(this).attr('value'));";
-        x+="\n";
-        x+="e.preventDefault();\n";
-        x+="var y = parseInt($(this).attr('value'));\n";
-        x+="var texty=$(this).attr('name');\n";
-        x+="case1(texty,y);";
-        x+="});\n";
-        x+="function case1(text,y) {\n";
-        x+="Swal({\n";
-        x+="title: 'Attention!',\n";
-        x+="text: \"You are going to confirm that the order \"+text+\" with \" + y + \" id is ready  !\",";
-        x+="type: 'information',\n";
-        x+="showCloseButton: true,\n";
-        x+="confirmButtonColor: '#3085d6',\n";
-        x+="confirmButtonText: 'Ready',\n";
-        x+=" }).then((result) => {\n";
-        x+="console.log(y);\n";
-        x+="console.log(y);\n";
-        x+="$.ajax({\n";
-        x+="type: 'GET',\n";
-        x+="dataType: 'application/json',\n";
+        x += "\n";
+        x += "e.preventDefault();\n";
+        x += "var valuesToSplit = $(this).attr('value').split(','); \n";
+        x += "y = parseInt(valuesToSplit[0]);\n";
+        x += "tableId = parseInt(valuesToSplit[1]);\n";
+        x += "beverageId = parseInt(valuesToSplit[2]);\n";
+        x += "var texty=$(this).attr('name');\n";
+        x += "case1(texty,y);";
+        x += "});\n";
+        x += "function case1(text,y) {\n";
+        x += "Swal({\n";
+        x += "title: 'Notification!',\n";
+        x += "text: \"Approve or Reject \"+text+\" with \" + y + \" id is ready  !\",";
+        x += "type: 'info',\n";
+        x += "showCancelButton: true,\n";
+        x += "cancelButtonColor: '#18426B',\n";
+        x += "showCloseButton: true,\n";
+        x += "confirmButtonColor: '#3085d6',\n";
+        x += "cancelButtonColor: '#cc0000',\n";
+        x += "confirmButtonText: 'Ready',\n";
+        x += "cancelButtonText: 'Reject'\n";
+        x += " }).then((result) => {\n";
+        x += "if(result.value){";
+        x += "console.log(y);\n";
+        x += "console.log(y);\n";
+        x += "var data2 = {beverageId: beverageId, tableId: tableId, orderId: y, accepted: true}\n";
+        x += "$.ajax({\n";
+        x += "type: 'POST',\n";
+        x += "dataType: 'application/json',\n";
         //2
-        x+="url: '/api/order/bartenderApprovesBeverageReady/'+y,\n";
-        x+="timeout: 10000,\n";
-        x+="statusCode: {\n";
-        x+="200: function (x) {\n";
-        x+="location.reload();\n";
-        x+="},\n";
-        x+="404: function (x) {\n";
-        x+="alert(x.responseText);\n";
-        x+="}\n";
-        x+="},\n";
-        x+="})\n";
-        x+="})\n";
-        x+="}\n";
-        x+="});\n";
+        x += "url: '/api/order/bartenderApproveOrRejectBeverage',\n";
+        x += "timeout: 10000,\n";
+        x += "data: data2,\n";
+        x += "statusCode: {\n";
+        x += "200: function (x) {\n";
+        x += "location.reload();\n";
+        x += "},\n";
+        x += "404: function (x) {\n";
+        x += "alert(x.responseText);\n";
+        x += "}\n"; //400
+        x += "},\n";//statuscode
+        x += "})\n";//ajax
+        x += "}else if(result.dismiss=== Swal.DismissReason.cancel){";
+        x += "console.log(y);\n";
+        x += "console.log(y);\n";
+        x += "var data2 = {beverageId: beverageId, tableId: tableId, orderId: y, accepted: false}\n";
+        x += "$.ajax({\n";
+        x += "type: 'GET',\n";
+        x += "dataType: 'application/json',\n";
+        //3
+        x += "url: '/api/order/bartenderApproveOrRejectBeverage',\n";
+        x += "timeout: 10000,\n";
+        x += "data: data2,\n";
+        x += "statusCode: {\n";
+        x += "200: function (x) {\n";
+        x += "location.reload();\n";
+        x += "},\n";
+        x += "404: function (x) {\n";
+        x += "alert(x.responseText);\n";
+        x += "}\n"; //400
+        x += "},\n";//statuscode
+        x += "})\n";//ajax
+        x += "}";//else if
+        x += "})\n";//then.result
+        x += "}\n";
+        x += "});\n";
         /*
 
         */
-        x+="<";
-        x+="/script>\n";
-        for(var i=0; i<dat.length; i++) {
+        x += "<";
+        x += "/script>\n";
+        for (var i = 0; i < dat.length; i++) {
 
 
             if (dat[i].isBeverageReady === 0) {
-                console.log(dat[i]);
-            console.log(dat[i].beverages[0].name);
-            //3
-            tableData += "<div id='" + "order" + "' value='" + dat[i].id + "'" + " name='" + dat[i].beverages[0].name + "' " + "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/s2.png' alt=\"\"><div class=\"centered\">" + dat[i].id + " is refers Food: " + dat[i].beverages[0].name + "</div></p></p></div>";
+                //console.log(dat[i]);
+                console.log(dat[i].beverages[0].name);
+                //3
+                tableData += "<div id='" + "order" + "' value='" + dat[i].id + "," + dat[i].tables[0].id + "," + dat[i].beverages[0].id + "'" + " name='" + dat[i].beverages[0].name + "' " + "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/s2.png' alt=\"\"><div class=\"centered\">" + dat[i].id + " : " + dat[i].beverages[0].name + "</div></p></p></div>";
             }
         }
-        return x+tableData;
+        return x + tableData;
 
     }
+
+    setInterval(function () {
+      location.reload();
+    }, 15000);
 </script>
