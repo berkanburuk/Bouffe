@@ -467,22 +467,20 @@ function getNotificationForBartender (userUsername) {
                 where:
                     {
                         orderOpen:true,
-                        isBeverageReady: 0,
+                        isBeverageReady: 0
                     },
                 include:
                     [
                         {
                             model:mBeverage,
                             through: mOrderBeverage,
-                        },
+                        }
                     ],
+                /*
                 include:
                     [
-                        {
-                            model:mTable,
-                            through: mOrderTable,
-                        }
                     ]
+                    */
             }).then((order) => {
                 resolve(JSON.stringify(order));
             }).catch(error=>{

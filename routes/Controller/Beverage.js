@@ -28,7 +28,7 @@ function updateBeverage (data){
                     },
             }).then((beverage)=>{
             console.log(beverage);
-            if(beverage[0]>0){
+            if(beverage>0){
                 resolve("Beverage is updated successfully.");
             }else {
                 reject("Beverage could not be updated!");
