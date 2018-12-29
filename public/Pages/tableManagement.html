@@ -20,23 +20,22 @@
     <link rel="stylesheet" type="text/css" href="../stylesheets/style.css"/>
 
 
-
     <script>
         var count = 15;
         var custom_list;
-        $(document).ready(function() {
+        $(document).ready(function () {
 
-            var ans =  $.ajax({
+            var ans = $.ajax({
                 url: '/api/table/getAllTables',
                 type: "GET",
 
                 statusCode: {
-                    404: function() {
+                    404: function () {
                         console.log("-1-1-1-1 WE GOT 404!");
                     },
-                    200: function(responseBody) {
+                    200: function (responseBody) {
                         console.log(responseBody);
-                        var dat=JSON.parse(responseBody);
+                        var dat = JSON.parse(responseBody);
                         console.log(dat);
                         console.log(responseBody);
 
@@ -60,15 +59,14 @@
                 <!-- 5)   -->
 
 
-
                 //var x="<script src='../TableFiles/vendor/jquery/jquery.min.js'>";
 
-                var x="<script src='https://cdn.jsdelivr.net/npm/sweetalert2@7.32.2/dist/sweetalert2.all.min.js'>";
-                x+="<";
-                x+="/script>\n";
-                x+="<script";
-                x+=">\n"
-                x+="\$(document).ready(function(){\n";
+                var x = "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@7.32.2/dist/sweetalert2.all.min.js'>";
+                x += "<";
+                x += "/script>\n";
+                x += "<script";
+                x += ">\n"
+                x += "\$(document).ready(function(){\n";
 
                 //x+="var mylist = $('#main');";
                 //x+="var listitems = mylist.children('div').get();";
@@ -82,50 +80,50 @@
                 //});​
 
 
-                x+="\$('div#tables div#utable').click( function(e) {\n";
+                x += "\$('div#tables div#utable').click( function(e) {\n";
                 //x+="\$(location).attr('href', \$(this).attr('value'));";
-                x+="\n";
-                x+="e.preventDefault();\n";
-                x+="var merged = false;\n";
-                x+="var activated = false;\n";
-                x+="var mergedlist={};\n";
-                x+="var y = parseInt($(this).attr('value'));\n";
-                x+="var texty=$(this).attr('name');\n";
-                x+="var getTable = $.ajax({\n";
-                x+="url: '/api/table/getATable/' + y,\n";
-                x+="type: \"GET\",\n";
-                x+="statusCode: {\n";
-                x+="404: function () {\n";
-                x+="console.log(\"-1-1-1-1 WE GOT 404!\");\n";
-                x+="},\n";
-                x+="\n";
-                x+="200: function (responseBody) {\n";
-                x+="console.log(responseBody);\n";
-                x+="var dat = JSON.parse(responseBody);\n";
-                x+="console.log(dat);\n";
-                x+="console.log(responseBody);\n";
-                x+="if (dat.status < 1 ) {\n";
-                x+="console.log(\"-1 Then\");\n";
-                x+="if(dat.mergedWith===-2)";
-                x+="{\n";
-                x+="console.log(\"-2 Then\");\n";
-                x+="var getMerged=$.ajax({\n";
-                x+="url: '/api/table/getTableMinus',\n";
-                x+="type: \"GET\",\n";
-                x+="statusCode: {\n";
-                x+="404: function () {\n";
-                x+="console.log(\"-1-1-1-1 WE GOT 404!\");\n";
-                x+="},\n";
-                x+="200: function(respBody2){\n";
-                x+="var data = JSON.parse(JSON.parse(respBody2));\n";
-                x+="console.log(data.length);\n";
-                x+="console.log(data);\n";
+                x += "\n";
+                x += "e.preventDefault();\n";
+                x += "var merged = false;\n";
+                x += "var activated = false;\n";
+                x += "var mergedlist={};\n";
+                x += "var y = parseInt($(this).attr('value'));\n";
+                x += "var texty=$(this).attr('name');\n";
+                x += "var getTable = $.ajax({\n";
+                x += "url: '/api/table/getATable/' + y,\n";
+                x += "type: \"GET\",\n";
+                x += "statusCode: {\n";
+                x += "404: function () {\n";
+                x += "console.log(\"-1-1-1-1 WE GOT 404!\");\n";
+                x += "},\n";
+                x += "\n";
+                x += "200: function (responseBody) {\n";
+                x += "console.log(responseBody);\n";
+                x += "var dat = JSON.parse(responseBody);\n";
+                x += "console.log(dat);\n";
+                x += "console.log(responseBody);\n";
+                x += "if (dat.status < 1 ) {\n";
+                x += "console.log(\"-1 Then\");\n";
+                x += "if(dat.mergedWith===-2)";
+                x += "{\n";
+                x += "console.log(\"-2 Then\");\n";
+                x += "var getMerged=$.ajax({\n";
+                x += "url: '/api/table/getTableMinus',\n";
+                x += "type: \"GET\",\n";
+                x += "statusCode: {\n";
+                x += "404: function () {\n";
+                x += "console.log(\"-1-1-1-1 WE GOT 404!\");\n";
+                x += "},\n";
+                x += "200: function(respBody2){\n";
+                x += "var data = JSON.parse(JSON.parse(respBody2));\n";
+                x += "console.log(data.length);\n";
+                x += "console.log(data);\n";
 
-                x+="if(data.length===undefined)\n";
-                x+="{\n";
-                x+="mergedlist[data.id] = data.id;\n";
-                x+="}\n";
-                x+="else {\n";
+                x += "if(data.length===undefined)\n";
+                x += "{\n";
+                x += "mergedlist[data.id] = data.id;\n";
+                x += "}\n";
+                x += "else {\n";
                 //x+="console.log(data[i].id);\n";
                 //x+="var i = 0;\n";
                 //x+="while(data[i].id!=undefined){\n";
@@ -133,395 +131,395 @@
                 //x+="i+=1;\n";
                 //x+="}\n";
 
-                x+="for (var i = 0; i < data.length; i++) {\n";
-                x+="mergedlist[data[i].id] =  data[i].id;\n";
-                x+="}\n";
-                x+="}\n";
-                x+="console.log(mergedlist);\n";
-                x+="case0(mergedlist,y);\n";
-                x+="},\n";
-                x+="}\n";
-                x+="})\n";
-                x+="}\n";
-                x+="else{\n";
-                x+="case1(texty,y);\n";
-                x+="}\n";
-                x+="}\n";
-                x+="else{\n";
-                x+="if(dat.mergedWith===-2)\n";
-                x+="{\n";
-                x+="console.log(\"-2 Then\");\n";
-                x+="var getMerged=$.ajax({\n";
-                x+="url: '/api/table/getTableMinus',\n";
-                x+="type: \"GET\",\n";
-                x+="statusCode: {\n";
-                x+="404: function () {\n";
-                x+="console.log(\"-1-1-1-1 WE GOT 404!\");\n";
-                x+="},\n";
-                x+="200: function(respBody2){\n";
-                x+="var data = JSON.parse(JSON.parse(respBody2));\n";
-                x+="if(data.length===undefined)\n";
-                x+="{\n";
-                x+="mergedlist[data.id] = data.id;\n";
-                x+="}\n";
-                x+="else {\n";
+                x += "for (var i = 0; i < data.length; i++) {\n";
+                x += "mergedlist[data[i].id] =  data[i].id;\n";
+                x += "}\n";
+                x += "}\n";
+                x += "console.log(mergedlist);\n";
+                x += "case0(mergedlist,y);\n";
+                x += "},\n";
+                x += "}\n";
+                x += "})\n";
+                x += "}\n";
+                x += "else{\n";
+                x += "case1(texty,y);\n";
+                x += "}\n";
+                x += "}\n";
+                x += "else{\n";
+                x += "if(dat.mergedWith===-2)\n";
+                x += "{\n";
+                x += "console.log(\"-2 Then\");\n";
+                x += "var getMerged=$.ajax({\n";
+                x += "url: '/api/table/getTableMinus',\n";
+                x += "type: \"GET\",\n";
+                x += "statusCode: {\n";
+                x += "404: function () {\n";
+                x += "console.log(\"-1-1-1-1 WE GOT 404!\");\n";
+                x += "},\n";
+                x += "200: function(respBody2){\n";
+                x += "var data = JSON.parse(JSON.parse(respBody2));\n";
+                x += "if(data.length===undefined)\n";
+                x += "{\n";
+                x += "mergedlist[data.id] = data.id;\n";
+                x += "}\n";
+                x += "else {\n";
                 //x+="var i = 0;\n";
                 //x+="while(data[i].id!=undefined){\n";
                 //x+="mergedlist[data[i].id] =  data[i].id;\n";
                 //x+="i+=1;\n";
                 //x+="}\n";
-                x+="for (var i = 0; i < data.length; i++) {\n";
-                x+="mergedlist[data[i].id] =  data[i].id;\n";
-                x+="}\n";
-                x+="}\n";
-                x+="case2(mergedlist,y);\n";
-                x+="},\n";
-                x+="}\n";
-                x+="})\n";
-                x+="}\n";
-                x+="else{\n";
-                x+="case3(texty,y);\n";
-                x+="}\n";
-                x+="}\n";
-                x+="},\n";
-                x+="}\n";
-                x+="});\n";
-                x+="});\n";
-                x+="function case0(text,y) {\n";
-                x+="Swal({\n";
-                x+="title: 'Are you sure?',\n";
-                x+="text: \"You won't be able to revert \" + y + \" this!\",\n";
+                x += "for (var i = 0; i < data.length; i++) {\n";
+                x += "mergedlist[data[i].id] =  data[i].id;\n";
+                x += "}\n";
+                x += "}\n";
+                x += "case2(mergedlist,y);\n";
+                x += "},\n";
+                x += "}\n";
+                x += "})\n";
+                x += "}\n";
+                x += "else{\n";
+                x += "case3(texty,y);\n";
+                x += "}\n";
+                x += "}\n";
+                x += "},\n";
+                x += "}\n";
+                x += "});\n";
+                x += "});\n";
+                x += "function case0(text,y) {\n";
+                x += "Swal({\n";
+                x += "title: 'Are you sure?',\n";
+                x += "text: \"You won't be able to revert \" + y + \" this!\",\n";
 
-                x+="type: 'warning',\n";
-                x+="showCancelButton: true,\n";
-                x+="showCloseButton: true,\n";
-                x+="confirmButtonColor: '#3085d6',\n";
-                x+="cancelButtonColor: '#18426B',\n";
-                x+="confirmButtonText: 'Combine',\n";
-                x+="cancelButtonText: 'Activate'\n";
-                x+="}).then((result) => {\n";
-                x+="if (result.value) {\n";
-                x+="Swal.mixin({\n";
-                x+="input: 'select',\n";
-                x+="inputOptions: text,\n";
-                x+="confirmButtonText: 'Next &rarr;',\n";
-                x+="showCancelButton: true,\n";
-                x+="}).queue([\n";
-                x+="{\n";
-                x+="title: 'Manage Table',\n";
-                x+="text: 'Select Table to combine/divide'\n";
-                x+="}]).then((result,id) => {\n";
-                x+="if (result.value) {\n";
-                x+="Swal({\n";
-                x+="title: 'All done!',\n";
-                x+="html:\n";
-                x+="'Your answers:' +\n";
-                x+="result.value,\n";
-                x+="confirmButtonText: 'Lovely!'\n"
-                x+="})\n";
-                x+="var data = {\n";
-                x+="tableId1: parseInt(result.value[0]),\n";
-                x+="tableId2: y,\n";
-                x+="};\n";
-                x+="console.log(data[\"tableId1\"]);\n";
-                x+="if(data[\"tableId1\"]===data[\"tableId2\"]){\n";
-                x+="data[\"tableId1\"]= -2;\n";
-                x+="data[\"tableId2\"]= -2;\n";
-                x+="}\n"
-                x+="$.ajax({\n";
-                x+="type: 'POST',\n";
-                x+="dataType: 'application/json',\n";
-                x+="url: '/api/table/createAMerge',\n";
-                x+="timeout: 5000,\n"
-                x+="data: data, statusCode: {\n";
-                x+="200: function (x) {\n";
-                x+="location.reload();\n";
-                x+="},\n";
-                x+="404: function (x) {\n";
-                x+="alert(x.responseText);\n";
-                x+="}\n";
-                x+="},\n";
-                x+="})\n";
-                x+="}\n";
-                x+="})\n";
-                x+="}\n";
-                x+="else if(result.dismiss=== Swal.DismissReason.cancel)\n";
-                x+="{\n";
-                x+="Swal(\n";
-                x+="'Anim',\n";
-                x+="'table',\n";
-                x+="'success',\n";
-                x+=").then(()=>{\n";
-                x+="console.log(y);\n";
-                x+="var data = {\n";
-                x+="tableId: y,\n";
-                x+="status: 1,\n";
-                x+="};\n";
-                x+="$.ajax({\n";
-                x+="type: 'POST',\n";
-                x+="dataType: 'application/json',\n";
-                x+="url: '/api/table/updateStatus',\n";
-                x+="timeout: 5000,\n";
-                x+="data: data, statusCode: {\n";
-                x+="200: function (x) {\n";
-                x+="location.reload();\n";
-                x+="},\n";
-                x+="404: function (x) {\n";
-                x+="alert(x.responseText);\n";
-                x+="}\n";
-                x+="},\n";
-                x+="})\n";
-                x+="})\n";
-                x+="}\n";
-                x+="})\n";
-                x+="}\n";
+                x += "type: 'warning',\n";
+                x += "showCancelButton: true,\n";
+                x += "showCloseButton: true,\n";
+                x += "confirmButtonColor: '#3085d6',\n";
+                x += "cancelButtonColor: '#18426B',\n";
+                x += "confirmButtonText: 'Combine',\n";
+                x += "cancelButtonText: 'Activate'\n";
+                x += "}).then((result) => {\n";
+                x += "if (result.value) {\n";
+                x += "Swal.mixin({\n";
+                x += "input: 'select',\n";
+                x += "inputOptions: text,\n";
+                x += "confirmButtonText: 'Next &rarr;',\n";
+                x += "showCancelButton: true,\n";
+                x += "}).queue([\n";
+                x += "{\n";
+                x += "title: 'Manage Table',\n";
+                x += "text: 'Select Table to combine/divide'\n";
+                x += "}]).then((result,id) => {\n";
+                x += "if (result.value) {\n";
+                x += "Swal({\n";
+                x += "title: 'All done!',\n";
+                x += "html:\n";
+                x += "'Your answers:' +\n";
+                x += "result.value,\n";
+                x += "confirmButtonText: 'Lovely!'\n"
+                x += "})\n";
+                x += "var data = {\n";
+                x += "tableId1: parseInt(result.value[0]),\n";
+                x += "tableId2: y,\n";
+                x += "};\n";
+                x += "console.log(data[\"tableId1\"]);\n";
+                x += "if(data[\"tableId1\"]===data[\"tableId2\"]){\n";
+                x += "data[\"tableId1\"]= -2;\n";
+                x += "data[\"tableId2\"]= -2;\n";
+                x += "}\n"
+                x += "$.ajax({\n";
+                x += "type: 'POST',\n";
+                x += "dataType: 'application/json',\n";
+                x += "url: '/api/table/createAMerge',\n";
+                x += "timeout: 5000,\n"
+                x += "data: data, statusCode: {\n";
+                x += "200: function (x) {\n";
+                x += "location.reload();\n";
+                x += "},\n";
+                x += "404: function (x) {\n";
+                x += "alert(x.responseText);\n";
+                x += "}\n";
+                x += "},\n";
+                x += "})\n";
+                x += "}\n";
+                x += "})\n";
+                x += "}\n";
+                x += "else if(result.dismiss=== Swal.DismissReason.cancel)\n";
+                x += "{\n";
+                x += "Swal(\n";
+                x += "'Anim',\n";
+                x += "'table',\n";
+                x += "'success',\n";
+                x += ").then(()=>{\n";
+                x += "console.log(y);\n";
+                x += "var data = {\n";
+                x += "tableId: y,\n";
+                x += "status: 1,\n";
+                x += "};\n";
+                x += "$.ajax({\n";
+                x += "type: 'POST',\n";
+                x += "dataType: 'application/json',\n";
+                x += "url: '/api/table/updateStatus',\n";
+                x += "timeout: 5000,\n";
+                x += "data: data, statusCode: {\n";
+                x += "200: function (x) {\n";
+                x += "location.reload();\n";
+                x += "},\n";
+                x += "404: function (x) {\n";
+                x += "alert(x.responseText);\n";
+                x += "}\n";
+                x += "},\n";
+                x += "})\n";
+                x += "})\n";
+                x += "}\n";
+                x += "})\n";
+                x += "}\n";
 
-                x+="function case1(text,y) {\n";
-                x+="Swal({\n";
-                x+="title: 'Attention!',\n";
-                x+="text: \"Actions you performed will be permenant  on \" + y + \"  table!\",\n";
-                x+="type: 'warning',\n";
-                x+="showCancelButton: true,\n";
-                x+="showCloseButton: true,\n";
-                x+="confirmButtonColor: '#3085d6',\n";
-                x+="cancelButtonColor: '#18426B',\n";
-                x+="confirmButtonText: 'Divide',\n";
-                x+="cancelButtonText: 'Activate'\n";
-                x+="}).then((result) => {\n";
-                x+="if (result.value) {\n";
-                x+="Swal(\n";
-                x+="'Tables are unmerged',\n";
-                x+="'table',\n";
-                x+="'success',\n";
-                x+=").then(()=>{\n";
-                x+="console.log(text);\n";
+                x += "function case1(text,y) {\n";
+                x += "Swal({\n";
+                x += "title: 'Attention!',\n";
+                x += "text: \"Actions you performed will be permenant  on \" + y + \"  table!\",\n";
+                x += "type: 'warning',\n";
+                x += "showCancelButton: true,\n";
+                x += "showCloseButton: true,\n";
+                x += "confirmButtonColor: '#3085d6',\n";
+                x += "cancelButtonColor: '#18426B',\n";
+                x += "confirmButtonText: 'Divide',\n";
+                x += "cancelButtonText: 'Activate'\n";
+                x += "}).then((result) => {\n";
+                x += "if (result.value) {\n";
+                x += "Swal(\n";
+                x += "'Tables are unmerged',\n";
+                x += "'table',\n";
+                x += "'success',\n";
+                x += ").then(()=>{\n";
+                x += "console.log(text);\n";
                 //x+="var data = JSON.stringify(text.split('-')); ";
-                x+="var data={};\n";
-                x+="var send = text.split('-');\n";
-                x+="for(var i=0;i<send.length; i++)\n";
-                x+="{\n";
-                x+="data[i]=send[i];\n";
-                x+="}\n";
-                x+="console.log(data);\n";
-                x+="$.ajax({\n";
-                x+="type: 'POST',\n";
-                x+="dataType: 'application/json',\n";
-                x+="url: '/api/table/divideTable',\n";
-                x+="timeout: 5000,\n";
-                x+="data: data, statusCode: {\n";
-                x+="200: function (x) {\n";
-                x+="location.reload();\n";
-                x+="},\n";
-                x+="404: function (x) {\n";
-                x+="alert(x.responseText);\n";
-                x+="}\n";
-                x+="},\n";
-                x+="})\n";
-                x+="})\n";
-                x+="}\n";
-                x+="else if(result.dismiss=== Swal.DismissReason.cancel)\n";
-                x+="{\n";
-                x+="Swal(\n";
-                x+="'Anim',\n";
-                x+="'table',\n";
-                x+="'success',\n"
-                x+=").then(()=>{\n";
-                x+="console.log(y);\n";
-                x+="var data = {\n";
-                x+="tableId: y,\n";
-                x+="status: 1,\n";
-                x+="};\n";
-                x+="$.ajax({\n";
-                x+="type: 'POST',\n";
-                x+="dataType: 'application/json',\n";
-                x+="url: '/api/table/updateStatus',\n";
-                x+="timeout: 5000,\n";
-                x+="data: data, statusCode: {\n";
-                x+="200: function (x) {\n";
-                x+="location.reload();\n";
-                x+="},\n";
-                x+="404: function (x) {\n";
-                x+="alert(x.responseText);\n";
-                x+="}\n";
-                x+="},\n";
-                x+="})\n";
-                x+="})\n";
-                x+="}\n";
-                x+="})\n";
-                x+="}\n";
-                x+="function case2(text,y) {\n";
-                x+="Swal({\n";
-                x+="title: 'Are you sure?',\n";
-                x+="text: \"You won't be able to revert \" + y + \" this!\",\n";
-                x+="type: 'warning',\n";
-                x+="showCancelButton: true,\n";
-                x+="showCloseButton: true,\n";
-                x+="confirmButtonColor: '#3085d6',\n";
-                x+="cancelButtonColor: '#18426B',\n";
-                x+="confirmButtonText: 'Combine',\n";
-                x+="cancelButtonText: 'Deactivate'\n";
-                x+="}).then((result) => {\n";
-                x+="if (result.value) {\n";
-                x+="Swal.mixin({\n";
-                x+="input: 'select',\n";
-                x+="inputOptions: text,\n";
-                x+="confirmButtonText: 'Next &rarr;',\n";
-                x+="showCancelButton: true,\n";
-                x+="}).queue([\n";
-                x+="{\n";
-                x+="title: 'Manage Table',\n";
-                x+="text: 'Select Table to combine/divide'\n";
-                x+="}]).then((result,id) => {\n";
-                x+="if (result.value) {\n";
-                x+="Swal({\n";
-                x+="title: 'All done!',\n";
-                x+="html:\n";
-                x+="'Your answers:' +\n";
-                x+="result.value,\n";
-                x+="confirmButtonText: 'Lovely!'\n";
-                x+="})\n";
-                x+="console.log(result.value);\n";
-                x+="var data = {\n";
-                x+="tableId1: parseInt(result.value[0]),\n";
-                x+="tableId2: y,\n";
-                x+="};\n";
-                x+="if(data[\"tableId1\"]===data[\"tableId2\"]){\n";
-                x+="data[\"tableId1\"]= -2;\n";
-                x+="data[\"tableId2\"]= -2;\n";
-                x+="}\n"
-                x+="console.log(data);\n";
-                x+="$.ajax({\n";
-                x+="type: 'POST',\n";
-                x+="dataType: 'application/json',\n";
-                x+="url: '/api/table/createAMerge',\n";
-                x+="timeout: 5000,\n";
-                x+="data: data, statusCode: {\n";
-                x+="200: function (x) {\n";
-                x+="location.reload();\n";
-                x+="},\n";
-                x+="404: function (x) {\n";
-                x+="alert(x.responseText);\n";
-                x+="}\n";
-                x+="},\n";
-                x+="})\n";
-                x+="}\n";
-                x+="})\n";
-                x+="}\n";
-                x+="else if(result.dismiss=== Swal.DismissReason.cancel)\n";
-                x+="{\n";
-                x+="Swal(\n";
-                x+="'Anim',\n";
-                x+="'table',\n";
-                x+="'success',\n";
-                x+=").then(()=>{\n";
-                x+="console.log(y);\n";
-                x+="var data = {\n";
-                x+="tableId: y,\n";
-                x+="status: 0,\n";
-                x+="};\n";
-                x+="$.ajax({\n";
-                x+="type: 'POST',\n";
-                x+="dataType: 'application/json',\n";
-                x+="url: '/api/table/updateStatus',\n";
-                x+="timeout: 5000,\n";
-                x+="data: data, statusCode: {\n";
-                x+="200: function (x) {\n";
-                x+="location.reload();\n";
-                x+="},\n";
-                x+="404: function (x) {\n";
-                x+="alert(x.responseText);\n";
-                x+="}\n";
-                x+="},\n";
-                x+="})\n";
-                x+="})\n";
-                x+="}\n";
-                x+="})\n";
-                x+="}\n";
-                x+="function case3(text,y) {\n";
-                x+="Swal({\n";
-                x+="title: 'Are you sure?',\n";
-                x+="text: \"You won't be able to revert \" + y + \" this!\",\n";
-                x+="type: 'warning',\n";
-                x+="showCancelButton: true,\n";
-                x+="showCloseButton: true,\n";
-                x+="confirmButtonColor: '#3085d6',\n";
-                x+="cancelButtonColor: '#18426B',\n";
-                x+="confirmButtonText: 'Divide',\n";
-                x+="cancelButtonText: 'Deactivate'\n";
-                x+="}).then((result) => {\n";
-                x+="\n";
-                x+="if (result.value) {\n";
-                x+="Swal(\n";
-                x+="'Tables are unmerged',\n";
-                x+="'table',\n";
-                x+="'success',\n";
-                x+=").then(()=>{\n";
-                x+="console.log(text);\n";
-                x+="var data={};\n";
-                x+="var send = text.split('-');\n";
-                x+="for(var i=0;i<send.length; i++)\n";
-                x+="{\n";
-                x+="data[i]=send[i];\n";
-                x+="}\n";
+                x += "var data={};\n";
+                x += "var send = text.split('-');\n";
+                x += "for(var i=0;i<send.length; i++)\n";
+                x += "{\n";
+                x += "data[i]=send[i];\n";
+                x += "}\n";
+                x += "console.log(data);\n";
+                x += "$.ajax({\n";
+                x += "type: 'POST',\n";
+                x += "dataType: 'application/json',\n";
+                x += "url: '/api/table/divideTable',\n";
+                x += "timeout: 5000,\n";
+                x += "data: data, statusCode: {\n";
+                x += "200: function (x) {\n";
+                x += "location.reload();\n";
+                x += "},\n";
+                x += "404: function (x) {\n";
+                x += "alert(x.responseText);\n";
+                x += "}\n";
+                x += "},\n";
+                x += "})\n";
+                x += "})\n";
+                x += "}\n";
+                x += "else if(result.dismiss=== Swal.DismissReason.cancel)\n";
+                x += "{\n";
+                x += "Swal(\n";
+                x += "'Anim',\n";
+                x += "'table',\n";
+                x += "'success',\n"
+                x += ").then(()=>{\n";
+                x += "console.log(y);\n";
+                x += "var data = {\n";
+                x += "tableId: y,\n";
+                x += "status: 1,\n";
+                x += "};\n";
+                x += "$.ajax({\n";
+                x += "type: 'POST',\n";
+                x += "dataType: 'application/json',\n";
+                x += "url: '/api/table/updateStatus',\n";
+                x += "timeout: 5000,\n";
+                x += "data: data, statusCode: {\n";
+                x += "200: function (x) {\n";
+                x += "location.reload();\n";
+                x += "},\n";
+                x += "404: function (x) {\n";
+                x += "alert(x.responseText);\n";
+                x += "}\n";
+                x += "},\n";
+                x += "})\n";
+                x += "})\n";
+                x += "}\n";
+                x += "})\n";
+                x += "}\n";
+                x += "function case2(text,y) {\n";
+                x += "Swal({\n";
+                x += "title: 'Are you sure?',\n";
+                x += "text: \"You won't be able to revert \" + y + \" this!\",\n";
+                x += "type: 'warning',\n";
+                x += "showCancelButton: true,\n";
+                x += "showCloseButton: true,\n";
+                x += "confirmButtonColor: '#3085d6',\n";
+                x += "cancelButtonColor: '#18426B',\n";
+                x += "confirmButtonText: 'Combine',\n";
+                x += "cancelButtonText: 'Deactivate'\n";
+                x += "}).then((result) => {\n";
+                x += "if (result.value) {\n";
+                x += "Swal.mixin({\n";
+                x += "input: 'select',\n";
+                x += "inputOptions: text,\n";
+                x += "confirmButtonText: 'Next &rarr;',\n";
+                x += "showCancelButton: true,\n";
+                x += "}).queue([\n";
+                x += "{\n";
+                x += "title: 'Manage Table',\n";
+                x += "text: 'Select Table to combine/divide'\n";
+                x += "}]).then((result,id) => {\n";
+                x += "if (result.value) {\n";
+                x += "Swal({\n";
+                x += "title: 'All done!',\n";
+                x += "html:\n";
+                x += "'Your answers:' +\n";
+                x += "result.value,\n";
+                x += "confirmButtonText: 'Lovely!'\n";
+                x += "})\n";
+                x += "console.log(result.value);\n";
+                x += "var data = {\n";
+                x += "tableId1: parseInt(result.value[0]),\n";
+                x += "tableId2: y,\n";
+                x += "};\n";
+                x += "if(data[\"tableId1\"]===data[\"tableId2\"]){\n";
+                x += "data[\"tableId1\"]= -2;\n";
+                x += "data[\"tableId2\"]= -2;\n";
+                x += "}\n"
+                x += "console.log(data);\n";
+                x += "$.ajax({\n";
+                x += "type: 'POST',\n";
+                x += "dataType: 'application/json',\n";
+                x += "url: '/api/table/createAMerge',\n";
+                x += "timeout: 5000,\n";
+                x += "data: data, statusCode: {\n";
+                x += "200: function (x) {\n";
+                x += "location.reload();\n";
+                x += "},\n";
+                x += "404: function (x) {\n";
+                x += "alert(x.responseText);\n";
+                x += "}\n";
+                x += "},\n";
+                x += "})\n";
+                x += "}\n";
+                x += "})\n";
+                x += "}\n";
+                x += "else if(result.dismiss=== Swal.DismissReason.cancel)\n";
+                x += "{\n";
+                x += "Swal(\n";
+                x += "'Anim',\n";
+                x += "'table',\n";
+                x += "'success',\n";
+                x += ").then(()=>{\n";
+                x += "console.log(y);\n";
+                x += "var data = {\n";
+                x += "tableId: y,\n";
+                x += "status: 0,\n";
+                x += "};\n";
+                x += "$.ajax({\n";
+                x += "type: 'POST',\n";
+                x += "dataType: 'application/json',\n";
+                x += "url: '/api/table/updateStatus',\n";
+                x += "timeout: 5000,\n";
+                x += "data: data, statusCode: {\n";
+                x += "200: function (x) {\n";
+                x += "location.reload();\n";
+                x += "},\n";
+                x += "404: function (x) {\n";
+                x += "alert(x.responseText);\n";
+                x += "}\n";
+                x += "},\n";
+                x += "})\n";
+                x += "})\n";
+                x += "}\n";
+                x += "})\n";
+                x += "}\n";
+                x += "function case3(text,y) {\n";
+                x += "Swal({\n";
+                x += "title: 'Are you sure?',\n";
+                x += "text: \"You won't be able to revert \" + y + \" this!\",\n";
+                x += "type: 'warning',\n";
+                x += "showCancelButton: true,\n";
+                x += "showCloseButton: true,\n";
+                x += "confirmButtonColor: '#3085d6',\n";
+                x += "cancelButtonColor: '#18426B',\n";
+                x += "confirmButtonText: 'Divide',\n";
+                x += "cancelButtonText: 'Deactivate'\n";
+                x += "}).then((result) => {\n";
+                x += "\n";
+                x += "if (result.value) {\n";
+                x += "Swal(\n";
+                x += "'Tables are unmerged',\n";
+                x += "'table',\n";
+                x += "'success',\n";
+                x += ").then(()=>{\n";
+                x += "console.log(text);\n";
+                x += "var data={};\n";
+                x += "var send = text.split('-');\n";
+                x += "for(var i=0;i<send.length; i++)\n";
+                x += "{\n";
+                x += "data[i]=send[i];\n";
+                x += "}\n";
 
                 //x+="var data = JSON.stringify(text.split('-')); ";
-                x+="console.log(data);\n";
-                x+="$.ajax({\n";
-                x+="type: 'POST',\n";
-                x+="dataType: 'application/json',\n";
-                x+="url: '/api/table/divideTable',\n";
-                x+="timeout: 5000,\n";
-                x+="data: data, statusCode: {\n";
-                x+="200: function (x) {\n";
-                x+="location.reload();\n";
-                x+="},\n";
-                x+="404: function (x) {\n";
-                x+="alert(x.responseText);\n";
-                x+="}\n";
-                x+="},\n";
-                x+="})\n";
-                x+="})\n";
-                x+="}\n";
-                x+="else if(result.dismiss=== Swal.DismissReason.cancel)\n";
-                x+="{\n";
-                x+="Swal(\n";
-                x+="'Anim',\n";
-                x+="'table',\n";
-                x+="'success',\n";
-                x+=").then(()=>{\n";
-                x+="console.log(y);\n";
-                x+="var data = {\n";
-                x+="tableId: y,\n";
-                x+="status: 0,\n";
-                x+="};\n";
-                x+="$.ajax({\n";
-                x+="type: 'POST',\n";
-                x+="dataType: 'application/json',\n";
-                x+="url: '/api/table/updateStatus',\n";
-                x+="timeout: 5000,\n";
-                x+="data: data, statusCode: {\n";
-                x+="200: function (x) {\n";
-                x+="location.reload();\n";
-                x+="},\n";
-                x+="\n";
-                x+="404: function (x) {\n";
-                x+="alert(x.responseText);\n";
-                x+="}\n";
-                x+="},\n";
-                x+="})\n";
+                x += "console.log(data);\n";
+                x += "$.ajax({\n";
+                x += "type: 'POST',\n";
+                x += "dataType: 'application/json',\n";
+                x += "url: '/api/table/divideTable',\n";
+                x += "timeout: 5000,\n";
+                x += "data: data, statusCode: {\n";
+                x += "200: function (x) {\n";
+                x += "location.reload();\n";
+                x += "},\n";
+                x += "404: function (x) {\n";
+                x += "alert(x.responseText);\n";
+                x += "}\n";
+                x += "},\n";
+                x += "})\n";
+                x += "})\n";
+                x += "}\n";
+                x += "else if(result.dismiss=== Swal.DismissReason.cancel)\n";
+                x += "{\n";
+                x += "Swal(\n";
+                x += "'Anim',\n";
+                x += "'table',\n";
+                x += "'success',\n";
+                x += ").then(()=>{\n";
+                x += "console.log(y);\n";
+                x += "var data = {\n";
+                x += "tableId: y,\n";
+                x += "status: 0,\n";
+                x += "};\n";
+                x += "$.ajax({\n";
+                x += "type: 'POST',\n";
+                x += "dataType: 'application/json',\n";
+                x += "url: '/api/table/updateStatus',\n";
+                x += "timeout: 5000,\n";
+                x += "data: data, statusCode: {\n";
+                x += "200: function (x) {\n";
+                x += "location.reload();\n";
+                x += "},\n";
+                x += "\n";
+                x += "404: function (x) {\n";
+                x += "alert(x.responseText);\n";
+                x += "}\n";
+                x += "},\n";
+                x += "})\n";
 
-                x+="})\n";
+                x += "})\n";
 
-                x+="}\n";
+                x += "}\n";
 
-                x+="})\n";
+                x += "})\n";
 
-                x+="}\n";
+                x += "}\n";
 
                 //x+="})\n";
                 //x+="}\n";
 
-                x+="});\n";
+                x += "});\n";
                 /*
 
                                     },
@@ -534,96 +532,82 @@
 
     });
                 */
-                x+="<";
-                x+="/script>\n";
+                x += "<";
+                x += "/script>\n";
 
-    var items="";
-    var mergedList=[];
+                var items = "";
+                var mergedList = [];
 
-    for (var i = 0; i < array.length ; i++) {
+                for (var i = 0; i < array.length; i++) {
 
-    var txt=array[i].id+"";
-    if(array[i].structure == "circular") {
-    if(array[i].status==0)
-    {
-    items += "<div id='" + "utable" + "' value='" + array[i].id + "'" +" name='"+txt+"' "+ "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/c0.png' alt=\"\"><div class=\"centered\">Table: "+txt+"</div></p></p></div>";
-    }
-    else if(array[i].status==1)
-    {
-    items += "<div id='" + "utable" + "' value='" + array[i].id + "'" +" name='"+txt+"' "+ "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/c1.png' alt=\"\"><div class=\"centered\">Table: "+txt+"</div></p></p></div>";
-    }
-    else
-    {
-    items += "<div id='" + "utable" + "' value='" + array[i].id + "'" +" name='"+txt+"' "+ "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/c2.png' alt=\"\"><div class=\"centered\">Table: "+txt+"</div></p></p></div>";
-    }
-    }
-    else if (jQuery.inArray(array[i].id, mergedList)==-1 && array[i].mergedWith!=-1){
-    var mergedOnes=i;
-    while(array[mergedOnes].mergedWith >= 0 && mergedOnes>=0 )
-    {
+                    var txt = array[i].id + "";
+                    if (array[i].structure.toLocaleLowerCase() == "circle") {
+                        if (array[i].status == 0) {
+                            items += "<div id='" + "utable" + "' value='" + array[i].id + "'" + " name='" + txt + "' " + "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/c0.png' alt=\"\"><div class=\"centered\">Table: " + txt + "</div></p></p></div>";
+                        }
+                        else if (array[i].status == 1) {
+                            items += "<div id='" + "utable" + "' value='" + array[i].id + "'" + " name='" + txt + "' " + "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/c1.png' alt=\"\"><div class=\"centered\">Table: " + txt + "</div></p></p></div>";
+                        }
+                        else {
+                            items += "<div id='" + "utable" + "' value='" + array[i].id + "'" + " name='" + txt + "' " + "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/c2.png' alt=\"\"><div class=\"centered\">Table: " + txt + "</div></p></p></div>";
+                        }
+                    }
+                    else if (jQuery.inArray(array[i].id, mergedList) == -1 && array[i].mergedWith != -1) {
+                        var mergedOnes = i;
+                        while (array[mergedOnes].mergedWith >= 0 && mergedOnes >= 0) {
 
-    txt+="-"+array[mergedOnes].mergedWith;
-    mergedList[mergedList.length]=array[mergedOnes].mergedWith;
-    console.log(txt);
-    var sMO=mergedOnes;
-    //mergedOnes=jQuery.inArray( array[mergedOnes].mergedWith, array );
-    $.each(array, function (index,val) {
-    if (val.id == array[sMO].mergedWith) {
-    mergedOnes = index;
-    return false;
-    }
-    else
-    {
-    mergedOnes= -1;
-    }
-    });
+                            txt += "-" + array[mergedOnes].mergedWith;
+                            mergedList[mergedList.length] = array[mergedOnes].mergedWith;
+                            console.log(txt);
+                            var sMO = mergedOnes;
+                            //mergedOnes=jQuery.inArray( array[mergedOnes].mergedWith, array );
+                            $.each(array, function (index, val) {
+                                if (val.id == array[sMO].mergedWith) {
+                                    mergedOnes = index;
+                                    return false;
+                                }
+                                else {
+                                    mergedOnes = -1;
+                                }
+                            });
 
-    console.log(mergedOnes);
-    console.log(mergedList);
+                            console.log(mergedOnes);
+                            console.log(mergedList);
 
 
-    }
-    if(array[i].status==0)
-    {
-    items += "<div id='" + "utable" + "' value='" + array[i].id + "'" +" name='"+txt+"' "+ "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/s0.png' alt=\"\"/><div class=\"centered\">Table: "+txt+"</div></p></div>";
-    }
-    else if(array[i].status==1)
-    {
-    items += "<div id='" + "utable" + "' value='" + array[i].id + "'" +" name='"+txt+"' "+ "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/s1.png' alt=\"\"><div class=\"centered\">Table: "+txt+"</div></p></p></div>";
-    }
-    else
-    {
-    items += "<div id='" + "utable" + "' value='" + array[i].id + "'" +" name='"+txt+"' "+ "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/s2.png' alt=\"\"><div class=\"centered\">Table: "+txt+"</div></p></p></div>";
-    }
+                        }
+                        if (array[i].status == 0) {
+                            items += "<div id='" + "utable" + "' value='" + array[i].id + "'" + " name='" + txt + "' " + "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/s0.png' alt=\"\"/><div class=\"centered\">Table: " + txt + "</div></p></div>";
+                        }
+                        else if (array[i].status == 1) {
+                            items += "<div id='" + "utable" + "' value='" + array[i].id + "'" + " name='" + txt + "' " + "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/s1.png' alt=\"\"><div class=\"centered\">Table: " + txt + "</div></p></p></div>";
+                        }
+                        else {
+                            items += "<div id='" + "utable" + "' value='" + array[i].id + "'" + " name='" + txt + "' " + "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/s2.png' alt=\"\"><div class=\"centered\">Table: " + txt + "</div></p></p></div>";
+                        }
 
 
-    }
-    else
-    {
+                    }
+                    else {
 
-    if(array[i].status==0)
-    {
-    items += "<div id='" + "mtable" + "' value='" + array[i].id + "'" +" name='"+txt+"' "+ "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'> <img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/s0.png' alt=\"\"/><div class=\"centered\">Table: "+txt+"</div></p></p></div>";
-    }
-    else if(array[i].status==1)
-    {
-    items += "<div id='" + "mtable" + "' value='" + array[i].id + "'" +" name='"+txt+"' "+ "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/s1.png' alt=\"\"><div class=\"centered\">Table: "+txt+"</div></p></p></div>";
-    }
-    else
-    {
-    items += "<div id='" + "mtable" + "' value='" + array[i].id + "'" +" name='"+txt+"' "+ "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/s2.png' alt=\"\"><div class=\"centered\">Table: "+txt+"</div></p></p></div>";
-    }
+                        if (array[i].status == 0) {
+                            items += "<div id='" + "mtable" + "' value='" + array[i].id + "'" + " name='" + txt + "' " + "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'> <img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/s0.png' alt=\"\"/><div class=\"centered\">Table: " + txt + "</div></p></p></div>";
+                        }
+                        else if (array[i].status == 1) {
+                            items += "<div id='" + "mtable" + "' value='" + array[i].id + "'" + " name='" + txt + "' " + "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/s1.png' alt=\"\"><div class=\"centered\">Table: " + txt + "</div></p></p></div>";
+                        }
+                        else {
+                            items += "<div id='" + "mtable" + "' value='" + array[i].id + "'" + " name='" + txt + "' " + "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/s2.png' alt=\"\"><div class=\"centered\">Table: " + txt + "</div></p></p></div>";
+                        }
 
-    }
-    }
+                    }
+                }
 
 
+                return items + "\n" + x;
 
-
-    return items+"\n"+x;
-
-    }
-    });
+            }
+        });
     </script>
 
     <style>
@@ -635,33 +619,36 @@
         }
 
     </style>
-    </head>
+</head>
 
-    <body>
-
-
-    <!-- Navigation -->
+<body>
 
 
-    <!-- Page Content -->
-    <div class="container">
+<!-- Navigation -->
 
-        <h1 class="my-4 text-center text-lg-center">Table Layout Management</h1>
+
+<!-- Page Content -->
+<div class="container">
+
+    <h1 class="my-4 text-center text-lg-center">Table Layout Management</h1>
 
     <div id="tables" class="row text-center text-lg-left">
 
-        </div>
+    </div>
 
-        </div>
-        <!-- /.container -->
+</div>
+<!-- /.container -->
 
-        <!-- Footer -->
+<!-- Footer -->
 
-        <!-- Bootstrap core JavaScript -->
-        <script src="../TableFiles/vendor/jquery/jquery.min.js"></script>
-    <script src="../TableFiles/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- Bootstrap core JavaScript -->
+<script src="../TableFiles/vendor/jquery/jquery.min.js"></script>
+<script src="../TableFiles/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
 
-    </body>
+</body>
 
 </html>
+
+
+<!-- ADD TABLE ACTIVASION DEGISMELI-->

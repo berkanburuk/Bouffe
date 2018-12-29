@@ -166,7 +166,7 @@
                 for (var i = 0; i < array.length; i++) {
 
                     var txt = array[i].id + "";
-                    if (array[i].structure === "circular") {
+                    if (array[i].structure.toLowerCase() === "circle") {
                         if (array[i].status === 0) {
                             items += "<div id='" + "unclickable" + "' value='" + array[i].id + "'" + " name='" + txt + "' " + "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/c0.png' alt=\"\"><div class=\"centered\">Table: " + txt + "</div></p></p></div>";
                         }
@@ -345,7 +345,7 @@
                         200: function (x) {
                             $('#modal_form').modal('hide');
                             alert(x.responseText);
-                              location.reload();
+                            location.reload();
                         },
                         404: function (x) {
                             alert(x.responseText);
@@ -392,7 +392,8 @@
                         }
                     }
                 });
-            }        });
+            }
+        });
 
         var globalClickedTableId;
 
@@ -400,7 +401,6 @@
             console.log(id);
             globalClickedTableId = id;
         }
-
 
 
         $('#aquantity').hide().on('change', function (e) {
@@ -421,39 +421,39 @@
         });
 
 
-        var bquan=0;
-   /*     var aquan = 0, mquan = 0, dquan = 0, bquan = 0; //For quantity purposes
-        $('#appetizer').on('change', function (e) {
-            var optionSelected = $("option:selected", this);
-            var valueSelected = this.value;
-            if (valueSelected !== "0") {
-                $('#aquantity').show();
-                aquan = 1;
+        var bquan = 0;
+        /*     var aquan = 0, mquan = 0, dquan = 0, bquan = 0; //For quantity purposes
+             $('#appetizer').on('change', function (e) {
+                 var optionSelected = $("option:selected", this);
+                 var valueSelected = this.value;
+                 if (valueSelected !== "0") {
+                     $('#aquantity').show();
+                     aquan = 1;
 
-            } else {
-                $('#aquantity').hide();
-            }
-        });
-        $('#mainCourse').on('change', function () {
-            var optionSelected = $("option:selected", this);
-            var valueSelected = this.value;
-            if (valueSelected !== "0") {
-                $('#mquantity').show();
-                mquan = 1;
-            } else {
-                $('#mquantity').hide();
-            }
-        });
-        $('#dessert').on('change', function () {
-            var optionSelected = $("option:selected", this);
-            var valueSelected = this.value;
-            if (valueSelected !== "0") {
-                $('#dquantity').show();
-                dquan = 1;
-            } else {
-                $('#dquantity').hide();
-            }
-        });*/ //For quantity purposer
+                 } else {
+                     $('#aquantity').hide();
+                 }
+             });
+             $('#mainCourse').on('change', function () {
+                 var optionSelected = $("option:selected", this);
+                 var valueSelected = this.value;
+                 if (valueSelected !== "0") {
+                     $('#mquantity').show();
+                     mquan = 1;
+                 } else {
+                     $('#mquantity').hide();
+                 }
+             });
+             $('#dessert').on('change', function () {
+                 var optionSelected = $("option:selected", this);
+                 var valueSelected = this.value;
+                 if (valueSelected !== "0") {
+                     $('#dquantity').show();
+                     dquan = 1;
+                 } else {
+                     $('#dquantity').hide();
+                 }
+             });*/ //For quantity purposer
         $('#beverage').on('change', function () {
             var optionSelected = $("option:selected", this);
             var valueSelected = this.value;
