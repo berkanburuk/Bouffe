@@ -9,6 +9,7 @@ let mTable = db.model(dbNames.table);
 let mUser = db.model(dbNames.user);
 let mRole = db.model(dbNames.role);
 let mOrder= db.model(dbNames.order);
+let mOrderTable = db.model(dbNames.orderTable);
 
 let checkUsersRole = require('./RoleCheck');
 let checkDataType = require('../Util/TypeCheck');
@@ -324,6 +325,53 @@ function shiftManagement(userUsername,oldTableId,newTableId){
             })
         })
 
+}
+
+function swapTables(data){
+    /*
+    userUsername,oldTableId,newTableId
+        Username gerekirse gönderilebilir, ona göre update edilebilir.
+     */
+
+    return new Promise((resolve, reject) => {
+        console.log(data)
+            mTable.findOne({
+                where: {
+                    id: data.oldTableId,
+                    status: 2,
+                }
+            }).then(oldTable=>{
+                console.log(oldTable)
+                    if (oldTable == null || oldTable == undefined){
+                        reject("This table cannot be shifted!")
+                    }else{
+                        mTable.findAll({
+                            where:{
+                                id:data.newTableId,
+                                status:1,
+                            },
+                            include:
+                                [
+                                    {
+                                        model: mOrder,
+                                        through: mOrderTable,
+                                        where: {
+                                            orderOpen:true
+                                        }
+                                    }
+                                ]
+                        }).then((order) => {
+                            resolve(JSON.stringify(order));
+                            console.log(JSON.stringify(order))
+                        }).catch(error => {
+                            reject(error);
+                        })
+                    }
+                })
+                .catch(error=>{
+                reject(error)
+                })
+    })
 }
 
 function getAllTables(){
@@ -894,7 +942,30 @@ module.exports = function(app){
                     return response.redirect('/noAuthority');
                 }
 
+            }),
+            app.post('/api/table/swapTables', function (request, response ) {
+                console.log("swapTables");
+                if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId) || checkUsersRole.isAdmin(request.session.roleId)))
+                {
+                    swapTables(request.body).then(food => {
+                            response.statusCode = 200;
+                            console.log(food);
+                            response.write(JSON.stringify(food), () => {
+                                response.end();
+                            })
+                        }).catch(error => {
+                            console.log(error);
+                            response.statusCode = 404;
+                            response.write(error.toString(), () => {
+                                response.end();
+                            })
+                        })
+                }else {
+                    response.statusCode = 401;
+                    return response.redirect('/noAuthority');
+                }
             })
+
 
 }
 
