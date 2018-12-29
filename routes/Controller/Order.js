@@ -27,6 +27,217 @@ let checkUsersRole = require('./RoleCheck');
 //3 -> done
 //4 -> reject
 
+function uploadTotalPaymentForBeverage(beverageId, tableId, addition) {
+    return new Promise((resolve, reject) => {
+        var beveragePrice;
+        var totalPrice = 0.0;
+        var tableStatus = 2;
+        mBeverage.findOne({
+            where: {
+                id: beverageId
+            }
+        }).then(beverage => {
+            beveragePrice = beverage.price;
+            mTable.findOne({
+                where: {
+                    id: tableId
+                }
+            }).then(table => {
+                if (addition == true) {
+                    totalPrice = table.totalPrice + beveragePrice;
+                } else if (addition == false) {
+                    totalPrice = table.totalPrice - beveragePrice;
+                    if (totalPrice < 0) {
+                        totalPrice = table.totalPrice + beveragePrice;
+                        reject("This transaction cannot be done!")
+                    } else if (totalPrice == 0) {
+                        tableStatus == 1
+                    }
+                }
+                table.update({
+                    totalPrice: totalPrice,
+                    status: tableStatus
+                }, {
+                    where: {
+                        id: tableId
+                    }
+                }).then(result => {
+                    if (result != null && result != undefined) {
+                        resolve("Beverage Order is added successfully.");
+                    } else {
+                        reject("Beverage Order could not updated!");
+                    }
+                }).catch(error => {
+                    reject(error);
+                })
+            }).catch(error => {
+                reject(error);
+            })
+            resolve(beverage.price)
+        }).catch(error => {
+            reject(error);
+        })
+    })
+    //içecek id sinden price i al
+    //table id den totalprice'a bak,
+    //içecek pricesini ekle
+    //available to active
+    //Active = 2 to available=1
+}
+
+function createAnBeverageOrder(data) {
+    /*
+    data.note
+    data.tableId
+    data.beverageId
+    data.quantity
+    */
+    console.log("Data: " + data);
+    return new Promise((resolve, reject) => {
+        data.quantity = parseInt(data.quantity);
+        data.tableId = parseInt(data.tableId);
+        data.beverageId = parseInt(data.beverageId);
+
+        console.log(data);
+        if (data.tableId == undefined || data.beverageId == undefined) {
+            //throw new Error({'hehe':'haha'});
+            reject("Proper input shall be sent!");
+            return;
+        }
+        //order oluşturuldu
+        mOrder.findOrCreate({
+            where: {
+                id: data.id
+            },
+            defaults: {
+                note: data.note,
+                isBeverageReady: 0
+            }
+        })
+            .then((order) => {
+                console.log("order[0]" + JSON.stringify(order[0]));
+                //------
+                //Beverage Eklendi
+                order[0].addBeverages(data.beverageId);
+                order[0].addTables(data.tableId);
+                //Table'a eklendi.
+
+                uploadTotalPaymentForBeverage(data.beverageId, data.tableId, true).then(result => {
+                    data.quantity--;
+                    if (data.quantity == 0) {
+                        resolve(result);
+                    } else {
+                        resolve(createAnBeverageOrder(data))
+                    }
+                }).catch(error => {
+                    reject(error);
+                })
+            })
+
+
+    })
+
+}
+
+function createMenuOrder(data) {
+    /*
+    data.note
+    data.tableId
+    data.beverageId
+
+    mainCourse,appetizer,dessert,tableId
+
+    */
+
+    return new Promise((resolve, reject) => {
+
+        //data.tableId = parseInt(data.tableId);
+        console.log("Menu Data : " + data);
+        if (data.tableId == undefined) {
+            //throw new Error({'hehe':'haha'});
+            reject("Proper input shall be sent!");
+            return;
+        }
+        //table içine bak açık mı kapalı mı
+        //order oluşturuldu
+        mOrder.findOrCreate({
+            where: {
+                id: data.id
+            },
+            defaults: {
+                note: data.note,
+                isFoodReady: 1
+            }
+        })
+            .then((order) => {
+                console.log("order[0]" + JSON.stringify(order[0]));
+                //------
+                //Food Eklendi
+                var isSetMenu = 0;
+
+                if (data.mainCourse != 0 && data.mainCourse != undefined) {
+                    mFood.findOne({
+                        where:
+                            {
+                                name: data.mainCourse
+                            }
+                    }).then((food1) => {
+                        order[0].addFood(food1.id);
+
+                    }).catch(error => {
+                        reject(error);
+                    })
+                    isSetMenu++;
+
+                }
+                if (data.appetizer != 0 && data.mainCourse != undefined) {
+                    mFood.findOne({
+                        where:
+                            {
+                                name: data.appetizer
+                            }
+                    }).then((food2) => {
+                        order[0].addFood(food2.id);
+
+                    }).catch(error => {
+                        reject(error);
+                    })
+                    isSetMenu++;
+
+                }
+                if (data.dessert != 0 && data.mainCourse != undefined) {
+                    mFood.findOne({
+                        where:
+                            {
+                                name: data.dessert
+                            }
+                    }).then((food3) => {
+                        order[0].addFood(food3.id);
+
+                    }).catch(error => {
+                        reject(error);
+                    })
+                    isSetMenu++;
+
+
+                }
+
+                order[0].addTables(data.tableId);
+                //Table'a eklendi.
+                var flag = false;
+                if (isSetMenu == 3) {
+                    flag = true
+                }
+
+                uploadTotalPaymentForMenu(data, flag).then(result => {
+                    resolve(result);
+                }).catch(error => {
+                    reject("Food Order could not be given!\n" + error);
+                })
+            })
+    })
+
+}
 
 function payOrders(mainCourse, appetizer, dessert, tableId, setMenu, orderId) {
     return new Promise((resolve, reject) => {
@@ -270,6 +481,7 @@ function getATable(id) {
     });
 }
 
+//FOOD NOTIFICATIONS
 //isFoodReady 1 ise Matre ve Chef önünde ekranda duracak.
 function getMatreAndChefNotification() {
     return new Promise((resolve, reject) => {
@@ -496,107 +708,7 @@ function getRejectedFoods(userUsername) {
     })
 }
 
-function createMenuOrder(data) {
-    /*
-    data.note
-    data.tableId
-    data.beverageId
-
-    mainCourse,appetizer,dessert,tableId
-
-    */
-
-    return new Promise((resolve, reject) => {
-
-        //data.tableId = parseInt(data.tableId);
-        console.log("Menu Data : " + data);
-        if (data.tableId == undefined) {
-            //throw new Error({'hehe':'haha'});
-            reject("Proper input shall be sent!");
-            return;
-        }
-        //table içine bak açık mı kapalı mı
-        //order oluşturuldu
-        mOrder.findOrCreate({
-            where: {
-                id: data.id
-            },
-            defaults: {
-                note: data.note,
-                isFoodReady: 1
-            }
-        })
-            .then((order) => {
-                console.log("order[0]" + JSON.stringify(order[0]));
-                //------
-                //Food Eklendi
-                var isSetMenu = 0;
-
-                if (data.mainCourse != 0 && data.mainCourse != undefined) {
-                    mFood.findOne({
-                        where:
-                            {
-                                name: data.mainCourse
-                            }
-                    }).then((food1) => {
-                        order[0].addFood(food1.id);
-
-                    }).catch(error => {
-                        reject(error);
-                    })
-                    isSetMenu++;
-
-                }
-                if (data.appetizer != 0 && data.mainCourse != undefined) {
-                    mFood.findOne({
-                        where:
-                            {
-                                name: data.appetizer
-                            }
-                    }).then((food2) => {
-                        order[0].addFood(food2.id);
-
-                    }).catch(error => {
-                        reject(error);
-                    })
-                    isSetMenu++;
-
-                }
-                if (data.dessert != 0 && data.mainCourse != undefined) {
-                    mFood.findOne({
-                        where:
-                            {
-                                name: data.dessert
-                            }
-                    }).then((food3) => {
-                        order[0].addFood(food3.id);
-
-                    }).catch(error => {
-                        reject(error);
-                    })
-                    isSetMenu++;
-
-
-                }
-
-                order[0].addTables(data.tableId);
-                //Table'a eklendi.
-                var flag = false;
-                if (isSetMenu == 3) {
-                    flag = true
-                }
-
-                uploadTotalPaymentForMenu(data, flag).then(result => {
-                    resolve(result);
-                }).catch(error => {
-                    reject("Food Order could not be given!\n" + error);
-                })
-            })
-    })
-
-}
-
-
+//FOOD NOTIFICATIONS
 
 //isFoodReady 0 ise şef önünde ekranda duracak
 function getAllOpenOrders() {
@@ -623,7 +735,6 @@ function getAllOpenOrders() {
         })
     })
 }
-
 
 ///// BEVERAGE NOTIFICATIONS
 //Bartender will call this api. Get Ordered Beverage But not approved or rejected yet
@@ -824,262 +935,6 @@ function getNotificationOfReadyBeverages() {
 ///// BEVERAGE NOTIFICATIONS
 
 
-//chef onaylıyor (1) yapıyor, Garsona Food onaylandı görünecek
-exports.maltreApprovesOrder = function (orderId) {
-    return new Promise((resolve, reject) => {
-        Order.update(
-            {
-                isFoodReady: 1
-            },
-            {
-                where:
-                    {
-                        id: orderId,
-                    }
-            }).then((order) => {
-            console.log(order);
-            if (order > 0)
-                resolve("Chef approved.");
-            else
-                reject('Chef did not approve!');
-        })
-            .catch(error => {
-                reject(error);
-            })
-    })
-}
-
-
-//Garson get Food Onaylandı
-exports.getWaiterFoodApproved = function (orderId) {
-    return new Promise((resolve, reject) => {
-        mOrder.findOne({
-            where:
-                {
-                    id: orderId,
-                    isFoodReady: 1
-                }
-        }).then((order) => {
-            resolve(JSON.stringify(order));
-        }).catch(error => {
-            reject(error);
-        })
-    })
-}
-
-
-//chef onaylıyor (2) Yemek hazır. Garson
-chefApprovesFoodReady = function (orderId) {
-    console.log('chefApprovesFoodReady ');
-    return new Promise((resolve, reject) => {
-        mOrder.update(
-            {
-                isFoodReady: 2
-            },
-            {
-                where:
-                    {
-                        id: orderId,
-                    }
-            }).then((order) => {
-            console.log(order);
-            if (order > 0)
-                resolve("Chef approved.");
-            else
-                reject('Chef did not approve!');
-        })
-            .catch(error => {
-                reject(error);
-            })
-    })
-}
-
-//Waiter Food Ready mesajını alıyor.
-exports.getWaiterNotificationApprovedFood = function (orderId) {
-    return new Promise((resolve, reject) => {
-        Order.findOne({
-            where:
-                {
-                    id: orderId,
-                    isFoodReady: 2
-                }
-        }).then((order) => {
-            resolve(JSON.stringify(order));
-        }).catch(error => {
-            reject(error);
-        })
-    })
-}
-
-
-//Waiter 3'e setleyip, yemek teslim edildi. Successfull
-exports.waiterCloseOrder = function (orderId) {
-    return new Promise((resolve, reject) => {
-        Order.update({
-            where:
-                {
-                    id: orderId,
-                    isFoodReady: 3
-                }
-        }).then((order) => {
-            console.log(order);
-            if (order > 0)
-                resolve("Chef approved.");
-            else
-                reject('Chef did not approve!');
-        })
-            .catch(error => {
-                reject(error);
-            })
-    })
-}
-
-
-exports.getWaiterFoodDone = function (orderId) {
-    return new Promise((resolve, reject) => {
-        Order.findOne({
-            where:
-                {
-                    id: orderId,
-                    isFoodReady: 3
-                }
-        }).then((order) => {
-            resolve(JSON.stringify(order));
-        }).catch(error => {
-            reject(error);
-        })
-    })
-}
-
-exports.getFoodRejected = function (orderId) {
-    return new Promise((resolve, reject) => {
-        Order.findOne({
-            where:
-                {
-                    id: orderId,
-                    isFoodReady: 4
-                }
-        }).then((order) => {
-            resolve(JSON.stringify(order));
-        }).catch(error => {
-            reject(error);
-        })
-    })
-}
-
-
-function uploadTotalPaymentForBeverage(beverageId, tableId, addition) {
-    return new Promise((resolve, reject) => {
-        var beveragePrice;
-        var totalPrice = 0.0;
-        var tableStatus = 2;
-        mBeverage.findOne({
-            where: {
-                id: beverageId
-            }
-        }).then(beverage => {
-            beveragePrice = beverage.price;
-            mTable.findOne({
-                where: {
-                    id: tableId
-                }
-            }).then(table => {
-                if (addition == true) {
-                    totalPrice = table.totalPrice + beveragePrice;
-                } else if (addition == false) {
-                    totalPrice = table.totalPrice - beveragePrice;
-                    if (totalPrice < 0) {
-                        totalPrice = table.totalPrice + beveragePrice;
-                        reject("This transaction cannot be done!")
-                    } else if (totalPrice == 0) {
-                        tableStatus == 1
-                    }
-                }
-                table.update({
-                    totalPrice: totalPrice,
-                    status: tableStatus
-                }, {
-                    where: {
-                        id: tableId
-                    }
-                }).then(result => {
-                    if (result != null && result != undefined) {
-                        resolve("Beverage Order is added successfully.");
-                    } else {
-                        reject("Beverage Order could not updated!");
-                    }
-                }).catch(error => {
-                    reject(error);
-                })
-            }).catch(error => {
-                reject(error);
-            })
-            resolve(beverage.price)
-        }).catch(error => {
-            reject(error);
-        })
-    })
-    //içecek id sinden price i al
-    //table id den totalprice'a bak,
-    //içecek pricesini ekle
-    //available to active
-    //Active = 2 to available=1
-}
-
-
-function createAnBeverageOrder(data) {
-    /*
-    data.note
-    data.tableId
-    data.beverageId
-    data.quantity
-    */
-    console.log("Data: " + data);
-    return new Promise((resolve, reject) => {
-        data.quantity = parseInt(data.quantity);
-        data.tableId = parseInt(data.tableId);
-        data.beverageId = parseInt(data.beverageId);
-
-        console.log(data);
-        if (data.tableId == undefined || data.beverageId == undefined) {
-            //throw new Error({'hehe':'haha'});
-            reject("Proper input shall be sent!");
-            return;
-        }
-        //order oluşturuldu
-        mOrder.findOrCreate({
-            where: {
-                id: data.id
-            },
-            defaults: {
-                note: data.note,
-                isBeverageReady: 0
-            }
-        })
-            .then((order) => {
-                console.log("order[0]" + JSON.stringify(order[0]));
-                //------
-                //Beverage Eklendi
-                order[0].addBeverages(data.beverageId);
-                order[0].addTables(data.tableId);
-                //Table'a eklendi.
-
-                uploadTotalPaymentForBeverage(data.beverageId, data.tableId, true).then(result => {
-                    data.quantity--;
-                    if (data.quantity == 0) {
-                        resolve(result);
-                    } else {
-                        resolve(createAnBeverageOrder(data))
-                    }
-                }).catch(error => {
-                    reject(error);
-                })
-            })
-
-
-    })
-
-}
 
 
 /*
