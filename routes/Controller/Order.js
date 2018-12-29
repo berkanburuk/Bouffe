@@ -320,8 +320,8 @@ function createMenuOrder(data) {
 
 }
 
-//isFoodReady 0 ise şef önünde ekranda duracak
-function getChefNotificationWithName () {
+//isFoodReady 0 ise matre önünde ekranda duracak
+function getMatreNotificationWithName () {
     return new Promise((resolve, reject) => {
         mOrderFood.findAll({
 
@@ -333,6 +333,41 @@ function getChefNotificationWithName () {
     })
 }
 
+//isFoodReady 0 ise matre önünde ekranda duracak
+function getMatreNotification () {
+    return new Promise((resolve, reject) => {
+
+        var x = "select * from orders where orderOpen=\"true\" and isFoodReady=0";
+        console.log(x);
+        db.query(x, {
+        })
+            /*
+        mOrder.findAll({
+            where:
+                {
+                    orderOpen:true,
+                    isFoodReady:0
+                },
+            include: [
+                {
+                    model:mFood,
+                    through: mOrderFood,
+                },
+
+                {
+                    model:mBeverage,
+                    through: mOrderBeverage
+                }
+
+            ]
+        }).then((order) => {
+            resolve(JSON.stringify(order));
+        }).catch(error=>{
+            reject(error);
+        })
+*/
+    })
+}
 
 //isFoodReady 0 ise şef önünde ekranda duracak
 function getAllOpenOrders () {
@@ -389,6 +424,9 @@ function getChefNotification () {
 //isFoodReady 0 ise şef önünde ekranda duracak
 function getChefNotificationWithFoodName () {
     return new Promise((resolve, reject) => {
+        /*through: {
+            attributes: ['id', 'invitStatus'],
+        },*/
         mOrder.findAll({
             where:
                 {
@@ -396,13 +434,21 @@ function getChefNotificationWithFoodName () {
                 },
             include: [
                 {
-                    model:mFood,
-                    through: mOrderFood,
+                    model: mFood,
+                    include: [{
+                        model:mOrderFood,
+                        //through: mOrderFood,
+                        through: {
+                            attributes: ['foodName'],
+                        },
+                    }],
+                    /*
                     where:{
                         foodName:{
                             any:'%'
                         }
                     }
+                    */
                 }
             ]
         }).then((order) => {
@@ -413,55 +459,192 @@ function getChefNotificationWithFoodName () {
     })
 }
 
+///// BEVERAGE NOTIFICATIONS
+//Bartender will call this api. Get Ordered Beverage But not approved or rejected yet
+function getNotificationForBartender (userUsername) {
+    return new Promise((resolve, reject) => {
+            mOrder.findAll({
+                where:
+                    {
+                        orderOpen:true,
+                        isBeverageReady: 0,
+                    },
+                include:
+                    [
+                        {
+                            model:mBeverage,
+                            through: mOrderBeverage,
+                        },
+                    ],
+                include:
+                    [
+                        {
+                            model:mTable,
+                            through: mOrderTable,
+                        }
+                    ]
+            }).then((order) => {
+                resolve(JSON.stringify(order));
+            }).catch(error=>{
+                reject(error);
+            })
 
-//isFoodReady 0 ise şef önünde ekranda duracak
-function getChefNotificationForBartender () {
+    })
+}
+
+
+//bartender approves or rejects. Update 1 or 4
+function bartenderApproveOrRejectBeverage(orderId,beverageId,tableId,accepted) {
+    console.log('chefApprovesFoodReady ');
+    return new Promise((resolve, reject) => {
+        //accepted = true or false
+        var val = 1;
+        if (accepted == 'false'){
+            val = 4;
+        }
+        console.log("accepted" + accepted + " " +val)
+
+            mOrder.update(
+                {
+                    isBeverageReady: val
+                },
+                {
+                    where:
+                        {
+                            id: orderId,
+                        }
+                }).then((order) => {
+                console.log(order);
+                if (order > 0) {
+                    if (accepted == 'true')
+                        resolve("Bartender approved.");
+                    else{
+                        uploadTotalPaymentForBeverage(beverageId, tableId,false)
+                        reject('Bartender rejected!');
+                    }
+                }else{
+                    reject('Could not update the table!');
+                }
+            })
+                .catch(error => {
+                    reject(error);
+                })
+
+    })
+
+}
+
+//Bartender will call this api. Get Ordered Beverage But not approved or rejected yet
+function getApprovedBeverages (userUsername) {
     return new Promise((resolve, reject) => {
         mOrder.findAll({
             where:
                 {
-                    isBeverageReady: 0,
+                    orderOpen:true,
+                    isBeverageReady: 1,
                 },
-            include: [
-                {
-                    model:mBeverage,
-                    through: mOrderBeverage,
-                }
-            ]
+            include:
+                [
+                    {
+                        model:mBeverage,
+                        through: mOrderBeverage,
+                    },
+                ],
+            include:
+                [
+                    {
+                        model:mTable,
+                        through: mOrderTable,
+                    }
+                ]
         }).then((order) => {
             resolve(JSON.stringify(order));
         }).catch(error=>{
             reject(error);
         })
+
     })
 }
 
-
-//chef onaylıyor (2) Yemek hazır. Garson
-function bartenderApprovesBeverageReady(orderId) {
-    console.log('chefApprovesFoodReady ');
+//bartender beverage is ready -> updates 2
+function bartenderBeverageReady(orderId) {
     return new Promise((resolve, reject) => {
         mOrder.update(
             {
-                isFoodReady: 1
+                isBeverageReady: 2
             },
             {
                 where:
                     {
                         id: orderId,
                     }
-            }).then((order)=>{
-            console.log(order);
-            if (order>0)
-                resolve("Chef approved.");
-            else
-                reject('Chef did not approve!');
+            }).then((order) => {
+            if (order > 0)
+                resolve("Beverage is ready!")
+               else
+                    reject('Bartender rejected!');
+            }).catch(error => {
+            reject(error);
         })
-            .catch(error =>{
-                reject(error);
-            })
     })
 }
+
+//Bartender will call this api. Get Ordered Beverage But not approved or rejected yet
+function getNotificationOfReadyBeverages () {
+    return new Promise((resolve, reject) => {
+        mOrder.findAll({
+            where:
+                {
+                    orderOpen:true,
+                    isBeverageReady: 2,
+                },
+            include:
+                [
+                    {
+                        model:mBeverage,
+                        through: mOrderBeverage,
+                    },
+                ],
+            include:
+                [
+                    {
+                        model:mTable,
+                        through: mOrderTable,
+                    }
+                ]
+        }).then((order) => {
+            resolve(JSON.stringify(order));
+        }).catch(error=>{
+            reject(error);
+        })
+
+    })
+}
+
+function waiterServedBeverage(orderId) {
+    return new Promise((resolve, reject) => {
+        mOrder.update(
+            {
+                isBeverageReady: 3
+            },
+            {
+                where:
+                    {
+                        id: orderId,
+                    }
+            }).then((order) => {
+            if (order > 0)
+                resolve("Waiter is served!")
+            else
+                reject('Table could not be updated!');
+        }).catch(error => {
+            reject(error);
+        })
+    })
+}
+///// BEVERAGE NOTIFICATIONS
+
+
 
 //chef onaylıyor (1) yapıyor, Garsona Food onaylandı görünecek
 exports.maltreApprovesOrder = function (orderId) {
@@ -611,10 +794,11 @@ exports.getFoodRejected = function(orderId){
 
 
 
-function uploadTotalPaymentForBeverage(beverageId, orderId,tableId,quantity){
+function uploadTotalPaymentForBeverage(beverageId, tableId,addition){
     return new Promise((resolve, reject) => {
         var beveragePrice;
         var totalPrice=0.0;
+        var tableStatus = 2;
         mBeverage.findOne({
             where: {
                 id: beverageId
@@ -626,10 +810,20 @@ function uploadTotalPaymentForBeverage(beverageId, orderId,tableId,quantity){
                     id: tableId
                 }
             }).then(table => {
-                totalPrice = table.totalPrice + (beveragePrice*quantity);
+                if (addition == true){
+                    totalPrice = table.totalPrice + beveragePrice;
+                }else if (addition == false) {
+                    totalPrice = table.totalPrice - beveragePrice;
+                    if (totalPrice < 0 ){
+                        totalPrice = table.totalPrice + beveragePrice;
+                        reject("This transaction cannot be done!")
+                    }else if(totalPrice == 0){
+                        tableStatus == 1
+                    }
+                }
                 table.update({
                     totalPrice:totalPrice,
-                    status:2
+                    status:tableStatus
                 }, {
                     where: {
                         id: tableId
@@ -669,7 +863,7 @@ function createAnBeverageOrder(data) {
     */
     console.log("Data: " + data);
     return new Promise((resolve, reject) => {
-
+        data.quantity = parseInt(data.quantity);
         data.tableId = parseInt(data.tableId);
         data.beverageId = parseInt(data.beverageId);
 
@@ -679,7 +873,6 @@ function createAnBeverageOrder(data) {
             reject("Proper input shall be sent!");
             return;
         }
-        //table içine bak açık mı kapalı mı
         //order oluşturuldu
         mOrder.findOrCreate({
             where: {
@@ -696,14 +889,20 @@ function createAnBeverageOrder(data) {
                 order[0].addBeverages(data.beverageId);
                 order[0].addTables(data.tableId);
                 //Table'a eklendi.
-
-
-                uploadTotalPaymentForBeverage(data.beverageId, order.id, data.tableId,data.quantity).then(result => {
-                    resolve(result);
+                
+                uploadTotalPaymentForBeverage(data.beverageId, data.tableId,true).then(result => {
+                    data.quantity--;
+                    if (data.quantity == 0){
+                        resolve(result);
+                    }else{
+                        resolve(createAnBeverageOrder(data))
+                    }
                 }).catch(error => {
                     reject(error);
                 })
             })
+
+
     })
 
 }
@@ -833,7 +1032,7 @@ module.exports = function (app) {
             })
         }
     }),
-
+/*
         app.get('/api/order/getChefNotificationWithName', function (request, response) {
         if (request.session != undefined  && (checkUsersRole.isChef(request.session.roleId)))
         {
@@ -852,6 +1051,7 @@ module.exports = function (app) {
             })
         }
     }),
+    */
         app.get('/api/order/getAllOpenOrders', function (request, response) {
             if (request.session != undefined  && (checkUsersRole.isChef(request.session.roleId)))
             {
@@ -926,11 +1126,11 @@ module.exports = function (app) {
                 })
             }
         }),
-        app.get('/api/order/getChefNotificationForBartender', function (request, response) {
-            if (request.session != undefined  && (checkUsersRole.isBartender(request.session.roleId)))
+
+    app.get('/api/order/getNotificationForBartender', function (request, response) {
+            if (request.session != undefined  && (checkUsersRole.isBartender(request.session.roleId)||checkUsersRole.isAdmin(request.session.roleId)))
             {
-                //request.session.username
-                getChefNotificationForBartender()
+                getNotificationForBartender(request.session.username)
                     .then(notification=> {
                         response.end(notification);
                     }).catch(error => {
@@ -944,11 +1144,28 @@ module.exports = function (app) {
                 })
             }
         }),
-        app.get('/api/order/bartenderApprovesBeverageReady/:orderId', function (request, response) {
+        app.post('/api/order/bartenderApproveOrRejectBeverage', function (request, response) {
             if (request.session != undefined  && (checkUsersRole.isBartender(request.session.roleId)))
             {
-                //request.session.username
-                bartenderApprovesBeverageReady(request.params.orderId)
+                var data = request.body;
+                bartenderApproveOrRejectBeverage(data.orderId,data.beverageId,data.tableId,data.accepted)
+                    .then(notification=> {
+                        response.end(notification);
+                    }).catch(error => {
+                    response.end(error.toString());
+                })
+            }
+            else {
+                response.write(checkUsersRole.errorMesage(), () => {
+                    response.statusCode = 404;
+                    response.end();
+                })
+            }
+        }),
+        app.get('/api/order/getMatreNotification', function (request, response) {
+            if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId) || checkUsersRole.isAdmin(request.session.roleId)))
+            {
+                getMatreNotification()
                     .then(notification=> {
                         response.end(notification);
                     }).catch(error => {

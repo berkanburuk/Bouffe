@@ -5,13 +5,12 @@ class FoodModel {
         //Creates the Content of Form
          Food = sequelize.define(food, {
              id: {
-                 unique:true,
+                 primaryKey: true,
                  autoIncrement: true,
                  type: Sequelize.INTEGER
              },
-
              name: {
-                 primaryKey: true,
+                 unique:true,
                  type: Sequelize.STRING,
              },
             type: {
@@ -35,18 +34,23 @@ class FoodModel {
         //FoodTable.belongsTo(Order, {foreignKey: 'fk_Order',targetKey:'foodId'});
         const mMenu = sequelize.define('menu', {})
         const mMenuFood = sequelize.define('menuFood', {})
-        Food.belongsToMany(mMenu,{through:mMenuFood, targetKey:'name',onDelete: 'CASCADE'});
+        Food.belongsToMany(mMenu,
+            {
+                through:mMenuFood,
+                //targetKey:'name',
+                onDelete: 'CASCADE'
+            });
 
 
         //OrderFood
         let mOrder = sequelize.model('order');
-        const mOrderFood = sequelize.define('orderFood', {})
+        //const mOrderFood = sequelize.define('orderFood', {})
+        let mOrderFood  = sequelize.model("orderFood");
         Food.belongsToMany(mOrder,{
-            targetKey:'name',
-            //targetKey:'name',
+           // targetKey:'id',
             //foreignKey:'foodName',
-            onDelete: 'CASCADE',
-            through: mOrderFood
+            through: mOrderFood,
+            onDelete: 'CASCADE'
         });
 
 

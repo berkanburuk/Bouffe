@@ -4,8 +4,13 @@ class MenuModel {
 
         createMenu(Sequelize, sequelize, menu) {
             Menu = sequelize.define(menu, {
-                name:{
+                id: {
                     primaryKey: true,
+                    autoIncrement: true,
+                    type: Sequelize.INTEGER
+                },
+                name:{
+                    unique:true,
                     type:Sequelize.STRING
                 },
                 cuisineRegion:{
@@ -30,7 +35,7 @@ class MenuModel {
             Menu.belongsToMany(mFood,
                 {
                     through: mMenuFood,
-                    targetKey:'name',
+                    //targetKey:'name',
                     onDelete: 'CASCADE'
                 });
 

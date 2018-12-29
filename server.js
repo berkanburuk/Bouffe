@@ -21,7 +21,7 @@ let sessionOptions = {
     },*/
     secret: "keyboard",
     cookie: {
-        maxAge:999999999999
+        maxAge:99999999
         //expires: 3600
     },
     saveUninitialized: true,
@@ -48,9 +48,11 @@ var userServer = require('./routes/Controller/User')(app);
 var tableServer = require('./routes/Controller/Table')(app);
 var guestCheck = require('./routes/Controller/GuestCheck')(app);
 var beverageServer = require('./routes/Controller/Beverage')(app);
-var foodController = require('./routes/Controller/Food')(app);
+
 var menuController =  require('./routes/Controller/Menu')(app);
 var orderController = require('./routes/Controller/Order')(app);
+
+var foodController = require('./routes/Controller/Food')(app);
 var errorController = require('./routes/Controller/Error')(app);
 var paymentController = require('./routes/Controller/Payment')(app);
 
