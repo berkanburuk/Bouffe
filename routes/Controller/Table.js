@@ -301,12 +301,20 @@ function shiftManagement(userUsername,oldTableId,newTableId){
         return new Promise((resolve, reject) => {
             mTable.findOne({
             where:{
-                id:oldTableId
+                id:newTableId,
+                status:1
             }
+        }).then(newTable=>{
+            if (newTable != null && newTable != undefined){
+                mTable.update(
+                    {
 
-        }).then(oldTable=>{
-            if (oldTable.status==1){
-                shiftNotOrderedTable(userUsername,oldTableId,newTableId);
+                    },
+                    {
+
+                    }
+                    )
+
             }else if(oldTable.status==2){
                 shiftOrderedTable(userUsername,oldTableId,newTableId);
             }
@@ -442,6 +450,8 @@ function getATable(id) {
         })
     });
 }
+
+
 
 function getUsersTable(data){
     return new Promise((resolve, reject) => {
