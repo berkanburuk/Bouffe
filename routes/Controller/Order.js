@@ -348,11 +348,6 @@ function getMatreNotificationWithName () {
 function getMatreNotification () {
     return new Promise((resolve, reject) => {
 
-        var x = "select * from orders where orderOpen=\"true\" and isFoodReady=0";
-        console.log(x);
-        db.query(x, {
-        })
-            /*
         mOrder.findAll({
             where:
                 {
@@ -364,19 +359,19 @@ function getMatreNotification () {
                     model:mFood,
                     through: mOrderFood,
                 },
-
+                /*
                 {
                     model:mBeverage,
                     through: mOrderBeverage
                 }
-
+                */
             ]
         }).then((order) => {
             resolve(JSON.stringify(order));
         }).catch(error=>{
             reject(error);
         })
-*/
+
     })
 }
 
