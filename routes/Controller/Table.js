@@ -29,7 +29,7 @@ function createATable(data){
                 {
                     structure: data.structure,
                     capacity: data.capacity,
-                    status: data.status,
+                    status: 1,
                     mergedWith: data.mergedWith,
                     userUsername:data.userUsername
                 }
@@ -78,6 +78,76 @@ function updateTable(data){
 
     })
 
+}
+
+function createAMergeYeni(data) {
+
+    data.tableId1 = parseInt(data.tableId1);
+    data.tableId2 = parseInt(data.tableId2);
+/*
+    if (data.tableId1 > data.tableId2) {
+        var temp;
+        temp = data.tableId1;
+        data.tableId1 = data.tableId2;
+        data.tableId2 = temp;
+    }
+*/
+
+
+    return new Promise((resolve, reject) => {
+        mTable.findOne({
+            where:{
+                id:data.tableId1
+            }
+        }).then(tableId1=> {
+            if (tableId1.mergedWith == -1) {
+                mTable.findOne({
+                    where:{
+                        mergedWith:tableId1.id
+                    }
+                }).then(table=> {
+
+                }).catch(error=>{
+                    reject(error)
+                })
+            }
+        }).catch(error=>{
+            reject(error)
+        })
+
+
+        mTable.update(
+            {
+                mergedWith: data.tableId2},
+            {
+                where:
+                    {
+                        id: data.tableId1
+                    },
+            })
+            .then((result) => {
+                mTable.update(
+                    {mergedWith: -1},
+                    {
+                        where:
+                            {
+                                id: data.tableId2
+                            }
+                    }).then((result) => {
+                    if (result[0] > 0) {
+                        resolve("Table is merged successfully.");
+                    } else {
+                        reject("Table could not be updated!");
+                    }
+
+                }).catch(error => {
+                    reject(error);
+                })
+
+            }).catch(error => {
+            reject(error);
+        })
+    })
 }
 
 function createAMerge(data) {
@@ -287,7 +357,7 @@ function isTableOrderable() {
             where: {
                 structure: 'Square',
                 mergedWith:{
-                    lt: -1
+                    lt: 0
                 }
             }
         })
