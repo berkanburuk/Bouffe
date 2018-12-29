@@ -306,6 +306,10 @@ function isTableOrderable() {
 function getMyTables(username) {
     return new Promise((resolve, reject) => {
         mTable.findAll({
+            order: [
+                ['id', 'ASC'],
+                //['name', 'ASC'],
+            ],
             where: {
                 userUsername:username
             }
@@ -433,8 +437,8 @@ module.exports = function(app){
     app.get('/tableLayoutManagement', function (request, response) {
         console.log('Table');
             if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
-                ||  checkUsersRole.isCashier(request.session.roleId)) || checkUsersRole.isAdmin(request.session.roleId)) {
-                response.sendFile(path.resolve('public/Pages/tableManagement.html'));
+                || checkUsersRole.isAdmin(request.session.roleId))) {
+                response.sendFile(path.resolve('public/Pages/tableLayoutManagement.html'));
             }
             else {
                 response.statusCode = 401;
@@ -446,7 +450,7 @@ module.exports = function(app){
         app.get('/tableManagement', function (request, response) {
             console.log('tableCreation');
             if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
-                ||  checkUsersRole.isCashier(request.session.roleId)) || checkUsersRole.isAdmin(request.session.roleId)) {
+                ||  checkUsersRole.isAdmin(request.session.roleId))) {
                 response.sendFile(path.resolve('public/Pages/addTable.html'));
             }
             else {
