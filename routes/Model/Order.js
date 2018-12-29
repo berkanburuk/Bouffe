@@ -23,7 +23,8 @@ class OrderModel {
             },
             isFoodReady:{
               type:Sequelize.INTEGER,
-                defaultValue: 0
+                defaultValue: -1
+                //-1 -> Food Order'ı verilmedi
                 //0 -> default Value(Just Ordered) -> Şefin önüne onaylanması için düşecek
                 //1 -> Chef OK dedi.
                 //2 -> Chef yemek hazır dedi. waiter önüne düşecek.
@@ -32,7 +33,8 @@ class OrderModel {
                 //5 -> Waiter reject mesajı gidecek
             },isBeverageReady:{
                 type:Sequelize.INTEGER,
-                defaultValue: 0
+                defaultValue: -1
+                //-1 -> Beverage Order'ı verilmedi
                 //0 -> default Value(Just Ordered)-> bartender önüne düşecek ->
                 //1 ->Bartender Approved -> Bartender updates 2
                 //2 ->Ready -> Waiter updates 3

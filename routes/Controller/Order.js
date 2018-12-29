@@ -244,7 +244,7 @@ function createMenuOrder(data) {
     return new Promise((resolve, reject) => {
 
         //data.tableId = parseInt(data.tableId);
-            console.log("DATAAAAAA"+data);
+            console.log("Menu Data : "+data);
         if (data.tableId == undefined) {
             //throw new Error({'hehe':'haha'});
             reject("Proper input shall be sent!");
@@ -257,49 +257,61 @@ function createMenuOrder(data) {
                 id: data.id
             },
             defaults: {
-                note: data.note
+                note: data.note,
+                isFoodReady:0
             }
         })
             .then((order) => {
                 console.log("order[0]"+JSON.stringify(order[0]));
-                console.log("ORDERSSSSS->"+order);
-
-                console.log(data);
-
                 //------
                 //Food Eklendi
                 var isSetMenu=0;
 
                 if (data.mainCourse!=0 && data.mainCourse!=undefined ){
+                    mFood.findOne({
+                        where:
+                            {
+                                name:data.mainCourse
+                            }
+                    }).then((food1) => {
+                        order[0].addFood(food1.id);
 
-                    var x ="INSERT INTO \"orderFoods\" (\"foodName\", \"orderId\",\"createdAt\",\"updatedAt\") " +
-                        "VALUES ("+"'"+data.mainCourse+"',"+ order[0].id+",'10.10.2010','10.10.2010')";
-                    console.log(x);
-                    db.query(x, {
-                    });
-                    console.log(data.mainCourse);
-                    //order[0].addFood(data.mainCourse);
+                    }).catch(error=>{
+                        reject(error);
+                    })
                     isSetMenu++;
+
                 }
                 if (data.appetizer!=0&& data.mainCourse!=undefined){
-                    //order[0].addFood(data.appetizer);
-                    var x ="INSERT INTO \"orderFoods\" (\"foodName\", \"orderId\",\"createdAt\",\"updatedAt\") " +
-                        "VALUES ("+"'"+data.appetizer+"',"+ order[0].id+",'10.10.2010','10.10.2010')";
-                    console.log(x);
-                    db.query(x, {
-                    });
-                    console.log(data.appetizer);
+                    mFood.findOne({
+                        where:
+                            {
+                                name:data.appetizer
+                            }
+                    }).then((food2) => {
+                        order[0].addFood(food2.id);
+
+                    }).catch(error=>{
+                        reject(error);
+                    })
                     isSetMenu++;
+
                 }
                 if (data.dessert!=0&& data.mainCourse!=undefined){
-                    //order[0].addFood(data.dessert);
-                    var x ="INSERT INTO \"orderFoods\" (\"foodName\", \"orderId\",\"createdAt\",\"updatedAt\") " +
-                        "VALUES ("+"'"+data.dessert+"',"+ order[0].id+",'10.10.2010','10.10.2010')";
-                    console.log(x);
-                    db.query(x, {
-                    });
-                    console.log(data.dessert);
+                    mFood.findOne({
+                        where:
+                            {
+                                name:data.dessert
+                            }
+                    }).then((food3) => {
+                        order[0].addFood(food3.id);
+
+                    }).catch(error=>{
+                        reject(error);
+                    })
                     isSetMenu++;
+
+
                 }
 
                 order[0].addTables(data.tableId);
@@ -308,7 +320,6 @@ function createMenuOrder(data) {
                 if(isSetMenu==3){
                     flag=true
                 }
-                console.log(isSetMenu)
 
                 uploadTotalPaymentForMenu(data,flag).then(result => {
                     resolve(result);
@@ -337,11 +348,6 @@ function getMatreNotificationWithName () {
 function getMatreNotification () {
     return new Promise((resolve, reject) => {
 
-        var x = "select * from orders where orderOpen=\"true\" and isFoodReady=0";
-        console.log(x);
-        db.query(x, {
-        })
-            /*
         mOrder.findAll({
             where:
                 {
@@ -353,19 +359,19 @@ function getMatreNotification () {
                     model:mFood,
                     through: mOrderFood,
                 },
-
+                /*
                 {
                     model:mBeverage,
                     through: mOrderBeverage
                 }
-
+                */
             ]
         }).then((order) => {
             resolve(JSON.stringify(order));
         }).catch(error=>{
             reject(error);
         })
-*/
+
     })
 }
 
@@ -476,11 +482,13 @@ function getNotificationForBartender (userUsername) {
                             through: mOrderBeverage,
                         }
                     ],
-                /*
                 include:
                     [
+                        {
+                            model: mTable,
+                            through: mOrderTable
+                        }
                     ]
-                    */
             }).then((order) => {
                 resolve(JSON.stringify(order));
             }).catch(error=>{
@@ -877,7 +885,8 @@ function createAnBeverageOrder(data) {
                 id: data.id
             },
             defaults: {
-                note: data.note
+                note: data.note,
+                isBeverageReady:0
             }
         })
             .then((order) => {
