@@ -105,7 +105,9 @@ guestCheck.run(Sequelize,sequelize,tableNames.guestCheck);
 
 
 
-sequelize.sync().then(()=>{
+sequelize.sync(
+    //{force:true}
+).then(()=>{
     role.createSimpleRoleData();
         course.createCourseData();
         user.createDefaultUser();
