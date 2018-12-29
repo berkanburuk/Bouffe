@@ -531,16 +531,30 @@
             timeout: 5000,
             statusCode: {
                 200: function (x) {
-                    console.log(JSON.parse(x.responseText));
-                    var readyBeverageArr= JSON.parse(x.responseText);
+                    //console.log(JSON.parse(x.responseText));
+                    var readyBeverageArr = JSON.parse(x.responseText);
                     for (var i = 0; i < readyBeverageArr.length; i++) {
-                        console.log(readyBeverageArr[i]);
-                        $(function () {
-                            $.bootstrapGrowl(readyBeverageArr[i], {
-                                type: 'info',
-                                delay: 5000,
-                                allow_dismiss: true,
-                            });
+                        //   console.log(readyBeverageArr[i].beverages);
+                        var text = readyBeverageArr[i].beverages[0].name + " is ready for table #" + readyBeverageArr[i].tables[0].id;
+                        showNotification(text);
+                        var data2 = {
+                            orderId: readyBeverageArr[i].tables[0].orderTable.orderId
+                        };
+                        console.log(data2);
+                        $.ajax({
+                            url: '/api/order/waiterServedBeverage',
+                            dataType: 'application/json',
+                            type: 'POST',
+                            data: data2,
+                            timeout: 5000,
+                            statusCode: {
+                                200: function (x) {
+                                    console.log(JSON.parse(x.responseText));
+                                },
+                                404: function (x) {
+                                    console.log(x.responseText);
+                                }
+                            }
                         });
                     }
                 },
@@ -551,5 +565,12 @@
         });
     }, 7000);
 
+    function showNotification(text) {
+        $.bootstrapGrowl(text, {
+            type: 'info',
+            delay: 5000,
+            allow_dismiss: true,
+        });
+    }
 
 </script>
