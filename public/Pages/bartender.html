@@ -50,7 +50,7 @@
 
         var ans = $.ajax({
             //1
-            url: '/api/order/getChefNotificationForBartender',
+            url: '/api/order/getNotificationForBartender',
             type: "GET",
 
             statusCode: {
@@ -149,6 +149,7 @@
 
 
             if (dat[i].isBeverageReady === 0) {
+                console.log(dat[i]);
             console.log(dat[i].beverages[0].name);
             //3
             tableData += "<div id='" + "order" + "' value='" + dat[i].id + "'" + " name='" + dat[i].beverages[0].name + "' " + "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/s2.png' alt=\"\"><div class=\"centered\">" + dat[i].id + " is refers Food: " + dat[i].beverages[0].name + "</div></p></p></div>";
