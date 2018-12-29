@@ -15,10 +15,6 @@ let checkUsersRole = require('./RoleCheck');
 let checkDataType = require('../Util/TypeCheck');
 
 
-
-
-
-
 function createATable(data){
     return new Promise((resolve, reject) => {
         mTable.findOrCreate({
@@ -56,7 +52,7 @@ function updateTable(data){
                 id:data.newId,
                 structure:data.structure,
                 capacity: data.capacity,
-                status:data.status,
+                //status:data.status,
                 mergedWith:data.mergedWith,
                 userUsername:data.username
             }
@@ -330,7 +326,7 @@ function shiftManagement(userUsername,oldTableId,newTableId){
 function swapTables(data){
     /*
     userUsername,oldTableId,newTableId
-        Username gerekirse gönderilebilir, ona göre update edilebilir.
+         gerekirse gönderilebilir, ona göre update edilebilir.
      */
 
     return new Promise((resolve, reject) => {
@@ -341,7 +337,7 @@ function swapTables(data){
                     status: 2,
                 }
             }).then(oldTable=>{
-                console.log(oldTable)
+                console.log(JSON.stringify(oldTable))
                     if (oldTable == null || oldTable == undefined){
                         reject("This table cannot be shifted!")
                     }else{
@@ -626,32 +622,6 @@ module.exports = function(app){
         }),
 
 
-        app.post('/api/table/assignTableToUser', function(request,response){
-            console.log('assignTableToUser');
-
-            if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
-                ||  checkUsersRole.isCashier(request.session.roleId)) || checkUsersRole.isAdmin(request.session.roleId)) {
-                var data = request.body;
-                var id = parseInt(data.id);
-                delete data.id;
-                console.log(data);
-                assignTableToUser(data, id).then(data => {
-                    response.write('Table Successfully Updated!', () => {
-                        response.statusCode = 200;
-                        response.end();
-                    })
-                }).catch(error => {
-                    response.write(error.toString(), () => {
-                        response.statusCode = 404;
-                        response.end();
-                    })
-                })
-            }	else {
-                response.statusCode = 401;
-                return response.redirect('/noAuthority');
-                }
-
-        }),
 
 
     app.get('/api/table/getATable/:id', function (request, response) {
@@ -909,9 +879,9 @@ module.exports = function(app){
 
         }),
             app.post('/api/table/addTable', function (request, response ) {
-                console.log("Add Food");
-                if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId) || checkUsersRole.isWaiter(request.session.roleId)
-                    ||  checkUsersRole.isCashier(request.session.roleId)) || checkUsersRole.isAdmin(request.session.roleId))
+                console.log("addTable");
+                if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId) ||  checkUsersRole.isCashier(request.session.roleId)
+                    || checkUsersRole.isAdmin(request.session.roleId)))
                 {
                     var data = request.body;
                     if (!checkDataType.isObjectValuesEmpty(data)) {
