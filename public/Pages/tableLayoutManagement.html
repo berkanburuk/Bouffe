@@ -78,6 +78,12 @@
                 //$.each(listitems, function(idx, itm) {
                 //    mylist.append(itm);
                 //});​
+                x +="('div#tables div#ctable').click( function(e) {\n";
+                x += "e.preventDefault();\n";
+                x += "var activated = false;\n";
+                x += "var y = parseInt($(this).attr('value'));\n";
+
+                x +="}\n";
 
 
                 x += "\$('div#tables div#utable').click( function(e) {\n";
@@ -543,13 +549,13 @@
                     var txt = array[i].id + "";
                     if (array[i].structure.toLocaleLowerCase() == "circle") {
                         if (array[i].status == 0) {
-                            items += "<div id='" + "utable" + "' value='" + array[i].id + "'" + " name='" + txt + "' " + "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/c0.png' alt=\"\"><div class=\"centered\">Table: " + txt + "</div></p></p></div>";
+                            items += "<div id='" + "ctable" + "' value='" + array[i].id + "'" + " name='" + txt + "' " + "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/c0.png' alt=\"\"><div class=\"centered\">Table: " + txt + "</div></p></p></div>";
                         }
                         else if (array[i].status == 1) {
-                            items += "<div id='" + "utable" + "' value='" + array[i].id + "'" + " name='" + txt + "' " + "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/c1.png' alt=\"\"><div class=\"centered\">Table: " + txt + "</div></p></p></div>";
+                            items += "<div id='" + "ctable" + "' value='" + array[i].id + "'" + " name='" + txt + "' " + "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/c1.png' alt=\"\"><div class=\"centered\">Table: " + txt + "</div></p></p></div>";
                         }
                         else {
-                            items += "<div id='" + "utable" + "' value='" + array[i].id + "'" + " name='" + txt + "' " + "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/c2.png' alt=\"\"><div class=\"centered\">Table: " + txt + "</div></p></p></div>";
+                            items += "<div id='" + "ctable" + "' value='" + array[i].id + "'" + " name='" + txt + "' " + "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/c2.png' alt=\"\"><div class=\"centered\">Table: " + txt + "</div></p></p></div>";
                         }
                     }
                     else if (jQuery.inArray(array[i].id, mergedList) == -1 && array[i].mergedWith != -1) {
