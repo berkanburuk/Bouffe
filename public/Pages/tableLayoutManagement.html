@@ -34,10 +34,9 @@
                         console.log("-1-1-1-1 WE GOT 404!");
                     },
                     200: function (responseBody) {
-                        console.log(responseBody);
+                        // console.log(responseBody);
                         var dat = JSON.parse(responseBody);
                         console.log(dat);
-                        console.log(responseBody);
 
                         //role=x.length;
                         //console.log(role);
@@ -78,29 +77,29 @@
                 //$.each(listitems, function(idx, itm) {
                 //    mylist.append(itm);
                 //});​
-                x +="\$('div#tables div#ctable').click( function(e) {\n";
-                x+="e.preventDefault();\n";
-                x+="var y = parseInt($(this).attr('value'));\n";
-                x+="var texty=$(this).attr('name');\n";
-                x+="if(texty<1)\n";
-                x+="{\n";
-                x+="case00(y);\n";
-                x+="}\n";
-                x+="else\n";
-                x+="{\n";
-                x+= "case01(y);";
-                x+="}\n";
+                x += "\$('div#tables div#ctable').click( function(e) {\n";
+                x += "e.preventDefault();\n";
+                x += "var y = parseInt($(this).attr('value'));\n";
+                x += "var texty=$(this).attr('name');\n";
+                x += "if(texty<1)\n";
+                x += "{\n";
+                x += "case00(y);\n";
+                x += "}\n";
+                x += "else\n";
+                x += "{\n";
+                x += "case01(y);";
+                x += "}\n";
 
 
-                x+="function case00(y) {\n";
-                x+="Swal({\n";
-                x+="title: 'Attention!',\n";
-                x+="text: \"You are going to activate this table \",";
-                x+="type: 'information',\n";
-                x+="showCloseButton: true,\n";
-                x+="confirmButtonColor: '#3085d6',\n";
-                x+="confirmButtonText: 'Ready',\n";
-                x+=" }).then((result) => {\n";
+                x += "function case00(y) {\n";
+                x += "Swal({\n";
+                x += "title: 'Attention!',\n";
+                x += "text: \"You are going to activate this table \",";
+                x += "type: 'information',\n";
+                x += "showCloseButton: true,\n";
+                x += "confirmButtonColor: '#3085d6',\n";
+                x += "confirmButtonText: 'Ready',\n";
+                x += " }).then((result) => {\n";
                 x += "var data = {\n";
                 x += "tableId: y,\n";
                 x += "status: 1,\n";
@@ -119,20 +118,19 @@
                 x += "}\n";
                 x += "},\n";
                 x += "})\n";
-                x+="})\n";
-                x+="}\n";
+                x += "})\n";
+                x += "}\n";
 
 
-
-                x+="function case01(y) {\n";
-                x+="Swal({\n";
-                x+="title: 'Attention!',\n";
-                x+="text: \"You are going to deactivate this table \",";
-                x+="type: 'information',\n";
-                x+="showCloseButton: true,\n";
-                x+="confirmButtonColor: '#3085d6',\n";
-                x+="confirmButtonText: 'Ready',\n";
-                x+=" }).then((result) => {\n";
+                x += "function case01(y) {\n";
+                x += "Swal({\n";
+                x += "title: 'Attention!',\n";
+                x += "text: \"You are going to deactivate this table \",";
+                x += "type: 'information',\n";
+                x += "showCloseButton: true,\n";
+                x += "confirmButtonColor: '#3085d6',\n";
+                x += "confirmButtonText: 'Ready',\n";
+                x += " }).then((result) => {\n";
                 x += "var data = {\n";
                 x += "tableId: y,\n";
                 x += "status: 0,\n";
@@ -151,11 +149,11 @@
                 x += "}\n";
                 x += "},\n";
                 x += "})\n";
-                x+="})\n";
-                x+="}\n";
+                x += "})\n";
+                x += "}\n";
 
 
-                x+="});\n";
+                x += "});\n";
 
 
                 x += "\$('div#tables div#utable').click( function(e) {\n";
@@ -176,17 +174,17 @@
                 x += "},\n";
                 x += "\n";
                 x += "200: function (responseBody) {\n";
-                x += "console.log(responseBody);\n";
+                //    x += "console.log(responseBody);\n";
                 x += "var dat = JSON.parse(responseBody);\n";
                 x += "console.log(dat);\n";
-                x += "console.log(responseBody);\n";
+                //  x += "console.log(responseBody);\n";
                 x += "if (dat.status < 1 ) {\n";
                 x += "console.log(\"-1 Then\");\n";
                 x += "if(dat.mergedWith===-2)";
                 x += "{\n";
-                x += "console.log(\"-2 Then\");\n";
+                x += "console.log(\"-2 Then\" + dat);\n";
                 x += "var getMerged=$.ajax({\n";
-                x += "url: '/api/table/getTableMinus',\n";
+                x += "url: '/api/table/getTableMinus/'+dat.id,\n";
                 x += "type: \"GET\",\n";
                 x += "statusCode: {\n";
                 x += "404: function () {\n";
@@ -228,7 +226,7 @@
                 x += "{\n";
                 x += "console.log(\"-2 Then\");\n";
                 x += "var getMerged=$.ajax({\n";
-                x += "url: '/api/table/getTableMinus',\n";
+                x += "url: '/api/table/getTableMinus/'+dat.id,\n";
                 x += "type: \"GET\",\n";
                 x += "statusCode: {\n";
                 x += "404: function () {\n";

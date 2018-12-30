@@ -132,10 +132,9 @@
                         console.log("-1-1-1-1 WE GOT 404!");
                     },
                     200: function (responseBody) {
-                        console.log(responseBody);
+                       // console.log(responseBody);
                         var dat = JSON.parse(responseBody);
                         console.log(dat);
-                        console.log(responseBody);
 
                         //role=x.length;
                         //console.log(role);
@@ -535,7 +534,7 @@
                     var readyBeverageArr = JSON.parse(x.responseText);
                     for (var i = 0; i < readyBeverageArr.length; i++) {
                         //   console.log(readyBeverageArr[i].beverages);
-                        var text = readyBeverageArr[i].beverages[0].name + " is ready for table #" + readyBeverageArr[i].tables[0].id;
+                        var text = readyBeverageArr[i].beverages[0].name + "for table #" + readyBeverageArr[i].tables[0].id;
                         showNotification(text, 'info');
                         var data2 = {
                             orderId: readyBeverageArr[i].tables[0].orderTable.orderId
@@ -575,8 +574,27 @@
                     var readyBeverageArr = JSON.parse(x.responseText);
                     for (var i = 0; i < readyBeverageArr.length; i++) {
                         //   console.log(readyBeverageArr[i].beverages);
-                        var text = readyBeverageArr[i].beverages[0].name + " is ready for table #" + readyBeverageArr[i].tables[0].id;
+                        var text = readyBeverageArr[i].beverages[0].name + " for table #" + readyBeverageArr[i].tables[0].id;
                         showNotification(text, 'danger');
+                        var data2 = {
+                            id: readyBeverageArr[i].tables[0].orderTable.orderId
+                        };
+                        console.log(data2);
+                        $.ajax({
+                            url: '/api/order/rejectedBeveragesAreSeen',
+                            dataType: 'application/json',
+                            type: 'POST',
+                            data: data2,
+                            timeout: 5000,
+                            statusCode: {
+                                200: function (x) {
+                                    console.log(JSON.parse(x.responseText));
+                                },
+                                404: function (x) {
+                                    console.log(x.responseText);
+                                }
+                            }
+                        });
                     }
                 },
                 404: function (x) {
