@@ -403,13 +403,16 @@ exports.isTableExists = function(id){
     });
 }
 
-function isTableOrderable() {
+function isTableOrderable(id) {
     return new Promise((resolve, reject) => {
         mTable.findAll({
             where: {
                 structure: 'Square',
                 mergedWith:{
                     lt: 0
+                },
+                id:{
+                    ne:id
                 }
             }
         })
@@ -598,13 +601,13 @@ module.exports = function(app){
 
             //res.end();
         }),
-        app.get('/api/table/getTableMinus', function (request, response) {
+        app.get('/api/table/getTableMinus/:id', function (request, response) {
             console.log('getTableMinus');
             if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
                 ||  checkUsersRole.isCashier(request.session.roleId)) || checkUsersRole.isAdmin(request.session.roleId))
             {
-
-                isTableOrderable().then(data => {
+                var id = request.params.id;
+                isTableOrderable(id).then(data => {
                     response.write(JSON.stringify(data), () => {
                         response.statusCode = 200;
                         response.end();
@@ -711,22 +714,29 @@ module.exports = function(app){
                 if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId) || checkUsersRole.isWaiter(request.session.roleId)
                     ||  checkUsersRole.isCashier(request.session.roleId)) || checkUsersRole.isAdmin(request.session.roleId))
                 {
-                    console.log(request);
-                    console.log("Will be Updated : " + data);
-
-                    updateTable(data).then(result=> {
-                        response.statusCode = 200;
-                        console.log(result);
-                        response.write(JSON.stringify(result), () => {
-                            response.end();
-                        })
-                    }).catch(error => {
+                    var data = request.body;
+                    if (!checkDataType.isObjectValuesEmpty(data)) {
                         response.statusCode = 404;
-                        console.log(error);
-                        response.write(error.toString(), () => {
+                        response.write(checkDataType.errorMesageEmpty(), () => {
+                            //response.statusCode = 400;
                             response.end();
                         })
-                    })
+                        return false;
+                    } else {
+                        updateTable(data).then(result => {
+                            response.statusCode = 200;
+                            console.log(result);
+                            response.write(JSON.stringify(result), () => {
+                                response.end();
+                            })
+                        }).catch(error => {
+                            response.statusCode = 404;
+                            console.log(error);
+                            response.write(error.toString(), () => {
+                                response.end();
+                            })
+                        })
+                    }
                 }else {
                     response.statusCode = 401;
                     return response.redirect('/noAuthority');
@@ -739,9 +749,6 @@ module.exports = function(app){
                 if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId) || checkUsersRole.isWaiter(request.session.roleId)
                     ||  checkUsersRole.isCashier(request.session.roleId)) || checkUsersRole.isAdmin(request.session.roleId))
                 {
-                    console.log(request);
-                    console.log("Will be Updated : " + data);
-
                     createAMerge(data).then(result=> {
                         response.statusCode = 200;
                         console.log(result);
@@ -767,8 +774,6 @@ module.exports = function(app){
                 if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId) || checkUsersRole.isWaiter(request.session.roleId)
                     ||  checkUsersRole.isCashier(request.session.roleId)) || checkUsersRole.isAdmin(request.session.roleId))
                 {
-                    console.log(request);
-                    console.log("Will be Updated : " + data);
 
                     updateStatus(data).then(result=> {
                         response.statusCode = 200;
