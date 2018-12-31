@@ -381,7 +381,7 @@
                     timeout: 5000,
                     statusCode: {
                         200: function (x) {
-                            alert("Beverage order is added successfully");
+                         //   alert("Beverage order is added successfully");
                             $.ajax({
                                 url: '/api/order/orderFood',
                                 dataType: 'application/json',
@@ -581,6 +581,46 @@
                         console.log(data2);
                         $.ajax({
                             url: '/api/order/rejectedBeveragesAreSeen',
+                            dataType: 'application/json',
+                            type: 'POST',
+                            data: data2,
+                            timeout: 5000,
+                            statusCode: {
+                                200: function (x) {
+                                },
+                                404: function (x) {
+                                    console.log(x.responseText);
+                                }
+                            }
+                        });
+                    }
+                },
+                404: function (x) {
+                    console.log(x.responseText);
+                }
+            }
+        });
+
+        //FOOD REJECTION  AND UPDATE STATUS
+        $.ajax({
+            url: '/api/order/getRejectedFoods',
+            dataType: 'application/json',
+            type: 'GET',
+            timeout: 5000,
+            statusCode: {
+                200: function (x) {
+                    //console.log(JSON.parse(x.responseText));
+                    var readyBeverageArr = JSON.parse(x.responseText);
+                    for (var i = 0; i < readyBeverageArr.length; i++) {
+                        //   console.log(readyBeverageArr[i].beverages);
+                        var text = readyBeverageArr[i].beverages[0].name + " for table #" + readyBeverageArr[i].tables[0].id;
+                        showNotification(text, 'danger');
+                        var data2 = {
+                            orderId: readyBeverageArr[i].tables[0].orderTable.orderId
+                        };
+                        console.log(data2);
+                        $.ajax({
+                            url: '/api/order/rejectedFoodsAreSeen',
                             dataType: 'application/json',
                             type: 'POST',
                             data: data2,

@@ -58,3 +58,12 @@ input::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
 }
+
+
+table.table td,
+table.table th {
+    max-width: 100px;
+    overflow: hidden; /* this is what fixes the expansion */
+    text-overflow: ellipsis; /* not supported in all browsers, but I accepted the tradeoff */
+    white-space: nowrap;
+}

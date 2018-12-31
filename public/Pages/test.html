@@ -3,25 +3,360 @@
 <head>
     <meta charset="UTF-8">
 
-    <!-- Custom styles for this template -->
-    <script src="../TableFiles/vendor/jquery/jquery.min.js"></script>
-    <link href="../TableFiles/css/thumbnail-gallery.css" rel="stylesheet">
-
-    <!-- Bootstrap core CSS -->
-    <link href="../TableFiles/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-
-    <script src='https://cdn.jsdelivr.net/npm/sweetalert2@7.32.2/dist/sweetalert2.all.min.js'></script>
     <title>Title</title>
+
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.debug.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js"></script>
 </head>
 <body>
-<div class="container box">
-    <button type="button" class="btn btn-primary" value="btn1" id="btn" style="margin-top: 20px">Alert
-    </button>
-    <br/></div>
+<div id="someHtml" class="divA3">
+    <style type="text/css">
+        .divA3 {
+            width: 297mm;
+            height: 420mm;
+            padding: 20px;
+        }
 
+        .tg {
+            border-collapse: collapse;
+            border-spacing: 0;
+            table-layout: fixed;
+            width: 100%;
+            height: 100%
+        }
+
+        .tg td {
+            font-family: Arial, sans-serif;
+            font-size: 18px;
+            padding: 10px 5px;
+            border-style: solid;
+            border-width: 1px;
+            overflow: hidden;
+            word-break: normal;
+            border-color: black;
+        }
+
+        .tg th {
+            font-family: Arial, sans-serif;
+            font-size: 18px;
+            font-weight: normal;
+            padding: 10px 5px;
+            border-style: solid;
+            border-width: 1px;
+            overflow: hidden;
+            word-break: normal;
+            border-color: black;
+        }
+
+        .tg .tg-g5xs {
+            font-size: 15px;
+            text-align: center;
+            vertical-align: top
+        }
+
+        .tg .tg-3z1b {
+            border-color: #000000;
+            text-align: right;
+            vertical-align: top
+        }
+
+        .tg .tg-p1nr {
+            font-size: 15px;
+            border-color: inherit;
+            text-align: left;
+            vertical-align: top
+        }
+
+        .tg .tg-cj3p {
+            font-size: 21px;
+            font-family: "Times New Roman", Times, serif !important;;
+            border-color: inherit;
+            text-align: center
+        }
+
+        .tg .tg-qu95 {
+            font-weight: bold;
+            font-style: italic;
+            font-size: 16px;
+            border-color: inherit;
+            text-align: left;
+            vertical-align: top
+        }
+
+        .tg .tg-3pun {
+            font-size: 17px;
+            border-color: inherit;
+            text-align: left
+        }
+
+        .tg .tg-73oq {
+            border-color: #000000;
+            text-align: left;
+            vertical-align: top
+        }
+
+        .tg .tg-nl9u {
+            font-weight: bold;
+            font-size: 17px;
+            border-color: inherit;
+            text-align: left
+        }
+
+        .tg .tg-ai0l {
+            font-weight: bold;
+            font-size: 17px;
+            border-color: inherit;
+            text-align: center;
+            vertical-align: top
+        }
+
+        .tg .tg-fzbl {
+            font-weight: bold;
+            font-size: 16px;
+            border-color: inherit;
+            text-align: left
+        }
+
+        .tg .tg-xldj {
+            border-color: inherit;
+            text-align: left
+        }
+
+        .tg .tg-0pky {
+            border-color: inherit;
+            text-align: left;
+            vertical-align: top
+        }
+
+        .tg .tg-0p48 {
+            font-weight: bold;
+            font-size: 16px;
+            border-color: inherit;
+            text-align: left;
+            vertical-align: top
+        }
+
+        .tg .tg-73a0 {
+            font-size: 17px;
+            border-color: inherit;
+            text-align: left;
+            vertical-align: top
+        }
+    </style>
+    <table class="tg">
+        <tr>
+            <th class="tg-cj3p" colspan="15"><span style="font-weight:bold">BİLKENT UNIVERSITY</span><br><span
+                    style="font-weight:bold">School of Tourism &amp; Hotel Management</span><br><span
+                    style="font-weight:bold">Vocational School of Tourism &amp; Hotel Services</span><br><span
+                    style="font-weight:bold">THE PRACTICE RESTAURANT</span><br><span style="font-weight:bold">GUEST CHECK  </span>
+            </th>
+        </tr>
+        <tr>
+            <td class="tg-3z1b" colspan="12">No</td>
+            <td id="checkNo" class="tg-73oq" colspan="3"></td>
+        </tr>
+        <tr>
+            <td class="tg-g5xs" colspan="3"><br>..../..../20...</td>
+            <td class="tg-g5xs" colspan="3">Server<br><br><br></td>
+            <td class="tg-g5xs" colspan="3">Table No.</td>
+            <td class="tg-g5xs" colspan="3">Covers</td>
+            <td class="tg-g5xs" colspan="3">Check No.</td>
+        </tr>
+        <tr>
+            <td class="tg-3pun"></td>
+            <td class="tg-nl9u" colspan="8">Items served</td>
+            <td class="tg-ai0l">Unit</td>
+            <td class="tg-ai0l" colspan="2">Unit TL</td>
+            <td class="tg-ai0l" colspan="3">Total TL</td>
+        </tr>
+        <tr>
+            <td class="tg-fzbl">1</td>
+            <td class="tg-xldj" colspan="8"></td>
+            <td class="tg-0pky"></td>
+            <td class="tg-0pky" colspan="2"></td>
+            <td class="tg-0pky" colspan="3"></td>
+        </tr>
+        <tr>
+            <td class="tg-fzbl">2</td>
+            <td class="tg-xldj" colspan="8"></td>
+            <td class="tg-0pky"></td>
+            <td class="tg-0pky" colspan="2"></td>
+            <td class="tg-0pky" colspan="3"></td>
+        </tr>
+        <tr>
+            <td class="tg-fzbl">3</td>
+            <td class="tg-xldj" colspan="8"></td>
+            <td class="tg-0pky"></td>
+            <td class="tg-0pky" colspan="2"></td>
+            <td class="tg-0pky" colspan="3"></td>
+        </tr>
+        <tr>
+            <td class="tg-fzbl">4</td>
+            <td class="tg-xldj" colspan="8"></td>
+            <td class="tg-0pky"></td>
+            <td class="tg-0pky" colspan="2"></td>
+            <td class="tg-0pky" colspan="3"></td>
+        </tr>
+        <tr>
+            <td class="tg-fzbl">5</td>
+            <td class="tg-xldj" colspan="8"></td>
+            <td class="tg-0pky"></td>
+            <td class="tg-0pky" colspan="2"></td>
+            <td class="tg-0pky" colspan="3"></td>
+        </tr>
+        <tr>
+            <td class="tg-fzbl">6</td>
+            <td class="tg-xldj" colspan="8"></td>
+            <td class="tg-0pky"></td>
+            <td class="tg-0pky" colspan="2"></td>
+            <td class="tg-0pky" colspan="3"></td>
+        </tr>
+        <tr>
+            <td class="tg-fzbl">7</td>
+            <td class="tg-xldj" colspan="8"></td>
+            <td class="tg-0pky"></td>
+            <td class="tg-0pky" colspan="2"></td>
+            <td class="tg-0pky" colspan="3"></td>
+        </tr>
+        <tr>
+            <td class="tg-fzbl">8</td>
+            <td class="tg-xldj" colspan="8"></td>
+            <td class="tg-0pky"></td>
+            <td class="tg-0pky" colspan="2"></td>
+            <td class="tg-0pky" colspan="3"></td>
+        </tr>
+        <tr>
+            <td class="tg-fzbl">9</td>
+            <td class="tg-xldj" colspan="8"></td>
+            <td class="tg-0pky"></td>
+            <td class="tg-0pky" colspan="2"></td>
+            <td class="tg-0pky" colspan="3"></td>
+        </tr>
+        <tr>
+            <td class="tg-fzbl">10</td>
+            <td class="tg-xldj" colspan="8"></td>
+            <td class="tg-0pky"></td>
+            <td class="tg-0pky" colspan="2"></td>
+            <td class="tg-0pky" colspan="3"></td>
+        </tr>
+        <tr>
+            <td class="tg-0p48">11</td>
+            <td class="tg-0pky" colspan="8"></td>
+            <td class="tg-0pky"></td>
+            <td class="tg-0pky" colspan="2"></td>
+            <td class="tg-0pky" colspan="3"></td>
+        </tr>
+        <tr>
+            <td class="tg-0p48">12</td>
+            <td class="tg-0pky" colspan="8"></td>
+            <td class="tg-0pky"></td>
+            <td class="tg-0pky" colspan="2"></td>
+            <td class="tg-0pky" colspan="3"></td>
+        </tr>
+        <tr>
+            <td class="tg-0p48">13</td>
+            <td class="tg-0pky" colspan="8"></td>
+            <td class="tg-0pky"></td>
+            <td class="tg-0pky" colspan="2"></td>
+            <td class="tg-0pky" colspan="3"></td>
+        </tr>
+        <tr>
+            <td class="tg-0p48">14</td>
+            <td class="tg-0pky" colspan="8"></td>
+            <td class="tg-0pky"></td>
+            <td class="tg-0pky" colspan="2"></td>
+            <td class="tg-0pky" colspan="3"></td>
+        </tr>
+        <tr>
+            <td class="tg-0p48">15</td>
+            <td class="tg-0pky" colspan="8"></td>
+            <td class="tg-0pky"></td>
+            <td class="tg-0pky" colspan="2"></td>
+            <td class="tg-0pky" colspan="3"></td>
+        </tr>
+        <tr>
+            <td class="tg-0pky" rowspan="10"></td>
+            <td class="tg-73a0" colspan="11"><span style="font-weight:bold">Total Food</span></td>
+            <td class="tg-0pky" colspan="3"></td>
+        </tr>
+        <tr>
+            <td class="tg-73a0" colspan="11"><span style="font-weight:bold">Total Beverage</span></td>
+            <td class="tg-0pky" colspan="3"></td>
+        </tr>
+        <tr>
+            <td class="tg-0p48" colspan="11">GRAND TOTAL</td>
+            <td class="tg-0pky" colspan="3"></td>
+        </tr>
+        <tr>
+            <td class="tg-qu95" colspan="11">Ticket</td>
+            <td class="tg-0pky" colspan="3"></td>
+        </tr>
+        <tr>
+            <td class="tg-qu95" colspan="11">Credit</td>
+            <td class="tg-0pky" colspan="3"></td>
+        </tr>
+        <tr>
+            <td class="tg-qu95" colspan="11">Cash</td>
+            <td class="tg-0pky" colspan="3"></td>
+        </tr>
+        <tr>
+            <td class="tg-qu95" colspan="11">Complimentary</td>
+            <td class="tg-0pky" colspan="3"></td>
+        </tr>
+        <tr>
+            <td class="tg-p1nr" colspan="14" rowspan="3"><br><span style="font-weight:bold">Guest Name      : ..................................</span><span
+                    style="font-weight:700">...........................................</span><span
+                    style="font-weight:bold">..........</span><br><br><span style="font-weight:bold">Guest Signature: ...............</span><span
+                    style="font-weight:700">........................................................</span><span
+                    style="font-weight:bold">..............</span><br><br><br><span style="font-weight:bold">* For Complimentary use, kindly fill out the back of the guest check.</span>
+            </td>
+        </tr>
+        <tr>
+        </tr>
+        <tr>
+        </tr>
+    </table>
+</div>
 </body>
 </html>
+<script type="text/javascript">
+ /*   html2canvas($("#someHtml"), {
+        useCORS: true,
+        onrendered: function (canvas) {
+            var width = canvas.width;
+            var height = canvas.height;
+            var millimeters = {};
+            millimeters.width = Math.floor(width * 0.264583);
+            millimeters.height = Math.floor(height * 0.264583);
+            var imgData = canvas.toDataURL('image/png');
+            var doc = new jsPDF('p', 'mm', 'a6');
+            doc.deletePage(1);
+            doc.addPage(millimeters.width, millimeters.height);
+            doc.addImage(imgData, 'PNG', 0, 0);
+            //doc.addImage(imgData, 'PNG', 75, 80,width,height);
+            doc.save('guestCheck.pdf');
+            //setTimeout(function () { window.open(imgData) }, 1000);
+        }
+    });*/
+    $.ajax({
+        url: '/api/guestCheck/nextGuestList',
+        type: "GET",
+        statusCode: {
+            404: function () {
+                console.log("-1-1-1-1 WE GOT 404!");
+            },
+            200: function (responseBody) {
+                var dat = JSON.parse(responseBody);
+                console.log(dat)
+                document.getElementById('checkNo').innerHTML = dat.id;
+            }
+        }
+    });
+</script>
 
+<!--
 <script>
 
 
@@ -429,4 +764,6 @@
     });
 
 
-</script>>
+</script>
+
+-->
