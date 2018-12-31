@@ -23,11 +23,21 @@ function nextGuestList(data) {
 }
 
 
-module.exports = function(app) {
+module.exports = function (app) {
+    app.get('/guestCheck', function (request, response) {
+        console.log('Guest Check Controller');
+        if (request.session != undefined && (checkUsersRole.isMatre(request.session.roleId)
+            || checkUsersRole.isCashier(request.session.roleId))) {
+            response.sendFile(path.resolve('public/Pages/test.html'));
+        } else {
+            response.statusCode = 401;
+            return response.redirect('/noAuthority');
+        }
 
+    }),
         app.get('/api/guestCheck/nextGuestList', function (request, response) {
-            if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
-                ||  checkUsersRole.isCashier(request.session.roleId))) {
+            if (request.session != undefined && (checkUsersRole.isMatre(request.session.roleId)
+                || checkUsersRole.isCashier(request.session.roleId))) {
                 console.log("Create New Guest List");
                 nextGuestList().then(data => {
                     response.statusCode = 200;

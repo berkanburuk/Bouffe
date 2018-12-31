@@ -1249,7 +1249,7 @@ module.exports = function (app) {
             }
         }),
         app.get('/api/order/getMatreNotification', function (request, response) {
-            if (request.session != undefined && (checkUsersRole.isMatre(request.session.roleId) || checkUsersRole.isAdmin(request.session.roleId))) {
+            if (request.session != undefined && (checkUsersRole.isMatre(request.session.roleId) || checkUsersRole.isAdmin(request.session.roleId) ||checkUsersRole.isChef(request.session.roleId) )) {
                 getMatreAndChefNotification()
                     .then(notification => {
                         response.end(notification);
