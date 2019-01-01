@@ -632,6 +632,7 @@ function foodIsReady(orderId) {
 function getReadyFoods(userUsername) {
     return new Promise((resolve, reject) => {
         mOrder.findAll({
+            attributes:['id'],
             where:
                 {
                     orderOpen: true,
@@ -639,11 +640,16 @@ function getReadyFoods(userUsername) {
             include:
                 [
                     {
-                        model: mFood,
-                        through: mOrderFood,
-                        where:{
-                            isFoodReady:2
+                        through: {
+                            where: {
+                                isFoodReady: 2
+                            }
                         }
+                    },
+                    {
+                        model:mFood,
+                        through: mOrderFood,
+                        attributes:['name'],
                     },
                     {
                         model: mTable,
@@ -1310,7 +1316,7 @@ module.exports = function (app) {
             }
         }),
 
-    app.post('/api/order/foodIsReady/:orderId', function (request, response) {
+    app.get('/api/order/foodIsReady/:orderId', function (request, response) {
         if (request.session != undefined && (checkUsersRole.isChef(request.session.roleId))) {
             foodIsReady(request.body.orderId).then(result => {
                 response.end(result.toString());
