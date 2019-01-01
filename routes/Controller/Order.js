@@ -492,27 +492,28 @@ function getMatreAndChefNotification() {
                 {
                     orderOpen: true,
                 },
+            /*
             include: [
                 {
                     through: {
-                        where: {
-                            isFoodReady: 1
-                        }
+                        isFoodReady: -1
                     }
                 }],
+                */
                 include:[
                     {
                         model:mFood,
-                        through: mOrderFood,
-                        attributes:['name','price']
+                        through: {
+                            isFoodReady:-1
+                        },
+                        //attributes:['name','price']
+                    },
+                    {
+                        model:mTable,
+                        through: mOrderTable,
                     }
                 ],
-            include:[
-                {
-                    model:mFood,
-                    through: mOrderFood,
-                }
-            ]
+
         }).then((order) => {
             resolve(JSON.stringify(order));
         }).catch(error => {
