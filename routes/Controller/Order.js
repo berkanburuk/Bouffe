@@ -606,8 +606,9 @@ function rejectMenu(data) {
 }
 
 //2 -> Chef yemek hazır dedi. waiter önüne düşecek.
-function foodIsReady(orderId) {
+function foodIsReady(orderId,foodId) {
     return new Promise((resolve, reject) => {
+        console.log("Order - Food Ids :"+orderId+foodId)
         mOrderFood.update(
             {
                 isFoodReady:2
@@ -615,7 +616,8 @@ function foodIsReady(orderId) {
             {
                 where:
                     {
-                        id: orderId,
+                        orderId: orderId,
+                        foodId:foodId
                     }
             }).then((order) => {
             if (order > 0)
@@ -668,7 +670,7 @@ function getReadyFoods(userUsername) {
 }
 
 //3 -> Waiter served the food. Approve
-function foodIsServed(orderId) {
+function foodIsServed(orderId,foodId) {
     return new Promise((resolve, reject) => {
         mOrderFood.update(
             {
@@ -678,6 +680,7 @@ function foodIsServed(orderId) {
                 where:
                     {
                         orderId: orderId,
+                        foodId:foodId
                     }
             }).then((order) => {
             if (order > 0)
@@ -1316,9 +1319,11 @@ module.exports = function (app) {
             }
         }),
 
-    app.get('/api/order/foodIsReady/:orderId', function (request, response) {
+    app.get('/api/order/foodIsReady/:orderId/:foodId', function (request, response) {
         if (request.session != undefined && (checkUsersRole.isChef(request.session.roleId))) {
-            foodIsReady(request.body.orderId).then(result => {
+            var orderId = request.params.orderId;
+            var foodId = request.params.foodId;
+            foodIsReady(orderId,foodId).then(result => {
                 response.end(result.toString());
             }).catch(error => {
                 response.end(error.toString());
@@ -1334,7 +1339,7 @@ module.exports = function (app) {
 
         app.post('/api/order/foodIsServed', function (request, response) {
             if (request.session != undefined && (checkUsersRole.isWaiter(request.session.roleId))) {
-                foodIsServed(request.body.orderId).then(result => {
+                foodIsServed(request.body.orderId,request.body.foodId).then(result => {
                     response.end(result.toString());
                 }).catch(error => {
                     response.end(error.toString());
