@@ -143,8 +143,9 @@ function createMenuOrder(data) {
     /*
     data.note
     data.tableId
-    data.beverageId
-
+    data.mainCourse
+data.appetizer
+data.dessert
     mainCourse,appetizer,dessert,tableId
 
     */
@@ -503,7 +504,11 @@ function getMatreAndChefNotification() {
                 include:[
                     {
                         model:mFood,
-                        through: {
+                        through:mOrderFood
+
+                    },
+                    {
+                         through: {
                             isFoodReady:-1
                         },
                         //attributes:['name','price']
@@ -523,91 +528,137 @@ function getMatreAndChefNotification() {
     })
 }
 
+
 //isFoodReady 4 yapacak. Order iptal. matre ve chef iptal etmek için bu apiyi çağıracak.
 function rejectMenu(data) {
     /*
     orderId
-    price1,
-    price2,
-    price3,
     tableId
+    foodId
      */
     return new Promise((resolve, reject) => {
-        console.log(data)
-        data.price1 = parseFloat(data.price1)
-        data.price2 = parseFloat(data.price2)
-        data.price3 = parseFloat(data.price3)
+        data.orderId = parseInt(data.orderId);
+        data.foodId = parseInt(data.foodId);
         var isSet = 0;
         var price = 0;
-        if (data.price1 > 0) {
-            isSet++;
-            price += data.price1;
-        }
-        if (data.price2 > 0) {
-            isSet++;
-            price += data.price2;
-        }
-        if (data.price3 > 0) {
-            isSet++;
-            price += data.price3;
-        }
-
-            getActiveMenu().then(menu => {
-                if (menu != undefined && menu != null && isSet == 3) {
-                    price = menu['setPrice'];
-                }
-                getATable(data.tableId).then(aTable => {
-                    var totalPrice = aTable['totalPrice'];
-                    console.log("First : totalPrice:" + totalPrice)
-                    console.log("Price:" + price)
-                    totalPrice -= price;
-
-                    if (totalPrice < 0) {
-                        totalPrice += price;
-                        reject("The price cannot be lower than 0TL");
-                    }
-                    console.log("Second : totalPrice:" + totalPrice)
-                    mOrderFood.update({
-                            isFoodReady: 4
-                        },
-                        {
-                            where: {
-                                orderId: data.orderId
+        mOrderFood.findAll({
+            where: {
+                orderId: data.orderId
+            },
+            raw: true
+        }).then(orders => {
+            if (orders == null && orders == undefined) {
+                resolve("There is no order with this order id : " + data.orderId)
+            } else {
+                var len = orders.length;
+                if (len == 3) {
+                    getActiveMenu().then(menu => {
+                        if (menu != undefined && menu != null && len == 3) {
+                            price = menu['setPrice'];
+                            var newData ={};
+                            for (var i = 0; i<len;i++){
+                                if (orders[i].foodId == 2)
+                                orders = orders.filter(function( obj ) {
+                                    return orders.orderId !== data.orderId;
+                                });
                             }
-                        })
-                        .then(table => {
-                            if (table != null && table != undefined && table > 0) {
-                                mTable.update({
-                                    totalPrice: totalPrice,
-                                }, {
+                            console.log(orders)
+
+                            console.log(price)
+                            mFood.findOne({
+                                where: {
+                                    id: orders[0].foodId
+                                }
+                            }).then(menu1 => {
+                                console.log(orders[0].foodId);
+                                console.log(orders[0].foodId[0]);
+                            }).catch(error => {
+                                reject(error)
+                            })
+                        } else {
+                            //order[0].foodId
+
+                        }
+
+                    }).catch(error => {
+                        reject(error)
+                    })
+                } else {
+                    mFood.findOne({
+                        where: {
+                            id: data.orderId
+                        },
+                        raw: true
+                    }).then(menu1 => {
+                        console.log(menu1)
+                        price = menu1.price
+                    }).catch(error => {
+                        reject(error)
+                    })
+                }
+            }
+        })
+    })
+
+
+    /*
+                    console.log("Price:" + price)
+                        getATable(data.tableId).then(aTable => {
+                            var totalPrice = aTable['totalPrice'];
+                            console.log("First : totalPrice:" + totalPrice)
+                            totalPrice -= price;
+
+                            if (totalPrice < 0) {
+                                totalPrice += price;
+                                reject("The price cannot be lower than 0TL");
+                            }
+                            console.log("Second : totalPrice:" + totalPrice)
+                            mOrderFood.update({
+                                    isFoodReady: 4
+                                },
+                                {
                                     where: {
-                                        id: data.tableId
+                                        orderId: data.orderId
                                     }
                                 })
-                                    .then(result => {
-                                        console.log(JSON.stringify(result));
-                                        if (result != null && result != undefined) {
-                                            resolve("The Food(s) is rejected!");
-                                        } else {
-                                            reject("The Food could not be rejected!");
-                                        }
-                                    })
-                                    .catch(error => {
-                                        reject(error);
-                                    })
-                            }
+                                .then(table => {
+                                    if (table != null && table != undefined && table > 0) {
+                                        mTable.update({
+                                            totalPrice: totalPrice,
+                                        }, {
+                                            where: {
+                                                id: data.tableId
+                                            }
+                                        })
+                                            .then(result => {
+                                                console.log(JSON.stringify(result));
+                                                if (result != null && result != undefined) {
+                                                    resolve("The Food(s) is rejected!");
+                                                } else {
+                                                    reject("The Food could not be rejected!");
+                                                }
+                                            })
+                                            .catch(error => {
+                                                reject(error);
+                                            })
+                                    }
+                                })
+                                .catch(error => {
+                                    reject(error);
+                                })
+                        }).catch(error => {
+                            reject(error)
                         })
-                        .catch(error => {
-                            reject(error);
-                        })
-                }).catch(error => {
-                    reject(error)
+                    }).catch(error => {
+                        reject(error);
+                    })
                 })
-
-            }).catch(error => {
-                reject(error);
-            })
+            }
+        }
     })
+*/
+
+
 }
 
 //2 -> Chef yemek hazır dedi. waiter önüne düşecek.
@@ -644,28 +695,28 @@ function getReadyFoods(userUsername) {
                 {
                     orderOpen: true,
                 },
-            include:
-                [
-                    {
-                        through: {
-                            where: {
-                                isFoodReady: 2
-                            }
-                        }
-                    },
-                    {
-                        model:mFood,
-                        through: mOrderFood,
-                        attributes:['name'],
-                    },
-                    {
-                        model: mTable,
-                        through: mOrderTable,
-                        where: {
-                            userUsername: userUsername
-                        }
+            include:[
+                {
+                    model:mFood,
+                    through:mOrderFood
+
+                },
+/*
+                {
+                    through:mOrderFood,
+                    where:{
+                        isFoodReady:2
                     }
-                ]
+                 },
+*/
+                {
+                    model:mTable,
+                    through: mOrderTable,
+                    where:{
+                        userUsername:userUsername
+                    }
+                }
+            ]
         }).then((order) => {
             resolve(JSON.stringify(order));
         }).catch(error => {
@@ -1308,7 +1359,7 @@ module.exports = function (app) {
 
         app.post('/api/order/reduceMenuPayment', function (request, response) {
             if (request.session != undefined && (checkUsersRole.isMatre(request.session.roleId)
-                || checkUsersRole.isAdmin(request.session.roleId) || checkUsersRole.isWaiter(request.session.roleId))) {
+                || checkUsersRole.isAdmin(request.session.roleId) || checkUsersRole.isChef(request.session.roleId))) {
                 var data = request.body;
                 rejectMenu(data).then(beverage => {
                     response.end(beverage.toString());
