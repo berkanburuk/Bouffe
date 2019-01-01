@@ -67,7 +67,7 @@ exports.errorMesage =function(){
     return "The value entered is not valid";
 }
 exports.errorMesageEmpty =function(){
-    return "Values cannot be empty!";
+    return "Value(s) cannot be empty!";
 }
 exports.isObjectValuesEmpty  = function(data){
     var keysArray = Object.keys(data)

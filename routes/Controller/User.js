@@ -189,25 +189,31 @@ module.exports = function(app) {
             console.log(data);
             if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
                 ||  checkUsersRole.isAdmin(request.session.roleId))){
-                data.roleId = parseInt(data.roleId, 10);
-                data.courseId = parseInt(data.courseId, 10);
+                if (checkDataType.isObjectValuesEmpty(data)) {
+                    data.roleId = parseInt(data.roleId, 10);
+                    data.courseId = parseInt(data.courseId, 10);
 
-                console.log(data);
-                createAUser(data).then(user => {
-                    response.statusCode = 200;
-                    console.log(user);
+                    console.log(data);
+                    createAUser(data).then(user => {
+                        response.statusCode = 200;
+                        console.log(user);
 
-                    response.write("User is added successfully", () => {
-                        response.end();
-                    });
-                }).catch(error => {
+                        response.write("User is added successfully", () => {
+                            response.end();
+                        });
+                    }).catch(error => {
+                        response.statusCode = 404;
+                        console.log(error);
+                        response.write(error.toString(), () => {
+                            response.end();
+                        });
+                    })
+                }else{
                     response.statusCode = 404;
-                    console.log(error);
-
-                    response.write(error.toString(), () => {
+                    response.write(checkDataType.errorMesageEmpty().toString(), () => {
                         response.end();
                     });
-                })
+                }
             } else {
                 response.statusCode = 401;
                 return response.redirect('/noAuthority');
@@ -437,45 +443,60 @@ function createUserTransaction(data) {
 function createAUser(data){
 
     return new Promise((resolve, reject) => {
-        mUser.findOrCreate({
-            where:
-                {
-                    username: data.username
-                },
-            defaults:
-                {
-                    password: data.password,
-                    firstName: data.firstName,
-                    lastName: data.lastName,
-                    bilkentId: data.bilkentId
-                }
-        }).then((user)=>{
-            console.log("User" + user[1]);
-            if (user[1] == false){
-                reject('This user is already added!');
-                return;
+        mUser.findOne({
+            where:{
+                bilkentId:data.bilkentId
             }
+        }).then(myData =>{
+            if (myData != undefined || myData != null){
+                reject("Bilkent Id must be unique")
+            }else{
 
-            user[0].addRoles(data.roleId).then(()=>{
-                console.log("Role is added!");
-            }).catch(error=>{
-                reject("Course could not be created!");
-            })
-            user[0].addCourses(data.courseId).then(()=>{
-                console.log("Course is added!");
-            }).catch(error=>{
-                reject("Course could not be created!");
-            })
+                mUser.findOrCreate({
+                    where:
+                        {
+                            username: data.username
+                        },
+                    defaults:
+                        {
+                            password: data.password,
+                            firstName: data.firstName,
+                            lastName: data.lastName,
+                            bilkentId: data.bilkentId
+                        }
+                }).then((user)=>{
+                    console.log("User" + user[1]);
+                    if (user[1] == false){
+                        reject('This user is already added!');
+                        return;
+                    }
 
-            resolve("User is created successfully.");
+                    user[0].addRoles(data.roleId).then(()=>{
+                        console.log("Role is added!");
+                    }).catch(error=>{
+                        reject("Course could not be created!");
+                    })
+                    user[0].addCourses(data.courseId).then(()=>{
+                        console.log("Course is added!");
+                    }).catch(error=>{
+                        reject("Course could not be created!");
+                    })
+
+                    resolve("User is created successfully.");
+                })
+                /*.spread((user, created)=> {
+                    console.log("CRRRR : " + created);
+                    console.log(user.get({plain: true}));
+                })*/
+                    .catch(error =>{
+                        reject("User cannot be created!" + error);
+                    })
+            }
+        }).catch(error=>{
+            reject(error)
         })
-        /*.spread((user, created)=> {
-            console.log("CRRRR : " + created);
-            console.log(user.get({plain: true}));
-        })*/
-            .catch(error =>{
-                reject("User cannot be created!" + error);
-            })
+
+
 
     })
 

@@ -239,11 +239,11 @@ function getActiveMenu() {
                 }
             ]
         }).then(data => {
-            if (data != null && data != undefined) {
+            if (data[0] != null && data[0] != undefined) {
                 resolve(JSON.stringify(data));
             }
             else
-                reject("Cannot get the Menu's Food!");
+                reject("There is not a active Menu!");
         }).catch(error => {
             reject(error);
         })
@@ -432,25 +432,36 @@ module.exports = function (app) {
             console.log(data);
             if (request.session != undefined && (checkUsersRole.isAdmin(request.session.roleId) ||
                 checkUsersRole.isChef(request.session.roleId) || checkUsersRole.isMatre(request.session.roleId))) {
-                createMenuAndAssignFood(data).then(menu => {
-                    response.statusCode = 200;
-                    console.log(menu);
-                    response.write(menu.toString(), () => {
+                if (checkDataType.isObjectValuesEmpty(data)) {
+                    createMenuAndAssignFood(data).then(menu => {
+                        response.statusCode = 200;
+                        console.log(menu);
+                        response.write(menu.toString(), () => {
+                            response.end();
+                        });
+                    }).catch(error => {
+                        response.statusCode = 404;
+                        console.log(error);
+                        response.write(error.toString(), () => {
+                            response.end();
+                        });
+                    })
+                }
+                else {
+                    response.write(checkDataType.errorMesageEmpty().toString(), () => {
+                        response.statusCode = 404;
                         response.end();
-                    });
-                }).catch(error => {
-                    response.statusCode = 404;
-                    console.log(error);
-                    response.write(error.toString(), () => {
-                        response.end();
-                    });
-                })
-            } else {
-                response.write(checkUsersRole.errorMesage(), () => {
-                    response.statusCode = 404;
-                    response.end();
-                })
+                    })
+                }
             }
+                else {
+                    response.write(checkUsersRole.errorMesage(), () => {
+                        response.statusCode = 404;
+                        response.end();
+                    })
+                }
+
+
 
         }),
         app.post('/api/menu/assignFoodToMenu', function (request, response) {
