@@ -123,6 +123,7 @@ function createAMergeYeni(data) {
                     },
             })
             .then((result) => {
+
                 mTable.update(
                     {mergedWith: -1},
                     {
@@ -196,28 +197,47 @@ function createAMerge(data) {
 }
 
 function updateStatus(data){
-
     return new Promise((resolve, reject) => {
-        mTable.update(
-            {
-                status:data.status,
+        mTable.findOne({
+            where:{
+                id:data.tableId,
+                status:1
             }
-            ,{
-                where:
+        }).then(table=> {
+            console.log(table);
+            if (table != null && table != undefined){
+                mTable.update(
                     {
-                        id: data.tableId
-                    },
-            }).then((result)=>{
-            console.log(result);
-            if(result[0]>0){
-                resolve("Table is updated successfully.");
-            }else {
-                reject("Table could not be updated!");
-            }
+                        status:data.status,
+                    }
+                    ,{
+                        where:
+                            {
+                                id: data.tableId,
+                                status:{
+                                    ne:1
+                                }
+                            },
+                    }).then((result)=>{
 
-        }).catch(error =>{
-            reject(error);
+
+                    if(result[0]>0){
+                        resolve("Table is updated.");
+                    }else {
+                        reject("Table could not be updated!");
+                    }
+
+                }).catch(error =>{
+                    reject(error);
+                })
+            }else
+                {
+                    reject("To be able to Deactivate a table, PAYMENT MUST BE DONE.");
+            }
+        }).catch(error=>{
+            resolve(error);
         })
+
 
     })
 
@@ -405,12 +425,15 @@ exports.isTableExists = function(id){
 
 function isTableOrderable(id) {
     return new Promise((resolve, reject) => {
+
+
         mTable.findAll({
             where: {
                 structure: 'Square',
                 mergedWith:{
                     lt: 0
                 },
+                status:1,
                 id:{
                     ne:id
                 }
@@ -771,28 +794,33 @@ module.exports = function(app){
             }),
             app.post('/api/table/updateStatus', function (request, response ) {
                 var data = request.body;
-                if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId) || checkUsersRole.isWaiter(request.session.roleId)
-                    ||  checkUsersRole.isCashier(request.session.roleId)) || checkUsersRole.isAdmin(request.session.roleId))
-                {
-
-                    updateStatus(data).then(result=> {
-                        response.statusCode = 200;
-                        console.log(result);
-                        response.write(JSON.stringify(result), () => {
-                            response.end();
+                if (request.session != undefined && (checkUsersRole.isMatre(request.session.roleId) || checkUsersRole.isWaiter(request.session.roleId)
+                    || checkUsersRole.isCashier(request.session.roleId)) || checkUsersRole.isAdmin(request.session.roleId)) {
+                    if (checkDataType.isObject(data)) {
+                        updateStatus(data).then(result => {
+                            response.statusCode = 200;
+                            console.log(result);
+                            response.write(JSON.stringify(result), () => {
+                                response.end();
+                            })
+                        }).catch(error => {
+                            response.statusCode = 404;
+                            console.log(error);
+                            response.write(error.toString(), () => {
+                                response.end();
+                            })
                         })
-                    }).catch(error => {
+                    }else {
                         response.statusCode = 404;
                         console.log(error);
-                        response.write(error.toString(), () => {
+                        response.write(checkDataType.errorMesage(), () => {
                             response.end();
                         })
-                    })
+                    }
                 }else {
                     response.statusCode = 401;
                     return response.redirect('/noAuthority');
                 }
-
 
             }),
 
@@ -867,7 +895,6 @@ module.exports = function(app){
                     getAllTables().then(tables => {
                         response.write(JSON.stringify(tables), () => {
                             response.statusCode = 200;
-                            console.log(tables);
                             response.end();
                         })
                     }).catch(error => {
