@@ -499,16 +499,20 @@ function getMatreAndChefNotification() {
                             isFoodReady: 1
                         }
                     }
-                }
-            ],
-
-            include: [
+                }],
+                include:[
+                    {
+                        model:mFood,
+                        through: mOrderFood,
+                        attributes:['name','price']
+                    }
+                ],
+            include:[
                 {
                     model:mFood,
                     through: mOrderFood,
-                    attributes:['name'],
                 }
-            ],
+            ]
         }).then((order) => {
             resolve(JSON.stringify(order));
         }).catch(error => {

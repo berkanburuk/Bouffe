@@ -1,7 +1,7 @@
 let path = require('path');
 let sequelize = require('../Util/DatabaseConnection').getSequelize;
 let tableNames = require('../Util/DatabaseConnection').getTableNames;
-
+let checkDataType = require('../Util/TypeCheck');
 
 let db = sequelize();
 let dbNames = tableNames();
@@ -225,6 +225,7 @@ module.exports = function (app) {
             if (request.session != undefined && (checkUsersRole.isMatre(request.session.roleId)
                 || checkUsersRole.isCashier(request.session.roleId))) {
                 var data = request.body;
+                //if (checkDataType.)
                 createAReservation(data).then(reservation => {
                     console.log(reservation);
                     response.write(reservation, () => {
