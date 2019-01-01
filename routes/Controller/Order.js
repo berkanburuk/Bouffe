@@ -507,12 +507,12 @@ function getMatreAndChefNotification() {
                         through:mOrderFood
 
                     },
-                    {
+                    /*{
                          through: {
                             isFoodReady:-1
                         },
                         //attributes:['name','price']
-                    },
+                    },*/
                     {
                         model:mTable,
                         through: mOrderTable,
@@ -555,16 +555,16 @@ function rejectMenu(data) {
                     getActiveMenu().then(menu => {
                         if (menu != undefined && menu != null && len == 3) {
                             price = menu['setPrice'];
-                            var newData ={};
-                            for (var i = 0; i<len;i++){
-                                if (orders[i].foodId == 2)
-                                orders = orders.filter(function( obj ) {
-                                    return orders.orderId !== data.orderId;
-                                });
-                            }
-                            console.log(orders)
-
                             console.log(price)
+                            var newData=Object.create(orders);
+                            for (var i = 0; i<3;i++){
+                                console.log(orders[i].foodId +" "+ data.foodId)
+                                if (orders[i].foodId != data.foodId){
+                                    newData.splice(i,1)
+                                }
+                            }
+                            console.log("orders"+JSON.stringify(newData))
+
                             mFood.findOne({
                                 where: {
                                     id: orders[0].foodId
