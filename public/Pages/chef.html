@@ -104,15 +104,14 @@
         //});​
 
 
-        x += "var foodId, tableId, y;"
+        x += "var y, foodId, tableId, price1, price2, price3;"
         x += "\$('div#bodyHere div#order').click( function(e) {\n";
         //x+="\$(location).attr('href', \$(this).attr('value'));";
         x += "\n";
         x += "e.preventDefault();\n";
         x += "var valuesToSplit = $(this).attr('value').split(','); \n";
         x += "y = parseInt(valuesToSplit[0]);\n";
-        x += "tableId = parseInt(valuesToSplit[1]);\n";
-        x += "foodId = parseInt(valuesToSplit[2]);\n";
+        x += "foodId = parseInt(valuesToSplit[1]);\n";
         x += "var texty=$(this).attr('name');\n";
         x += "case1(texty,y);";
         x += "});\n";
@@ -132,14 +131,12 @@
         x += "if(result.value){";
         x += "console.log(y);\n";
         x += "console.log(y);\n";
-        x += "var data2 = {foodId: foodId, tableId: tableId, orderId: y, accepted: true}\n";
         x += "$.ajax({\n";
-        x += "type: 'POST',\n";
+        x += "type: 'GET',\n";
         x += "dataType: 'application/json',\n";
         //2
-        x += "url: '/api/order/bartenderApproveOrRejectBeverage',\n";
+        x += "url: '/api/order/foodIsReady/'+y+'/'+foodId,\n";
         x += "timeout: 10000,\n";
-        x += "data: data2,\n";
         x += "statusCode: {\n";
         x += "200: function (x) {\n";
         x += "location.reload();\n";
@@ -183,7 +180,8 @@
             if (!(dat[i].food[0] === undefined)) {
                 console.log(dat[i].food.length);
                 for (var k = 0; k < dat[i].food.length; k++) {
-                    tableData += "<div id='" + "order" + "' value='" + dat[i].id + "'" + " name='" + dat[i].food[k].name + "' " + "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/s2.png' alt=\"\"><div class=\"centered\">" + dat[i].id + " is refers Food: " + dat[i].food[k].name + "</div></p></p></div>";
+                    if (dat[i].food[k].orderFood.isFoodReady === -1)
+                        tableData += "<div id='" + "order" + "' value='" + dat[i].id + "," + dat[i].food[k].orderFood.foodId +"," + dat[i].food[k].price + "'" + " name='" + dat[i].food[k].name + "' " + "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/s2.png' alt=\"\"><div class=\"centered\">" + dat[i].id + " is refers Food: " + dat[i].food[k].name + "</div></p></p></div>";
                 }
             }
         }
