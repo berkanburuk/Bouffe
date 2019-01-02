@@ -152,7 +152,7 @@ module.exports = function(app) {
             var data = {}
             data.username = request.params.username;
             data.password = request.params.password;
-
+            data.username = data.username.toLowerCase();
             //var data = request.body;
             console.log(request.body);
             checkValidationOfUser(data.username, data.password).then(user => {
@@ -195,6 +195,7 @@ module.exports = function(app) {
                     data.roleId = parseInt(data.roleId, 10);
                     data.courseId = parseInt(data.courseId, 10);
                     data.bilkentId = parseInt(data.bilkentId,10);
+                    data.username = data.username.toLowerCase()
                     console.log(data);
                     createAUser(data).then(user => {
                         response.statusCode = 200;

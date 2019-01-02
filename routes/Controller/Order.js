@@ -1360,7 +1360,9 @@ module.exports = function (app) {
                 || checkUsersRole.isAdmin(request.session.roleId) || checkUsersRole.isChef(request.session.roleId))) {
                 var data = request.body;
                 console.log("Will be rejected!" + JSON.stringify(data))
-
+                data.orderId = parseInt(data.orderId)
+                data.tableId = parseInt(data.tableId)
+                data.foodId = parseInt(data.foodId)
                 if(!checkDataType.isNumber(data.orderId) || !checkDataType.isNumber(data.tableId) || !checkDataType.isNumber(data.foodId)){
                     response.write(checkUsersRole.errorMesage(), () => {
                         response.statusCode = 404;
