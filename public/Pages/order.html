@@ -381,7 +381,7 @@
                     timeout: 5000,
                     statusCode: {
                         200: function (x) {
-                         //   alert("Beverage order is added successfully");
+                            //   alert("Beverage order is added successfully");
                             $.ajax({
                                 url: '/api/order/orderFood',
                                 dataType: 'application/json',
@@ -523,6 +523,7 @@
 
 
     setInterval(function () {
+        /*
         $.ajax({
             url: '/api/order/getReadyBeverages',
             dataType: 'application/json',
@@ -599,9 +600,55 @@
                     console.log(x.responseText);
                 }
             }
-        });
+        });*/
 
         //FOOD REJECTION  AND UPDATE STATUS
+        $.ajax({
+            url: '/api/order/getReadyFoods',
+            dataType: 'application/json',
+            type: 'GET',
+            timeout: 5000,
+            statusCode: {
+                200: function (x) {
+                    console.log(JSON.parse(x.responseText));
+                    var readyBeverageArr = JSON.parse(x.responseText);
+                    for (var i = 0; i < readyBeverageArr.length; i++) {
+                        for (var k = 0; i < readyBeverageArr[i].food.length; k++) {
+
+                            //   console.log(readyBeverageArr[i].beverages);
+                            if (readyBeverageArr[i].food[k] !== undefined) {
+                                if (readyBeverageArr[i].food[k].orderFood.isFoodReady === 2) {
+                                    var text = readyBeverageArr[i].food[k].name + " for table #" + readyBeverageArr[i].tables[0].id;
+                                    showNotification(text, 'info');
+                                    var data2 = {
+                                        orderId: readyBeverageArr[i].tables[0].orderTable.orderId,
+                                        foodId: readyBeverageArr[i].food[k].id
+                                    };
+                                    console.log(data2);
+                                    $.ajax({
+                                        url: '/api/order/foodIsServed',
+                                        dataType: 'application/json',
+                                        type: 'POST',
+                                        data: data2,
+                                        timeout: 5000,
+                                        statusCode: {
+                                            200: function (x) {
+                                            },
+                                            404: function (x) {
+                                                console.log(x.responseText);
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                    }
+                },
+                404: function (x) {
+                    console.log(x.responseText);
+                }
+            }
+        });
         $.ajax({
             url: '/api/order/getRejectedFoods',
             dataType: 'application/json',
