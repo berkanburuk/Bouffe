@@ -45,10 +45,14 @@ module.exports = function(app) {
             // ...
         });
     */
+
+
     app.get('/user', function (request, response) {
         console.log('User Controller');
-        response.sendFile(path.resolve('public/Pages/login.html'));
+                response.sendFile(path.resolve('public/Pages/login.html'));
+
     }),
+
         app.get('/userManagement', function (request, response) {
             console.log('UploadSRSFile');
             if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId))){
@@ -58,10 +62,7 @@ module.exports = function(app) {
                 return response.redirect('/noAuthority');
             }
         }),
-        app.get('/user', function (request, response) {
-            console.log('User Controller');
-            response.sendFile(path.resolve('public/Pages/login.html'));
-        }),
+
         app.get('/chefManagement', function (request, response) {
             console.log('chef');
             if (request.session != undefined  && (checkUsersRole.isChef(request.session.roleId))){
@@ -85,7 +86,8 @@ module.exports = function(app) {
                 response.sendFile(path.resolve('public/Pages/navigation.html'));
             }else {
                 response.statusCode = 401;
-                return response.redirect('/noAuthority');
+                //response.sendFile(path.resolve('public/Pages/login.html'));
+                return response.redirect('/user');
             }
         }),
 
@@ -192,7 +194,7 @@ module.exports = function(app) {
                 if (checkDataType.isObjectValuesEmpty(data)) {
                     data.roleId = parseInt(data.roleId, 10);
                     data.courseId = parseInt(data.courseId, 10);
-
+                    data.bilkentId = parseInt(data.bilkentId,10);
                     console.log(data);
                     createAUser(data).then(user => {
                         response.statusCode = 200;
@@ -225,6 +227,7 @@ module.exports = function(app) {
             if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
                 ||  checkUsersRole.isAdmin(request.session.roleId))){
                 var data = request.body;
+                data.bilkentId = parseInt(data.bilkentId);
                 updateAUser(data).then(user => {
                     response.statusCode = 200;
                     console.log(user.toString());
@@ -317,8 +320,8 @@ module.exports = function(app) {
 
         app.get('/api/user/logout', function (request, response) {
             console.log("logout");
-            if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
-                ||  checkUsersRole.isAdmin(request.session.roleId))){
+
+            if (request.session!=undefined || request.session!=null){
                 request.session.destroy();
                 response.statusCode = 200;
                 //redirect
@@ -504,43 +507,55 @@ function createAUser(data){
 
 function updateAUser(data){
     return new Promise((resolve, reject) => {
-        mUser.update(
-            {
-                password: data.password,
-                firstName: data.firstName,
-                lastName: data.lastName,
+        mUser.findOne({
+            where: {
                 bilkentId: data.bilkentId
             }
-            ,{
-                where:
+        }).then(myData => {
+            if (myData != undefined || myData != null) {
+                reject("Bilkent Id must be unique")
+            } else {
+                mUser.update(
                     {
-                        username: data.username
-                    },
-            }).then((user)=> {
-            mUser.findOne({
-                where: {
-                    username: data.username
-                }
-            }).then(user => {
-                user.setRoles(data.roleId).then(roles => {
+                        password: data.password,
+                        firstName: data.firstName,
+                        lastName: data.lastName,
+                        bilkentId: data.bilkentId
+                    }
+                    , {
+                        where:
+                            {
+                                username: data.username
+                            },
+                    }).then((user) => {
+                    mUser.findOne({
+                        where: {
+                            username: data.username
+                        }
+                    }).then(user => {
+                        user.setRoles(data.roleId).then(roles => {
 
-                }).catch(error => {
-                    reject(error);
-                })
-                user.setCourses(data.courseId).then(courses => {
+                        }).catch(error => {
+                            reject(error);
+                        })
+                        user.setCourses(data.courseId).then(courses => {
 
-                }).catch(error => {
-                    reject(error);
+                        }).catch(error => {
+                            reject(error);
+                        })
+                        resolve("User is updated successfully.");
+                    })
+                        .catch(error => {
+                            reject(error);
+                        })
                 })
-                resolve("User is updated successfully.");
-            })
-                .catch(error =>{
-                    reject(error);
-                })
+                    .catch(error => {
+                        reject(error);
+                    })
+            }
+        }).catch(error => {
+            reject(error)
         })
-            .catch(error =>{
-                reject(error);
-            })
     })
 
 }

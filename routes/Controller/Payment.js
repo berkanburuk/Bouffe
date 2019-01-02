@@ -11,7 +11,7 @@ let mTable = db.model(dbNames.table);
 let mOrder = db.model(dbNames.order);
 let mOrderTable = db.model(dbNames.orderTable);
 let checkUsersRole = require('./RoleCheck');
-
+let checkDataType = require('../Util/TypeCheck');
 
 function getAllPaymentByTableId(id){
 
@@ -38,7 +38,6 @@ function getAllPaymentByTableId(id){
 
 function partialPayment(tableId,price,paymentType ) {
     return new Promise((resolve, reject) => {
-        price = parseFloat(price);
         mTable.findOne({
             where: {
                 id: tableId,
@@ -182,16 +181,26 @@ module.exports = function (app) {
             app.post('/api/payment/partialPayment', function (request, response) {
                 if (request.session != undefined  && (
                     checkUsersRole.isAdmin(request.session.roleId) || checkUsersRole.isWaiter(request.session.roleId)
-                    || checkUsersRole.isCashier(request.session.roleId)))
-                {
+                    || checkUsersRole.isCashier(request.session.roleId))) {
                     var data = request.body;
-                    partialPayment(data.tableId,data.price,data.paymentType)
-                        .then(notification=> {
-                            response.end(notification);
-                        }).catch(error => {
-                        response.end(error.toString());
-                    })
+                    if (checkDataType.isObjectValuesEmpty(data)) {
+                        data.tableId=parseInt(data.tableId)
+                        data.price = parseFloat(data.price);
+                        data.paymentType = parseInt(data.paymentType)
+                        partialPayment(data.tableId, data.price, data.paymentType)
+                            .then(notification => {
+                                response.end(notification);
+                            }).catch(error => {
+                            response.end(error.toString());
+                        })
+                    }else{
+                        response.statusCode = 404;
+                        response.write(checkDataType.errorMesageEmpty().toString(), () => {
+                            response.end();
+                        });
+                    }
                 }
+
                 else {
                     response.write(checkUsersRole.errorMesage(), () => {
                         response.statusCode = 404;

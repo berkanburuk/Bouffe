@@ -76,8 +76,7 @@ class OrderModel {
         const mOrderFood = sequelize.define('orderFood', {
             isFoodReady:{
                 type:Sequelize.INTEGER,
-                defaultValue: -1
-                //-1 -> Food Order'ı verilmedi
+                defaultValue: 1
                 //0 -> default Value(Just Ordered) -> Şefin önüne onaylanması için düşecek
                 //1 -> Chef OK dedi. update 2
                 //2 -> Chef yemek hazır dedi. waiter önüne düşecek.
