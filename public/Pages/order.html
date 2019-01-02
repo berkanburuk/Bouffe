@@ -620,8 +620,8 @@
                                     var text = readyBeverageArr[i].food[k].name + " for table #" + readyBeverageArr[i].tables[0].id;
                                     showNotification(text, 'info');
                                     var data2 = {
-                                        orderId: readyBeverageArr[i].orderFood.orderId,
-                                        foodId: readyBeverageArr[i].orderFood.foodId
+                                        orderId: readyBeverageArr[i].id,
+                                        foodId: readyBeverageArr[i].food[k].id
                                     };
                                     console.log(data2);
                                     $.ajax({
