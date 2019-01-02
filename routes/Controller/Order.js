@@ -2,12 +2,9 @@ let path = require('path');
 let sequelize = require('../Util/DatabaseConnection').getSequelize;
 let tableNames = require('../Util/DatabaseConnection').getTableNames;
 
-let isTableExist = require('./Table').isTableExists;
-
 let db = sequelize();
 let dbNames = tableNames();
 let mOrder = db.model(dbNames.order);
-let mPayment = db.model(dbNames.payment);
 let mBeverage = db.model(dbNames.beverage);
 let mTable = db.model(dbNames.table);
 let mFood = db.model(dbNames.food);
@@ -16,12 +13,9 @@ let mMenu = db.model(dbNames.menu);
 let mOrderFood = db.model(dbNames.orderFood);
 let mOrderBeverage = db.model(dbNames.orderBeverage);
 
-let mMenuController = require('../Controller/Menu');
-
-
-let modelOrder = require('../Model/Order');
 
 let checkUsersRole = require('./RoleCheck');
+let checkDataType = require('../Util/TypeCheck');
 //0 -> default Value(Just Ordered)
 //1 -> if chef notification, if waiter notification
 //3 -> done
@@ -763,25 +757,20 @@ function getReadyFoods(userUsername) {
             include: [
                 {
                     model: mFood,
-                    through: mOrderFood
-
+                    through: {
+                        where: {
+                            isFoodReady: 2
+                        }
+                    }
                 },
-                /*
-                                {
-                                    through:mOrderFood,
-                                    where:{
-                                        isFoodReady:2
-                                    }
-                                 },
-                */
                 {
                     model: mTable,
                     through: mOrderTable,
-                    where: {
-                        userUsername: userUsername
+                    where:{
+                        userUsername:userUsername
                     }
                 }
-            ]
+            ],
         }).then((order) => {
             resolve(JSON.stringify(order));
         }).catch(error => {
@@ -822,23 +811,23 @@ function getRejectedFoods(userUsername) {
                 {
                     orderOpen: true,
                 },
-            include:
-                [
-                    {
-                        model: mFood,
-                        through: mOrderFood,
+            include: [
+                {
+                    model: mFood,
+                    through: {
                         where: {
                             isFoodReady: 4
                         }
-                    },
-                    {
-                        model: mTable,
-                        through: mOrderTable,
-                        where: {
-                            userUsername: userUsername
-                        }
                     }
-                ]
+                },
+                {
+                    model: mTable,
+                    through: mOrderTable,
+                    where:{
+                        userUsername:userUsername
+                    }
+                }
+            ]
         }).then((order) => {
             resolve(JSON.stringify(order));
         }).catch(error => {
@@ -1366,9 +1355,19 @@ module.exports = function (app) {
 
 
         app.post('/api/order/reduceMenuPayment', function (request, response) {
+            console.log('reduceMenuPayment')
             if (request.session != undefined && (checkUsersRole.isMatre(request.session.roleId)
                 || checkUsersRole.isAdmin(request.session.roleId) || checkUsersRole.isChef(request.session.roleId))) {
                 var data = request.body;
+                console.log("Will be rejected!" + JSON.stringify(data))
+
+                if(!checkDataType.isNumber(data.orderId) || !checkDataType.isNumber(data.tableId) || !checkDataType.isNumber(data.foodId)){
+                    response.write(checkUsersRole.errorMesage(), () => {
+                        response.statusCode = 404;
+                        response.end();
+                    })
+                    return;
+                }
                 rejectMenu(data).then(beverage => {
                     response.end(beverage.toString());
                 }).catch(error => {
