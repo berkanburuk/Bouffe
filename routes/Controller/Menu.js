@@ -60,7 +60,6 @@ function createMenuAndAssignFood(data) {
                         data.cuisineRegion,
                         data.date,
                         data.setPrice,
-                        data.foodName
      */
     return new Promise((resolve, reject) => {
         return mMenu.findOrCreate({
@@ -76,8 +75,6 @@ function createMenuAndAssignFood(data) {
                     setPrice: data.setPrice
                 }
         }).then((menu) => {
-            console.log(menu[0]);
-
             resolve("Menu Created Successfully!");
         }).catch(error => {
             reject("Menu could not be created!" + error);
@@ -274,14 +271,14 @@ function getActiveMenu2() {
 }
 
 
-function deleteMenu(data) {
+function deleteMenu(menuName) {
     /*
-    data.name
+    menuName
      */
     return new Promise((resolve, reject) => {
         mMenu.destroy({
             where: {
-                name: data.name
+                name: menuName
             }
         }).then(menu => {
             if (menu > 0)
@@ -428,14 +425,14 @@ module.exports = function (app) {
     }),
 
         app.post('/api/menu/addMenu', function (request, response) {
-            var data = request.body;
-            console.log(data);
             if (request.session != undefined && (checkUsersRole.isAdmin(request.session.roleId) ||
                 checkUsersRole.isChef(request.session.roleId) || checkUsersRole.isMatre(request.session.roleId))) {
+                var data = request.body;
+                data.cuisineRegion = data.cuisineRegion.trim();
+                data.name = data.name.trim();
                 if (checkDataType.isObjectValuesEmpty(data)) {
                     createMenuAndAssignFood(data).then(menu => {
                         response.statusCode = 200;
-                        console.log(menu);
                         response.write(menu.toString(), () => {
                             response.end();
                         });
@@ -533,13 +530,12 @@ module.exports = function (app) {
 
 
         app.get('/api/menu/deleteMenu/:name', function (request, response) {
-            console.log('Delete Menu');
-            var data = request.params;
             if (request.session != undefined && (checkUsersRole.isAdmin(request.session.roleId) ||
-                checkUsersRole.isChef(request.session.roleId) || checkUsersRole.isChef(request.session.roleId))) {
-                console.log(checkDataType.isString(data.name));
-
-                if (!checkDataType.isString(data.name)) {
+                checkUsersRole.isMatre(request.session.roleId))) {
+                console.log('Delete Menu');
+                var menuName = request.params.name;
+                menuName = menuName.trim();
+                if (!checkDataType.isString(menuName)) {
                     response.write(checkDataType.errorMesage(), () => {
                         response.statusCode = 400;
                         response.end();
@@ -547,10 +543,8 @@ module.exports = function (app) {
                     })
                     return false;
                 } else {
-
-                    deleteMenu(data).then(menu => {
+                    deleteMenu(menuName).then(menu => {
                         response.statusCode = 200;
-                        console.log(menu);
                         response.write(menu.toString(), () => {
                             response.end();
                         })

@@ -310,11 +310,16 @@ module.exports = function(app){
 
         if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId)
             ||  checkUsersRole.isChef(request.session.roleId)
-            ||  checkUsersRole.isMatre(request.session.roleId)))
-        {
-                console.log(request);
-                console.log("Will be Updated : " + data);
-
+            ||  checkUsersRole.isMatre(request.session.roleId))) {
+            var data = request.body;
+            if (!checkDataType.isObjectValuesEmpty(data)) {
+                response.statusCode = 404;
+                response.write(checkDataType.errorMesageEmpty(), () => {
+                    //response.statusCode = 400;
+                    response.end();
+                })
+                return false;
+            } else {
                 updateFood(data).then(food => {
                     response.statusCode = 200;
                     console.log(food);
@@ -328,7 +333,8 @@ module.exports = function(app){
                         response.end();
                     })
                 })
-            }else {
+            }
+        }else {
             response.statusCode = 401;
             return response.redirect('/noAuthority');
         }
