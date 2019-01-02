@@ -48,9 +48,13 @@ function createATable(data) {
 
 function updateTable(data) {
     return new Promise((resolve, reject) => {
+        console.log(data)
         mTable.findOne({
             where: {
-                id: data.newId
+                id: data.newId,
+                id:{
+                    ne:data.id
+                }
             }
         }).then(myData => {
             if (myData != null || myData != undefined) {
@@ -873,7 +877,13 @@ module.exports = function (app) {
             if (request.session != undefined && (checkUsersRole.isMatre(request.session.roleId) || checkUsersRole.isWaiter(request.session.roleId)
                 || checkUsersRole.isCashier(request.session.roleId)) || checkUsersRole.isAdmin(request.session.roleId)) {
                 var data = request.body;
-                if (!checkDataType.isObjectValuesEmpty(data)) {
+                var newData = Object.create(data);
+                if (data.username == '' || data.username == undefined || data.username == null){
+                     data.username = null;
+                     delete newData.username;
+                }
+
+                if (!checkDataType.isObjectValuesEmpty(newData)) {
                     response.statusCode = 404;
                     response.write(checkDataType.errorMesageEmpty(), () => {
                         //response.statusCode = 400;
@@ -1053,6 +1063,9 @@ module.exports = function (app) {
             if (request.session != undefined && (checkUsersRole.isMatre(request.session.roleId) || checkUsersRole.isCashier(request.session.roleId)
                 || checkUsersRole.isAdmin(request.session.roleId))) {
                 var data = request.body;
+                if (data.userUsername == '' || data.userUsername == undefined){
+                    delete data.userUsername;
+                }
                 if (!checkDataType.isObjectValuesEmpty(data)) {
                     response.statusCode = 404;
                     response.write(checkDataType.errorMesageEmpty(), () => {

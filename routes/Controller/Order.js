@@ -167,7 +167,6 @@ data.dessert
             },
             defaults: {
                 note: data.note,
-                isFoodReady: 1
             }
         })
             .then((order) => {
@@ -498,7 +497,7 @@ function getMatreAndChefNotification() {
                     model: mFood,
                     through: {
                         where: {
-                            isFoodReady: 0
+                            isFoodReady: 1
                         }
                     }
                 },

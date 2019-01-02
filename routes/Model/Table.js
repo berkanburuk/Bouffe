@@ -37,7 +37,11 @@ class TableModel {
         });
         //User - Table
         let mUser = sequelize.model('user');
-        Table.belongsTo(mUser,{targetKey:'username',onDelete:'CASCADE'});
+        Table.belongsTo(mUser,{
+            targetKey:'username'
+            ,onDelete:'CASCADE',
+            allowNull:true
+        });
 
         let mPayment= sequelize.define('payment',{});
         Table.hasOne(mPayment,{onDelete:'CASCADE'});
