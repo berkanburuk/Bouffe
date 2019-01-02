@@ -191,7 +191,6 @@ module.exports = function(app) {
             if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId))){
 
                 var dataArray = request.body;
-                console.log(dataArray);
 
                 for(var i=0;i<dataArray.data.length;i++) {
                     if (checkDataType.isObjectValuesEmpty(dataArray.data[i])) {
@@ -477,7 +476,6 @@ function createAUser(jsonArray,startPoint,size){
                     console.log("User" + user[1]);
                     if (user[1] == false){
                         reject('This user is already added!');
-                        return;
                     }
                     user[0].addRoles(jsonArray.data[startPoint].roleId).then(()=>{
                         console.log("Role is added!");
@@ -490,8 +488,9 @@ function createAUser(jsonArray,startPoint,size){
                         reject("Course could not be created!");
                     })
                     startPoint++;
+                    console.log("startPoint"+startPoint+"\nSize"+size)
                     if (startPoint<size){
-                        createAUser(jsonArray,startPoint,size)
+                        resolve(createAUser(jsonArray,startPoint,size))
                     }else{
                         resolve("User(s) are created successfully.");
                     }
