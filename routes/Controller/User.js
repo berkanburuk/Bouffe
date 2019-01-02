@@ -191,32 +191,37 @@ module.exports = function(app) {
             console.log(data);
             if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
                 ||  checkUsersRole.isAdmin(request.session.roleId))){
-                if (checkDataType.isObjectValuesEmpty(data)) {
-                    data.roleId = parseInt(data.roleId, 10);
-                    data.courseId = parseInt(data.courseId, 10);
-                    data.bilkentId = parseInt(data.bilkentId,10);
-                    data.username = data.username.toLowerCase()
-                    console.log(data);
-                    createAUser(data).then(user => {
-                        response.statusCode = 200;
-                        console.log(user);
-
-                        response.write("User is added successfully", () => {
-                            response.end();
-                        });
-                    }).catch(error => {
+                for(var i=0;i<data.length;i++) {
+                    if (checkDataType.isObjectValuesEmpty(data)) {
+                        data[i].roleId = parseInt(data[i].roleId, 10);
+                        data[i].courseId = parseInt(data[i].courseId, 10);
+                        data[i].bilkentId = parseInt(data[i].bilkentId, 10);
+                        data[i].username = data[i].username.toLowerCase()
+                        console.log(data[i]);
+                    }
+                    else {
                         response.statusCode = 404;
-                        console.log(error);
-                        response.write(error.toString(), () => {
+                        response.write(checkDataType.errorMesageEmpty().toString(), () => {
                             response.end();
                         });
-                    })
-                }else{
-                    response.statusCode = 404;
-                    response.write(checkDataType.errorMesageEmpty().toString(), () => {
-                        response.end();
-                    });
+                        return;
+                    }
                 }
+                        createAUser(data,0,data.length).then(user => {
+                            response.statusCode = 200;
+                            console.log(user);
+
+                            response.write("User is added successfully", () => {
+                                response.end();
+                            });
+                        }).catch(error => {
+                            response.statusCode = 404;
+                            console.log(error);
+                            response.write(error.toString(), () => {
+                                response.end();
+                            });
+                        })
+
             } else {
                 response.statusCode = 401;
                 return response.redirect('/noAuthority');
@@ -444,29 +449,27 @@ function createUserTransaction(data) {
     });
 }
 
-function createAUser(data){
-
+function createAUser(data,startPoint,size){
     return new Promise((resolve, reject) => {
         mUser.findOne({
             where:{
-                bilkentId:data.bilkentId
+                bilkentId:data[startPoint].bilkentId
             }
         }).then(myData =>{
             if (myData != undefined || myData != null){
                 reject("Bilkent Id must be unique")
             }else{
-
                 mUser.findOrCreate({
                     where:
                         {
-                            username: data.username
+                            username: data[startPoint].username
                         },
                     defaults:
                         {
-                            password: data.password,
-                            firstName: data.firstName,
-                            lastName: data.lastName,
-                            bilkentId: data.bilkentId
+                            password: data[startPoint].password,
+                            firstName: data[startPoint].firstName,
+                            lastName: data[startPoint].lastName,
+                            bilkentId: data[startPoint].bilkentId
                         }
                 }).then((user)=>{
                     console.log("User" + user[1]);
@@ -474,19 +477,22 @@ function createAUser(data){
                         reject('This user is already added!');
                         return;
                     }
-
-                    user[0].addRoles(data.roleId).then(()=>{
+                    user[0].addRoles(data[startPoint].roleId).then(()=>{
                         console.log("Role is added!");
                     }).catch(error=>{
                         reject("Course could not be created!");
                     })
-                    user[0].addCourses(data.courseId).then(()=>{
+                    user[0].addCourses(data[startPoint].courseId).then(()=>{
                         console.log("Course is added!");
                     }).catch(error=>{
                         reject("Course could not be created!");
                     })
-
-                    resolve("User is created successfully.");
+                    startPoint++;
+                    if (startPoint<size){
+                        createAUser(data,startPoint,size)
+                    }else{
+                        resolve("User(s) are created successfully.");
+                    }
                 })
                 /*.spread((user, created)=> {
                     console.log("CRRRR : " + created);
