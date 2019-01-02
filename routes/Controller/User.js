@@ -153,6 +153,7 @@ module.exports = function(app) {
             data.username = request.params.username;
             data.password = request.params.password;
             data.username = data.username.toLowerCase();
+            data.username = data.username.trim();
             //var data = request.body;
             console.log(request.body);
             checkValidationOfUser(data.username, data.password).then(user => {
@@ -187,17 +188,18 @@ module.exports = function(app) {
 
         app.post('/api/user/addUser', function (request, response) {
             console.log("Create A User");
-            var data = request.body;
-            console.log(data);
-            if (request.session != undefined  && (checkUsersRole.isMatre(request.session.roleId)
-                ||  checkUsersRole.isAdmin(request.session.roleId))){
-                for(var i=0;i<data.length;i++) {
-                    if (checkDataType.isObjectValuesEmpty(data)) {
-                        data[i].roleId = parseInt(data[i].roleId, 10);
-                        data[i].courseId = parseInt(data[i].courseId, 10);
-                        data[i].bilkentId = parseInt(data[i].bilkentId, 10);
-                        data[i].username = data[i].username.toLowerCase()
-                        console.log(data[i]);
+            if (request.session != undefined  && (checkUsersRole.isAdmin(request.session.roleId))){
+
+                var dataArray = request.body;
+                console.log(dataArray);
+
+                for(var i=0;i<dataArray.data.length;i++) {
+                    if (checkDataType.isObjectValuesEmpty(dataArray.data[i])) {
+                        dataArray.data[i].roleId = parseInt(dataArray.data[i].roleId, 10);
+                        dataArray.data[i].courseId = parseInt(dataArray.data[i].courseId, 10);
+                        dataArray.data[i].bilkentId = parseInt(dataArray.data[i].bilkentId, 10);
+                        dataArray.data[i].username = dataArray.data[i].username.toLowerCase()
+                        dataArray.data[i].username = dataArray.data[i].username.trim()
                     }
                     else {
                         response.statusCode = 404;
@@ -207,7 +209,7 @@ module.exports = function(app) {
                         return;
                     }
                 }
-                        createAUser(data,0,data.length).then(user => {
+                        createAUser(dataArray,0,dataArray.data.length).then(user => {
                             response.statusCode = 200;
                             console.log(user);
 
@@ -449,11 +451,11 @@ function createUserTransaction(data) {
     });
 }
 
-function createAUser(data,startPoint,size){
+function createAUser(jsonArray,startPoint,size){
     return new Promise((resolve, reject) => {
         mUser.findOne({
             where:{
-                bilkentId:data[startPoint].bilkentId
+                bilkentId:jsonArray.data[startPoint].bilkentId
             }
         }).then(myData =>{
             if (myData != undefined || myData != null){
@@ -462,14 +464,14 @@ function createAUser(data,startPoint,size){
                 mUser.findOrCreate({
                     where:
                         {
-                            username: data[startPoint].username
+                            username: jsonArray.data[startPoint].username
                         },
                     defaults:
                         {
-                            password: data[startPoint].password,
-                            firstName: data[startPoint].firstName,
-                            lastName: data[startPoint].lastName,
-                            bilkentId: data[startPoint].bilkentId
+                            password: jsonArray.data[startPoint].password,
+                            firstName: jsonArray.data[startPoint].firstName,
+                            lastName: jsonArray.data[startPoint].lastName,
+                            bilkentId: jsonArray.data[startPoint].bilkentId
                         }
                 }).then((user)=>{
                     console.log("User" + user[1]);
@@ -477,19 +479,19 @@ function createAUser(data,startPoint,size){
                         reject('This user is already added!');
                         return;
                     }
-                    user[0].addRoles(data[startPoint].roleId).then(()=>{
+                    user[0].addRoles(jsonArray.data[startPoint].roleId).then(()=>{
                         console.log("Role is added!");
                     }).catch(error=>{
                         reject("Course could not be created!");
                     })
-                    user[0].addCourses(data[startPoint].courseId).then(()=>{
+                    user[0].addCourses(jsonArray.data[startPoint].courseId).then(()=>{
                         console.log("Course is added!");
                     }).catch(error=>{
                         reject("Course could not be created!");
                     })
                     startPoint++;
                     if (startPoint<size){
-                        createAUser(data,startPoint,size)
+                        createAUser(jsonArray,startPoint,size)
                     }else{
                         resolve("User(s) are created successfully.");
                     }
