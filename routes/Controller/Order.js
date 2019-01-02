@@ -313,7 +313,7 @@ function payOrders(mainCourse, appetizer, dessert, tableId, setMenu, orderId) {
 function updateQuantityOfAFood(food) {
     return new Promise((resolve, reject) => {
 
-        var q = food.quantity;
+        var q = parseInt(food.quantity);
         if (q > 0) {
             q--;
             food.update({
@@ -493,32 +493,20 @@ function getMatreAndChefNotification() {
                 {
                     orderOpen: true,
                 },
-            /*
-            include: [
-                {
-                    through: {
-                        isFoodReady: -1
-                    }
-                }],
-                */
             include: [
                 {
                     model: mFood,
-                    through: mOrderFood
-
+                    through: {
+                        where: {
+                            isFoodReady: 0
+                        }
+                    }
                 },
-                /*{
-                     through: {
-                        isFoodReady:-1
-                    },
-                    //attributes:['name','price']
-                },*/
-                {
-                    model: mTable,
-                    through: mOrderTable,
-                }
-            ],
-
+                    {
+                        model: mTable,
+                        through: mOrderTable,
+                    }
+                ],
         }).then((order) => {
             resolve(JSON.stringify(order));
         }).catch(error => {
@@ -1274,26 +1262,7 @@ module.exports = function (app) {
                 })
             }
         }),
-        /*
-                app.get('/api/order/getChefNotificationWithName', function (request, response) {
-                if (request.session != undefined  && (checkUsersRole.isChef(request.session.roleId)))
-                {
-                    //request.session.username
-                    getChefNotificationWithName()
-                        .then(notification=> {
-                            response.end(notification);
-                        }).catch(error => {
-                        response.end(error.toString());
-                    })
-                }
-                else {
-                    response.write(checkUsersRole.errorMesage(), () => {
-                        response.statusCode = 404;
-                        response.end();
-                    })
-                }
-            }),
-            */
+
         app.get('/api/order/getAllOpenOrders', function (request, response) {
             if (request.session != undefined && (checkUsersRole.isChef(request.session.roleId))) {
                 //request.session.username
@@ -1313,41 +1282,6 @@ module.exports = function (app) {
         }),
 
 
-        app.get('/api/order/getChefNotificationWithFoodName/:orderId', function (request, response) {
-            if (request.session != undefined && (checkUsersRole.isChef(request.session.roleId))) {
-                //request.session.username
-                getChefNotificationWithFoodName(request.params.orderId)
-                    .then(notification => {
-                        response.end(notification);
-                    }).catch(error => {
-                    response.end(error.toString());
-                })
-            }
-            else {
-                response.write(checkUsersRole.errorMesage(), () => {
-                    response.statusCode = 404;
-                    response.end();
-                })
-            }
-        }),
-
-        app.get('/api/order/getChefNotificationWithFoodName/:orderId', function (request, response) {
-            if (request.session != undefined && (checkUsersRole.isChef(request.session.roleId))) {
-                //request.session.username
-                getChefNotificationWithFoodName(request.params.orderId)
-                    .then(notification => {
-                        response.end(notification);
-                    }).catch(error => {
-                    response.end(error.toString());
-                })
-            }
-            else {
-                response.write(checkUsersRole.errorMesage(), () => {
-                    response.statusCode = 404;
-                    response.end();
-                })
-            }
-        }),
 
         app.get('/api/order/getNotificationForBartender', function (request, response) {
             if (request.session != undefined && (checkUsersRole.isBartender(request.session.roleId) || checkUsersRole.isAdmin(request.session.roleId))) {
