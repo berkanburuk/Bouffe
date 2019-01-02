@@ -327,6 +327,44 @@ function assignWaiterToTable(userUsername, oldTableId, newTableId) {
     })
 }
 
+function swapTable(userUsername, oldTableId, newTableId,orderId) {
+    return new Promise((resolve, reject) => {
+        mTable.findOne({
+            where:{
+                id:newTableId,
+                status:1
+            }
+        }).then(data=> {
+            if (data != undefined && data != undefined) {
+                mOrderTable.update(
+                    {
+                        tableId: newTableId
+                    },
+                    {
+                        where:
+                            {
+                                tableId: oldTableId,
+                                orderId: orderId
+                            }
+                    }).then((table) => {
+                    if (table > 0) {
+                        resolve("User is assigned to Table");
+                    } else {
+                        reject("Table could not be swaped!");
+                    }
+                }).catch(error => {
+                    reject("Valid parameters shall be sent!\n" + error);
+                })
+            } else {
+                reject("Swapped table's status can only be 1!!")
+            }
+        }).catch(error=>{
+            reject(error)
+        })
+        })
+
+
+}
 function releaseTableFromUser(userUsername, tableId) {
     return new Promise((resolve, reject) => {
         mTable.update(
