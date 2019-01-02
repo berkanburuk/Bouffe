@@ -556,6 +556,7 @@ function getAFood(foodId) {
 //isFoodReady 4 yapacak. Order iptal. matre ve chef iptal etmek için bu apiyi çağıracak.
 function rejectMenu(data) {
     /*
+    Food sayısını +1'le
     orderId
     tableId
     foodId
