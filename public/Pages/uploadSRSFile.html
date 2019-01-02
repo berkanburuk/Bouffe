@@ -390,26 +390,27 @@
     }
 
     function sendTable() {
+        console.log(stuInfoArr);
         for (var i = 1; i < stuInfoArr.length; i++) {
             stuInfoArr[i].roleId = $('#stuRole' + i).val();
-            $.ajax({
-                url: '/api/user/addUser',
-                dataType: 'application/json',
-                data: stuInfoArr[i],
-                type: 'POST',
-                timeout: 5000,
-                statusCode: {
-                    200: function (x) {
-                        alert(x.responseText);
-                        location.reload();
-
-                    },
-                    404: function (x) {
-                        alert(x.responseText);
-                    }
-                }
-            });
         }
+        $.ajax({
+            url: '/api/user/addUser',
+            dataType: 'application/json',
+            data: stuInfoArr.shift(),
+            type: 'POST',
+            timeout: 5000,
+            statusCode: {
+                200: function (x) {
+                    alert(x.responseText);
+                    location.reload();
+
+                },
+                404: function (x) {
+                    alert(x.responseText);
+                }
+            }
+        });
     }
 
     $('[data-dismiss=modal]').on('click', function (e) {
@@ -424,7 +425,7 @@
 
     $('#add_user_form').on('submit', function (e) {
         e.preventDefault();
-        var data2 = {
+        var data2 =[ {
             username: $('#username').val().toLowerCase(),
             password: $('#password').val(),
             firstName: $('#firstName').val(),
@@ -432,7 +433,7 @@
             bilkentId: $('#bilkentId').val(),
             roleId: $('#roleId').val(),
             courseId: $('#courseIdForm').val()
-        };
+        }];
         $.ajax({
             url: '/api/user/addUser',
             dataType: 'application/json',

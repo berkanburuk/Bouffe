@@ -425,6 +425,7 @@
 
                 if (role == 1) {
                     custom_list += '<li id="srsFileUpload" value="/userManagement"><p>User Management</p></li>';
+                    custom_list += '<li id="showStat" value=":2000"><p>Show Statistics</p></li>';
                 }
                 if (role == 3 || role == 4) {
                     custom_list += '<li id="beverageManagement" value="/beverageManagement"><p>Beverage Management</p></li>';
@@ -433,6 +434,8 @@
                 if (role == 4) {
                     custom_list += '<li id="manageMenu" value="/menuManagement"><p>Menu Management</p></li>';
                     custom_list += '<li id="manageReservation" value="/reservationManagement"><p>Reservation Management</p></li>';
+                    custom_list += '<li id="showStat" value=":2000"><p>Show Statistics</p></li>';
+                    custom_list += '<li id="check" value="/guestCheck"><p>Guest Check Panel</p></li>';
                 }
                 if (role == 5) {
                     custom_list += '<li id="order" value="/order"><p>Order Panel</p></li>';
@@ -442,7 +445,6 @@
                 }
                 if (role == 2) {
                     custom_list += '<li id="payment" value="/payment"><p>Payment Panel</p></li>';
-                    custom_list += '<li id="check" value="/guestCheck"><p>Guest Check Panel</p></li>';
                 }
                 if (role == 2 || role == 4 ) {
                     custom_list += '<li id="tableLayoutManagement" value="/tableLayoutManagement"><p>Table Layout Management</p></li>';
