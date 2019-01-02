@@ -523,7 +523,7 @@
 
 
     setInterval(function () {
-        /*
+
         $.ajax({
             url: '/api/order/getReadyBeverages',
             dataType: 'application/json',
@@ -600,7 +600,7 @@
                     console.log(x.responseText);
                 }
             }
-        });*/
+        });
 
         //FOOD REJECTION  AND UPDATE STATUS
         $.ajax({
@@ -614,15 +614,14 @@
                     var readyBeverageArr = JSON.parse(x.responseText);
                     for (var i = 0; i < readyBeverageArr.length; i++) {
                         for (var k = 0; i < readyBeverageArr[i].food.length; k++) {
-
                             //   console.log(readyBeverageArr[i].beverages);
-                            if (readyBeverageArr[i].food[k] !== undefined) {
+                           // if (readyBeverageArr[i].food[k] !== undefined) {
                                 if (readyBeverageArr[i].food[k].orderFood.isFoodReady === 2) {
                                     var text = readyBeverageArr[i].food[k].name + " for table #" + readyBeverageArr[i].tables[0].id;
                                     showNotification(text, 'info');
                                     var data2 = {
-                                        orderId: readyBeverageArr[i].tables[0].orderTable.orderId,
-                                        foodId: readyBeverageArr[i].food[k].id
+                                        orderId: readyBeverageArr[i].orderFood.orderId,
+                                        foodId: readyBeverageArr[i].orderFood.foodId
                                     };
                                     console.log(data2);
                                     $.ajax({
@@ -647,7 +646,7 @@
                 404: function (x) {
                     console.log(x.responseText);
                 }
-            }
+          //  }
         });
         $.ajax({
             url: '/api/order/getRejectedFoods',
@@ -681,6 +680,7 @@
                             }
                         });
                     }
+
                 },
                 404: function (x) {
                     console.log(x.responseText);
