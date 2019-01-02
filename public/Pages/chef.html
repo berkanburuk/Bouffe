@@ -104,7 +104,7 @@
         //});​
 
 
-        x += "var y, foodId, tableId, price1, price2, price3;"
+        x += "var y, foodId, tableId;"
         x += "\$('div#bodyHere div#order').click( function(e) {\n";
         //x+="\$(location).attr('href', \$(this).attr('value'));";
         x += "\n";
@@ -112,6 +112,7 @@
         x += "var valuesToSplit = $(this).attr('value').split(','); \n";
         x += "y = parseInt(valuesToSplit[0]);\n";
         x += "foodId = parseInt(valuesToSplit[1]);\n";
+        x += "tableId = parseInt(valuesToSplit[2]);\n";
         x += "var texty=$(this).attr('name');\n";
         x += "case1(texty,y);";
         x += "});\n";
@@ -149,12 +150,12 @@
         x += "}else if(result.dismiss=== Swal.DismissReason.cancel){";
         x += "console.log(y);\n";
         x += "console.log(y);\n";
-        x += "var data2 = {foodId: foodId, tableId: tableId, orderId: y, accepted: false}\n";
+        x += "var data2 = {foodId: foodId, tableId: tableId, orderId: y}\n";
         x += "$.ajax({\n";
         x += "type: 'POST',\n";
         x += "dataType: 'application/json',\n";
         //3
-        x += "url: '/api/order/bartenderApproveOrRejectBeverage',\n";
+        x += "url: '/api/order/reduceMenuPayment',\n";
         x += "timeout: 10000,\n";
         x += "data: data2,\n";
         x += "statusCode: {\n";
@@ -181,10 +182,14 @@
                 console.log(dat[i].food.length);
                 for (var k = 0; k < dat[i].food.length; k++) {
                     if (dat[i].food[k].orderFood.isFoodReady === -1)
-                        tableData += "<div id='" + "order" + "' value='" + dat[i].id + "," + dat[i].food[k].orderFood.foodId +"," + dat[i].food[k].price + "'" + " name='" + dat[i].food[k].name + "' " + "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/s2.png' alt=\"\"><div class=\"centered\">" + dat[i].id + " is refers Food: " + dat[i].food[k].name + "</div></p></p></div>";
+                        tableData += "<div id='" + "order" + "' value='" + dat[i].id + "," + dat[i].food[k].orderFood.foodId +"," + dat[i].tables[0].id + "'" + " name='" + dat[i].food[k].name + "' " + "class='col-lg-3 col-md-4 col-xs-6'><p class='d-block mb-4 h-100'><img class='img-fluid img-thumbnail' style='opacity:0.4;filter:alpha(opacity=40);' src='../TableFiles/tableImages/s2.png' alt=\"\"><div class=\"centered\">" + dat[i].id + " is refers Food: " + dat[i].food[k].name + "</div></p></p></div>";
                 }
             }
         }
         return x + tableData;
     }
+
+    setInterval(function () {
+        location.reload();
+    }, 15000);
 </script>
