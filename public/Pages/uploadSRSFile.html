@@ -391,20 +391,24 @@
 
     function sendTable() {
         console.log(stuInfoArr);
+        var data2 = {
+            "data": []
+        };
         for (var i = 1; i < stuInfoArr.length; i++) {
             stuInfoArr[i].roleId = $('#stuRole' + i).val();
+            data2.data.push(stuInfoArr[i]);
         }
+
         $.ajax({
             url: '/api/user/addUser',
             dataType: 'application/json',
-            data: stuInfoArr.shift(),
+            data: data2,
             type: 'POST',
             timeout: 5000,
             statusCode: {
                 200: function (x) {
                     alert(x.responseText);
                     location.reload();
-
                 },
                 404: function (x) {
                     alert(x.responseText);
@@ -426,7 +430,7 @@
     $('#add_user_form').on('submit', function (e) {
         e.preventDefault();
         var data2 = {
-            "data" : [{
+            "data": [{
                 username: $('#username').val().toLowerCase(),
                 password: $('#password').val(),
                 firstName: $('#firstName').val(),
@@ -437,7 +441,7 @@
             }]
         };
         console.log(data2);
-       // console.log(data2.leng  th);
+        // console.log(data2.leng  th);
 
         $.ajax({
             url: '/api/user/addUser',
