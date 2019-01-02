@@ -425,15 +425,20 @@
 
     $('#add_user_form').on('submit', function (e) {
         e.preventDefault();
-        var data2 =[ {
-            username: $('#username').val().toLowerCase(),
-            password: $('#password').val(),
-            firstName: $('#firstName').val(),
-            lastName: $('#lastName').val(),
-            bilkentId: $('#bilkentId').val(),
-            roleId: $('#roleId').val(),
-            courseId: $('#courseIdForm').val()
-        }];
+        var data2 = {
+            "data" : [{
+                username: $('#username').val().toLowerCase(),
+                password: $('#password').val(),
+                firstName: $('#firstName').val(),
+                lastName: $('#lastName').val(),
+                bilkentId: $('#bilkentId').val(),
+                roleId: $('#roleId').val(),
+                courseId: $('#courseIdForm').val()
+            }]
+        };
+        console.log(data2);
+       // console.log(data2.leng  th);
+
         $.ajax({
             url: '/api/user/addUser',
             dataType: 'application/json',
@@ -515,7 +520,7 @@
 
 <style>
     table.dataTable th:nth-child(4),
-    table.dataTable th:nth-child(5){
+    table.dataTable th:nth-child(5) {
         width: 80px;
         max-width: 120px;
         word-break: break-all;
