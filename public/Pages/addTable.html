@@ -57,19 +57,21 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form id="add_table_form">
+            <form id="add_table_form" autocomplete="off">
                 <div class="modal-body">
                     <div class="form-group">
                         <label class="col-form-label col-md-3">Table No</label>
                         <div class="col-md-11">
-                            <input name="id" id="id" placeholder="Table No" class="form-control" type="text">
+                            <input name="id" id="id" placeholder="Table No" max="999"
+                                   class="form-control" type="text">
                             <span class="help-block"></span>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-form-label col-md-3">Capacity</label>
                         <div class="col-md-11">
-                            <input name="capacity" id="capacity" placeholder="4" class="form-control" type="text">
+                            <input name="capacity" id="capacity" max="50"
+                                   placeholder="4" class="form-control" type="text">
                             <span class="help-block"></span>
                         </div>
                     </div>
@@ -114,12 +116,13 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form id="update_table_form">
+            <form id="update_table_form" autocomplete="off">
                 <div class="modal-body">
                     <div class="form-group">
                         <label class="col-form-label col-md-3">Table No</label>
                         <div class="col-md-11">
-                            <input name="uid" id="uid" placeholder="Table No" class="form-control" type="text">
+                            <input name="uid" id="uid" placeholder="Table No" max="999"
+                                   class="form-control" type="text">
                             <span class="help-block"></span>
                         </div>
                     </div>
@@ -138,6 +141,7 @@
                         <div class="col-md-11">
                             <input name="ucapacity" id="ucapacity" placeholder="4"
                                    class="form-control"
+                                   max="50"
                                    type="number">
                             <span class="help-block"></span>
                         </div>
@@ -333,28 +337,28 @@
                 }
             });
             console.log(data2);
-           /* $.ajax({
-                url: '/api/table/assignTableToUser',
-                dataType: 'application/json',
-                data: data2,
-                type: 'POST',
-                timeout: 5000,
-                statusCode: {
-                    200: function (x) {
-                        $('#modal_form').modal('hide');
-                        /*  $('#name').val("");
-                         $('#description').val("");
-                         $('#quantity').val("");
-                         $('#price').val("");
-                         getAllFoods();
-                        //  location.reload();
+            /* $.ajax({
+                 url: '/api/table/assignTableToUser',
+                 dataType: 'application/json',
+                 data: data2,
+                 type: 'POST',
+                 timeout: 5000,
+                 statusCode: {
+                     200: function (x) {
+                         $('#modal_form').modal('hide');
+                         /*  $('#name').val("");
+                          $('#description').val("");
+                          $('#quantity').val("");
+                          $('#price').val("");
+                          getAllFoods();
+                         //  location.reload();
 
-                    },
-                    404: function (x) {
-                        alert(x.responseText);
-                    }
-                }
-            });*/
+                     },
+                     404: function (x) {
+                         alert(x.responseText);
+                     }
+                 }
+             });*/
         });
     });
 
